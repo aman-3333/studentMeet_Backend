@@ -28,7 +28,7 @@ const eventSchema = new Schema(
     isAdvancedMoneyRefundToOrganizer : { type: Boolean, default: false },
     isAdvancedMoneySubmited: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
-    AdvancedMoneyRefundableDateUpTo:{ type: Date }, 
+    AdvancedMoneyRefundableDateUpTo: { type: Date }, 
     registrationStartDateTime:{ type: Date }, 
     registrationEndDate: { type: Date },
     eventStartDateTime: { type: Date },
