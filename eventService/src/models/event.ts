@@ -19,7 +19,7 @@ const eventSchema = new Schema(
     advancedEventMoney: { type: Number },
     priceForParticipent: { type: Number },
     organizerTotalIncome:{ type: Number },
-    organizerIncomePerParticipent:{ type: Number },
+    organizerIncomePerParticipent: { type: Number },
     totalParticipent: { type: Number },
     isActive: { type: Boolean, default: false },
     isBookEventPaid: { type: Boolean, default: false },
