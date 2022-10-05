@@ -741,6 +741,26 @@ router.patch("/deleteHashtag/:id", async (req, res) => {
         res.status(500).json(errorResponse("error in delete Hashtag", res.statusCode));
     }
 })
+
+router.post("/HashtagActivity", async (req, res) => {
+    try{
+        
+        const userId=req.body.userId;
+        const eventId=req.body.eventId;
+        const hashtagId=req.body.hashtagId; 
+         const status=req.body.status; 
+         const hashtagcomment=req.body.hashtagcomment;
+        const hashtagcommentId=req.body.hashtagcommentId;
+        const body=req.body;
+        const controller=new HashtagController();
+        const response:IHashtag =await controller.hashtagActivity(userId,eventId, hashtagId, status,hashtagcomment,hashtagcommentId, body);
+        res.status(200).json(successResponse("delete Hashtag",response,res.statusCode));
+    }catch(error) {
+        console.error("error in Hashtag ", error);
+        res.status(500).json(errorResponse("error in delete Hashtag", res.statusCode));
+    }
+})
+
 router.post("/subCategory", async (req, res) => {
     try {
         const body = req.body as ISubCategory;
