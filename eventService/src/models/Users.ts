@@ -6,20 +6,12 @@ const userSchema = new Schema(
     facebookID: { type: String },
     googleID: { type: String },
     otp: { type: String },
-    /////// Removed required and unique from email
-
-    // email: { type: String, required: true, unique: true },
     email: { type: String },
-
-    ///// REmoved required from password
-
     password: { type: String, required: true },
-
     isVerified: { type: Boolean, default: false },
     verifyToken: { type: String },
     verifyShortToken: { type: String },
     verifyExpires: { type: Date },
-    verifyChanges: Schema.Types.Mixed,
     resetToken: { type: String },
     resetShortToken: { type: String },
     resetExpires: { type: Date },
