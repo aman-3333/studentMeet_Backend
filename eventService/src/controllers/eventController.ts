@@ -159,7 +159,9 @@ export default class eventController {
     }
 
 
+    public async createOwnCustomEvent(body:any){
 
+}
 
 
 
