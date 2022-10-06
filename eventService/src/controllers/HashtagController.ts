@@ -171,11 +171,9 @@ export default class HashtagController {
                         })
                     let hashtagInfo: any = await Hashtag.findOne({ _id: body.hashtagLike[i].hashtagId })
                     console.log("hashtagInfo", hashtagInfo);
-
                     hashtagInfo = hashtagInfo.likeCount
                     hashtagInfo = hashtagInfo + 1
                     await Hashtag.findOneAndUpdate({ _id: body.hashtagLike[i].hashtagId }, { $set: { likeCount: hashtagInfo } })
-
                 }
                 return userInfo;
             }
@@ -239,8 +237,6 @@ export default class HashtagController {
                 { $pull: { hashtagFavorite: { hashtagId: hashtagId } } }
             );
             let hashtagInfo: any = await Hashtag.findOne({ _id: hashtagId })
-
-
             hashtagInfo = hashtagInfo.hashtagFavorite
             hashtagInfo = hashtagInfo - 1
             await Hashtag.findOneAndUpdate({ _id: hashtagId }, { $set: { favoriteCount: hashtagInfo } })
@@ -299,7 +295,6 @@ export default class HashtagController {
 
                 data.push({ eventInfo, hashtagInfo, comment, commentTime })
             }
-
             return data;
         }
     }
