@@ -1,8 +1,9 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    State: { type: String, required: true },
+    userRole: { type: String, required: true },
     Description: { type: String },
+    roleId:{ type: Number },
     picture: { type: String },
     active: { type: Boolean, default: true },
     ownerId: { type: Schema.Types.ObjectId },
@@ -11,8 +12,9 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface IState extends Document {
-    State: String,
+export interface IUserrole extends Document {
+    userRole: String,
+    roleId:Number,
     Description: String,
     ownerId: ObjectId,
     picture: String,
@@ -20,4 +22,4 @@ export interface IState extends Document {
     isDeleted: Boolean
 }
 
-export default model<IState>("State", schema);
+export default model<IUserrole>("userrole", schema);

@@ -47,7 +47,7 @@ export default class CategoryController {
         return categoryInfo;
     }
 
-    public async deleteCategory(categoryId: string, userId: String) {
+    public async deleteCategory(categoryId: string) {
        
         const categoryInfo: ICategory = await Category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return categoryInfo;

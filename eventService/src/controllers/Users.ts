@@ -7,18 +7,12 @@ const userSchema = new Schema(
     googleID: { type: String },
     otp: { type: String },
     eventId: [{}],
-
     email: { type: String },
-
-
-
     password: { type: String, required: true },
-
     isVerified: { type: Boolean, default: false },
     verifyToken: { type: String },
     verifyShortToken: { type: String },
     verifyExpires: { type: Date },
-    verifyChanges: Schema.Types.Mixed,
     resetToken: { type: String },
     resetShortToken: { type: String },
     resetExpires: { type: Date },
@@ -41,8 +35,7 @@ const userSchema = new Schema(
     about: { type: String, trim: true },
     profile_picture: { type: String },
     gcmid: { type: String },
-
-    activeRole: { type: Schema.Types.ObjectId, ref: "role" },
+    roleId: {  type: Number, default:0 },
     wishListProduct: [{ type: Schema.Types.ObjectId, ref: "event" }],
     pricedownReminder: [{ type: Schema.Types.ObjectId, ref: "event" }],
     likeevent: [{ type: Schema.Types.ObjectId, ref: "event" }],
@@ -84,7 +77,7 @@ export interface IUser extends Document {
   otp: String;
   otpId: String;
   password: string;
-  role: string;
+  roleId: Number;
   institute: ObjectId;
   wishListProduct: [ObjectId],
   pricedownReminder: [ObjectId],
