@@ -8,7 +8,6 @@ import { IPartner } from "../models/eventPartner";
 import { ICategory } from "../models/Category";
 import  { IInstitute } from "../models/Institute";
 import  { IUserrole} from "../models/UserRole";
-
 import { ICity } from "../models/City";
 import { IState } from "../models/State";
 import eventPartnerController from "../controllers/eventPartnerController";
@@ -17,11 +16,6 @@ import UserroleController from "../controllers/userRoleController"
 import InstituteController from "../controllers/InstituteController";
 import HashtagController from "../controllers/HashtagController";
 import CityController from "../controllers/CityController";
-import { ISubscription } from "../models/Subscription";
-import { IPlan } from "../models/Plan";
-
-import { ICoupon } from "../models/Coupons";
-import SubscriptionController from "../controllers/SubscriptionController";
 import CategoryController from "../controllers/CategoryController";
 import { v4 as uuidv4 } from 'uuid';
 uuidv4()
