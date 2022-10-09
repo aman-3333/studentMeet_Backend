@@ -34,9 +34,7 @@ const userSchema = new Schema(
     about: { type: String, trim: true },
     profile_picture: { type: String },
     gcmid: { type: String },
-    /////// ACtive Role REmoed required
-
-    // activeRole: { type: Schema.Types.ObjectId, required: false, ref: "role" },
+  
     activeRole: { type: Schema.Types.ObjectId, ref: "role" },
 
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
@@ -49,19 +47,13 @@ const userSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     lastLoginDate: { type: Date },
     email_verify: { type: Boolean, default: false },
-    ///// Added unique and  required to username
-
-    //username: { type: String},
+  
     username: { type: String, required: true, unique: true, trim: true },
 
     parent_gender: { type: String },
     parent_email: { type: String },
     parent_country_code: { type: Number, trim: true }
-    // JoinedGroups : [{ type: Schema.Types.ObjectId, ref: 'group' }],
-    // VotedAnswers : [{ type: Schema.Types.ObjectId, ref: 'vote' }],
-    // SavedPosts : [{ type: Schema.Types.ObjectId, ref: 'post' }],
-    // FollowedPosts : [{ type: Schema.Types.ObjectId, ref: 'post' }],
-    // VotedPosts : [{ type: Schema.Types.ObjectId, ref: 'post' }]
+   
   },
   {
     timestamps: true,

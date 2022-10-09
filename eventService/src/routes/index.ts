@@ -6,11 +6,15 @@ import { ISubCategory } from "../models/Subcategory";
 import { ISubSubCategory } from "../models/subSubCategory";
 import { IPartner } from "../models/eventPartner";
 import { ICategory } from "../models/Category";
+import  { IInstitute } from "../models/Institute";
+import  { IUserrole} from "../models/UserRole";
 
 import { ICity } from "../models/City";
 import { IState } from "../models/State";
 import eventPartnerController from "../controllers/eventPartnerController";
 import StateController from "../controllers/StateController";
+import UserroleController from "../controllers/userRoleController"
+import InstituteController from "../controllers/InstituteController";
 import HashtagController from "../controllers/HashtagController";
 import CityController from "../controllers/CityController";
 import { ISubscription } from "../models/Subscription";
@@ -26,6 +30,7 @@ const multerS3 = require('multer-s3');
 const multer = require('multer');
 const path = require('path');
 import createEvent from "../controllers/eventController"
+//import AuthController from "../controllers/AuthController";
 const router = express.Router();
 
 
@@ -188,12 +193,11 @@ const uploadsBusinessGallery = multer({
     storage: multerS3({
         s3: s3,
         bucket: "midbazar-upload",
-
         key: function (req: any, file: any, cb: any) {
             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
         }
     }),
-    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
+    limits: { fileSize: 2000000000 }, // In bytes: 2000000 bytes = 2 MB
     fileFilter: function (req: any, file: any, cb: any) {
         checkFileType(file, cb);
     }
@@ -242,9 +246,32 @@ router.post('/multiple-file-upload', (req:any, res:any) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////auth//////////////////////////////////
 
+// router.post("/authService/sendotp", async (req, res) => {
+ 
+//     try {
+//         const body = req.body
+//         const controller = new AuthController();
+//         const response = await controller.sendotp(body);
+//         return res.send(response);
+//     } catch (error) {
+//         console.error("error in /sendotp", error);
+//         return res.send(error);
+//     }
+// });
 
-
+// router.post("/authService/verifyotp", async (req, res) => {
+//     try {
+//         const body = req.body ;
+//         const controller = new AuthController();
+//         const response = await controller.verifyotp(body);
+//         return res.send(response);
+//     } catch (error) {
+//         console.error("error in /verifyotp", error);
+//         return res.send(error);
+//     }
+// })
 
 
 
@@ -624,7 +651,7 @@ router.post("/createCategory", async (req, res) => {
     }
 });
 
-router.patch("/createCategory/:id", async (req, res) => {
+router.patch("/Category/:id", async (req, res) => {
     try {
         const categoryId = req.params.id;
         
@@ -673,8 +700,158 @@ router.get("createCategory/:id", async (req, res) => {
         res.status(500).json(errorResponse("error in get category by Id", res.statusCode));
     }
 });
+router.patch("/deleteCategory/:id", async (req, res) => {
+    try {
+        const categoryId = req.params.id;
+        const controller = new CategoryController();
+        const response: ICategory = await controller.deleteCategory(categoryId);
+        res.status(200).json(successResponse("category update", response, res.statusCode));
+    } catch(error) {
+        console.error("error in category update", error);
+        res.status(500).json(errorResponse("error in category update", res.statusCode));
+    }
+});
+/////////////////////////////////////Institute////////////////////////////////////////////
+router.post("/createInstitute", async (req, res) => {
+    try {
+        const body = req.body as IInstitute;
+     
+        const controller = new InstituteController();
+        const response:IInstitute = await controller.createInstitute(body);
+        res.status(200).json(successResponse("create Institute", response, res.statusCode));
+    } catch(error) {
+        console.error("error in create Institute", error);
+        res.status(500).json(errorResponse("error in create Institute", res.statusCode));
+    }
+});
+
+router.patch("/Institute/:id", async (req, res) => {
+    try {
+        const InstituteId = req.params.id;
+        
+        const body = req.body as IInstitute;
+        const controller = new InstituteController();
+        const response: IInstitute = await controller.editInstitute(body, InstituteId);
+        res.status(200).json(successResponse("Institute update", response, res.statusCode));
+    } catch(error) {
+        console.error("error in Institute update", error);
+        res.status(500).json(errorResponse("error in Institute update", res.statusCode));
+    }
+});
+
+router.get("/InstituteList", async (req, res) => {
+    try {
+        const controller = new InstituteController();
+  
+        const response: IInstitute[] = await controller.getInstitute();
+        res.status(200).json(successResponse("get Institute", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Institute", error);
+        res.status(500).json(errorResponse("error in get Institute", res.statusCode));
+    }
+});
+router.get("/searchInstitute", async (req, res) => {
+    try {
+        const stateId=req.query.stateId;
+        const searchValue=req.query.searchValue;
+        const controller = new InstituteController();
+  
+        const response: IInstitute[] = await controller.searchInstitute(stateId, searchValue);
+        res.status(200).json(successResponse("get Institute", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Institute", error);
+        res.status(500).json(errorResponse("error in get Institute", res.statusCode));
+    }
+});
+
+router.get("/getInstituteInfoById/:id", async (req, res) => {
+    try {
+        const shopId: string= req.params.id;
+        const userId=req.body.userId;
+        const controller = new InstituteController();
+        const response: IInstitute = await controller.getInstituteInfoById(shopId);
+        res.status(200).json(successResponse("get Institute by Id ", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Institute by Id", error);
+        res.status(500).json(errorResponse("error in get Institute by Id", res.statusCode));
+    }
+});
+router.patch("/deleteInstitute/:id", async (req, res) => {
+    try {
+        const InstituteId = req.params.id;
+        const controller = new InstituteController();
+        const response: IInstitute = await controller.deleteInstitute(InstituteId);
+        res.status(200).json(successResponse("Institute update", response, res.statusCode));
+    } catch(error) {
+        console.error("error in Institute update", error);
+        res.status(500).json(errorResponse("error in Institute update", res.statusCode));
+    }
+});
+//////////////////////////////////////////USERROLE/////////////////////////////////////////
+router.post("/createUserrole", async (req, res) => {
+    try {
+        const body = req.body as IUserrole;
+     
+        const controller = new UserroleController();
+        const response:IUserrole = await controller.createUserrole(body);
+        res.status(200).json(successResponse("create Userrole", response, res.statusCode));
+    } catch(error) {
+        console.error("error in create Userrole", error);
+        res.status(500).json(errorResponse("error in create Userrole", res.statusCode));
+    }
+});
+
+router.patch("/editUserrole/:id", async (req, res) => {
+    try {
+        const UserroleId = req.params.id;
+        
+        const body = req.body as IUserrole;
+        const controller = new UserroleController();
+        const response: IUserrole = await controller.editUserrole(body, UserroleId);
+        res.status(200).json(successResponse("Userrole update", response, res.statusCode));
+    } catch(error) {
+        console.error("error in Userrole update", error);
+        res.status(500).json(errorResponse("error in Userrole update", res.statusCode));
+    }
+});
+
+router.get("/UserroleList", async (req, res) => {
+    try {
+        const controller = new UserroleController();
+  
+        const response: IUserrole[] = await controller.getUserrole();
+        res.status(200).json(successResponse("get Userrole", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Userrole", error);
+        res.status(500).json(errorResponse("error in get Userrole", res.statusCode));
+    }
+});
 
 
+router.get("/getUserroleInfoById/:id", async (req, res) => {
+    try {
+        const shopId: string= req.params.id;
+        const userId=req.body.userId;
+        const controller = new UserroleController();
+        const response: IUserrole = await controller.getUserroleInfoById(shopId);
+        res.status(200).json(successResponse("get Userrole by Id ", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Userrole by Id", error);
+        res.status(500).json(errorResponse("error in get Userrole by Id", res.statusCode));
+    }
+});
+router.patch("/deleteUserrole/:id", async (req, res) => {
+    try {
+        const UserroleId = req.params.id;
+        const controller = new UserroleController();
+        const response: IUserrole = await controller.deleteUserrole(UserroleId);
+        res.status(200).json(successResponse("Userrole update", response, res.statusCode));
+    } catch(error) {
+        console.error("error in Userrole update", error);
+        res.status(500).json(errorResponse("error in Userrole update", res.statusCode));
+    }
+});
+/////////////////////////////////////Hashtag/////////////////////////////////////////
 
 router.post("/createHashtag", async (req, res) => {
     try {

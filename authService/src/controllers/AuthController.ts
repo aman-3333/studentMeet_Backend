@@ -1,17 +1,14 @@
-//npm libraries
 import * as jwt from "jsonwebtoken";
 import moment, { now } from "moment";
 import async, { nextTick } from "async";
 import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
-//Edneed objects
 import Users, { IUser } from "../models/Users";
 import institute from "../models/institute.model";
 import Userrole from "../models/userrole.model";
 import profileModel from "../models/publicprofile";
 import profileInfoModel from "../models/personalinfo";
 import profileContactModel from "../models/profilecontact";
-import Domains from "../models/Domain";
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import Tokens, { IToken } from "../models/Tokens";
 import * as constants from "../utils/Constants";
@@ -174,106 +171,106 @@ export default class AuthController {
     }
   }
 
-  // public async sendotp(body: any) {
-  //   let phone = body.country_code.toString() + body.contact.toString();
-  //   const userInfo = await Users.findOne({ contact: body.contact }).lean();
-  //   if (body.action == "checkexist") {
-  //     if (!userInfo) {
-  //       return {
-  //         Status: "Error",
-  //         Details: "Invalid number. Please recheck and enter again.",
-  //       };
-  //     }
-  //   }
-  //   if (body.action == "checknotexist") {
-  //     if (userInfo) {
-  //       return {
-  //         Status: "Error",
-  //         Details:
-  //           "This phone number is already taken. Please try with a new number.",
-  //       };
-  //     }
-  //   }
-  //   let otp = generateOTP(6);
-  //   let resp = await generateOtp(phone, otp);
-
-  //   if (resp.Status == "Success") {
-  //     const otpInfo = await Otp.findOne({
-  //       contact: body.contact,
-  //       country_code: body.country_code,
-  //     }).lean();
-  //     const userInfo = await Users.findOne({ contact: body.contact }).lean();
-  //     if (userInfo) {
-  //       const user = await Users.findOne({
-  //         contact: body.contact,
-  //         country_code: body.country_code,
-  //       }).lean();
-  //       if (!user) {
-  //         await Users.findOneAndUpdate(
-  //           { contact: body.contact },
-  //           { $set: { country_code: body.country_code } }
-  //         );
-  //       }
-  //     }
-  //     if (!otpInfo) {
-  //       const info = new Otp({
-  //         contact: body.contact,
-  //         country_code: body.country_code,
-  //         otp: otp,
-  //         otpId: resp.Details,
-  //       });
-  //       const data = await info.save();
-  //     } else {
-  //       await Otp.findOneAndUpdate(
-  //         { contact: body.contact, country_code: body.country_code },
-  //         { otp: otp, otpId: resp.Details }
-  //       );
-  //     }
-  //   }
-  //   return resp;
-  // }
   public async sendotp(body: any) {
-    let otp: any;
-    let createUser: any;
-    let otpInfo: any;
-    function couponGenerator() {
-        let text = "";
-        let possible = "0123456789";
-
-        for (let i = 0; i < 4; i++)
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return text;
+    let phone = body.country_code.toString() + body.contact.toString();
+    const userInfo = await Users.findOne({ contact: body.contact }).lean();
+    if (body.action == "checkexist") {
+      if (!userInfo) {
+        return {
+          Status: "Error",
+          Details: "Invalid number. Please recheck and enter again.",
+        };
+      }
     }
-
-    otp = couponGenerator();
-    otpInfo = await Otp.findOneAndUpdate({ contact: body.contact }, { $set: { otp: otp } }, { new: true })
-    if (otpInfo) {
-        await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } }, { new: true })
-        // }
+    if (body.action == "checknotexist") {
+      if (userInfo) {
+        return {
+          Status: "Error",
+          Details:
+            "This phone number is already taken. Please try with a new number.",
+        };
+      }
     }
-    else if (!otpInfo) {
-        createUser = await Users.create({
-            contact
-                : body.contact, country_code
-                : body.country_code
-        })
-        otpInfo = await Otp.create({
-            contact
-                : body.contact, country_code
-                : body.country_code,
-            otp: otp,
-            otpId: otp
-        })
+    let otp = generateOTP(6);
+    let resp = await generateOtp(phone, otp);
 
-    await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } })
+    if (resp.Status == "Success") {
+      const otpInfo = await Otp.findOne({
+        contact: body.contact,
+        country_code: body.country_code,
+      }).lean();
+      const userInfo = await Users.findOne({ contact: body.contact }).lean();
+      if (userInfo) {
+        const user = await Users.findOne({
+          contact: body.contact,
+          country_code: body.country_code,
+        }).lean();
+        if (!user) {
+          await Users.findOneAndUpdate(
+            { contact: body.contact },
+            { $set: { country_code: body.country_code } }
+          );
+        }
+      }
+      if (!otpInfo) {
+        const info = new Otp({
+          contact: body.contact,
+          country_code: body.country_code,
+          otp: otp,
+          otpId: resp.Details,
+        });
+        const data = await info.save();
+      } else {
+        await Otp.findOneAndUpdate(
+          { contact: body.contact, country_code: body.country_code },
+          { otp: otp, otpId: resp.Details }
+        );
+      }
     }
+    return resp;
+  }
+//   public async sendotp(body: any) {
+//     let otp: any;
+//     let createUser: any;
+//     let otpInfo: any;
+//     function couponGenerator() {
+//         let text = "";
+//         let possible = "0123456789";
 
-    return {
-        otpInfo, createUser
-    }
+//         for (let i = 0; i < 4; i++)
+//             text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-}
+//         return text;
+//     }
+
+//     otp = couponGenerator();
+//     otpInfo = await Otp.findOneAndUpdate({ contact: body.contact }, { $set: { otp: otp } }, { new: true })
+//     if (otpInfo) {
+//         await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } }, { new: true })
+//         // }
+//     }
+//     else if (!otpInfo) {
+//         createUser = await Users.create({
+//             contact
+//                 : body.contact, country_code
+//                 : body.country_code
+//         })
+//         otpInfo = await Otp.create({
+//             contact
+//                 : body.contact, country_code
+//                 : body.country_code,
+//             otp: otp,
+//             otpId: otp
+//         })
+
+//     await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } })
+//     }
+
+//     return {
+//         otpInfo, createUser
+//     }
+
+// }
 
 // public async verifyotp(body: any) {
 //     const otpInfo = await Otp.findOne({
