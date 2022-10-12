@@ -8,7 +8,7 @@ const schema = new Schema({
     hashtagcomment: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
         comment: { type: String },
-        time:{type:Date}
+        time: { type: Date }
     }],
     hashtagFavorite: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
@@ -43,6 +43,14 @@ const schema = new Schema({
         hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
         friendId: { type: Schema.Types.ObjectId, ref: "Users" },
     }],
+    followers: [{
+        userId: { type: Schema.Types.ObjectId, ref: "Users" },
+    }],
+    following: [{
+        userId: { type: Schema.Types.ObjectId, ref: "Users" },
+    }],
+    followersCount: { type: Number, default: 0 },
+    followingsCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false }
 }, {
@@ -57,7 +65,7 @@ export interface IUserActivity extends Document {
     hashtagcomment: [{
         hashtagId: ObjectId,
         comment: String,
-        time:Date
+        time: Date
     }],
     hashtagFavorite: [{
         hashtagId: ObjectId,
@@ -92,6 +100,15 @@ export interface IUserActivity extends Document {
         hashtagId: ObjectId,
         friendId: ObjectId,
     }],
+    followers: [{
+        userId: ObjectId
+    },
+    ],
+    following: [{
+        userId: ObjectId
+    }],
+    followersCount: Number,
+    followingsCount: Number,
     isActive: Boolean,
     isDeleted: Boolean
 }

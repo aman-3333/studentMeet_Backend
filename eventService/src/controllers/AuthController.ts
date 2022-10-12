@@ -91,6 +91,10 @@ export default class AuthController {
         return userInfo;
     }
 
+ public async viewProfile(userId: any) {
+        let userInfo: any = await Users.findOne({ _id:userId, isDeleted: false }).lean();
+        return userInfo;
+    }
     public async verifyotp(body: any) {
         let otp = body.otp;
         let data: any = await Users.findOne({
