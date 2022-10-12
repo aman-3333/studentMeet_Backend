@@ -20,9 +20,9 @@ import CategoryController from "../controllers/CategoryController";
 import { v4 as uuidv4 } from 'uuid';
 uuidv4()
 // const aws = require('aws-sdk');
-const multerS3 = require('multer-s3');
-const multer = require('multer');
-const path = require('path');
+// const multerS3 = require('multer-s3');
+// const multer = require('multer');
+// const path = require('path');
 import createEvent from "../controllers/eventController"
 import AuthController from "../controllers/AuthController";
 //import AuthController from "../controllers/AuthController";
