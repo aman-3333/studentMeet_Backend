@@ -2,11 +2,8 @@
   "mongodb": "mongodb+srv://MidBazarAman:MidBazar@2021@cluster0.dqngt.mongodb.net/test",
     "host": "3.84.253.128",
     "env":"productiontest",
-    "port": "9000",
-    "base-url": "https://getmelight.com",
-    "mailer_host": "smtp.gmail.com",
-    "api_key_email":"at_S7RhmrhzsPVnht0sin6p0UCrnDJMr",
-    "secret":"f2b43b16d4d89f118da143aa7eb1f84453ba4ee6068a71282cb0b7a97bc98da877c15b7c90b3dfc6fbcbd310568b21daaf3e900d45bb75b02469b498a96c6bc2955ceb759c4944ac4f7e2801e1570a8d6a73ebad1d96bd6095faa1542cf50450d4b8fc04196857711500aae700889080a73ca6f213243488eb273d593bf68a222b28c40842e18bb3b6f8d8bfee7eefd581d3b121e8f2f8536291267c49a77bfbbfac2491cfa145ee1bd6f345b2e992f4468d34cf176e602ae6c42139abac05ba9f9f6e8218b14490db8f32660583e0df61e38101a8d035d61ed0213b5dfb902431869bbbaa480cc3ba0d58db8ed1a36750be8ebb6e400841918f55f4f05b0bbb"
+    "port": "3000",
+    "base-url": "https://getmelight.com"
+}
    
-  }
   

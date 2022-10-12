@@ -24,44 +24,11 @@ const multerS3 = require('multer-s3');
 const multer = require('multer');
 const path = require('path');
 import createEvent from "../controllers/eventController"
+import AuthController from "../controllers/AuthController";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
 
-
-
-
-
 let fileupload = require("express-fileupload");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////////////////
-
-
-
 
 const s31 = new aws.S3({
     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
@@ -76,26 +43,7 @@ let storage = multer.memoryStorage({
 
 let upload = multer({ storage }).single('galleryImage')
 
-router.post('/uploadSingle', upload, (req:any, res:any) => {
 
-    let myFile: any = req.file?.originalname.split(".")
-    const fileType = myFile[myFile?.length - 1]
-
-    const params = {
-        Bucket: "midbazar-upload",
-        Key: `${uuidv4()
-            }.${fileType}`,
-        Body: req.file?.buffer
-    }
-
-    s31.upload(params, (error: any, data: any) => {
-        if (error) {
-            res.status(500).send(error)
-        }
-
-        res.status(200).send(data)
-    })
-})
 
 
 // //////////////////////////////////////////////////////////////////////////////
@@ -182,16 +130,22 @@ function checkFileType(file: any, cb: any) {
     }
 }
 
+/**
+ * @route POST /api/profile/business-img-upload
+ * @desc Upload post image
+ * @access public
+ */
 
 const uploadsBusinessGallery = multer({
     storage: multerS3({
         s3: s3,
         bucket: "midbazar-upload",
+
         key: function (req: any, file: any, cb: any) {
             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
         }
     }),
-    limits: { fileSize: 2000000000 }, // In bytes: 2000000 bytes = 2 MB
+    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
     fileFilter: function (req: any, file: any, cb: any) {
         checkFileType(file, cb);
     }
@@ -203,7 +157,7 @@ const uploadsBusinessGallery = multer({
  */
 router.post('/multiple-file-upload', (req:any, res:any) => {
     uploadsBusinessGallery(req, res, (error: any) => {
-        console.log('files', req.files);
+      
         if (error) {
             console.log('errors', error);
             res.json({ error: error });
@@ -235,38 +189,110 @@ router.post('/multiple-file-upload', (req:any, res:any) => {
 
 
 
+// //////////////////////////////////////////////////////////////////////////////
+// var multer1 = require('multer')
+// var multerS3 = require('multer-s3')
+// var app = express()
+// var s31 = new aws.S3({
+//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
+//     secretAccessKey: "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",
+//     Bucket: "midbazar-upload"
+// })
+// var upload1 = multer1({
+//     storage: multerS3({
+//         s3: s31,
+//         bucket: "midbazar-upload",
+//         metadata: function (req: any, file: any, cb: any) {
+//             cb(null, { fieldName: file.fieldname });
+//         },
+//         key: function (req: any, file: any, cb: any) {
+//             cb(null, Date.now().toString())
+//         }
+//     })
+// })
 
+// //Uploading single File to aws s3 bucket
+// router.post('/upload', upload1.single('image'), function (req, res, next) {
+//     res.send({
+//         data: req.files,
+//         msg: 'Successfully uploaded ' + req.files + 'files!'
+//     })
+// })
 
+// //Uploading Multiple Files to aws s3 bucket
+// router.post('/uploadArray', upload1.array('image', 30), function (req, res, next) {
+//     res.send({
+//         data: req.files,
+//         msg: 'Successfully uploaded ' + req.files?.length + 'files!'
+//     })
+// })
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
 //////////////////auth//////////////////////////////////
 
-// router.post("/authService/sendotp", async (req, res) => {
+router.post("/sendotp", async (req, res) => {
  
-//     try {
-//         const body = req.body
-//         const controller = new AuthController();
-//         const response = await controller.sendotp(body);
-//         return res.send(response);
-//     } catch (error) {
-//         console.error("error in /sendotp", error);
-//         return res.send(error);
-//     }
-// });
+    try {
+        const body = req.body
+        const controller = new AuthController();
+        const response = await controller.sendotp(body);
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /sendotp", error);
+        return res.send(error);
+    }
+});
+router.post("/sendotpbyapi", async (req, res) => {
+ 
+    try {
+        const body:any = req.body
+        const controller = new AuthController();
+        const response = await controller.sendotpByApi(body);
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /sendotp", error);
+        return res.send(error);
+    }
+});
 
-// router.post("/authService/verifyotp", async (req, res) => {
-//     try {
-//         const body = req.body ;
-//         const controller = new AuthController();
-//         const response = await controller.verifyotp(body);
-//         return res.send(response);
-//     } catch (error) {
-//         console.error("error in /verifyotp", error);
-//         return res.send(error);
-//     }
-// })
 
+router.post("/verifyotpByApi", async (req, res) => {
+    try {
+        const body = req.body ;
+        const controller = new AuthController();
+        const response = await controller.verifyotpByApi(body);
+        return res.send(response);
+    } catch (error) {
+        console.error("error in verifyotpByApi", error);
+        return res.send(error);
+    }
+})
+router.post("/verifyotp", async (req, res) => {
+    try {
+        const body = req.body ;
+        const controller = new AuthController();
+        const response = await controller.verifyotp(body);
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /verifyotp", error);
+        return res.send(error);
+    }
+})
+router.patch("/editprofile", async (req, res) => {
+    try {
+        const body = req.body ;
+        const controller = new AuthController();
+        const response = await controller.editProfile(body);
+        return res.send(response);
+    } catch (error) {
+        console.error("error in editProfile", error);
+        return res.send(error);
+    }
+})
 
 
 
@@ -708,7 +734,7 @@ router.patch("/deleteCategory/:id", async (req, res) => {
 /////////////////////////////////////Institute////////////////////////////////////////////
 router.post("/createInstitute", async (req, res) => {
     try {
-        const body = req.body as IInstitute;
+        const body = req.body;
      
         const controller = new InstituteController();
         const response:IInstitute = await controller.createInstitute(body);
@@ -718,12 +744,24 @@ router.post("/createInstitute", async (req, res) => {
         res.status(500).json(errorResponse("error in create Institute", res.statusCode));
     }
 });
+router.get("/searchInstitute", async (req, res) => {
+    try {
+        const controller = new InstituteController();
+   const stateId =req.query.stateId
+   const searchValue =req.query.searchValue
+        const response: any = await controller.searchInstitute(stateId, searchValue);
+        res.status(200).json(successResponse("get searchInstitute", response, res.statusCode));
+    } catch (error) {
+        console.error("error in get searchInstitute", error);
+        res.status(500).json(errorResponse("error in get searchInstitute", res.statusCode));
+    }
+});
 
 router.patch("/Institute/:id", async (req, res) => {
     try {
         const InstituteId = req.params.id;
         
-        const body = req.body as IInstitute;
+        const body = req.body;
         const controller = new InstituteController();
         const response: IInstitute = await controller.editInstitute(body, InstituteId);
         res.status(200).json(successResponse("Institute update", response, res.statusCode));
@@ -736,8 +774,8 @@ router.patch("/Institute/:id", async (req, res) => {
 router.get("/InstituteList", async (req, res) => {
     try {
         const controller = new InstituteController();
-  
-        const response: IInstitute[] = await controller.getInstitute();
+        const stateId=req.query.stateId;
+        const response: any= await controller.getInstitute(stateId);
         res.status(200).json(successResponse("get Institute", response, res.statusCode));
     } catch(error) {
         console.error("error in get Institute", error);
@@ -750,7 +788,7 @@ router.get("/searchInstitute", async (req, res) => {
         const searchValue=req.query.searchValue;
         const controller = new InstituteController();
   
-        const response: IInstitute[] = await controller.searchInstitute(stateId, searchValue);
+        const response: any = await controller.searchInstitute(stateId, searchValue);
         res.status(200).json(successResponse("get Institute", response, res.statusCode));
     } catch(error) {
         console.error("error in get Institute", error);
@@ -760,10 +798,10 @@ router.get("/searchInstitute", async (req, res) => {
 
 router.get("/getInstituteInfoById/:id", async (req, res) => {
     try {
-        const shopId: string= req.params.id;
+        const Institute: string= req.params.id;
         const userId=req.body.userId;
         const controller = new InstituteController();
-        const response: IInstitute = await controller.getInstituteInfoById(shopId);
+        const response:any = await controller.getInstituteInfoById(Institute);
         res.status(200).json(successResponse("get Institute by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get Institute by Id", error);
@@ -774,7 +812,7 @@ router.patch("/deleteInstitute/:id", async (req, res) => {
     try {
         const InstituteId = req.params.id;
         const controller = new InstituteController();
-        const response: IInstitute = await controller.deleteInstitute(InstituteId);
+        const response: any = await controller.deleteInstitute(InstituteId);
         res.status(200).json(successResponse("Institute update", response, res.statusCode));
     } catch(error) {
         console.error("error in Institute update", error);
