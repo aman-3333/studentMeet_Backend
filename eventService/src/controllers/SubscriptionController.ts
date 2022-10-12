@@ -1,7 +1,7 @@
 import Subscription, { ISubscription } from "../models/Subscription";
 
 import Coupon from "../models/Coupons"
-import User, { IUser } from "../models/Users";
+
 
 import { ObjectId } from "mongoose";
 

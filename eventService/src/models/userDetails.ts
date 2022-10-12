@@ -6,9 +6,8 @@ const userSchema = new Schema(
     facebookID: { type: String },
     googleID: { type: String },
     otp: { type: String },
-    eventId: [{}],
     email: { type: String },
-    password: { type: String, required: true },
+    password: { type: String},
     isVerified: { type: Boolean, default: false },
     verifyToken: { type: String },
     verifyShortToken: { type: String },
@@ -35,12 +34,16 @@ const userSchema = new Schema(
     about: { type: String, trim: true },
     profile_picture: { type: String },
     gcmid: { type: String },
-    roleId: {  type: Number, default:0 },
-    wishListProduct: [{ type: Schema.Types.ObjectId, ref: "event" }],
-    pricedownReminder: [{ type: Schema.Types.ObjectId, ref: "event" }],
-    likeevent: [{ type: Schema.Types.ObjectId, ref: "event" }],
-    PurchaceList: [{ type: Schema.Types.ObjectId, ref: "event" }],
-
+  
+    activeRole: { type: Schema.Types.ObjectId, ref: "role" },
+    ipAddress:{ type: String },
+    modelName:{ type: String },
+    manufacturer:{ type: String },
+    maxMemorybigint:{ type: Number, trim: true },
+    freeMemory:{ type: Number, trim: true },
+    osVersion:{ type: Number, trim: true },
+    networkCarrier:{ type: String },
+    dimension:{ type: String },
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     isSubscribed: { type: Boolean, default: true },
     video_user_id: { type: String },
@@ -51,54 +54,20 @@ const userSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     lastLoginDate: { type: Date },
     email_verify: { type: Boolean, default: false },
-
-    username: { type: String, required: true, unique: true, trim: true },
+  
+    
 
     parent_gender: { type: String },
     parent_email: { type: String },
     parent_country_code: { type: Number, trim: true }
-
+   
   },
   {
     timestamps: true,
   }
 );
 
-export interface IUser extends Document {
-  email: string;
-  googleID: String;
-  fullname: string;
-  firstname: string;
-  lastname: string;
-  contact: Number;
-  country_code: Number;
-  isVerified: Boolean;
-  contact_verify: Boolean;
-  otp: String;
-  otpId: String;
-  password: string;
-  roleId: Number;
-  institute: ObjectId;
-  wishListProduct: [ObjectId],
-  pricedownReminder: [ObjectId],
-  likeevent: [ObjectId],
-  PurchaceList: [ObjectId],
-  modified_on?: Date;
-  token?: string;
-  refreshToken?: string;
-  userRoles?: string[];
-  whatsapp_contact?: number;
-  whatsapp_country_code?: Number;
-  lastLoginDate?: Date;
-  otherUserTypeName: string;
-  username: string;
-  institute_domain: any;
-  isContactLogin: any;
-  message: string;
-  activeRole: ObjectId;
-  _id: ObjectId;
-  user_role: any
-}
-// user
 
-export default model<IUser>("Users", userSchema);
+
+
+export default model ("userdetail", userSchema);

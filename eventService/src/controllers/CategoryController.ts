@@ -2,7 +2,7 @@
 import Category, { ICategory } from "../models/Category";
 import SubCategory, { ISubCategory } from "../models/Subcategory";
 import SubSubCategory, { ISubSubCategory } from "../models/subSubCategory";
-import User, { IUser } from "../models/Users";
+
 
 import { ObjectId } from "mongoose";
 
@@ -25,7 +25,7 @@ export default class CategoryController {
 
 
     public async editCategory(body: ICategory, categoryId: string) {
-        const userInfo: IUser = await User.findOne({ _id: body.userId, isDeleted: false }).lean()
+
         const categoryInfo: ICategory = await Category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, body, { new: true }).lean();
         return categoryInfo;
 
@@ -66,7 +66,7 @@ export default class CategoryController {
 
 
     public async editSubCategory(body: ISubCategory, subCategoryId: string) {
-        const userInfo: IUser = await User.findOne({ _id: body.userId, isDeleted: false }).lean()
+        
         const subCategoryInfo: ISubCategory = await SubCategory.findOneAndUpdate({ _id: subCategoryId, isDeleted: false }, body, { new: true }).lean();
         return subCategoryInfo;
 
@@ -109,7 +109,7 @@ export default class CategoryController {
 
 
     public async editsubSubCategory(body: ISubSubCategory, subSubCategoryId: string) {
-        const userInfo: IUser = await User.findOne({ _id: body.userId, isDeleted: false }).lean()
+        
         const subSubCategoryInfo: ISubSubCategory = await SubSubCategory.findOneAndUpdate({ _id: subSubCategoryId, isDeleted: false }, body, { new: true }).lean();
         return subSubCategoryInfo;
 
