@@ -19,7 +19,7 @@ import CityController from "../controllers/CityController";
 import CategoryController from "../controllers/CategoryController";
 import { v4 as uuidv4 } from 'uuid';
 uuidv4()
-const aws = require('aws-sdk');
+// const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const path = require('path');
@@ -30,18 +30,18 @@ const router = express.Router();
 
 let fileupload = require("express-fileupload");
 
-const s31 = new aws.S3({
-    accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-    secretAccessKey: "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"
-})
+// const s31 = new aws.S3({
+//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
+//     secretAccessKey: "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"
+// })
 
-let storage = multer.memoryStorage({
-    destination: function (req: any, file: any, callback: any) {
-        callback(null, '')
-    }
-})
+// let storage = multer.memoryStorage({
+//     destination: function (req: any, file: any, callback: any) {
+//         callback(null, '')
+//     }
+// })
 
-let upload = multer({ storage }).single('galleryImage')
+// let upload = multer({ storage }).single('galleryImage')
 
 
 
@@ -86,148 +86,148 @@ let upload = multer({ storage }).single('galleryImage')
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-const s3 = new aws.S3({
-    accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-    secretAccessKey: "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",
-    Bucket: "midbazar-upload"
-});
+// const s3 = new aws.S3({
+//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
+//     secretAccessKey: "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",
+//     Bucket: "midbazar-upload"
+// });
 
-/**
- * Single Upload
- */
-const profileImgUpload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: "midbazar-upload",
-        acl: 'public-read',
-        key: function (req: any, file: any, cb: any) {
-            cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
-        }
-    }),
-    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
-    fileFilter: function (req: any, file: any, cb: any) {
-        checkFileType(file, cb);
-    }
-}).single('profileImage');
+// /**
+//  * Single Upload
+//  */
+// const profileImgUpload = multer({
+//     storage: multerS3({
+//         s3: s3,
+//         bucket: "midbazar-upload",
+//         acl: 'public-read',
+//         key: function (req: any, file: any, cb: any) {
+//             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
+//         }
+//     }),
+//     limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
+//     fileFilter: function (req: any, file: any, cb: any) {
+//         checkFileType(file, cb);
+//     }
+// }).single('profileImage');
 
-/**
- * Check File Type
- * @param file
- * @param cb
- * @return {*}
- */
-function checkFileType(file: any, cb: any) {
-    // Allowed ext
-    const filetypes = /jpeg|jpg|png|gif/;
-    // Check ext
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: Images Only!');
-    }
-}
+// /**
+//  * Check File Type
+//  * @param file
+//  * @param cb
+//  * @return {*}
+//  */
+// function checkFileType(file: any, cb: any) {
+//     // Allowed ext
+//     const filetypes = /jpeg|jpg|png|gif/;
+//     // Check ext
+//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+//     // Check mime
+//     const mimetype = filetypes.test(file.mimetype);
+//     if (mimetype && extname) {
+//         return cb(null, true);
+//     } else {
+//         cb('Error: Images Only!');
+//     }
+// }
 
-/**
- * @route POST /api/profile/business-img-upload
- * @desc Upload post image
- * @access public
- */
+// /**
+//  * @route POST /api/profile/business-img-upload
+//  * @desc Upload post image
+//  * @access public
+//  */
 
-const uploadsBusinessGallery = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: "midbazar-upload",
+// const uploadsBusinessGallery = multer({
+//     storage: multerS3({
+//         s3: s3,
+//         bucket: "midbazar-upload",
 
-        key: function (req: any, file: any, cb: any) {
-            cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
-        }
-    }),
-    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
-    fileFilter: function (req: any, file: any, cb: any) {
-        checkFileType(file, cb);
-    }
-}).array('galleryImage', 40);
-/**
- * @route POST /api/profile/multiple-file-upload
- * @desc Upload business Gallery images
- * @access public
- */
-router.post('/multiple-file-upload', (req:any, res:any) => {
-    uploadsBusinessGallery(req, res, (error: any) => {
+//         key: function (req: any, file: any, cb: any) {
+//             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
+//         }
+//     }),
+//     limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
+//     fileFilter: function (req: any, file: any, cb: any) {
+//         checkFileType(file, cb);
+//     }
+// }).array('galleryImage', 40);
+// /**
+//  * @route POST /api/profile/multiple-file-upload
+//  * @desc Upload business Gallery images
+//  * @access public
+//  */
+// router.post('/multiple-file-upload', (req:any, res:any) => {
+//     uploadsBusinessGallery(req, res, (error: any) => {
       
-        if (error) {
-            console.log('errors', error);
-            res.json({ error: error });
-        } else {
-            // If File not found
-            if (req.files === undefined) {
-                console.log('Error: No File Selected!');
-                res.json('Error: No File Selected');
-            } else {
-                // If Success
-                let fileArray: any = req.files,
-                    fileLocation;
-                const galleryImgLocationArray = [];
-                for (let i = 0; i < fileArray.length; i++) {
-                    fileLocation = fileArray[i].location;
-                    console.log('filenm', fileLocation);
-                    galleryImgLocationArray.push(fileLocation)
-                }
-                // Save the file name into database
-                res.json({
-                    filesArray: fileArray,
-                    locationArray: galleryImgLocationArray
-                });
-            }
-        }
-    });
-});
-
-
-
-
-// //////////////////////////////////////////////////////////////////////////////
-// var multer1 = require('multer')
-// var multerS3 = require('multer-s3')
-// var app = express()
-// var s31 = new aws.S3({
-//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-//     secretAccessKey: "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",
-//     Bucket: "midbazar-upload"
-// })
-// var upload1 = multer1({
-//     storage: multerS3({
-//         s3: s31,
-//         bucket: "midbazar-upload",
-//         metadata: function (req: any, file: any, cb: any) {
-//             cb(null, { fieldName: file.fieldname });
-//         },
-//         key: function (req: any, file: any, cb: any) {
-//             cb(null, Date.now().toString())
+//         if (error) {
+//             console.log('errors', error);
+//             res.json({ error: error });
+//         } else {
+//             // If File not found
+//             if (req.files === undefined) {
+//                 console.log('Error: No File Selected!');
+//                 res.json('Error: No File Selected');
+//             } else {
+//                 // If Success
+//                 let fileArray: any = req.files,
+//                     fileLocation;
+//                 const galleryImgLocationArray = [];
+//                 for (let i = 0; i < fileArray.length; i++) {
+//                     fileLocation = fileArray[i].location;
+//                     console.log('filenm', fileLocation);
+//                     galleryImgLocationArray.push(fileLocation)
+//                 }
+//                 // Save the file name into database
+//                 res.json({
+//                     filesArray: fileArray,
+//                     locationArray: galleryImgLocationArray
+//                 });
+//             }
 //         }
-//     })
-// })
+//     });
+// });
 
-// //Uploading single File to aws s3 bucket
-// router.post('/upload', upload1.single('image'), function (req, res, next) {
-//     res.send({
-//         data: req.files,
-//         msg: 'Successfully uploaded ' + req.files + 'files!'
-//     })
-// })
 
-// //Uploading Multiple Files to aws s3 bucket
-// router.post('/uploadArray', upload1.array('image', 30), function (req, res, next) {
-//     res.send({
-//         data: req.files,
-//         msg: 'Successfully uploaded ' + req.files?.length + 'files!'
-//     })
-// })
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+
+// // //////////////////////////////////////////////////////////////////////////////
+// // var multer1 = require('multer')
+// // var multerS3 = require('multer-s3')
+// // var app = express()
+// // var s31 = new aws.S3({
+// //     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
+// //     secretAccessKey: "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",
+// //     Bucket: "midbazar-upload"
+// // })
+// // var upload1 = multer1({
+// //     storage: multerS3({
+// //         s3: s31,
+// //         bucket: "midbazar-upload",
+// //         metadata: function (req: any, file: any, cb: any) {
+// //             cb(null, { fieldName: file.fieldname });
+// //         },
+// //         key: function (req: any, file: any, cb: any) {
+// //             cb(null, Date.now().toString())
+// //         }
+// //     })
+// // })
+
+// // //Uploading single File to aws s3 bucket
+// // router.post('/upload', upload1.single('image'), function (req, res, next) {
+// //     res.send({
+// //         data: req.files,
+// //         msg: 'Successfully uploaded ' + req.files + 'files!'
+// //     })
+// // })
+
+// // //Uploading Multiple Files to aws s3 bucket
+// // router.post('/uploadArray', upload1.array('image', 30), function (req, res, next) {
+// //     res.send({
+// //         data: req.files,
+// //         msg: 'Successfully uploaded ' + req.files?.length + 'files!'
+// //     })
+// // })
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
