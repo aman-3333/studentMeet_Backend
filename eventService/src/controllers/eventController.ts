@@ -1,5 +1,6 @@
 import moment from 'moment';
 import event, { IEvent } from '../models/event'
+import userActivity from '../models/userActivity';
 import User from "../models/Users"
 
 export default class eventController {
@@ -157,7 +158,165 @@ export default class eventController {
 
 
     }
+    public async eventActivity(userId: any, eventId: any,  status: any, eventcomment: any, eventcommentId: any, body: any) {
+        let userInfo: any;
+        let data: any = []
+        let a: any = []
+        let info: any;
 
+        userInfo = await userActivity.findOne({ userId: userId }).lean();
+        if (!userInfo) {
+            userInfo = await userActivity.create({ userId: userId })
+        }
+        if (status == "eventLike") {
+
+            info = await userActivity.findOne({ "eventLike.$.eventId": eventId }).lean();
+
+
+            if (!info) {
+
+
+                for (let i = 0; i < body.eventLike.length; i++) {
+                    userInfo = await userActivity.updateMany(
+                        {
+                            userId: userId,
+                        },
+                        {
+                            $push: {
+                                eventLike: {
+                                    eventId: body.eventLike[i].eventId
+                                }
+                            }
+                        })
+                    let eventInfo: any = await event.findOne({ _id: body.eventLike[i].eventId })
+                    console.log("eventInfo", eventInfo);
+                    eventInfo = eventInfo.likeCount
+                    eventInfo = eventInfo + 1
+                    await event.findOneAndUpdate({ _id: body.eventLike[i].eventId }, { $set: { likeCount: eventInfo } })
+                }
+                return userInfo;
+            }
+        }
+        if (status == "removeeventLike") {
+            userInfo = await userActivity.updateMany(
+                { _id: userId },
+                { $pull: { eventLike: { eventId: eventId } } }
+            );
+            let eventInfo: any = await event.findOne({ _id: eventId })
+
+
+            eventInfo = eventInfo.likeCount
+            eventInfo = eventInfo - 1
+            await event.findOneAndUpdate({ _id: eventId }, { $set: { likeCount: eventInfo } })
+            return userInfo;
+        } if (status == "readeventLike") {
+            userInfo = await userActivity.findOne({ userId: userId }).lean();
+            userInfo = userInfo.eventLike;
+            for (let i = 0; i < userInfo.length; i++) {
+                let eventInfo: any = await event.findOne({ _id: userInfo[i].eventId })
+               
+                data.push(eventInfo)
+            }
+            return data;
+        }
+        if (status == "eventFavorite") {
+
+            info = await userActivity.findOne({ "eventFavorite.$.eventId": eventId }).lean();
+
+
+            if (!info) {
+
+
+                for (let i = 0; i < body.eventFavorite.length; i++) {
+                    userInfo = await userActivity.updateMany(
+                        {
+                            userId: userId,
+                        },
+                        {
+                            $push: {
+                                eventFavorite: {
+                                    eventId: body.eventFavorite[i].eventId
+                                }
+                            }
+                        })
+
+                    let eventInfo: any = await event.findOne({ _id: body.eventLike[i].eventId })
+
+
+                    eventInfo = eventInfo.favoriteCount
+                    eventInfo = eventInfo + 1
+                    await event.findOneAndUpdate({ _id: body.eventFavorite[i].eventId }, { $set: { favoriteCount: eventInfo } })
+                }
+                return userInfo;
+            }
+        }
+        if (status == "removeeventFavorite") {
+            userInfo = await userActivity.updateMany(
+                { _id: userId },
+                { $pull: { eventFavorite: { eventId: eventId } } }
+            );
+            let eventInfo: any = await event.findOne({ _id: eventId })
+            eventInfo = eventInfo.eventFavorite
+            eventInfo = eventInfo - 1
+            await event.findOneAndUpdate({ _id: eventId }, { $set: { favoriteCount: eventInfo } })
+            return userInfo;
+        } if (status == "readeventFavorite") {
+            userInfo = await userActivity.findOne({ userId: userId }).lean();
+            userInfo = userInfo.eventFavorite;
+            for (let i = 0; i < userInfo.length; i++) {
+                let eventInfo: any = await event.findOne({ _id: userInfo[i].eventId })
+           
+                data.push(eventInfo)
+            }
+            return data;
+        }
+        if (status == "eventcomment") {
+            let currentTime: any = new Date();;
+            for (let i = 0; i < body.eventcomment.length; i++) {
+                userInfo = await userActivity.updateMany(
+                    {
+                        userId: userId,
+                    },
+                    {
+                        $push: {
+                            eventcomment: {
+                                eventId: body.eventcomment[i].eventId,
+                                comment: body.eventcomment[i].comment,
+                                time: currentTime
+                            }
+                        }
+                    })
+
+                await event.aggregate([
+                    { $group: { _id: eventId, commentCount: { $sum: 1 } } }
+                ])
+
+                return userInfo;
+            }
+        }
+        if (status == "removeeventcomment") {
+            userInfo = await userActivity.updateMany(
+                { _id: userId },
+                { $pull: { eventcomment: { eventId: eventId } } }
+            );
+
+            return userInfo;
+        } if (status == "readeventcomment") {
+            userInfo = await userActivity.findOne({ userId: userId }).lean();
+            userInfo = userInfo.eventcomment;
+
+            console.log("comment", userInfo);
+            for (let i = 0; i < userInfo.length; i++) {
+                let eventInfo: any = await event.findOne({ _id: userInfo[i].eventId })
+                
+                let comment: any = userInfo[i].comment
+                let commentTime: any = userInfo[i].time
+
+                data.push({ eventInfo,  comment, commentTime })
+            }
+            return data;
+        }
+    }
 
     public async createOwnCustomEvent(body:any){
 
@@ -462,139 +621,6 @@ export default class eventController {
     //   }
 
 
-    public async eventActivity(userId: any, eventId: any, status: any, body: any) {
-
-        let userInfo: any;
-        if (status == "addToWishList") {
-            userInfo = await User.findOne(
-                { wishListProduct: { $in: eventId } },
-                { _id: userId }
-            );
-
-            if (!userInfo) {
-                userInfo = await User.updateOne(
-                    { _id: userId },
-                    { $push: { wishListProduct: eventId } }
-                );
-            }
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        }
-        if (status == "removeWishList") {
-            userInfo = await User.updateOne(
-                { _id: userId },
-                { $pull: { wishListProduct: eventId } }
-            );
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        } else if (status == "readWishList") {
-            userInfo = await User.findOne({ _id: userId });
-            let wishlistInfo = userInfo.wishListProduct;
-            let eventInfo: any = await event.find({ _id: { $in: { wishlistInfo } } }).lean()
-
-
-            return eventInfo;
-        } if (status == "addToPurchaceList") {
-            userInfo = await User.findOne(
-                { PurchaceList: { $in: eventId } },
-                { _id: userId }
-            );
-
-            if (!userInfo) {
-                userInfo = await User.updateOne(
-                    { _id: userId },
-                    { $push: { PurchaceList: eventId } }
-                );
-            }
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        }
-        if (status == "removePurchaceList") {
-            userInfo = await User.updateOne(
-                { _id: userId },
-                { $pull: { PurchaceList: eventId } }
-            );
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        } else if (status == "readPurchaceList") {
-            userInfo = await User.findOne({ _id: userId });
-            let wishlistInfo = userInfo.PurchaceList;
-            let eventInfo: any = await event.find({ _id: { $in: { wishlistInfo } } }).lean()
-
-
-            return eventInfo;
-        }
-        if (status == "addPricedownReminder") {
-            userInfo = await User.findOne(
-                { pricedownReminder: { $in: eventId } },
-                { _id: userId }
-            );
-
-            if (!userInfo) {
-                userInfo = await User.updateOne(
-                    { _id: userId },
-                    { $push: { pricedownReminder: eventId } }
-                );
-            }
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        }
-        if (status == "removePricedownReminder") {
-            userInfo = await User.updateOne(
-                { _id: userId },
-                { $pull: { pricedownReminder: eventId } }
-            );
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        } else if (status == "readPricedownReminder") {
-            userInfo = await User.findOne({ _id: userId });
-            let pricedownReminderInfo = userInfo.pricedownReminder;
-            let eventInfo: any = await event.find({ _id: { $in: { pricedownReminderInfo } } }).lean()
-
-
-            return eventInfo;
-        }
-
-        if (status == "likeevent") {
-            userInfo = await User.findOne(
-                { likeevent: { $in: eventId } },
-                { _id: userId }
-            );
-
-            if (!userInfo) {
-                userInfo = await User.updateOne(
-                    { _id: userId },
-                    { $push: { likeevent: eventId } }
-                );
-            }
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        }
-        if (status == "removelikeevent") {
-            userInfo = await User.updateOne(
-                { _id: userId },
-                { $pull: { likeevent: eventId } }
-            );
-            console.log("userInfo", userInfo);
-
-            return userInfo;
-        } else if (status == "readlikeevent") {
-            userInfo = await User.findOne({ _id: userId });
-            let likeeventInfo = userInfo.likeevent;
-            let eventInfo: any = await event.find({ _id: { $in: { likeeventInfo } } }).lean()
-
-
-            return eventInfo;
-        }
-
-    }
 
 
     

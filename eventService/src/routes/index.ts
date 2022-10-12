@@ -241,24 +241,24 @@ router.post("/sendotp", async (req, res) => {
         const body = req.body
         const controller = new AuthController();
         const response = await controller.sendotp(body);
-        return res.send(response);
+        res.status(200).json(successResponse("sendotp", response, res.statusCode));
     } catch (error) {
-        console.error("error in /sendotp", error);
-        return res.send(error);
+        console.error("error in sendotp", error);
+        res.status(500).json(errorResponse("error in sendotp", res.statusCode));
     }
-});
+})
 router.post("/sendotpbyapi", async (req, res) => {
  
     try {
         const body:any = req.body
         const controller = new AuthController();
         const response = await controller.sendotpByApi(body);
-        return res.send(response);
+        res.status(200).json(successResponse("sendotpbyapi", response, res.statusCode));
     } catch (error) {
-        console.error("error in /sendotp", error);
-        return res.send(error);
+        console.error("error in sendotpbyapi", error);
+        res.status(500).json(errorResponse("error in sendotpbyapi", res.statusCode));
     }
-});
+})
 
 
 router.post("/verifyotpByApi", async (req, res) => {
@@ -266,21 +266,21 @@ router.post("/verifyotpByApi", async (req, res) => {
         const body = req.body ;
         const controller = new AuthController();
         const response = await controller.verifyotpByApi(body);
-        return res.send(response);
+        res.status(200).json(successResponse("verifyotpByApi", response, res.statusCode));
     } catch (error) {
         console.error("error in verifyotpByApi", error);
-        return res.send(error);
+        res.status(500).json(errorResponse("error in verifyotpByApi", res.statusCode));
     }
 })
 router.post("/verifyotp", async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
-        const response = await controller.verifyotp(body);
-        return res.send(response);
+        const response:any = await controller.verifyotp(body);
+        res.status(200).json(successResponse("verifyotp", response, res.statusCode));
     } catch (error) {
-        console.error("error in /verifyotp", error);
-        return res.send(error);
+        console.error("error in verifyotp", error);
+        res.status(500).json(errorResponse("error in verifyotp", res.statusCode));
     }
 })
 router.patch("/editprofile", async (req, res) => {
@@ -288,14 +288,25 @@ router.patch("/editprofile", async (req, res) => {
         const body = req.body ;
         const controller = new AuthController();
         const response = await controller.editProfile(body);
-        return res.send(response);
+        res.status(200).json(successResponse("editprofile", response, res.statusCode));
     } catch (error) {
         console.error("error in editProfile", error);
-        return res.send(error);
+        res.status(500).json(errorResponse("error in editProfile", res.statusCode));
     }
 })
 
 
+router.get("/viewProfile", async (req, res) => {
+    try {
+        const userId = req.query.userId ;
+        const controller = new AuthController();
+        const response = await controller.viewProfile(userId);
+        res.status(200).json(successResponse("viewProfile", response, res.statusCode));
+    } catch (error) {
+        console.error("error in viewProfile", error);
+        res.status(500).json(errorResponse("error in viewProfile", res.statusCode));
+    }
+});
 
 
 
