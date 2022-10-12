@@ -92,6 +92,7 @@ let fileupload = require("express-fileupload");
 //     Bucket: "midbazar-upload"
 // });
 
+
 // /**
 //  * Single Upload
 //  */
