@@ -1,9 +1,9 @@
 {
   "mongodb": "mongodb+srv://MidBazarAman:MidBazar@2021@cluster0.dqngt.mongodb.net/test",
-    "host": "3.84.253.128",
-    "env":"productiontest",
-    "port": "3000",
-    "base-url": "https://getmelight.com"
+  "host": "18.182.1.219",
+  "env":"test",
+  "port": "3000",
+  "base-url": "http://api.studentmeet.com"
 }
    
   
