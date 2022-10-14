@@ -1,10 +1,9 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-   
     domain: { type: String, required: true },
     partnerName: { type: String, required: true },
-    businessIndustry:[{}],
+    businessIndustry: [{}],
     partnerAddress: { type: String },
     otp: { type: String },
     otpId: { type: String },
@@ -32,8 +31,6 @@ const schema = new Schema({
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
     createrId: { type: Schema.Types.ObjectId, ref: 'user' },
-   
-    
     isBlackList: { type: Boolean, default: false },
     rating: { type: Number },
     city: { type: Schema.Types.ObjectId, ref: "city" },
@@ -45,7 +42,6 @@ const schema = new Schema({
     aadharCardImage: [{ type: String }],
     panCardNo: { type: String },
     panCardImage: [{ type: String }],
-  
     registrationNo: { type: String },
     registrationImage: [{
         type: String
@@ -71,8 +67,8 @@ const schema = new Schema({
 export interface IPartner extends Document {
     domain: String,
     category: ObjectId,
-  subCategory: ObjectId,
-  subSubCategory: ObjectId,
+    subCategory: ObjectId,
+    subSubCategory: ObjectId,
     ownerId: ObjectId,
     contactName: String,
     partnerName: String,
@@ -97,7 +93,7 @@ export interface IPartner extends Document {
     createrId: ObjectId,
 
     planId: ObjectId,
-    
+
     isBlackList: Boolean,
     rating: Number,
     city: ObjectId,
