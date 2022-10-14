@@ -23,7 +23,7 @@ uuidv4()
 // const multerS3 = require('multer-s3');
 // const multer = require('multer');
 // const path = require('path');
-import createEvent from "../controllers/eventController"
+import eventController from "../controllers/eventController"
 import AuthController from "../controllers/AuthController";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
@@ -319,11 +319,11 @@ router.get("/viewProfile", async (req, res) => {
 
 
 
-router.post("/event", async (req, res) => {
+router.post("/createevent", async (req, res) => {
     try {
         const body = req.body as IEvent;
 
-        const controller = new createEvent();
+        const controller = new eventController();
         const response: IEvent = await controller.createevent(body);
         res.status(200).json(successResponse("create event", response, res.statusCode));
     } catch (error) {
@@ -332,12 +332,12 @@ router.post("/event", async (req, res) => {
     }
 });
 
-router.patch("/event/:id", async (req, res) => {
+router.patch("/editevent/:id", async (req, res) => {
     try {
         const eventId = req.params.id;
 
         const body = req.body as IEvent;
-        const controller = new createEvent();
+        const controller = new eventController();
         const response: IEvent = await controller.editevent(body, eventId);
         res.status(200).json(successResponse("event update", response, res.statusCode));
     } catch (error) {
@@ -348,7 +348,7 @@ router.patch("/event/:id", async (req, res) => {
 
 router.get("/getevent", async (req, res) => {
     try {
-        const controller = new createEvent();
+        const controller = new eventController();
         const userId = req.body.userId;
         const response: IEvent[] = await controller.getevent();
         res.status(200).json(successResponse("get event", response, res.statusCode));
@@ -363,7 +363,7 @@ router.get("/event/:id", async (req, res) => {
     try {
         const eventId = req.query.eventId;
         const status = req.query.status;
-        const controller = new createEvent();
+        const controller = new eventController();
         const response: any = await controller.geteventInfo(eventId,status);
         res.status(200).json(successResponse("get event by Id ", response, res.statusCode));
     } catch (error) {
@@ -377,7 +377,7 @@ router.patch("/deleteevent/:id", async (req, res) => {
     try {
         const eventId = req.body.eventId;
         const userId = req.body.userId;
-        const controller = new createEvent();
+        const controller = new eventController();
         const response: IEvent = await controller.deleteevent(eventId, userId);
         res.status(200).json(successResponse("delete event", response, res.statusCode));
     } catch (error) {
@@ -385,23 +385,12 @@ router.patch("/deleteevent/:id", async (req, res) => {
         res.status(500).json(errorResponse("error in delete event", res.statusCode));
     }
 })
-// router.patch("/filterProduct", async (req, res) => {
-//     try {
-//         const eventId = req.body.eventId;
-//         const userId = req.body.userId;
-//         const controller = new createEvent();
-//         const response: IEvent = await controller.filterProduct(eventId, userId);
-//         res.status(200).json(successResponse("delete event", response, res.statusCode));
-//     } catch (error) {
-//         console.error("error in delete event", error);
-//         res.status(500).json(errorResponse("error in delete event", res.statusCode));
-//     }
-// })
+
 router.patch("/deleteevent/:id", async (req, res) => {
     try {
         const eventId = req.body.eventId;
         const userId = req.body.userId;
-        const controller = new createEvent();
+        const controller = new eventController();
         const response: IEvent = await controller.deleteevent(eventId, userId);
         res.status(200).json(successResponse("delete event", response, res.statusCode));
     } catch (error) {
