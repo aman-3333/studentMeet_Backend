@@ -9,8 +9,24 @@ const schema = new Schema({
     shareCount: { type: Number,default:0  },
     totalClick: { type: Number,default:0  },
     picture: { type: String },
-    deletedPersonId:{ type: Schema.Types.ObjectId, ref: "User" },
-    createPersonId:{ type: Schema.Types.ObjectId, ref: "User" },
+    likeHashtag: [{
+        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    }],
+    favouriteHashtag: [{
+        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    }],
+    commentHashtag: [{
+        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        commentMessage:{ type: String },
+        dateTime:{ type: Date },
+    }],
+    shareHashtag: [{
+       Hashtag: { type: Schema.Types.ObjectId, ref: "event" },
+       userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    }],
+    deletedPersonId:{ type: Schema.Types.ObjectId, ref: "userDetails" },
+    createPersonId:{ type: Schema.Types.ObjectId, ref: "userDetails" },
     isActive: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false }
 }, {
@@ -28,6 +44,22 @@ export interface IHashtag extends Document {
     totalClick: Number,
     shareCount: String,
     picture: String,
+    likeHashtag: [{
+        userId: ObjectId,
+    }],
+    favouriteHashtag: [{
+        userId: ObjectId,
+    }],
+    commentHashtag: [{
+        userId: ObjectId,
+        commentMessage:String,
+        dateTime:Date,
+    }],
+    shareHashtag: [{
+       Hashtag: ObjectId,
+       userId: ObjectId,
+        friendId: ObjectId,
+    }],
     isActive: Boolean,
     isDeleted: Boolean
 }

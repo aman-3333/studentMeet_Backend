@@ -5,11 +5,12 @@ import Hashtag, { IHashtag } from "../models/Hashtag";
 import { ISubCategory } from "../models/Subcategory";
 import { ISubSubCategory } from "../models/subSubCategory";
 import { IPartner } from "../models/eventPartner";
-import { ICategory } from "../models/Category";
+import Category, { ICategory } from "../models/Category";
 import  { IInstitute } from "../models/Institute";
 import  { IUserrole} from "../models/UserRole";
 import { ICity } from "../models/City";
 import { IState } from "../models/State";
+import { IEventGuildLines } from "../models/CustomEventGuidlines";
 import eventPartnerController from "../controllers/eventPartnerController";
 import StateController from "../controllers/StateController";
 import UserroleController from "../controllers/userRoleController"
@@ -17,35 +18,59 @@ import InstituteController from "../controllers/InstituteController";
 import HashtagController from "../controllers/HashtagController";
 import CityController from "../controllers/CityController";
 import CategoryController from "../controllers/CategoryController";
+import EventGuildLinesController from "../controllers/CustomEventGuildLines"
+
 import { v4 as uuidv4 } from 'uuid';
 uuidv4()
-// const aws = require('aws-sdk');
-// const multerS3 = require('multer-s3');
-// const multer = require('multer');
-// const path = require('path');
+const aws = require('aws-sdk');
+const multerS3 = require('multer-s3');
+const multer = require('multer');
+const path = require('path');
 import eventController from "../controllers/eventController"
 import AuthController from "../controllers/AuthController";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
 
-let fileupload = require("express-fileupload");
-
-// const s31 = new aws.S3({
-//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-//     secretAccessKey: "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"
-// })
-
-// let storage = multer.memoryStorage({
-//     destination: function (req: any, file: any, callback: any) {
-//         callback(null, '')
-//     }
-// })
-
-// let upload = multer({ storage }).single('galleryImage')
 
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+const s31 = new aws.S3({
+    accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
+    secretAccessKey: "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",
+})
+
+let storage = multer.memoryStorage({
+    destination: function (req: any, file: any, callback: any) {
+        callback(null, '')
+    }
+})
+
+let upload = multer({ storage }).single('galleryImage')
+
+router.post('/uploadSingle', upload, (req:any, res:any) => {
+
+    let myFile: any = req.file?.originalname.split(".")
+    const fileType = myFile[myFile?.length - 1]
+
+    const params = {
+        Bucket: "backendservicestudentmeet",
+        Key: `${uuidv4()
+            }.${fileType}`,
+        Body: req.file?.buffer
+    }
+
+    s31.upload(params, (error: any, data: any) => {
+        if (error) {
+            res.status(500).send(error)
+        }
+
+        res.status(200).send(data)
+    })
+})
+
+// var aws = require('aws-sdk')
 // //////////////////////////////////////////////////////////////////////////////
 // var multer1 = require('multer')
 // var multerS3 = require('multer-s3')
@@ -53,12 +78,12 @@ let fileupload = require("express-fileupload");
 // var s31 = new aws.S3({
 //     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
 //     secretAccessKey: "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",
-//     Bucket: "midbazar-upload"
+//     Bucket: "backendservicestudentmeet"
 // })
 // var upload1 = multer1({
 //     storage: multerS3({
 //         s3: s31,
-//         bucket: "midbazar-upload",
+//         bucket: "backendservicestudentmeet",
 //         metadata: function (req: any, file: any, cb: any) {
 //             cb(null, { fieldName: file.fieldname });
 //         },
@@ -86,149 +111,135 @@ let fileupload = require("express-fileupload");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-// const s3 = new aws.S3({
-//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-//     secretAccessKey: "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",
-//     Bucket: "midbazar-upload"
-// });
+const s3 = new aws.S3({
+    accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
+    secretAccessKey: "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",
+    Bucket: "backendservicestudentmeet"
+});
 
+/**
+ * Single Upload
+ */
+const profileImgUpload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: "backendservicestudentmeet",
+        acl: 'public-read',
+        key: function (req: any, file: any, cb: any) {
+            cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
+        }
+    }),
+    limits: { fileSize: 20000000000 }, // In bytes: 2000000 bytes = 2 MB
+    fileFilter: function (req: any, file: any, cb: any) {
+        checkFileType(file, cb);
+    }
+}).single('profileImage');
 
-// /**
-//  * Single Upload
-//  */
-// const profileImgUpload = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         bucket: "midbazar-upload",
-//         acl: 'public-read',
-//         key: function (req: any, file: any, cb: any) {
-//             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
-//         }
-//     }),
-//     limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
-//     fileFilter: function (req: any, file: any, cb: any) {
-//         checkFileType(file, cb);
-//     }
-// }).single('profileImage');
+/**
+ * Check File Type
+ * @param file
+ * @param cb
+ * @return {*}
+ */
+function checkFileType(file: any, cb: any) {
+    // Allowed ext
+    const filetypes = /jpeg|jpg|png|gif/;
+    // Check ext
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // Check mime
+    const mimetype = filetypes.test(file.mimetype);
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: Images Only!');
+    }
+}
 
-// /**
-//  * Check File Type
-//  * @param file
-//  * @param cb
-//  * @return {*}
-//  */
-// function checkFileType(file: any, cb: any) {
-//     // Allowed ext
-//     const filetypes = /jpeg|jpg|png|gif/;
-//     // Check ext
-//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-//     // Check mime
-//     const mimetype = filetypes.test(file.mimetype);
-//     if (mimetype && extname) {
-//         return cb(null, true);
-//     } else {
-//         cb('Error: Images Only!');
-//     }
-// }
-
-// /**
-//  * @route POST /api/profile/business-img-upload
-//  * @desc Upload post image
-//  * @access public
-//  */
-
-// const uploadsBusinessGallery = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         bucket: "midbazar-upload",
-
-//         key: function (req: any, file: any, cb: any) {
-//             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
-//         }
-//     }),
-//     limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
-//     fileFilter: function (req: any, file: any, cb: any) {
-//         checkFileType(file, cb);
-//     }
-// }).array('galleryImage', 40);
-// /**
-//  * @route POST /api/profile/multiple-file-upload
-//  * @desc Upload business Gallery images
-//  * @access public
-//  */
-// router.post('/multiple-file-upload', (req:any, res:any) => {
-//     uploadsBusinessGallery(req, res, (error: any) => {
-      
+/**
+ * @route POST /api/profile/business-img-upload
+ * @desc Upload post image
+ * @access public
+ */
+// router.post('/profile-img-upload', (req, res) => {
+//     profileImgUpload(req, res, (error: any) => {
+//         console.log('requestOkokok', req.file);
+//         console.log('error', error);
 //         if (error) {
 //             console.log('errors', error);
 //             res.json({ error: error });
 //         } else {
 //             // If File not found
-//             if (req.files === undefined) {
+//             if (req.file === undefined) {
 //                 console.log('Error: No File Selected!');
 //                 res.json('Error: No File Selected');
 //             } else {
 //                 // If Success
-//                 let fileArray: any = req.files,
-//                     fileLocation;
-//                 const galleryImgLocationArray = [];
-//                 for (let i = 0; i < fileArray.length; i++) {
-//                     fileLocation = fileArray[i].location;
-//                     console.log('filenm', fileLocation);
-//                     galleryImgLocationArray.push(fileLocation)
-//                 }
-//                 // Save the file name into database
+//                 const imageName = req.file.key;
+//                 const imageLocation = req.file.location;
+//                 // Save the file name into database into profile model
 //                 res.json({
-//                     filesArray: fileArray,
-//                     locationArray: galleryImgLocationArray
+//                     image: imageName,
+//                     location: imageLocation
 //                 });
 //             }
 //         }
 //     });
 // });
 
+/**
+ * BUSINESS GALLERY IMAGES
+ * MULTIPLE FILE UPLOADS
+ */
+// Multiple File Uploads ( max 4 )
+const uploadsBusinessGallery = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: "backendservicestudentmeet",
 
-
-
-// // //////////////////////////////////////////////////////////////////////////////
-// // var multer1 = require('multer')
-// // var multerS3 = require('multer-s3')
-// // var app = express()
-// // var s31 = new aws.S3({
-// //     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-// //     secretAccessKey: "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",
-// //     Bucket: "midbazar-upload"
-// // })
-// // var upload1 = multer1({
-// //     storage: multerS3({
-// //         s3: s31,
-// //         bucket: "midbazar-upload",
-// //         metadata: function (req: any, file: any, cb: any) {
-// //             cb(null, { fieldName: file.fieldname });
-// //         },
-// //         key: function (req: any, file: any, cb: any) {
-// //             cb(null, Date.now().toString())
-// //         }
-// //     })
-// // })
-
-// // //Uploading single File to aws s3 bucket
-// // router.post('/upload', upload1.single('image'), function (req, res, next) {
-// //     res.send({
-// //         data: req.files,
-// //         msg: 'Successfully uploaded ' + req.files + 'files!'
-// //     })
-// // })
-
-// // //Uploading Multiple Files to aws s3 bucket
-// // router.post('/uploadArray', upload1.array('image', 30), function (req, res, next) {
-// //     res.send({
-// //         data: req.files,
-// //         msg: 'Successfully uploaded ' + req.files?.length + 'files!'
-// //     })
-// // })
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////
+        key: function (req: any, file: any, cb: any) {
+            cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
+        }
+    }),
+    limits: { fileSize: 200000 }, // In bytes: 2000000 bytes = 2 MB
+    fileFilter: function (req: any, file: any, cb: any) {
+        checkFileType(file, cb);
+    }
+}).array('galleryImage', 40);
+/**
+ * @route POST /api/profile/multiple-file-upload
+ * @desc Upload business Gallery images
+ * @access public
+ */
+router.post('/multiple-file-upload', (req:any, res:any) => {
+    uploadsBusinessGallery(req, res, (error: any) => {
+        console.log('files', req.files);
+        if (error) {
+            console.log('errors', error);
+            res.json({ error: error });
+        } else {
+            // If File not found
+            if (req.files === undefined) {
+                console.log('Error: No File Selected!');
+                res.json('Error: No File Selected');
+            } else {
+                // If Success
+                let fileArray: any = req.files,
+                    fileLocation;
+                const galleryImgLocationArray = [];
+                for (let i = 0; i < fileArray.length; i++) {
+                    fileLocation = fileArray[i].location;
+                    console.log('filenm', fileLocation);
+                    galleryImgLocationArray.push(fileLocation)
+                }
+                // Save the file name into database
+                res.json({
+                    filesArray: fileArray,
+                    locationArray: galleryImgLocationArray
+                });
+            }
+        }
+    });
+});
 
 
 
@@ -318,7 +329,72 @@ router.get("/viewProfile", async (req, res) => {
 
 
 
+/////////////////////////////////////////////////eventguildlines////////////////////////
 
+router.post("/createEventGuildLines", async (req, res) => {
+    try {
+        const body = req.body;
+        const controller = new EventGuildLinesController();
+        const response = await controller.createEventGuildLines(body);
+        res.status(200).json(successResponse("create EventGuildLines", response, res.statusCode));
+    } catch (error) {
+        console.error("error in signup", error);
+        res.status(500).json(errorResponse("error in create EventGuildLines", res.statusCode));
+    }
+});
+
+router.patch("/EventGuildLines/:id", async (req, res) => {
+    try {
+        const EventGuildLinesId = req.params.id;
+        const body = req.body as IEventGuildLines;
+        const controller = new EventGuildLinesController();
+        const response: IEventGuildLines = await controller.editEventGuildLines(body, EventGuildLinesId);
+        res.status(200).json(successResponse("edit EventGuildLines", response, res.statusCode));
+    } catch (error) {
+        console.error("error in signup", error);
+        res.status(500).json(errorResponse("error in edit EventGuildLines", res.statusCode));
+    }
+});
+
+router.get("/EventGuildLinesList", async (req, res) => {
+    try {
+        const controller = new EventGuildLinesController();
+        const CategoryId=req.query.CategoryId
+        const response: IEventGuildLines[] = await controller.getEventGuildLinesList(CategoryId);
+        res.status(200).json(successResponse("EventGuildLines list", response, res.statusCode));
+    } catch (error) {
+        console.error("error in signup", error);
+        res.status(500).json(errorResponse("error in EventGuildLines list", res.statusCode));
+    }
+});
+
+
+router.get("/EventGuildLines/:id", async (req, res) => {
+    try {
+        const EventGuildLinesId: string = req.params.id;
+        const controller = new EventGuildLinesController();
+        const response: IEventGuildLines = await controller.getEventGuildLinesInfoById(EventGuildLinesId);
+        res.status(200).json(successResponse("get EventGuildLines", response, res.statusCode));
+    } catch (error) {
+        console.error("error in EventGuildLines", error);
+        res.status(500).json(errorResponse("error in get EventGuildLines", res.statusCode));
+    }
+});
+
+
+router.get("/deleteEventGuildLines/:id", async (req, res) => {
+    try {
+        const EventGuildLinesId = req.params.id;
+        const controller = new EventGuildLinesController();
+        const response: IEventGuildLines = await controller.deleteEventGuildLines(EventGuildLinesId);
+        res.status(200).json(successResponse("delete EventGuildLines", response, res.statusCode));
+
+    } catch (error) {
+        console.error("error in delete EventGuildLines", error);
+        res.status(500).json(errorResponse("error in delete EventGuildLines", res.statusCode));
+    }
+})
+//////////////////////////////////////////////////////////////////////////
 router.post("/createevent", async (req, res) => {
     try {
         const body = req.body as IEvent;
@@ -346,11 +422,11 @@ router.patch("/editevent/:id", async (req, res) => {
     }
 });
 
-router.get("/getevent", async (req, res) => {
+router.get("/getallevent", async (req, res) => {
     try {
         const controller = new eventController();
         const userId = req.body.userId;
-        const response: IEvent[] = await controller.getevent();
+        const response: IEvent[] = await controller.geteventEventScreen();
         res.status(200).json(successResponse("get event", response, res.statusCode));
     } catch (error) {
         console.error("error in get event", error);
@@ -359,7 +435,7 @@ router.get("/getevent", async (req, res) => {
 });
 
 
-router.get("/event/:id", async (req, res) => {
+router.get("/geteventinfobyid", async (req, res) => {
     try {
         const eventId = req.query.eventId;
         const status = req.query.status;
@@ -369,6 +445,80 @@ router.get("/event/:id", async (req, res) => {
     } catch (error) {
         console.error("error in get event by Id", error);
         res.status(500).json(errorResponse("error in get event by Id", res.statusCode));
+    }
+});
+router.post("/eventActivity", async (req, res) => {
+    try{
+        
+        const userId:any =req.body.userId;
+        const eventId=req.body.eventId;
+       
+         const status=req.body.status; 
+         const hashtagcomment=req.body.eventcomment;
+        const hashtagcommentId=req.body.eventcommentId;
+        const body=req.body;
+        const controller=new eventController();
+        const response:any =await controller.eventActivity(userId,eventId,  status,hashtagcomment,hashtagcommentId, body);
+        res.status(200).json(successResponse("eventActivity",response,res.statusCode));
+    }catch(error) {
+        console.error("error in eventActivity ", error);
+        res.status(500).json(errorResponse("error in eventActivity", res.statusCode));
+    }
+})
+router.post("/eventCreateBYOrganizer", async (req, res) => {
+    try {
+        const body = req.body;
+        const controller = new eventController();
+        const response: any = await controller.eventCreateBYOrganizer(body);
+        res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
+    } catch (error) {
+        console.error("error in eventCreateBYOrganizer", error);
+        res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
+    }
+});
+router.post("/bookForEventOrganize", async (req, res) => {
+    try {
+        const body = req.body;
+        const eventId = req.body.eventId; 
+        const organizerId = req.body.organizerId;
+         const formId = req.body.formId;
+          const status = req.body.status;
+        const controller = new eventController();
+        const response: any = await controller.applyForEventOrganize(eventId, organizerId, formId, status);
+        res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
+    } catch (error) {
+        console.error("error in eventCreateBYOrganizer", error);
+        res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
+    }
+});
+router.post("/bookEvent", async (req, res) => {
+    try {
+        const eventId = req.body.eventId; 
+        const userId = req.body.userId; 
+        const controller = new eventController();
+        const response: any = await controller.bookEvent(eventId,userId);
+        res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
+    } catch (error) {
+        console.error("error in eventCreateBYOrganizer", error);
+        res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
+    }
+});
+router.get("/filterEvent", async (req, res) => {
+    try {
+        console.log("req.query",req.query);
+        const order = req.query.order;
+        const category = req.query.category;
+        const subCategory = req.query.subCategory; 
+         const subSubCategory = req.query.subSubCategory; 
+         const limit = req.query.limit;
+           const skip = req.query.skip;
+           const search = req.query.search;
+        const controller = new eventController();
+        const response: any = await controller.filterEvent(order, category, subCategory, subSubCategory, limit, skip, search);
+        res.status(200).json(successResponse("filterEvent ", response, res.statusCode));
+    } catch (error) {
+        console.error("error in filterEvent", error);
+        res.status(500).json(errorResponse("error filterEvent", res.statusCode));
     }
 });
 
@@ -964,10 +1114,10 @@ router.post("/HashtagActivity", async (req, res) => {
         const body=req.body;
         const controller=new HashtagController();
         const response:IHashtag =await controller.hashtagActivity(userId,eventId, hashtagId, status,hashtagcomment,hashtagcommentId, body);
-        res.status(200).json(successResponse("delete Hashtag",response,res.statusCode));
+        res.status(200).json(successResponse("hashtagActivity",response,res.statusCode));
     }catch(error) {
-        console.error("error in Hashtag ", error);
-        res.status(500).json(errorResponse("error in delete Hashtag", res.statusCode));
+        console.error("error in hashtagActivity ", error);
+        res.status(500).json(errorResponse("error in hashtagActivity", res.statusCode));
     }
 })
 

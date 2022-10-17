@@ -1,5 +1,7 @@
 import StarPerformer, {IPerformer } from "../models/StarPerformer";
 import { ICategory } from "../models/Category";
+import FuzzySearch from "fuzzy-search";
+import userDetails from "../models/userDetails";
 export default class StarPerformerController {
 
     public async createStarPerformer(body: any) {
@@ -25,95 +27,7 @@ export default class StarPerformerController {
         return StarPerformerInfo;
     }
 
-    public async filterStarPerformer(
-        category: any,
-        subCategory: any[],
-        subSubCategory: any[],
-        search: any,
-        priceLt: any,
-        priceGt: any,
-        discountLt: any,
-        discountGt: any,
-        page: any = 1,
-        limit: any = 10,
-        sortMethod: any,
-        price: any,
-    ) {
-        let products: any[] = [];
-        let totalPages: any;
-        let sortBy: any;
-
-
-        let query: any = {};
-
-        query = { $and: [{ isDeleted: false, isActive: true, }] };
-        let queryColl: any = { $and: [{ isDeleted: false, }] };
-
-
-        if (category) {
-            query.$and.push({ categoryId: category });
-        }
-        if (subCategory && subCategory.length > 0) {
-            let arr = [];
-            for (let i = 0; i < subCategory.length; i++) {
-                arr.push({ subCategoryId: subCategory[i] });
-            }
-            query.$and.push({ $or: arr });
-        }
-        if (subSubCategory && subSubCategory.length > 0) {
-            let arr = [];
-            for (let i = 0; i < subSubCategory.length; i++) {
-                arr.push({ subSubCategoryId: subSubCategory[i] });
-            }
-            query.$and.push({ $or: arr });
-        }
-
-        if (priceLt && priceGt) {
-            query.$and.push({
-                $elemMatch: { price: { $gte: priceLt, $lte: priceGt } },
-            });
-        }
-        if (discountLt && discountGt) {
-            query.$and.push({
-                variations: { $elemMatch: { discountPercentage: { $gte: discountLt, $lte: discountGt } } },
-            });
-        }
-
-        if (search) {
-            let searchString = search.trim().toLowerCase();
-            let arr = [];
-            arr.push({ producName: { $regex: searchString, $options: "i" } });
-            arr.push({ ribbon: { $regex: searchString, $options: "i" } });
-            arr.push({ gender: { $regex: searchString, $options: "i" } });
-            arr.push({ productDescription: { $regex: searchString, $options: "i" } });
-           
-            query.$and.push({ $or: arr });
-        }
-        else {
-            products = await StarPerformer.find({ ...query })
-                .sort(sortBy)
-                .skip((page - 1) * limit)
-                .limit(limit)
-                .lean();
-            totalPages = (await StarPerformer.find({ ...query }).countDocuments()) / limit;
-        }
-
-        if (sortMethod === "oldToNew") {
-            sortBy = "createdAt";
-        } else if (sortMethod === "lowToHigh") {
-            sortBy = "price";
-        } else if (sortMethod === "highToLow") {
-            sortBy = "-price";
-        } else {
-            sortBy = "-createdAt";
-        }
-
-        console.log(products);
-        return { productList: products, pages: Math.ceil(totalPages) };
-
-
-
-    }
+   
     public async deleteStarPerformer(StarPerformerId: String) {
         const StarPerformerInfo: IPerformer = await StarPerformer.findOneAndUpdate({ _id: StarPerformerId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
         return StarPerformerInfo;
@@ -152,4 +66,68 @@ export default class StarPerformerController {
         const StarPerformerInfo: IPerformer = await StarPerformer.findOneAndUpdate({ _id: StarPerformerId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
         return StarPerformerInfo;
     }
+
+
+    // public async filterStarPerformer(order: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
+    
+       
+    //     let StarPerformerInfo: any;
+    //     if (bluetick) {
+    //         StarPerformerInfo = await StarPerformer.find({ category: category, isDeleted: false });
+
+    //     } else if (subCategory) {
+    //         StarPerformerInfo = await StarPerformer.find({ subCategory: subCategory, isDeleted: false });
+    //     } else if (subSubCategory) {
+    //         StarPerformerInfo = await StarPerformer.find({ subSubCategory: subSubCategory, isDeleted: false });
+    //     }
+    //     else if (order == "lessEarning") {
+    //         StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+            
+    //         StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
+    //         return StarPerformerInfo
+    //     }
+    //     else if (order == "mostEarning") {
+    //         StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+    //         StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
+    //         return StarPerformerInfo
+    //     }
+    //     else if (order == "oldtonew") {
+    //         StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+    //         StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
+    //         return StarPerformerInfo
+           
+    //     } else if (order == "bluetick") {
+    //         StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+    //         StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
+    //         return StarPerformerInfo
+    //     }else if (order == "lessAdvanced") {
+    //         StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+    //         StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.advancedStarPerformerMoney - b.advancedStarPerformerMoney });
+    //         return StarPerformerInfo
+    //     }else if (order == "mostAdvanced") {
+    //         StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+    //         StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.advancedStarPerformerMoney - a.advancedStarPerformerMoney });
+    //         return StarPerformerInfo
+    //     }
+    //     if (search) {
+    //         StarPerformerInfo = await userDetails.find({isStarPerformer:true, isDeleted: false });
+    //         console.log("StarPerformerInfo",StarPerformerInfo);
+            
+    //         const searcher = new FuzzySearch(StarPerformerInfo, ["fullname"], {
+    //             caseSensitive: false,
+    //         });
+    //         StarPerformerInfo = searcher.search(search);
+    //         return StarPerformerInfo
+    //     }
+
+    //     if (limit && skip) {
+
+    //         StarPerformerInfo = StarPerformerInfo.slice(skip).slice(0, limit);
+
+    //     } else {
+    //         StarPerformerInfo = await StarPerformer.find({ category: category, isDeleted: false });
+    //         return StarPerformerInfo;
+    //     }
+    //     return StarPerformerInfo;
+    // }
 }
