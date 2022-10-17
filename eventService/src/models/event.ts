@@ -18,9 +18,25 @@ const eventSchema = new Schema(
     placeTo: { type: String },
     destination: { type: String },
     eventLikeCount: { type: Number,default:0 },
-    eventFavoriteCount: { type: Number },
+    eventFavoriteCount: { type: Number,default:0  },
     eventCommentCount:  { type: Number,default:0  },
     eventShareCount: { type: Number,default:0  },
+    likeEvent: [{
+      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+  }],
+  favouriteEvent: [{
+      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+  }],
+  commentEvent: [{
+      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+      commentMessage:{ type: String },
+      dateTime:{ type: Date },
+  }],
+  shareEvent: [{
+     Hashtag: { type: Schema.Types.ObjectId, ref: "event" },
+     userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+      friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+  }],
     advancedEventMoney: { type: Number },
     priceForParticipent: { type: Number },
     organizerTotalIncome: { type: Number },
@@ -64,6 +80,21 @@ export interface IEvent extends Document {
   eventBannerImage: [String],
   eventDesription: String,
   eventTermsAndCondition: String,
+  likeEvent: [{
+    userId: ObjectId,
+}],
+favouriteEvent: [{
+    userId: ObjectId,
+}],
+commentEvent: [{
+    userId: ObjectId,
+    commentMessage:String,
+    dateTime:Date,
+}],
+shareEvent: [{
+   userId: ObjectId,
+    friendId: ObjectId,
+}],
   placeTo: String,
   destination: String,
   eventLikeCount: Number,

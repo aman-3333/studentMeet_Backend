@@ -17,7 +17,7 @@ const userSchema = new Schema(
     resetExpires: { type: Date },
     fullname: { type: String },
     contact: { type: Number, trim: true },
-    country_code: { type: Number, trim: true },
+    country_code: { type: Number, trim: true,default:91 },
     whatsapp_contact: { type: Number, trim: true },
     whatsapp_country_code: { type: Number, trim: true },
     contact_verify: { type: Boolean, default: false },
@@ -54,7 +54,7 @@ const userSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     lastLoginDate: { type: Date },
     email_verify: { type: Boolean, default: false },
-  
+  isStarPerformer:{ type: Boolean, default: false },
     
 
     parent_gender: { type: String },

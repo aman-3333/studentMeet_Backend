@@ -22,25 +22,25 @@ const schema = new Schema({
         friendId: { type: Schema.Types.ObjectId, ref: "Users" },
     }],
     eventLike: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId, ref: "event" },
     }],
     priceDownEvent: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId, ref: "event" },
         message: { type: String }
     }],
     eventcomment: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId, ref: "event" },
         comment: { type: String }
     }],
     eventFavorite: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId, ref: "event" },
     }],
     eventShare: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId, ref: "event" },
         friendId: { type: Schema.Types.ObjectId, ref: "Users" },
     }],
     eventSharedByOther: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId, ref: "event" },
         friendId: { type: Schema.Types.ObjectId, ref: "Users" },
     }],
     followers: [{
@@ -79,25 +79,25 @@ export interface IUserActivity extends Document {
         friendId: ObjectId,
     }],
     eventLike: [{
-        hashtagId: ObjectId,
+        eventId: ObjectId,
     }],
     priceDownEvent: [{
-        hashtagId: ObjectId,
+        eventId: ObjectId,
         message: String
     }],
     eventcomment: [{
-        hashtagId: ObjectId,
+        eventId: ObjectId,
         comment: String
     }],
     eventFavorite: [{
-        hashtagId: ObjectId,
+        eventId: ObjectId,
     }],
     eventShare: [{
-        hashtagId: ObjectId,
+        eventId: ObjectId,
         friendId: ObjectId,
     }],
     eventSharedByOther: [{
-        hashtagId: ObjectId,
+        eventId: ObjectId,
         friendId: ObjectId,
     }],
     followers: [{

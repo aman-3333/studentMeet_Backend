@@ -70,58 +70,11 @@ const router = express.Router();
 //////////////////////////////////////////////////////////////////
 
 
-const s31 = new aws.S3({
-    accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-    secretAccessKey: "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"
-})
-
-let storage = multer.memoryStorage({
-    destination: function (req: any, file: any, callback: any) {
-        callback(null, '')
-    }
-})
 
 
 
 
-// var aws = require('aws-sdk')
-// //////////////////////////////////////////////////////////////////////////////
-// var multer1 = require('multer')
-// var multerS3 = require('multer-s3')
-// var app = express()
-// var s31 = new aws.S3({
-//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-//     secretAccessKey: "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",
-//     Bucket: "midbazar-upload"
-// })
-// var upload1 = multer1({
-//     storage: multerS3({
-//         s3: s31,
-//         bucket: "midbazar-upload",
-//         metadata: function (req: any, file: any, cb: any) {
-//             cb(null, { fieldName: file.fieldname });
-//         },
-//         key: function (req: any, file: any, cb: any) {
-//             cb(null, Date.now().toString())
-//         }
-//     })
-// })
 
-// //Uploading single File to aws s3 bucket
-// router.post('/upload', upload1.single('image'), function (req, res, next) {
-//     res.send({
-//         data: req.files,
-//         msg: 'Successfully uploaded ' + req.files + 'files!'
-//     })
-// })
-
-// //Uploading Multiple Files to aws s3 bucket
-// router.post('/uploadArray', upload1.array('image', 30), function (req, res, next) {
-//     res.send({
-//         data: req.files,
-//         msg: 'Successfully uploaded ' + req.files?.length + 'files!'
-//     })
-// })
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
