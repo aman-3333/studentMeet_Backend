@@ -1,4 +1,4 @@
-import Post, { IPost } from "../models/Post";
+import Post, { IPost } from "../models/post";
 import userActivity from "../models/userActivity";
 
 export default class PostController {
