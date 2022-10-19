@@ -2,7 +2,7 @@ import {Document, model, Schema} from "mongoose";
 
 const instituteSchema = new Schema(
   {
-    institute_subdomain: { type: String, unique: true },
+   
     institute_name: { type: String, required: true },
     institute_category: { type: String, required: true },
     institute_locality: { type: String },

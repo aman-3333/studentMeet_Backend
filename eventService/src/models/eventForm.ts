@@ -2,11 +2,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
    
-  formConfig:[{
-    eventCategoryId: {type: Schema.Types.ObjectId,ref:"Category"},
-    eventId: {type: Schema.Types.ObjectId,ref:"event"},
-    
-  }],
+  
     Description:{type:String},
     picture:{type:String},
     active:{type: Boolean, default: true},

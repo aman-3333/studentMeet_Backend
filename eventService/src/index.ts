@@ -34,7 +34,7 @@ setEnvironment();
 
 mongoose.connect(nconf.get('mongodb'),
   {
-    useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true
+    useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify:true
   }
   // ,
   // () => {

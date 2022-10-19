@@ -188,7 +188,217 @@ export default class HashtagController {
             return data;
         }
     }
+    public async HashtagActivity(userId: any, HashtagId: any, status: any, Hashtagcomment: any, HashtagcommentId: any, body: any) {
+        let userInfo: any;
+        let data: any = []
+        let a: any = []
+        let info: any;
 
+        userInfo = await UserActivity.findOne({ userId: userId }).lean();
+
+
+        if (!userInfo) {
+            userInfo = await UserActivity.create({ userId: userId })
+            console.log("userInfo", userInfo);
+        }
+        console.log("userInfo", userInfo);
+
+        if (status == "HashtagLike") {
+            info = await UserActivity.findOne({ HashtagLike:body.HashtagLike }).lean();
+            console.log("info", info);
+
+            if (!info) {
+                userInfo = await UserActivity.updateMany(
+                    {
+                        userId: userId,
+                    },
+                    {
+                        $push: {
+                            HashtagLike:
+                                body.HashtagLike
+                        }
+                    })
+                let HashtagInfo: any = await Hashtag.findOne({ _id: body.HashtagLike })
+                console.log("HashtagInfo", HashtagInfo);
+                HashtagInfo = HashtagInfo.HashtagLikeCount
+                HashtagInfo = HashtagInfo + 1
+                await Hashtag.findOneAndUpdate({ _id: body.HashtagLike}, { $set: { HashtagLikeCount: HashtagInfo } },{new:true})
+                await Hashtag.findOneAndUpdate({
+                    _id: body.HashtagLike
+                }, {
+                    $push: {
+                        likeHashtag:
+                            userId
+
+                    }
+                })
+                return userInfo;
+            }
+        }
+        if (status == "removeHashtagLike") {
+            userInfo = await UserActivity.findOneAndUpdate(
+                {
+                    userId: userId,
+                },
+                {
+                    $pull: {
+                        HashtagLike
+                       :body.HashtagLike
+                    }
+                })
+               
+            let HashtagInfo: any = await Hashtag.findOne({ _id: body.HashtagLike})
+            console.log("HashtagInfo",HashtagInfo);
+
+
+            HashtagInfo = HashtagInfo.HashtagLikeCount
+            HashtagInfo = HashtagInfo - 1
+            await Hashtag.findOneAndUpdate({ _id: body.HashtagLike}, { $set: { HashtagLikeCount: HashtagInfo } })
+            await Hashtag.findOneAndUpdate({
+                _id: body.HashtagLike
+            }, {
+                $pull: {
+                    likeHashtag:
+                    userId
+                }
+            })
+            return userInfo;
+        } if (status == "readHashtagLike") {
+            userInfo = await UserActivity.findOne({ userId: userId }).lean();
+            userInfo = userInfo.HashtagLike;
+         console.log("userInfo",userInfo);
+         
+                let HashtagInfo: any = await Hashtag.find({ _id:{$in:userInfo}})
+
+           
+            
+            return HashtagInfo;
+        }
+      
+
+        if (status == "HashtagFavorite") {
+            info = await UserActivity.findOne({ HashtagFavorite:{$in:body.HashtagFavorite }}).lean();
+            console.log("info", info);
+
+            if (!info) {
+                userInfo = await UserActivity.findOneAndUpdate(
+                    {
+                        userId: userId,
+                    },
+                    {
+                        $push: {
+                            HashtagFavorite:
+                                body.HashtagFavorite
+                        }
+                    })
+                let HashtagInfo: any = await Hashtag.findOne({ _id: body.HashtagFavorite })
+                console.log("HashtagInfo", HashtagInfo);
+                HashtagInfo = HashtagInfo.HashtagFavoriteCount
+                HashtagInfo = HashtagInfo + 1
+                await Hashtag.findOneAndUpdate({ _id: body.HashtagFavorite}, { $set: { HashtagFavoriteCount: HashtagInfo } },{new:true})
+                await Hashtag.findOneAndUpdate({
+                    _id: body.HashtagFavorite
+                }, {
+                    $push: {
+                        HashtagFavorite:
+                            userId
+
+                    }
+                })
+                return userInfo;
+            }
+        }
+        if (status == "removeHashtagFavorite") {
+            userInfo = await UserActivity.findOneAndUpdate(
+                {
+                    userId: userId,
+                },
+                {
+                    $pull: {
+                        HashtagFavorite:
+                        body.HashtagFavorite
+                    }
+                })
+               
+            let HashtagInfo: any = await Hashtag.findOne({ _id: body.HashtagFavorite})
+            console.log("HashtagInfo",HashtagInfo);
+
+
+            HashtagInfo = HashtagInfo.HashtagFavoriteCount
+            HashtagInfo = HashtagInfo - 1
+            await Hashtag.findOneAndUpdate({ _id: {$in:body.HashtagFavorite} }, { $set: { HashtagFavoriteCount: HashtagInfo } })
+            await Hashtag.findOneAndUpdate({
+                _id: body.HashtagFavorite
+            }, {
+                $pull: {
+                    HashtagFavorite:
+                   userId
+                }
+            })
+            return userInfo;
+        } if (status == "readHashtagFavorite") {
+            userInfo = await UserActivity.findOne({ userId: userId }).lean();
+            userInfo = userInfo.HashtagFavorite;
+         console.log("userInfo",userInfo);
+         
+                let HashtagInfo: any = await Hashtag.find({ _id:{$in:userInfo}})
+
+           
+            
+            return HashtagInfo;
+        }
+
+        if (status == "Hashtagcomment") {
+            let currentTime: any = new Date();;
+            for (let i = 0; i < body.Hashtagcomment.length; i++) {
+                userInfo = await UserActivity.updateMany(
+                    {
+                        userId: userId,
+                    },
+                    {
+                        $push: {
+                            Hashtagcomment: {
+                                HashtagId: body.Hashtagcomment[i].HashtagId,
+                                comment: body.Hashtagcomment[i].comment,
+                                time: currentTime
+                            }
+                        }
+                    })
+
+                await Hashtag.aggregate([
+                    { $group: { _id: HashtagId, commentCount: { $sum: 1 } } }
+                ])
+
+                return userInfo;
+            }
+        }
+        if (status == "removeHashtagcomment") {
+            userInfo = await UserActivity.updateMany(
+                { _id: userId },
+                { $pull: { Hashtagcomment: { HashtagId: HashtagId } } }
+            );
+
+            return userInfo;
+        } if (status == "readHashtagcomment") {
+            userInfo = await UserActivity.findOne({ userId: userId }).lean();
+            userInfo = userInfo.Hashtagcomment;
+
+            console.log("comment", userInfo);
+            for (let i = 0; i < userInfo.length; i++) {
+                let HashtagInfo: any = await Hashtag.findOne({ _id: userInfo[i].HashtagId })
+
+                let comment: any = userInfo[i].comment
+                let commentTime: any = userInfo[i].time
+
+                data.push({ HashtagInfo, comment, commentTime })
+            }
+            return data;
+        }
+    }
+
+
+
+    
     public async deleteHashtag(HashtagId: String, userId: any) {
         const HashtagInfo: IHashtag = await Hashtag.findOneAndUpdate({ _id: HashtagId, isDeleted: false }, { $set: { isDeleted: true, deletedPersonId: userId } }, { new: true }).lean();
         return HashtagInfo;

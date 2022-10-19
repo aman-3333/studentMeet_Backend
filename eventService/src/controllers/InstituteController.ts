@@ -34,14 +34,15 @@ export default class InstituteController {
         const InstituteList: any[] = await Institute.find({ instituteStateId:stateId, isDeleted: false });
         return InstituteList;
     }
-    public async searchInstitute(stateId:any,search:any) {
+    public async searchInstitute(stateId:any,searchValue:any) {
+        if(searchValue){
         let InstituteList: any = await Institute.find({instituteStateId:stateId,isDeleted: false });
         InstituteList = new FuzzySearch(InstituteList, ["instituteName"], {
             caseSensitive: false,
         });
-        InstituteList = InstituteList.search(search);
+        InstituteList = InstituteList.search(searchValue);
         return InstituteList;
-    }
+    }}
 
 
     public async getInstituteInfoById(InstituteId: any) {
