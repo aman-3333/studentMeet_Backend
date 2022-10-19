@@ -4,7 +4,7 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 const eventSchema = new Schema(
   {
     organizerId: [{ type: Schema.Types.ObjectId, ref: "Users" }],
-    eventFormId: { type: Schema.Types.ObjectId, ref: "FormId" },
+    eventFormId: [{ type: Schema.Types.ObjectId, ref: "FormId" }],
     eventPartnerId: { type: Schema.Types.ObjectId, ref: "eventPartner" },
     participentId: [{ type: Schema.Types.ObjectId, ref: "Users" }],
     category: { type: Schema.Types.ObjectId, ref: 'category', },
@@ -18,15 +18,15 @@ const eventSchema = new Schema(
     placeTo: { type: String },
     destination: { type: String },
     eventLikeCount: { type: Number,default:0 },
-    eventFavoriteCount: { type: Number,default:0  },
-    eventCommentCount:  { type: Number,default:0  },
+    eventFavoriteCount: { type: Number,default:0 },
+    eventCommentCount:  { type: Number,default:0 },
     eventShareCount: { type: Number,default:0  },
-    likeEvent: [{
-      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-  }],
-  favouriteEvent: [{
-      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-  }],
+    likeEvent: [
+      { type: Schema.Types.ObjectId, ref: "userDetails" },
+  ],
+  eventFavorite: [
+       { type: Schema.Types.ObjectId, ref: "userDetails" },
+  ],
   commentEvent: [{
       userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
       commentMessage:{ type: String },
@@ -68,8 +68,8 @@ const eventSchema = new Schema(
 );
 
 export interface IEvent extends Document {
-  organizerId: ObjectId,
-  eventFormId: ObjectId,
+  organizerId: [ObjectId],
+  eventFormId: [ObjectId],
   eventPartnerId: ObjectId,
   category: ObjectId,
   subCategory: ObjectId,

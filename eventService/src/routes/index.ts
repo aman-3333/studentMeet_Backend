@@ -36,10 +36,13 @@ const router = express.Router();
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
 const s31 = new aws.S3({
     accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
     secretAccessKey: "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",
 })
+
 
 let storage = multer.memoryStorage({
     destination: function (req: any, file: any, callback: any) {
@@ -55,7 +58,7 @@ router.post('/uploadSingle', upload, (req:any, res:any) => {
     const fileType = myFile[myFile?.length - 1]
 
     const params = {
-        Bucket: "backendservicestudentmeet",
+        Bucket: "midbazar-upload",
         Key: `${uuidv4()
             }.${fileType}`,
         Body: req.file?.buffer
@@ -78,12 +81,12 @@ router.post('/uploadSingle', upload, (req:any, res:any) => {
 // var s31 = new aws.S3({
 //     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
 //     secretAccessKey: "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",
-//     Bucket: "backendservicestudentmeet"
+//     Bucket: "midbazar-upload"
 // })
 // var upload1 = multer1({
 //     storage: multerS3({
 //         s3: s31,
-//         bucket: "backendservicestudentmeet",
+//         bucket: "midbazar-upload",
 //         metadata: function (req: any, file: any, cb: any) {
 //             cb(null, { fieldName: file.fieldname });
 //         },
@@ -114,7 +117,8 @@ router.post('/uploadSingle', upload, (req:any, res:any) => {
 const s3 = new aws.S3({
     accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
     secretAccessKey: "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",
-    Bucket: "backendservicestudentmeet"
+
+    Bucket: "midbazar-upload"
 });
 
 /**
@@ -123,13 +127,13 @@ const s3 = new aws.S3({
 const profileImgUpload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: "backendservicestudentmeet",
+        bucket: "midbazar-upload",
         acl: 'public-read',
         key: function (req: any, file: any, cb: any) {
             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
         }
     }),
-    limits: { fileSize: 20000000000 }, // In bytes: 2000000 bytes = 2 MB
+    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
     fileFilter: function (req: any, file: any, cb: any) {
         checkFileType(file, cb);
     }
@@ -200,7 +204,7 @@ const uploadsBusinessGallery = multer({
             cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
         }
     }),
-    limits: { fileSize: 200000 }, // In bytes: 2000000 bytes = 2 MB
+    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
     fileFilter: function (req: any, file: any, cb: any) {
         checkFileType(file, cb);
     }
@@ -241,6 +245,29 @@ router.post('/multiple-file-upload', (req:any, res:any) => {
     });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
 
 
 
@@ -463,6 +490,20 @@ router.post("/eventActivity", async (req, res) => {
     }catch(error) {
         console.error("error in eventActivity ", error);
         res.status(500).json(errorResponse("error in eventActivity", res.statusCode));
+    }
+})
+router.post("/readActivity", async (req, res) => {
+    try{
+        
+        const status:any =req.body.status;
+        const eventId=req.body.eventId;
+        const body=req.body;
+        const controller=new eventController();
+        const response:any =await controller.readActivity(eventId,status);
+        res.status(200).json(successResponse("readActivity",response,res.statusCode));
+    }catch(error) {
+        console.error("error in readActivity ", error);
+        res.status(500).json(errorResponse("error in readActivity", res.statusCode));
     }
 })
 router.post("/eventCreateBYOrganizer", async (req, res) => {

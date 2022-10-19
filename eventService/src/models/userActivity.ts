@@ -1,54 +1,61 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: "Users" },
-    hashtagLike: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
-    }],
+    userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    hashtagLike: [
+        { type: Schema.Types.ObjectId, ref: "Hashtag" },
+    ],
     hashtagcomment: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
         comment: { type: String },
         time: { type: Date }
     }],
-    hashtagFavorite: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
-    }],
+    hashtagFavorite: [
+         { type: Schema.Types.ObjectId, ref: "Hashtag" },
+    ],
     hashtagShare: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
         friendId: { type: Schema.Types.ObjectId, ref: "User" },
     }],
     hashtagSharedByOther: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "Users" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    eventLike: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
-    }],
+    eventLike: [
+        { type: Schema.Types.ObjectId, ref: "event" },
+    ],
     priceDownEvent: [{
         eventId: { type: Schema.Types.ObjectId, ref: "event" },
         message: { type: String }
     }],
     eventcomment: [{
         eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        comment: { type: String }
+        comment: { type: String },
+        time: { type: Date }
     }],
-    eventFavorite: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
-    }],
+    eventFavorite: [
+       { type: Schema.Types.ObjectId, ref: "event" },
+    ],
     eventShare: [{
         eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "Users" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
     eventSharedByOther: [{
         eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "Users" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    followers: [{
-        userId: { type: Schema.Types.ObjectId, ref: "Users" },
-    }],
-    following: [{
-        userId: { type: Schema.Types.ObjectId, ref: "Users" },
-    }],
+    followers: [
+        { type: Schema.Types.ObjectId, ref: "userDetails" },
+    ],
+    following: [
+         {type: Schema.Types.ObjectId, ref: "userDetails" },
+    ],
+    friend:[
+       { type: Schema.Types.ObjectId, ref: "userDetails" }
+    
+    ],
+    blocked:[ { type: Schema.Types.ObjectId, ref: "userDetails" }
+    ],
     followersCount: { type: Number, default: 0 },
     followingsCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
