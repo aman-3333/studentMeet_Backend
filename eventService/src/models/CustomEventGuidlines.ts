@@ -2,6 +2,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     guildLines: { type: String, required: true },
+    status:{ type: String },
     categoryId: { type: Schema.Types.ObjectId,ref:"category" },
     ownerId: { type: Schema.Types.ObjectId,ref:"userDetails" },
     guildLinesImages: [{ type: String }],
@@ -14,6 +15,7 @@ const schema = new Schema({
 
 export interface IEventGuildLines extends Document {
     guildLines: String,
+    status:String,
     ownerId: ObjectId,
     categoryId: ObjectId,
     guildLinesImages: [String],

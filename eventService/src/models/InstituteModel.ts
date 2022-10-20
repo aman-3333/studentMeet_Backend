@@ -4,6 +4,7 @@ const instituteSchema = new Schema(
   {
     instituteName: { type: String, required: true },
     instituteCategory: { type: String},
+    institute_subdomain: { type: String,default:"abc"},
     instituteAddress: { type: String},
     instituteEmail: { type: String },
     institutePhone: { type: String }, //required: true
@@ -30,6 +31,7 @@ export interface IInstitute extends Document {
   instituteEmail: String,
   institutePhone: String, //required: true
   instituteWebsite: String,
+  institute_subdomain: String,
   instituteCountry: String,
   instituteStateId: ObjectId,
   instituteCityId: ObjectId,

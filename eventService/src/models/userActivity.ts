@@ -1,71 +1,71 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    userDetailsId: { type: Schema.Types.ObjectId },
     hashtagLike: [
-        { type: Schema.Types.ObjectId, ref: "Hashtag" },
+        { type: Schema.Types.ObjectId },
     ],
     hashtagcomment: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
+        hashtagId: { type: Schema.Types.ObjectId },
         comment: { type: String },
         time: { type: Date }
     }],
     hashtagFavorite: [
-         { type: Schema.Types.ObjectId, ref: "Hashtag" },
+         { type: Schema.Types.ObjectId },
     ],
     hashtagShare: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "User" },
+        hashtagId: { type: Schema.Types.ObjectId },
+        friendId: { type: Schema.Types.ObjectId },
     }],
     hashtagSharedByOther: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        hashtagId: { type: Schema.Types.ObjectId },
+        friendId: { type: Schema.Types.ObjectId },
     }],
     eventLike: [
-        { type: Schema.Types.ObjectId, ref: "event" },
+        { type: Schema.Types.ObjectId },
     ],
     priceDownEvent: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId },
         message: { type: String }
     }],
     eventcomment: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
+        eventId: { type: Schema.Types.ObjectId },
         comment: { type: String },
         time: { type: Date }
     }],
     eventFavorite: [
-       { type: Schema.Types.ObjectId, ref: "event" },
+       { type: Schema.Types.ObjectId },
     ],
     eventShare: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        eventId: { type: Schema.Types.ObjectId },
+        friendId: { type: Schema.Types.ObjectId },
     }],
     eventSharedByOther: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        eventId: { type: Schema.Types.ObjectId },
+        friendId: { type: Schema.Types.ObjectId },
     }],
     followers: [
-        { type: Schema.Types.ObjectId, ref: "userDetails" },
+        { type: Schema.Types.ObjectId },
     ],
     following: [
-         {type: Schema.Types.ObjectId, ref: "userDetails" },
+         {type: Schema.Types.ObjectId },
     ],
     friend:[
-       { type: Schema.Types.ObjectId, ref: "userDetails" }
+       { type: Schema.Types.ObjectId }
     
     ],
-    blocked:[ { type: Schema.Types.ObjectId, ref: "userDetails" }
+    blocked:[ { type: Schema.Types.ObjectId }
     ],
     followersCount: { type: Number, default: 0 },
-    followingsCount: { type: Number, default: 0 },
+    followingCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false }
 }, {
     timestamps: true
 });
 
-export interface IUserActivity extends Document {
-    userId: ObjectId,
+export interface IuserDetailsActivity extends Document {
+    userDetailsId: ObjectId,
     hashtagLike: [{
         hashtagId: ObjectId,
     }],
@@ -107,17 +107,17 @@ export interface IUserActivity extends Document {
         eventId: ObjectId,
         friendId: ObjectId,
     }],
-    followers: [{
-        userId: ObjectId
-    },
+    followers: [
+         ObjectId
+    
     ],
-    following: [{
-        userId: ObjectId
-    }],
+    following: [
+         ObjectId
+    ],
     followersCount: Number,
-    followingsCount: Number,
+    followingCount: Number,
     isActive: Boolean,
     isDeleted: Boolean
 }
 
-export default model<IUserActivity>("useractivity", schema);
+export default model<IuserDetailsActivity>("userDetailsactivity", schema);

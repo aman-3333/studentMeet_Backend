@@ -22,8 +22,8 @@ export default class CityController {
         return CityList;
     }
 
-    public async getCityInfoById(CityId: string) {
-        const CityInfo: ICity = await City.findOne({ _id: CityId, isDeleted: false }).lean();
+    public async getCityInfoById(CityId: any) {
+        const CityInfo: any = await City.findOne({ _id: CityId, isDeleted: false }).lean();
         return CityInfo;
     }
 

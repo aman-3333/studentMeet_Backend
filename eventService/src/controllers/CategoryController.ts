@@ -42,8 +42,8 @@ export default class CategoryController {
     }
 
 
-    public async getCategoryInfoById(categoryId: string) {
-        const categoryInfo: ICategory = await Category.findOne({ _id: categoryId, isDeleted: false }).lean();
+    public async getCategoryInfoById(categoryId: any) {
+        const categoryInfo: any = await Category.findOne({ _id: categoryId, isDeleted: false }).lean();
         return categoryInfo;
     }
 
@@ -83,9 +83,9 @@ export default class CategoryController {
         return subCategoryList;
     }
 
-    public async getSubCategoryInfoById(subSubCategoryId: string) {
-        const subSubCategoryInfo: ISubCategory = await SubCategory.findOne({ _id: subSubCategoryId, isDeleted: false }).lean();
-        return subSubCategoryInfo;
+    public async getSubCategoryInfoById(subCategoryId: string) {
+        const subCategoryInfo: any = await SubCategory.findOne({ _id: subCategoryId, isDeleted: false }).lean();
+        return subCategoryInfo;
     }
 
     public async deleteSubCategory(subCategoryId: string, userId: String) {
@@ -121,8 +121,8 @@ export default class CategoryController {
         return subSubCategoryList;
     }
 
-    public async getCategorySubSubInfoById(subSubCategoryId: string) {
-        const subSubCategoryInfo: ISubSubCategory = await SubSubCategory.findOne({ _id: subSubCategoryId, isDeleted: false }).lean();
+    public async getCategorySubSubInfoById(subSubCategoryId: any) {
+        const subSubCategoryInfo: any = await SubSubCategory.findOne({ _id: subSubCategoryId, isDeleted: false }).lean();
         return subSubCategoryInfo;
     }
 

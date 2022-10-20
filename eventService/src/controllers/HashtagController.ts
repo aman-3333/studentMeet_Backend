@@ -1,7 +1,7 @@
 import Hashtag, { IHashtag } from "../models/Hashtag";
 import User from "../models/Users";
 import Event from "../models/event"
-import UserActivity, { IUserActivity } from "../models/userActivity"
+import UserActivity from "../models/userActivity"
 export default class HashtagController {
 
     public async createHashtag(body: any) {
@@ -22,8 +22,8 @@ export default class HashtagController {
         return HashtagList;
     }
 
-    public async getHashtagInfoById(HashtagId: string) {
-        const HashtagInfo: IHashtag = await Hashtag.findOne({ _id: HashtagId, isDeleted: false }).lean();
+    public async getHashtagInfoById(HashtagId: any) {
+        const HashtagInfo: any = await Hashtag.findOne({ _id: HashtagId, isDeleted: false }).lean();
         return HashtagInfo;
     }
   

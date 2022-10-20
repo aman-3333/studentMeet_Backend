@@ -289,7 +289,7 @@ export default class eventController {
 
     }
 
-    public async filterEvent(order: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
+    public async filterEvent(sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
 
 
         let eventInfo: any;
@@ -301,31 +301,31 @@ export default class eventController {
         } else if (subSubCategory) {
             eventInfo = await event.find({ subSubCategory: subSubCategory, isDeleted: false });
         }
-        else if (order == "lessEarning") {
+        else if (sort == "lessEarning") {
             eventInfo = await event.find({ isDeleted: false });
 
             eventInfo = eventInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
             return eventInfo
         }
-        else if (order == "mostEarning") {
+        else if (sort == "mostEarning") {
             eventInfo = await event.find({ isDeleted: false });
             eventInfo = eventInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
             return eventInfo
         }
-        else if (order == "oldtonew") {
+        else if (sort == "oldtonew") {
             eventInfo = await event.find({ isDeleted: false });
             eventInfo = eventInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
             return eventInfo
 
-        } else if (order == "newtoold") {
+        } else if (sort == "newtoold") {
             eventInfo = await event.find({ isDeleted: false });
             eventInfo = eventInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
             return eventInfo
-        } else if (order == "lessAdvanced") {
+        } else if (sort == "lessAdvanced") {
             eventInfo = await event.find({ isDeleted: false });
             eventInfo = eventInfo.sort(function (a: any, b: any) { return a.advancedEventMoney - b.advancedEventMoney });
             return eventInfo
-        } else if (order == "mostAdvanced") {
+        } else if (sort == "mostAdvanced") {
             eventInfo = await event.find({ isDeleted: false });
             eventInfo = eventInfo.sort(function (a: any, b: any) { return b.advancedEventMoney - a.advancedEventMoney });
             return eventInfo
