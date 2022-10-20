@@ -1,6 +1,6 @@
 
 
-import Institute from "../models/Institute";
+import Institute from "../models/InstituteModel";
 import FuzzySearch from "fuzzy-search";
 import { ObjectId } from "mongoose";
 

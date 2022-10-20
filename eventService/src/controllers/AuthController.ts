@@ -16,6 +16,7 @@ import { generateOtp } from "../services/generateOtp";
 import { verifyOtp } from "../services/verifyOtp";
 import Otp from "../models/Otp";
 import { baseUrl } from "../middleware/authMiddleware";
+import userActivity from "../models/userActivity";
 
 // import SignupOtp from "../models/SignupOtp";
 
@@ -69,6 +70,10 @@ export default class AuthController {
                     : body.contact, country_code
                     : body.country_code
             })
+            await userActivity.create({
+              userId
+                  : createUser._id
+          })
             otpInfo = await Otp.create({
                
                 contact : body.contact, 
@@ -128,6 +133,7 @@ export default class AuthController {
     }
 
     public async sendotpByApi(body: any) {
+      let  createUser:any;
         let phone = body.country_code.toString() + body.contact.toString();
         const userInfo = await Users.findOne({ contact: body.contact }).lean();
         if (body.action == "checkexist") {
@@ -157,15 +163,19 @@ export default class AuthController {
           }).lean();
           const userInfo = await Users.findOne({ contact: body.contact }).lean();
           if (!userInfo) {
-              await Users.create({
+              createUser=  await Users.create({
             contact
                 : body.contact, country_code
                 : body.country_code
         })
+        await userActivity.create({
+          userId
+              : createUser._id
+      })
           }
          
         }
-        return resp;
+        return {resp,createUser};
       }
 
 

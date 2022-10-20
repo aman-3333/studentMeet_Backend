@@ -19,8 +19,8 @@ export default class UserroleController {
 
     
 
-    public async getUserroleInfoById(UserroleId: string) {
-        const UserroleInfo: IUserrole = await Userrole.findOne({ _id: UserroleId, isDeleted: false }).lean();
+    public async getUserroleInfoById(UserroleInfoById: any) {
+        const UserroleInfo: any = await Userrole.findOne({ _id: UserroleInfoById, isDeleted: false }).lean();
         return UserroleInfo;
     }
 

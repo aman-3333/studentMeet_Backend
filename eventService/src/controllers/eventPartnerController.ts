@@ -243,10 +243,10 @@ export default class eventPartnerController {
 
 
 
-    public async geteventPartnerInfoById(eventPartnerId: string) {
+    public async geteventPartnerInfoById(partnerId: any) {
         let eventPartnerInfo: any = await eventPartner.aggregate([{
             "$match": {
-                _id: eventPartnerId
+                _id: partnerId
             }
         }])
         return eventPartnerInfo;

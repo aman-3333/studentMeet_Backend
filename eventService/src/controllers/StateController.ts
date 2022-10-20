@@ -21,7 +21,7 @@ export default class StateController {
         return StateList;
     }
 
-    public async getStateInfoById(StateId: string) {
+    public async getStateInfoById(StateId: any) {
         const StateInfo: IState = await State.findOne({ _id: StateId, isDeleted: false }).lean();
         return StateInfo;
     }

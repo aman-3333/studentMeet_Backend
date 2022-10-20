@@ -22,7 +22,7 @@ export default class EventGuildLinesController {
         return EventGuildLinesList;
     }
 
-    public async getEventGuildLinesInfoById(EventGuildLinesId: string) {
+    public async getEventGuildLinesInfoById(EventGuildLinesId: any) {
         const EventGuildLinesInfo: IEventGuildLines = await EventGuildLines.findOne({ _id: EventGuildLinesId, isDeleted: false }).lean();
         return EventGuildLinesInfo;
     }

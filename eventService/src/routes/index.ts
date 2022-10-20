@@ -6,7 +6,7 @@ import { ISubCategory } from "../models/Subcategory";
 import { ISubSubCategory } from "../models/subSubCategory";
 import { IPartner } from "../models/eventPartner";
 import Category, { ICategory } from "../models/Category";
-import  { IInstitute } from "../models/Institute";
+import  { IInstitute } from "../models/InstituteModel";
 import  { IUserrole} from "../models/UserRole";
 import { ICity } from "../models/City";
 import { IState } from "../models/State";
@@ -28,6 +28,7 @@ const multer = require('multer');
 const path = require('path');
 import eventController from "../controllers/eventController"
 import AuthController from "../controllers/AuthController";
+import { AnyAaaaRecord } from "dns";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
 
@@ -396,11 +397,11 @@ router.get("/EventGuildLinesList", async (req, res) => {
 });
 
 
-router.get("/EventGuildLines/:id", async (req, res) => {
+router.get("/eventGuildLinesById", async (req, res) => {
     try {
-        const EventGuildLinesId: string = req.params.id;
+        const EventGuildLinesId:any = req.query.EventGuildLinesId;
         const controller = new EventGuildLinesController();
-        const response: IEventGuildLines = await controller.getEventGuildLinesInfoById(EventGuildLinesId);
+        const response: any = await controller.getEventGuildLinesInfoById(EventGuildLinesId);
         res.status(200).json(successResponse("get EventGuildLines", response, res.statusCode));
     } catch (error) {
         console.error("error in EventGuildLines", error);
@@ -547,7 +548,7 @@ router.post("/bookEvent", async (req, res) => {
 router.get("/filterEvent", async (req, res) => {
     try {
         console.log("req.query",req.query);
-        const order = req.query.order;
+        const sort = req.query.sort;
         const category = req.query.category;
         const subCategory = req.query.subCategory; 
          const subSubCategory = req.query.subSubCategory; 
@@ -555,7 +556,7 @@ router.get("/filterEvent", async (req, res) => {
            const skip = req.query.skip;
            const search = req.query.search;
         const controller = new eventController();
-        const response: any = await controller.filterEvent(order, category, subCategory, subSubCategory, limit, skip, search);
+        const response: any = await controller.filterEvent(sort, category, subCategory, subSubCategory, limit, skip, search);
         res.status(200).json(successResponse("filterEvent ", response, res.statusCode));
     } catch (error) {
         console.error("error in filterEvent", error);
@@ -590,6 +591,31 @@ router.patch("/deleteevent/:id", async (req, res) => {
     }
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
 // router.post("/Coupon", async (req, res) => {
 //     try {
 //         const body = req.body as ICoupon;
@@ -900,12 +926,12 @@ router.get("/getCategoryCustomer", async (req, res) => {
     }
 });
 
-router.get("createCategory/:id", async (req, res) => {
+router.get("/categoryInfoById", async (req, res) => {
     try {
-        const shopId: string= req.params.id;
+        const categoryId= req.query.categoryId;
         const userId=req.body.userId;
         const controller = new CategoryController();
-        const response: ICategory = await controller.getCategoryInfoById(shopId);
+        const response: any = await controller.getCategoryInfoById(categoryId);
         res.status(200).json(successResponse("get category by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get category by Id", error);
@@ -988,12 +1014,12 @@ router.get("/searchInstitute", async (req, res) => {
     }
 });
 
-router.get("/getInstituteInfoById/:id", async (req, res) => {
+router.get("/getInstituteInfoById", async (req, res) => {
     try {
-        const Institute: string= req.params.id;
+        const InstituteId: any= req.query.InstituteId;
         const userId=req.body.userId;
         const controller = new InstituteController();
-        const response:any = await controller.getInstituteInfoById(Institute);
+        const response:any = await controller.getInstituteInfoById(InstituteId);
         res.status(200).json(successResponse("get Institute by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get Institute by Id", error);
@@ -1052,12 +1078,12 @@ router.get("/UserroleList", async (req, res) => {
 });
 
 
-router.get("/getUserroleInfoById/:id", async (req, res) => {
+router.get("/getUserroleInfoById", async (req, res) => {
     try {
-        const shopId: string= req.params.id;
+        const UserroleInfoById: any= req.query.UserroleInfoById;
         const userId=req.body.userId;
         const controller = new UserroleController();
-        const response: IUserrole = await controller.getUserroleInfoById(shopId);
+        const response: IUserrole = await controller.getUserroleInfoById(UserroleInfoById);
         res.status(200).json(successResponse("get Userrole by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get Userrole by Id", error);
@@ -1117,12 +1143,12 @@ router.get("/HashtagList", async (req, res) => {
 });
 
 
-router.get("createHashtag/:id", async (req, res) => {
+router.get("/hashtaginfobyid", async (req, res) => {
     try {
-        const shopId: string= req.params.id;
+        const hashtagId: any= req.query.hashtagId;
         const userId=req.body.userId;
         const controller = new HashtagController();
-        const response: IHashtag = await controller.getHashtagInfoById(shopId);
+        const response: IHashtag = await controller.getHashtagInfoById(hashtagId);
         res.status(200).json(successResponse("get Hashtag by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get Hashtag by Id", error);
@@ -1214,12 +1240,12 @@ router.get("/getAllSubCategory", async (req, res) => {
     }
 });
 
-router.get("/subCategory/:id", async (req, res) => {
+router.get("/subCategoryinfobyid", async (req, res) => {
     try {
-        const subCategoryId: string = req.params.id;
+        const subCategoryId: any = req.query.subCategoryId;
         const userId = req.body.userId;
         const controller = new CategoryController();
-        const response: ISubCategory = await controller.getSubCategoryInfoById(subCategoryId);
+        const response: any = await controller.getSubCategoryInfoById(subCategoryId);
         res.status(200).json(successResponse("get subCategory by Id ", response, res.statusCode));
     } catch (error) {
         console.error("error in get subCategory by Id", error);
@@ -1281,12 +1307,12 @@ router.get("/subSubCategoryList", async (req, res) => {
 });
 
 
-router.get("/subSubCategory/:id", async (req, res) => {
+router.get("/subSubCategoryinfobyid", async (req, res) => {
     try {
-        const subSubCategoryId: string = req.params.id;
+        const subSubCategoryId: any = req.query.subSubCategoryId;
         const userId = req.body.userId;
         const controller = new CategoryController();
-        const response: ISubSubCategory = await controller.getCategorySubSubInfoById(subSubCategoryId);
+        const response: any = await controller.getCategorySubSubInfoById(subSubCategoryId);
         res.status(200).json(successResponse("get subSubCategory by Id ", response, res.statusCode));
     } catch (error) {
         console.error("error in get subSubCategory by Id", error);
@@ -1423,11 +1449,11 @@ router.get("/CityList", async (req, res) => {
 });
 
 
-router.get("/City/:id", async (req, res) => {
+router.get("/Cityinfobyid", async (req, res) => {
     try {
-        const CityId: string = req.params.id;
+        const CityId: any = req.query.CityId;
         const controller = new CityController();
-        const response: ICity = await controller.getCityInfoById(CityId);
+        const response: any = await controller.getCityInfoById(CityId);
         res.status(200).json(successResponse("getCity", response, res.statusCode));
     } catch (error) {
         console.error("error in getCity", error);
@@ -1486,9 +1512,9 @@ router.get("/StateList", async (req, res) => {
 });
 
 
-router.get("/State/:id", async (req, res) => {
+router.get("/StateInfobyid", async (req, res) => {
     try {
-        const StateId: string = req.params.id;
+        const StateId = req.query.id;
         const controller = new StateController();
         const response: IState = await controller.getStateInfoById(StateId);
         res.status(200).json(successResponse("get State", response, res.statusCode));
@@ -1575,11 +1601,11 @@ router.get("/geteventPartnerAdminPannel", async (req, res) => {
 
 
 
-router.get("/shopInfoById/:id", async (req, res) => {
+router.get("/eventpartnerInfoById", async (req, res) => {
     try {
-        const shopId: string = req.params.id;
+        const partnerId: any = req.query.partnerId;
         const controller = new eventPartnerController();
-        const response: IPartner = await controller.geteventPartnerInfoById(shopId);
+        const response: any = await controller.geteventPartnerInfoById(partnerId);
         res.status(200).json(successResponse("get shop", response, res.statusCode));
     } catch (error) {
         console.error("error in signup", error);
