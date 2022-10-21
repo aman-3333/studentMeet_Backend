@@ -1146,9 +1146,21 @@ router.get("/HashtagList", async (req, res) => {
 router.get("/hashtaginfobyid", async (req, res) => {
     try {
         const hashtagId: any= req.query.hashtagId;
-        const userId=req.body.userId;
+        const userId=req.query.userId;
         const controller = new HashtagController();
         const response: IHashtag = await controller.getHashtagInfoById(hashtagId);
+        res.status(200).json(successResponse("get Hashtag by Id ", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Hashtag by Id", error);
+        res.status(500).json(errorResponse("error in get Hashtag by Id", res.statusCode));
+    }
+});
+router.get("/getAllEventByUserId", async (req, res) => {
+    try {
+        const userId: any= req.query.userId;
+     
+        const controller = new HashtagController();
+        const response: IHashtag = await controller.getAllEventByUserId(userId);
         res.status(200).json(successResponse("get Hashtag by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get Hashtag by Id", error);
@@ -1379,10 +1391,10 @@ router.post("/eventPartner/Registration", async (req, res) => {
         const body = req.body as IPartner;
         const controller = new eventPartnerController();
         const response: any = await controller.createeventPartner(body);
-        res.status(200).json(successResponse("create shop", response, res.statusCode));
+        res.status(200).json(successResponse("eventPartner Registration", response, res.statusCode));
     } catch (error) {
         console.error("error in Registration", error);
-        res.status(500).json(errorResponse("error in create shop", res.statusCode));
+        res.status(500).json(errorResponse("error in eventPartner Registration", res.statusCode));
     }
 });
 
@@ -1399,7 +1411,7 @@ router.patch("/Update/:id", async (req, res) => {
     }
 });
 
-router.get("/geteventPartnerShopByUser/:userId", async (req, res) => {
+router.get("/geteventPartner/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
         const controller = new eventPartnerController();
@@ -1410,6 +1422,10 @@ router.get("/geteventPartnerShopByUser/:userId", async (req, res) => {
         res.status(500).json(errorResponse("error in fetching eventPartner shop", res.statusCode));
     }
 });
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post("/createCity", async (req, res) => {
     try {

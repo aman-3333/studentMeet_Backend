@@ -3,12 +3,14 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema({
     Hashtag: { type: String, required: true },
     eventId: { type: Schema.Types.ObjectId, ref: "event" },
+    description:{type: String},
     likeCount: { type: Number,default:0 },
     favoriteCount: { type: Number },
-    hashtagcommentCount:  { type: Number,default:0  },
+    hashtagcommentCount:  { type: Number,default:0},
     shareCount: { type: Number,default:0  },
     totalClick: { type: Number,default:0  },
-    picture: { type: String },
+    bannerImage: [{ type: String }],
+
     likeHashtag: [{
         userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
@@ -26,7 +28,8 @@ const schema = new Schema({
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
     deletedPersonId:{ type: Schema.Types.ObjectId, ref: "userDetails" },
-    createPersonId:{ type: Schema.Types.ObjectId, ref: "userDetails" },
+    userId:{ type: Schema.Types.ObjectId, ref: "userDetails" },
+    isEventHashtag:{type: Boolean, default: false},
     isActive: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false }
 }, {
@@ -37,13 +40,13 @@ export interface IHashtag extends Document {
     Hashtag: String,
     eventId: ObjectId,
     deletedPersonId: ObjectId,
-    createPersonId: ObjectId,
+    userId: ObjectId,
     likeCount: Number,
     favoriteCount: Number,
     hashtagcommentCount:  Number,
     totalClick: Number,
     shareCount: String,
-    picture: String,
+    bannerImage: [String],
     likeHashtag: [{
         userId: ObjectId,
     }],
@@ -60,6 +63,7 @@ export interface IHashtag extends Document {
        userId: ObjectId,
         friendId: ObjectId,
     }],
+    isEventHashtag: Boolean,
     isActive: Boolean,
     isDeleted: Boolean
 }

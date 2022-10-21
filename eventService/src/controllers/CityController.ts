@@ -5,9 +5,9 @@ export default class CityController {
     public async createCity(body: any) {
 
         let CityInfo: any;
-        if (body.length > 0) {
+       
             CityInfo = await City.create(body);
-        }
+        
         return CityInfo;
 
     }
