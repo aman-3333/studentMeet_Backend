@@ -2,12 +2,12 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
    
-  
+  userId:{type: Schema.Types.ObjectId},
     Description:{type:String},
     picture:{type:String},
     active:{type: Boolean, default: true},
     isDeleted: {type: Boolean, default: false},
-    ownerId:{type: Schema.Types.ObjectId,ref:"Users"}
+    ownerId:{type: Schema.Types.ObjectId}
 }, {
     timestamps: true
 });

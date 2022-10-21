@@ -112,7 +112,14 @@ export default class eventPartnerController {
     // }
 
 
-
+public async getpartnerlist(){
+    let partnerlist:any=await eventPartner.aggregate([{
+        $match:{
+            isDeleted:false
+        }
+    }])
+    return partnerlist
+}
   
     public async logineventPartner(body: any) {
         let otp = body.otp;
@@ -217,31 +224,6 @@ export default class eventPartnerController {
         }
         return eventPartnerInfo;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
 
     public async geteventPartnerInfoById(partnerId: any) {
         let eventPartnerInfo: any = await eventPartner.aggregate([{

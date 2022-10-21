@@ -1,7 +1,7 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    domain: { type: String, required: true },
+    domain: { type: String},
     partnerName: { type: String, required: true },
     businessIndustry: [{}],
     partnerAddress: { type: String },
@@ -18,6 +18,7 @@ const schema = new Schema({
 
         }
     },
+    partnerDescription: { type: String },
     contact: { type: Number },
     country_code: { type: Number },
     validContact: { type: Boolean, default: false },
@@ -48,6 +49,7 @@ const schema = new Schema({
     }],
     fssaiLicense: [{ type: String }],
     country: { type: String, default: "India" },
+    isCreatedByOrginzer: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     contact_verify: { type: Boolean, default: false },
     ispartnerVerified: { type: Boolean, default: false },
@@ -71,6 +73,7 @@ export interface IPartner extends Document {
     subSubCategory: ObjectId,
     ownerId: ObjectId,
     contactName: String,
+    partnerDescription: String,
     partnerName: String,
     partnerAddress: String,
     otp: String,
@@ -116,6 +119,7 @@ export interface IPartner extends Document {
     isRequestSend: Boolean,
     isRequestAccept: Boolean,
     isRequestReject: Boolean,
+    isCreatedByOrginzer: Boolean,
     rejectDescription: String,
     isPublished: Boolean,
     isDeleted: Boolean

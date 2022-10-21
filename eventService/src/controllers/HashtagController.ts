@@ -2,13 +2,12 @@ import Hashtag, { IHashtag } from "../models/Hashtag";
 import User from "../models/Users";
 import Event from "../models/event"
 import UserActivity from "../models/userActivity"
+import event from "../models/event";
 export default class HashtagController {
 
     public async createHashtag(body: any) {
         let HashtagInfo: any;
-
         HashtagInfo = await Hashtag.create(body);
-
         return HashtagInfo;
     }
 
@@ -27,6 +26,12 @@ export default class HashtagController {
         return HashtagInfo;
     }
   
+
+public async getAllEventByUserId(userId:any){
+    let eventInfo:any=await event.find({organizerId:{$in:userId},isDeleted:false}).lean()
+    return eventInfo
+}
+
 
 
     public async hashtagActivity(userId: any, eventId: any, hashtagId: any, status: any, hashtagcomment: any, hashtagcommentId: any, body: any) {
