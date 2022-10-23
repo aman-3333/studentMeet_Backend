@@ -5,14 +5,14 @@ import async, { nextTick } from "async";
 import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
-import Users, { IUser } from "../models/Users";
-import institute from "../models/institute.model";
-import Userrole from "../models/userrole.model";
+import Users  from "../models/userDetails";
+import institute from "../models/InstituteModel";
+
 
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
 import { mailer } from "../services/mailer";
-import userrole from "../models/Users";
+import userModel from "../models/userDetails";
 import FuzzySearch from 'fuzzy-search';
 // var ObjectId = require('mongodb').ObjectId;
 import Chat from "../models/chatModel";
@@ -25,9 +25,7 @@ export default class ChatController {
     public async getAllUser(id: any, search: any, senderId: any) {
         console.log("get all user");
         try {
-            let allData: any = await userrole.find({ institute: id }, {
-                fullname: 1, email: 1, institute: 1
-            }).find({ _id: { $ne: senderId } });
+            let allData: any = await userModel.find({ _id: { $ne: senderId } })
             if (search) {
                 const searcher = new FuzzySearch(
                     allData,
@@ -70,7 +68,7 @@ export default class ChatController {
                 .populate("latestMessage");
             console.log("is Chat 1", isChat, "\n")
 
-            isChat = await userrole.populate(isChat, {
+            isChat = await userModel.populate(isChat, {
                 path: "latestMessage.sender",
                 select: "users",
             });
@@ -119,7 +117,7 @@ export default class ChatController {
                 .populate("latestMessage")
                 .sort({ updatedAt: -1 })
                 .then(async (results: any) => {
-                    results = await userrole.populate(results, {
+                    results = await userModel.populate(results, {
                         path: "latestMessage.sender",
                         select: "fullname  email",
                     });
@@ -167,7 +165,7 @@ export default class ChatController {
                     let message = await Message.create(newMessage);
                      message = await  message.populate("sender").execPopulate()
                     message = await message.populate("chat").execPopulate()
-                    message = await userrole.populate(message, {
+                    message = await userModel.populate(message, {
                       path: "chat.users",
                       select: "fullname pic email",
                     });

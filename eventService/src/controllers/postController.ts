@@ -246,17 +246,15 @@ export default class PostController {
         if(status=="readPostlike"){
             PostInfo = await Post.findOne({ _id: PostId }).lean();
             PostInfo = PostInfo.likePost;
-     
-         
                 let userInfo: any = await userDetails.find({ _id:{$in:PostInfo}})
           return userInfo
         }
-        if(status=="readPostcomment"){
+        if(status=="readcommentPost"){
             PostInfo = await Post.findOne({ _id: PostId }).lean();
-            PostInfo = PostInfo.likePost;
+            PostInfo = PostInfo.commentPost;
                 let userInfo: any = await userDetails.find({ _id:{$in:PostInfo}})
           return userInfo
-        }if(status=="readPostfav"){
+        }if(status=="readfavouritePost"){
             PostInfo = await Post.findOne({ _id: PostId }).lean();
             PostInfo = PostInfo.likePost;
                 let userInfo: any = await userDetails.find({ _id:{$in:PostInfo}})

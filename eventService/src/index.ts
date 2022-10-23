@@ -10,7 +10,7 @@ import setEnvironment from "./env";
 import morganMiddleware from './middleware/morganMiddleware';
 import Logger from "./lib/logger";
 import router from "./routes";
-
+const http = require('http');
 const PORT = process.env.PORT || nconf.get('port');
 
 const app: Application = express();
@@ -29,7 +29,78 @@ app.use(
 
 app.use("/eventService", Auth.authManagement, router);
 app.use(morganMiddleware)
+const server1:any = http.createServer(app);
+const io = require("socket.io")(server1,{
+  pingTimeout: 20000,
+pingInterval: 25000,
+  cors: {
+    origin: "*",
+    credentials: true,
+  },
+});
 
+
+// !
+
+io.on("connection", (socket:any) => {
+
+  socket.on("setup", (userData:any) => {
+    
+    let id=userData.token_data.userid;
+    // console.log(id)
+
+    // socket.join(userData._id);
+    socket.join(id);
+
+
+
+    // console.log(userData,"userData")
+    socket.emit("connected");
+
+   
+
+  });
+
+
+  // !1
+  socket.on("join chat", (room:any) => {
+    socket.join(room);
+    // console.log("User Joined Room: " + room);
+
+  });
+ /*  socket.on("typing", (room:any) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room:any) => socket.in(room).emit("stop typing")); */
+
+  socket.on("new message", (newMessageRecieved:any) => {
+   
+    var chat = newMessageRecieved.chat;
+   
+    if (!chat.users) return ("chat.users not defined");
+
+    chat.users.forEach((user:any) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+
+      socket.in(user._id).emit("message recieved", newMessageRecieved);
+     /*  // !
+      socket.in(newMessageRecieved._id).emit("message2",newMessageRecieved);
+      //! */
+    });
+  });
+
+ 
+ /*  socket.on('forceDisconnect', function(){
+    console.log("disconnect")
+    socket.disconnect(true);
+    console.log("disconnect 1")
+}); */
+   socket.on("setupl", (id:any) => {
+    
+    socket.leave(id);
+   });
+  
+
+  
+});
 setEnvironment();
 
 mongoose.connect(nconf.get('mongodb'),
