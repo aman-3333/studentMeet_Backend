@@ -43,6 +43,12 @@ export default class eventController {
         return { eventInfo, organizerInfo };
     }
 
+    public async geteventbyuserId(userId:any){
+let eventInfo:any=await event.find({organizerId:userId,isDeleted:false}).lean()
+console.log("eventInfo",eventInfo);
+
+return eventInfo
+    }
     public async deleteevent(eventId: string, userId: String) {
 
         const eventInfo: IEvent = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
@@ -357,11 +363,22 @@ public async createEventOrganizerTeam(organizerId:any,eventId:any,suborganizerId
     })
 return eventInfo
 }
-    public async bookEvent(eventId: any, userId: any) {
-        let eventInfo: any = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false }).lean()
+    public async bookEvent(eventId: any, userId: any,status:any) {
+        let eventInfo: any
+        if(status=="book event"){
+        eventInfo  = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false,isEventBook:true }).lean()
         if (eventInfo) return ({ message: "you already booked this event" })
-        eventInfo = await bookevent.create({ eventId: eventId, userId: userId })
+        eventInfo = await bookevent.create({ eventId: eventId, userId: userId,isEventBook:true })
         return eventInfo
+    }if(status=="origanize event "){
+        eventInfo = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventOrganize:true}).lean()
+        if (eventInfo) return ({ message: "you already origanize this event" })
+        eventInfo = await bookevent.create({ eventId: eventId, userId: userId , isEventOrganize:true})
+        return eventInfo
+    }else{
+        return ({message:"try another event"})
+    }
+
     }
 
     public async applyForEventOrganize(eventId: any, organizerId: any, formId: any, status: any) {

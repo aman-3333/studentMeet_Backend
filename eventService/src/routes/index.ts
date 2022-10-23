@@ -19,7 +19,10 @@ import HashtagController from "../controllers/HashtagController";
 import CityController from "../controllers/CityController";
 import CategoryController from "../controllers/CategoryController";
 import EventGuildLinesController from "../controllers/CustomEventGuildLines"
-
+import ChatController from "../controllers/ChatController";
+import Message from "../models/messageModel"
+import userrole from "../models/userDetails"
+import Chat from "../models/chatModel";
 import { v4 as uuidv4 } from 'uuid';
 uuidv4()
 const aws = require('aws-sdk');
@@ -34,11 +37,280 @@ const router = express.Router();
 
 
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////chat route///////////////////////////////////////////////////////////
+router.get("/searchUser", async (req, res) => {
+    try {
+        const id:any=req.query.institute;
+        let search:any = req.query.search;
+        let senderId:any=req.query.senderId;
+        console.log(search,senderId)
+        const controller = new ChatController();
+        const response = await controller.getAllUser(id,search,senderId);
+        console.log(response, "response")
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /createFeeStructure", error);
+        return res.send(error);
+    }
+});
+
+// TODO........ 2nd   access Chat
+
+router.post("/accessChat/:Id",async(req:any,res:any)=>{
+    try {
+        const senderId:any=req.params.Id;
+    // const { userId,senderId } = req.body;
+    const { userId}:any = req.body;
+        const controller = new ChatController();
+        const response = await controller.accessChat(userId,senderId);
+        console.log(response, "response")
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /createFeeStructure", error);
+        return res.send(error);
+    }
+})
+
+
+// TODO........ 3rd  fetch Chat
+
+router.get("/fetchChat/:Id",async(req:any,res:any)=>{
+    try {
+        let senderId=req.params.Id;
+
+        const controller = new ChatController();
+        const response = await controller.fetchChat(senderId);
+        console.log(response, "response")
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /createFeeStructure", error);
+        return res.send(error);
+    }
+})
+
+// TODO  4th  get All Messages
+
+router.get("/getAllMessage/:chatId",async(req,res)=>{
+try {
+    let chatId=req.params.chatId ;
+
+    const controller = new ChatController();
+    const response = await controller.getALlMessage(chatId);
+    console.log(response, "response")
+    return res.send(response);
+} catch (error) {
+    console.error("error in /createFeeStructure", error);
+    return res.send(error);
+}
+});
+
+
+// TODO 5th send Message...........................
+
+router.post("/sendMessage/:Id",async(req,res)=>{
+    try {
+        let Id:any=req.params.Id ;
+        const { content, chatId }:any = req.body;
+        const controller = new ChatController();
+        const response = await controller.sendMessage(Id,content,chatId);
+        console.log(response, "response")
+        return res.send(response);
+    } catch (error) {
+        console.error("error in /createFeeStructure", error);
+        return res.send(error);
+    }
+
+
+})
+
+// TODO  6th  Create-Group-chat...................................................
+
+router.post("/create-group-chat/:senderId",async(req,res)=>{
+
+    try{
+        let senderId:any=req.params.senderId;
+        const{users,name}:any=req.body;
+        // console.log(req.body)
+        const controller=new ChatController();
+        const response= await controller.createGroupChat(senderId,users,name);
+        return res.send(response);
+    }
+    catch(error){
+        return res.send(error);
+    }
+})
+
+// //todo 
+
+
+
+// !todo   7th  send message
+router.post("/sendMessage/:Id",async(req,res)=>{
+    try {
+    const { content, chatId } = req.body;
+    console.log("content",content , "chatId",chatId )
+    const SenderId=req.params.Id;
+    console.log("senderId",SenderId)
+    // console.log(req.body)
+    if (!content || !chatId) {
+      console.log("Invalid data passed into request");
+    //   return res.send().Status(400);
+    return res.status(401).send("invalid data passed !chat or !content")
+    }
+  
+    var newMessage = {
+      sender: SenderId,
+      content: content,
+      chat: chatId,
+    };
+
+// TODO OLD...start
+      let message = await Message.create(newMessage);
+       message = await  message.populate("sender").execPopulate()
+      message = await message.populate("chat").execPopulate()
+      message = await userrole.populate(message, {
+        path: "chat.users",
+        select: "fullname pic email",
+      });
+      await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
+      res.json(message)
+ // !todo old end...
+
+//  !  new code start...
+
+// let message = await Message.create(newMessage)
+//   console.log("newMessage",message);
+
+//   let populatedMessage=await Message.find({_id:message._id}).populate("sender").populate("chat")
+
+//   console.log(populatedMessage,"populatemessage")
+//   await Chat.findByIdAndUpdate(req.body.chatId, { latestMessage: message });
+// res.send(populatedMessage)
+
+
+// !   new code end.....
+
+
+    } catch (error:any) {
+      res.status(400).send(error.message);
+      throw new Error(error.message);
+    }
+  });
+
+
+// todo
+
+// Todo 8th  Get:Message
+
+router.get("/getAllMessage/:chatId",async(req,res)=>{
+    console.log("get message")
+try {
+const messages = await Message.find({ chat: req.params.chatId })
+.populate("sender", "fullname email")
+.populate("chat");
+
+res.send(messages)
+
+} catch (error) {
+res.status(400);
+// throw new Error(error.message);
+}
+});
+
+
+// !TODO delete many
+
+router.patch("/delall",async(req,res)=>{
+try{
+    const all=['626f8c2d8bad662e68319faf',
+    "627bbaa29fd2c463349c0abd",
+        '627a0531640183570822ff15',
+        '6278ffa49975303360b5bd4a'] 
+    const del=await Message.updateMany( { _id: { $in:all } },
+        { $set: { content: "new set update" } },
+        {multi: true})
+
+    res.send(del)
+}
+catch(e){
+    res.send(e)
+}
+})
+
+// todo  aggregator
+router.get("/aggregate",async(req,res)=>{
+    try{
+          const data= await Message.aggregate(
+            [
+                {
+                    '$match': {
+                        'content': 'new set update'
+                    }
+                }, {
+                    '$project': {
+                        'content': 1, 
+                        'chat': 1, 
+                        'sender': 1
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'users', 
+                        'localField': 'sender', 
+                        'foreignField': '_id', 
+                        'as': 'sender'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$sender'
+                    }
+                }, {
+                    '$lookup': {
+                        'from': 'chats', 
+                        'localField': 'chat', 
+                        'foreignField': '_id', 
+                        'as': 'chat'
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$chat'
+                    }
+                },
+                {
+                    '$lookup': {
+                        'from': 'users', 
+                        'localField': 'chat.users', 
+                        'foreignField': '_id', 
+                        'as': 'chat.users'
+                      }
+                }
+                
+            ]
+          )
+          res.send(data)
+    }
+    catch(error){
+        res.send(error)
+    }
+})
+
+// TODO test user
+
+router.get("/find/:Id",async(req,res)=>{
+    let id=req.params.Id;
+    try{
+        const data=await userrole.find({_id:id})
+        console.log("data",data)
+        res.send(data)
+    }
+    catch(e){
+        res.send(e)
+    }
+})
 
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const s31 = new aws.S3({
     accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
     secretAccessKey: "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",
@@ -53,198 +325,58 @@ let storage = multer.memoryStorage({
 
 let upload = multer({ storage }).single('galleryImage')
 
-router.post('/uploadSingle', upload, (req:any, res:any) => {
 
-    let myFile: any = req.file?.originalname.split(".")
-    const fileType = myFile[myFile?.length - 1]
 
-    const params = {
-        Bucket: "midbazar-upload",
-        Key: `${uuidv4()
-            }.${fileType}`,
-        Body: req.file?.buffer
-    }
 
-    s31.upload(params, (error: any, data: any) => {
-        if (error) {
-            res.status(500).send(error)
-        }
 
-        res.status(200).send(data)
-    })
+
+
+var s3 = new aws.S3({
+  
+   accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
+   secretAccessKey: "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",
+
+   Bucket: "backendservicestudentmeet"
 })
+var upload1 = multer({
+   storage: multerS3({
+       s3: s3,
+       bucket:"backendservicestudentmeet",
+       metadata: function (req:any, file:any, cb:any) {
+           cb(null, { fieldName: file.fieldname });
+       },
+       key: function (req:any, file:any, cb:any) {
+           cb(null, Date.now().toString())
+       }
+   })
+})
+ 
+//Uploading single File to aws s3 bucket
+router.post('/upload', upload1.single('photos'), function (req:any, res:any ){
+   res.send({
+       data: req.files,
+       msg: 'Successfully uploaded ' + req.files + ' files!'
+   })
+})
+ 
+//Uploading Multiple Files to aws s3 bucket
+router.post('/uploadabc', upload1.array('photos', 10), function (req:any, res:any) {
+    console.log("photos",req.files);
+    
+   res.send({
+       data: req.files,
+       msg: 'Successfully uploaded ' + req.files.length + ' files!'
+   })
+})
+ 
 
-// var aws = require('aws-sdk')
-// //////////////////////////////////////////////////////////////////////////////
-// var multer1 = require('multer')
-// var multerS3 = require('multer-s3')
-// var app = express()
-// var s31 = new aws.S3({
-//     accessKeyId: "AKIA4SMDJLA35K6JWEUC",
-//     secretAccessKey: "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",
-//     Bucket: "midbazar-upload"
-// })
-// var upload1 = multer1({
-//     storage: multerS3({
-//         s3: s31,
-//         bucket: "midbazar-upload",
-//         metadata: function (req: any, file: any, cb: any) {
-//             cb(null, { fieldName: file.fieldname });
-//         },
-//         key: function (req: any, file: any, cb: any) {
-//             cb(null, Date.now().toString())
-//         }
-//     })
-// })
 
-// //Uploading single File to aws s3 bucket
-// router.post('/upload', upload1.single('image'), function (req, res, next) {
-//     res.send({
-//         data: req.files,
-//         msg: 'Successfully uploaded ' + req.files + 'files!'
-//     })
-// })
 
-// //Uploading Multiple Files to aws s3 bucket
-// router.post('/uploadArray', upload1.array('image', 30), function (req, res, next) {
-//     res.send({
-//         data: req.files,
-//         msg: 'Successfully uploaded ' + req.files?.length + 'files!'
-//     })
-// })
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
-const s3 = new aws.S3({
-    accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
-    secretAccessKey: "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",
-
-    Bucket: "midbazar-upload"
-});
-
-/**
- * Single Upload
- */
-const profileImgUpload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: "midbazar-upload",
-        acl: 'public-read',
-        key: function (req: any, file: any, cb: any) {
-            cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
-        }
-    }),
-    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
-    fileFilter: function (req: any, file: any, cb: any) {
-        checkFileType(file, cb);
-    }
-}).single('profileImage');
-
-/**
- * Check File Type
- * @param file
- * @param cb
- * @return {*}
- */
-function checkFileType(file: any, cb: any) {
-    // Allowed ext
-    const filetypes = /jpeg|jpg|png|gif/;
-    // Check ext
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb('Error: Images Only!');
-    }
-}
-
-/**
- * @route POST /api/profile/business-img-upload
- * @desc Upload post image
- * @access public
- */
-// router.post('/profile-img-upload', (req, res) => {
-//     profileImgUpload(req, res, (error: any) => {
-//         console.log('requestOkokok', req.file);
-//         console.log('error', error);
-//         if (error) {
-//             console.log('errors', error);
-//             res.json({ error: error });
-//         } else {
-//             // If File not found
-//             if (req.file === undefined) {
-//                 console.log('Error: No File Selected!');
-//                 res.json('Error: No File Selected');
-//             } else {
-//                 // If Success
-//                 const imageName = req.file.key;
-//                 const imageLocation = req.file.location;
-//                 // Save the file name into database into profile model
-//                 res.json({
-//                     image: imageName,
-//                     location: imageLocation
-//                 });
-//             }
-//         }
-//     });
-// });
-
-/**
- * BUSINESS GALLERY IMAGES
- * MULTIPLE FILE UPLOADS
- */
-// Multiple File Uploads ( max 4 )
-const uploadsBusinessGallery = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: "backendservicestudentmeet",
-
-        key: function (req: any, file: any, cb: any) {
-            cb(null, path.basename(file.originalname, path.extname(file.originalname)) + '-' + Date.now() + path.extname(file.originalname))
-        }
-    }),
-    limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
-    fileFilter: function (req: any, file: any, cb: any) {
-        checkFileType(file, cb);
-    }
-}).array('galleryImage', 40);
-/**
- * @route POST /api/profile/multiple-file-upload
- * @desc Upload business Gallery images
- * @access public
- */
-router.post('/multiple-file-upload', (req:any, res:any) => {
-    uploadsBusinessGallery(req, res, (error: any) => {
-        console.log('files', req.files);
-        if (error) {
-            console.log('errors', error);
-            res.json({ error: error });
-        } else {
-            // If File not found
-            if (req.files === undefined) {
-                console.log('Error: No File Selected!');
-                res.json('Error: No File Selected');
-            } else {
-                // If Success
-                let fileArray: any = req.files,
-                    fileLocation;
-                const galleryImgLocationArray = [];
-                for (let i = 0; i < fileArray.length; i++) {
-                    fileLocation = fileArray[i].location;
-                    console.log('filenm', fileLocation);
-                    galleryImgLocationArray.push(fileLocation)
-                }
-                // Save the file name into database
-                res.json({
-                    filesArray: fileArray,
-                    locationArray: galleryImgLocationArray
-                });
-            }
-        }
-    });
-});
 
 
 
@@ -436,6 +568,8 @@ router.post("/createevent", async (req, res) => {
     }
 });
 
+
+
 router.patch("/editevent/:id", async (req, res) => {
     try {
         const eventId = req.params.id;
@@ -461,6 +595,19 @@ router.get("/getallevent", async (req, res) => {
         res.status(500).json(errorResponse("error in get event", res.statusCode));
     }
 });
+
+router.get("/geteventbyuserId", async (req, res) => {
+    try {
+        const controller = new eventController();
+        const userId = req.query.userId;
+        const response:any = await controller.geteventbyuserId(userId);
+        res.status(200).json(successResponse("get geteventbyuserId", response, res.statusCode));
+    } catch (error) {
+        console.error("error in get geteventbyuserId", error);
+        res.status(500).json(errorResponse("error in get geteventbyuserId", res.statusCode));
+    }
+});
+
 
 
 router.get("/geteventinfobyid", async (req, res) => {
@@ -567,8 +714,9 @@ router.post("/bookEvent", async (req, res) => {
     try {
         const eventId = req.body.eventId; 
         const userId = req.body.userId; 
+        const status = req.body.status; 
         const controller = new eventController();
-        const response: any = await controller.bookEvent(eventId,userId);
+        const response: any = await controller.bookEvent(eventId,userId,status);
         res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
         console.error("error in eventCreateBYOrganizer", error);
