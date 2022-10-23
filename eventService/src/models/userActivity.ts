@@ -1,19 +1,29 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    userDetailsId: { type: Schema.Types.ObjectId },
-    hashtagLike: [
+    userId: { type: Schema.Types.ObjectId },
+    likePost: [ { type: Schema.Types.ObjectId, ref: "post" 
+}],
+favouritePost: [{ type: Schema.Types.ObjectId, ref: "post" 
+}],
+commentPost: [{
+ postId: { type: Schema.Types.ObjectId, ref: "post" },
+ postMessage:{ type: String },
+    dateTime:{ type: Date },
+}],
+
+    likeHashtag: [
         { type: Schema.Types.ObjectId },
     ],
-    hashtagcomment: [{
+    commentHashtag: [{
         hashtagId: { type: Schema.Types.ObjectId },
         comment: { type: String },
         time: { type: Date }
     }],
-    hashtagFavorite: [
+    favouriteHashtag: [
          { type: Schema.Types.ObjectId },
     ],
-    hashtagShare: [{
+    shareHashtag: [{
         hashtagId: { type: Schema.Types.ObjectId },
         friendId: { type: Schema.Types.ObjectId },
     }],
@@ -45,10 +55,10 @@ const schema = new Schema({
         friendId: { type: Schema.Types.ObjectId },
     }],
     followers: [
-        { type: Schema.Types.ObjectId },
+        { type: Schema.Types.ObjectId, ref: "userDetails" },
     ],
     following: [
-         {type: Schema.Types.ObjectId },
+         {type: Schema.Types.ObjectId, ref: "userDetails" },
     ],
     friend:[
        { type: Schema.Types.ObjectId }
@@ -65,20 +75,29 @@ const schema = new Schema({
 });
 
 export interface IuserDetailsActivity extends Document {
-    userDetailsId: ObjectId,
-    hashtagLike: [{
-        hashtagId: ObjectId,
+    userId: ObjectId,
+    likePost: [ObjectId],
+    favouritePost: [ObjectId],
+    commentPost: [{
+      postId: ObjectId,
+        postMessage:String,
+        dateTime:Date,
     }],
-    hashtagcomment: [{
+
+
+    likeHashtag: [
+        ObjectId,
+    ],
+    commentHashtag: [{
         hashtagId: ObjectId,
         comment: String,
         time: Date
     }],
-    hashtagFavorite: [{
-        hashtagId: ObjectId,
-    }],
-    hashtagShare: [{
-        hashtagId: ObjectId,
+    favouriteHashtag: [
+        ObjectId,
+    ],
+    shareHashtag: [{
+        hashtagId:ObjectId,
         friendId: ObjectId,
     }],
     hashtagSharedByOther: [{
@@ -120,4 +139,4 @@ export interface IuserDetailsActivity extends Document {
     isDeleted: Boolean
 }
 
-export default model<IuserDetailsActivity>("userDetailsactivity", schema);
+export default model<IuserDetailsActivity>("useractivity", schema);

@@ -4,6 +4,8 @@ const schema = new Schema({
     
     eventId: { type: Schema.Types.ObjectId, ref: "event" },
     userId: { type: Schema.Types.ObjectId },
+    isEventBook: { type: Boolean, default: false },
+    isEventOrganize: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false }
 }, {
@@ -13,6 +15,8 @@ const schema = new Schema({
 export interface IBookEvent extends Document {
     eventId: ObjectId,
     userId: ObjectId,
+    isEventBook: Boolean,
+    isEventOrganize: Boolean,
     active: Boolean,
     isDeleted: Boolean
 }

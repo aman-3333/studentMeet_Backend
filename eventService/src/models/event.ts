@@ -3,10 +3,11 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 
 const eventSchema = new Schema(
   {
-    organizerId: [{ type: Schema.Types.ObjectId, ref: "Users" }],
+    organizerId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     eventFormId: [{ type: Schema.Types.ObjectId, ref: "FormId" }],
-    eventPartnerId: { type: Schema.Types.ObjectId, ref: "eventPartner" },
-    participentId: [{ type: Schema.Types.ObjectId, ref: "Users" }],
+    eventPartnerId: [{ type: Schema.Types.ObjectId, ref: "eventPartner" }],
+    participentId: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     eventGuideLines: { type: Schema.Types.ObjectId },
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
@@ -70,9 +71,10 @@ const eventSchema = new Schema(
 );
 
 export interface IEvent extends Document {
-  organizerId: [ObjectId],
+  organizerId:ObjectId,
+  suborganizerId: [ObjectId],
   eventFormId: [ObjectId],
-  eventPartnerId: ObjectId,
+  eventPartnerId: [ObjectId],
   category: ObjectId,
   subCategory: ObjectId,
   subSubCategory: ObjectId,
