@@ -8,19 +8,17 @@ const schema = new Schema({
     video: [{ type: String }],
     attechment: [{ type: String }],
     hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
-    likeCount: { type: Number, default: 0 },
+    postLikeCount: { type: Number, default: 0 },
     shareount: { type: Number, default: 0 },
-    CommentCount: { type: Number, default: 0 },
-    favouriteCount: { type: Number, default: 0 },
-    likePost: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    postCommentCount: { type: Number, default: 0 },
+    postFavouriteCount: { type: Number, default: 0 },
+    likePost: [ { type: Schema.Types.ObjectId, ref: "userDetails" 
     }],
-    favouritePost: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    }],
+    favouritePost: [{ type: Schema.Types.ObjectId, ref: "userDetails" 
+}],
     commentPost: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-        commentMessage:{ type: String },
+      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        postMessage:{ type: String },
         dateTime:{ type: Date },
     }],
     sharePost: [{
@@ -42,19 +40,15 @@ export interface IPost extends Document {
     video: [String],
     attechment: [String],
     hashtagId: ObjectId,
-    likeCount: Number,
+    postLikeCount: Number,
     shareount: Number,
-    CommentCount: Number,
-    favouriteCount: Number,
-    likePost: [{
-        userId: ObjectId,
-    }],
-    favouritePost: [{
-        userId: ObjectId,
-    }],
+    postCommentCount: Number,
+    postFavouriteCount: Number,
+    likePost: [ObjectId],
+    favouritePost: [ObjectId],
     commentPost: [{
-        userId: ObjectId,
-        commentMessage:String,
+      userId: ObjectId,
+        postMessage:String,
         dateTime:Date,
     }],
     sharePost: [{
@@ -66,4 +60,4 @@ export interface IPost extends Document {
     isDeleted: Boolean
 }
 
-export default model<IPost>("bookevent", schema);
+export default model<IPost>("post", schema);

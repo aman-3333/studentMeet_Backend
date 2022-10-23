@@ -493,12 +493,11 @@ router.post("/eventActivity", async (req, res) => {
         res.status(500).json(errorResponse("error in eventActivity", res.statusCode));
     }
 })
-router.post("/readActivity", async (req, res) => {
+router.get("/readActivity", async (req, res) => {
     try{
         
-        const status:any =req.body.status;
-        const eventId=req.body.eventId;
-        const body=req.body;
+        const status:any =req.query.status;
+        const eventId=req.query.eventId;
         const controller=new eventController();
         const response:any =await controller.readActivity(eventId,status);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
@@ -533,6 +532,37 @@ router.post("/bookForEventOrganize", async (req, res) => {
         res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
     }
 });
+
+
+router.post("/following", async (req, res) => {
+    try {
+        
+        const userId = req.body.userId; 
+        const followingId = req.body.followingId;
+      
+        const controller = new eventController();
+        const response: any = await controller.following(userId,followingId);
+        res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
+    } catch (error) {
+        console.error("error in eventCreateBYOrganizer", error);
+        res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
+    }
+});
+router.post("/unfollowing", async (req, res) => {
+    try {
+        
+        const userId = req.body.userId; 
+        const followingId = req.body.followingId;
+      
+        const controller = new eventController();
+        const response: any = await controller.unfollowing(userId,followingId);
+        res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
+    } catch (error) {
+        console.error("error in eventCreateBYOrganizer", error);
+        res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
+    }
+});
+
 router.post("/bookEvent", async (req, res) => {
     try {
         const eventId = req.body.eventId; 
@@ -565,6 +595,20 @@ router.get("/filterEvent", async (req, res) => {
 });
 
 
+
+router.post("/eventorganizerteam", async (req, res) => {
+    try {
+        const organizerId = req.body.organizerId;
+        const eventId = req.body.eventId;
+        const suborganizerId = req.body.suborganizerId;
+        const controller = new eventController();
+        const response: IEvent = await controller.createEventOrganizerTeam(organizerId,eventId,suborganizerId);
+        res.status(200).json(successResponse("delete event", response, res.statusCode));
+    } catch (error) {
+        console.error("error in delete event", error);
+        res.status(500).json(errorResponse("error in delete event", res.statusCode));
+    }
+})
 router.patch("/deleteevent/:id", async (req, res) => {
     try {
         const eventId = req.body.eventId;
@@ -1142,25 +1186,24 @@ router.get("/HashtagList", async (req, res) => {
     }
 });
 
-
+router.get("/searchHashtag", async (req, res) => {
+    try {
+        const search=req.query.search;  
+        const controller = new HashtagController();
+        const businessTypeId = req.query.businessTypeId;
+        const response: IHashtag[] = await controller.searchHashtag(search);
+        res.status(200).json(successResponse("get Hashtag", response, res.statusCode));
+    } catch(error) {
+        console.error("error in get Hashtag", error);
+        res.status(500).json(errorResponse("error in get Hashtag", res.statusCode));
+    }
+});
 router.get("/hashtaginfobyid", async (req, res) => {
     try {
         const hashtagId: any= req.query.hashtagId;
-        const userId=req.query.userId;
+        const userId=req.body.userId;
         const controller = new HashtagController();
         const response: IHashtag = await controller.getHashtagInfoById(hashtagId);
-        res.status(200).json(successResponse("get Hashtag by Id ", response, res.statusCode));
-    } catch(error) {
-        console.error("error in get Hashtag by Id", error);
-        res.status(500).json(errorResponse("error in get Hashtag by Id", res.statusCode));
-    }
-});
-router.get("/getAllEventByUserId", async (req, res) => {
-    try {
-        const userId: any= req.query.userId;
-     
-        const controller = new HashtagController();
-        const response: IHashtag = await controller.getAllEventByUserId(userId);
         res.status(200).json(successResponse("get Hashtag by Id ", response, res.statusCode));
     } catch(error) {
         console.error("error in get Hashtag by Id", error);
@@ -1185,14 +1228,14 @@ router.post("/HashtagActivity", async (req, res) => {
     try{
         
         const userId=req.body.userId;
-        const eventId=req.body.eventId;
+        const HashtagId=req.body.HashtagId;
         const hashtagId=req.body.hashtagId; 
          const status=req.body.status; 
-         const hashtagcomment=req.body.hashtagcomment;
-        const hashtagcommentId=req.body.hashtagcommentId;
+         const Hashtagcomment=req.body.Hashtagcomment;
+        const HashtagcommentId=req.body.HashtagcommentId;
         const body=req.body;
         const controller=new HashtagController();
-        const response:IHashtag =await controller.hashtagActivity(userId,eventId, hashtagId, status,hashtagcomment,hashtagcommentId, body);
+        const response:IHashtag =await controller.HashtagActivity(userId, HashtagId, status, Hashtagcomment, HashtagcommentId, body);
         res.status(200).json(successResponse("hashtagActivity",response,res.statusCode));
     }catch(error) {
         console.error("error in hashtagActivity ", error);
@@ -1200,6 +1243,29 @@ router.post("/HashtagActivity", async (req, res) => {
     }
 })
 
+
+router.get("/readHashtagActivity", async (req, res) => {
+    try{
+        
+        const status:any =req.query.status;
+        const hashtagId=req.query.hashtagId;
+        const controller=new HashtagController();
+        const response:any =await controller.readHashtagActivity(hashtagId,status);
+        res.status(200).json(successResponse("readActivity",response,res.statusCode));
+    }catch(error) {
+        console.error("error in readActivity ", error);
+        res.status(500).json(errorResponse("error in readActivity", res.statusCode));
+    }
+})
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 router.post("/subCategory", async (req, res) => {
     try {
         const body = req.body as ISubCategory;
@@ -1391,19 +1457,19 @@ router.post("/eventPartner/Registration", async (req, res) => {
         const body = req.body as IPartner;
         const controller = new eventPartnerController();
         const response: any = await controller.createeventPartner(body);
-        res.status(200).json(successResponse("eventPartner Registration", response, res.statusCode));
+        res.status(200).json(successResponse("create shop", response, res.statusCode));
     } catch (error) {
         console.error("error in Registration", error);
-        res.status(500).json(errorResponse("error in eventPartner Registration", res.statusCode));
+        res.status(500).json(errorResponse("error in create shop", res.statusCode));
     }
 });
 
-router.patch("/Update/:id", async (req, res) => {
+router.patch("/editeventPartner/:id", async (req, res) => {
     try {
-        const shopId = req.params.id;
+        const eventPartnerId:any= req.params.id;
         const body = req.body as IPartner;
         const controller = new eventPartnerController();
-        const response: IPartner = await controller.editeventPartner(body, shopId);
+        const response: IPartner = await controller.editeventPartner(body, eventPartnerId);
         res.status(200).json(successResponse("edit shop", response, res.statusCode));
     } catch (error) {
         console.error("error in signup", error);
@@ -1411,7 +1477,7 @@ router.patch("/Update/:id", async (req, res) => {
     }
 });
 
-router.get("/geteventPartner/:userId", async (req, res) => {
+router.get("/geteventPartnerShopByUser/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
         const controller = new eventPartnerController();
@@ -1422,10 +1488,6 @@ router.get("/geteventPartner/:userId", async (req, res) => {
         res.status(500).json(errorResponse("error in fetching eventPartner shop", res.statusCode));
     }
 });
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.post("/createCity", async (req, res) => {
     try {

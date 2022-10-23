@@ -21,8 +21,6 @@ import Message from "../models/messageModel";
 
 
 export default class ChatController {
-
-
      // TODO  GEt ALL USER................................
     public async getAllUser(id: any, search: any, senderId: any) {
         console.log("get all user");
@@ -46,8 +44,6 @@ export default class ChatController {
         catch (error) {
             return error
         }
-
-
     }
 
     // TODO ACCESS CHAT................................

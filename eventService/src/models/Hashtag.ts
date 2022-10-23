@@ -11,15 +11,13 @@ const schema = new Schema({
     totalClick: { type: Number,default:0  },
     bannerImage: [{ type: String }],
 
-    likeHashtag: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    }],
-    favouriteHashtag: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    }],
+    likeHashtag: [
+        { type: Schema.Types.ObjectId, ref: "userDetails" },
+    ],
+    favouriteHashtag: [ { type: Schema.Types.ObjectId, ref: "userDetails" },],
     commentHashtag: [{
         userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-        commentMessage:{ type: String },
+        comment:{ type: String },
         dateTime:{ type: Date },
     }],
     shareHashtag: [{
@@ -47,15 +45,11 @@ export interface IHashtag extends Document {
     totalClick: Number,
     shareCount: String,
     bannerImage: [String],
-    likeHashtag: [{
-        userId: ObjectId,
-    }],
-    favouriteHashtag: [{
-        userId: ObjectId,
-    }],
+    likeHashtag: [ObjectId],
+    favouriteHashtag: [ObjectId],
     commentHashtag: [{
         userId: ObjectId,
-        commentMessage:String,
+        comment:String,
         dateTime:Date,
     }],
     shareHashtag: [{

@@ -81,11 +81,9 @@ export default class eventController {
                                 body.eventLike
                         }
                     })
-                let eventInfo: any = await event.findOne({ _id: body.eventLike })
-                console.log("eventInfo", eventInfo);
-                eventInfo = eventInfo.eventLikeCount
-                eventInfo = eventInfo + 1
-                await event.findOneAndUpdate({ _id: body.eventLike}, { $set: { eventLikeCount: eventInfo } },{new:true})
+                
+                await event.findOneAndUpdate({ _id: body.eventLike},
+                    {$inc: {eventLikeCount:1}},{new:true}).lean()
                 await event.findOneAndUpdate({
                     _id: body.eventLike
                 }, {
@@ -110,13 +108,8 @@ export default class eventController {
                     }
                 })
                
-            let eventInfo: any = await event.findOne({ _id: body.eventLike})
-            console.log("eventInfo",eventInfo);
-
-
-            eventInfo = eventInfo.eventLikeCount
-            eventInfo = eventInfo - 1
-            await event.findOneAndUpdate({ _id: body.eventLike}, { $set: { eventLikeCount: eventInfo } })
+                await event.findOneAndUpdate({ _id: body.eventLike},
+                    {$inc: {eventLikeCount:-1}},{new:true})
             await event.findOneAndUpdate({
                 _id: body.eventLike
             }, {
@@ -154,11 +147,8 @@ export default class eventController {
                                 body.eventFavorite
                         }
                     })
-                let eventInfo: any = await event.findOne({ _id: body.eventFavorite })
-                console.log("eventInfo", eventInfo);
-                eventInfo = eventInfo.eventFavoriteCount
-                eventInfo = eventInfo + 1
-                await event.findOneAndUpdate({ _id: body.eventFavorite}, { $set: { eventFavoriteCount: eventInfo } },{new:true})
+                await event.findOneAndUpdate({ _id: body.eventFavorite},
+                    {$inc: {eventFavoriteCount:1}},{new:true})
                 await event.findOneAndUpdate({
                     _id: body.eventFavorite
                 }, {
@@ -182,14 +172,9 @@ export default class eventController {
                         body.eventFavorite
                     }
                 })
-               
-            let eventInfo: any = await event.findOne({ _id: body.eventFavorite})
-            console.log("eventInfo",eventInfo);
-
-
-            eventInfo = eventInfo.eventFavoriteCount
-            eventInfo = eventInfo - 1
-            await event.findOneAndUpdate({ _id: {$in:body.eventFavorite} }, { $set: { eventFavoriteCount: eventInfo } })
+            await event.findOneAndUpdate({ _id: body.eventFavorite},
+                {$inc: {eventFavoriteCount:-1}},{new:true})
+            
             await event.findOneAndUpdate({
                 _id: body.eventFavorite
             }, {
@@ -228,9 +213,10 @@ export default class eventController {
                         }
                     })
 
-                await event.aggregate([
-                    { $group: { _id: eventId, commentCount: { $sum: 1 } } }
-                ])
+                    await event.findOneAndUpdate({ _id: body.eventcomment.eventId},
+                        {$inc: {commentCount:1}},{new:true})
+
+                
 
                 return userInfo;
             }
@@ -240,6 +226,9 @@ export default class eventController {
                 { _id: userId },
                 { $pull: { eventcomment: { eventId: eventId } } }
             );
+
+            await event.findOneAndUpdate({ _id: body.eventcomment.eventId},
+                {$inc: {commentCount:-1}},{new:true})
 
             return userInfo;
         } if (status == "readeventcomment") {
@@ -355,7 +344,19 @@ export default class eventController {
 
 
 
+public async createEventOrganizerTeam(organizerId:any,eventId:any,suborganizerId:any){
 
+    let eventInfo:any=await event.findOneAndUpdate({
+        _id:eventId,
+        organizerId:organizerId
+    },
+    {
+        $push:{
+            suborganizerId:suborganizerId
+        }
+    })
+return eventInfo
+}
     public async bookEvent(eventId: any, userId: any) {
         let eventInfo: any = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false }).lean()
         if (eventInfo) return ({ message: "you already booked this event" })
@@ -377,6 +378,66 @@ export default class eventController {
             return ({ message: "already book" })
         }
     }
+
+public async following(userId:any,followingId:any){
+    let userInfo:any
+    userInfo=await userActivity.findOne({following:{$in:followingId}}).lean()
+if(!userInfo){
+    userInfo=await userActivity.findOneAndUpdate({userId:userId,
+    },{
+        $push:{
+            following:followingId
+        }
+    }).lean()
+    await userActivity.findOneAndUpdate({userId:followingId,
+    },{
+        $push:{
+            followers:userId
+        }
+    }).lean()
+
+    await userActivity.findOneAndUpdate({userId:userId,
+    },
+    {$inc: {followingCount:1}}).lean()
+    await userActivity.findOneAndUpdate({userId:followingId,
+    },
+    {$inc: {followersCount:1}}).lean()
+
+}
+
+return userInfo
+}
+
+
+public async unfollowing(userId:any,followingId:any){
+    let userInfo:any
+    userInfo=await userActivity.findOne({following:{$in:followingId}}).lean()
+if(userInfo){
+    userInfo=await userActivity.findOneAndUpdate({userId:userId,
+    },{
+        $pull:{
+            following:followingId
+        }
+    }).lean()
+    await userActivity.findOneAndUpdate({userId:followingId,
+    },{
+        $pull:{
+            followers:userId
+        }
+    }).lean()
+
+    await userActivity.findOneAndUpdate({userId:userId,
+    },
+    {$inc: {followingCount:-1}}).lean()
+    await userActivity.findOneAndUpdate({userId:followingId,
+    },
+    {$inc: {followersCount:-1}}).lean()
+
+}
+
+return userInfo
+}
+
 
 }
 
