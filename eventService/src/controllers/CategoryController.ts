@@ -33,7 +33,7 @@ export default class CategoryController {
 
 
     public async getCategory(businessTypeId: any) {
-        const categoryList: ICategory[] = await Category.find({ businessType: businessTypeId, isDeleted: false });
+        const categoryList: ICategory[] = await Category.find({ isDeleted: false });
         return categoryList;
     }
     public async getCategoryCustomer() {
