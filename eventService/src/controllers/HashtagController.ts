@@ -17,7 +17,7 @@ export default class HashtagController {
     }
 
     public async getHashtagList() {
-        const HashtagList: IHashtag[] = await Hashtag.find({ isDeleted: false, isActive: true }).sort({ totalClick: -1 });
+        const HashtagList: IHashtag[] = await Hashtag.find({ isDeleted: false });
         return HashtagList;
     }
 
