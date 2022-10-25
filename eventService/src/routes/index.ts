@@ -41,11 +41,11 @@ const router = express.Router();
 router.get("/searchUser", async (req, res) => {
     try {
         const id:any=req.query.institute;
-        let search:any = req.query.search;
+        let searchValue:any = req.query.searchValue;
         let senderId:any=req.query.senderId;
-        console.log(search,senderId)
+       
         const controller = new ChatController();
-        const response = await controller.getAllUser(id,search,senderId);
+        const response = await controller.getAllUser(id,searchValue,senderId);
         console.log(response, "response")
         return res.send(response);
     } catch (error) {
@@ -1708,11 +1708,10 @@ router.post("/createState", async (req, res) => {
         const response = await controller.createState(body);
         res.status(200).json(successResponse("create State", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+        console.error("error in State", error);
         res.status(500).json(errorResponse("error in create State", res.statusCode));
     }
 });
-
 router.patch("/State/:id", async (req, res) => {
     try {
         const StateId = req.params.id;

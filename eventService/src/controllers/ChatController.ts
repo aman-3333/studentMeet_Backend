@@ -22,19 +22,21 @@ import Message from "../models/messageModel";
 
 export default class ChatController {
      // TODO  GEt ALL USER................................
-    public async getAllUser(id: any, search: any, senderId: any) {
+    public async getAllUser(id: any, searchValue: any, senderId: any) {
         console.log("get all user");
         try {
             let allData: any = await userModel.find({ _id: { $ne: senderId } })
-            if (search) {
+            console.log("allData",allData);
+            
+            if (searchValue) {
                 const searcher = new FuzzySearch(
                     allData,
-                    ["fullname", "email", "institute"],
+                    ["fullname"],
                     {
                         caseSensitive: false,
                     }
                 );
-                allData = searcher.search(search);
+                allData = searcher.search(searchValue);
             }
 
             return allData;
