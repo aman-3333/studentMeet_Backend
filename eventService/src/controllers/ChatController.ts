@@ -1,17 +1,5 @@
-//npm libraries
-import * as jwt from "jsonwebtoken";
-import moment, { now } from "moment";
-import async, { nextTick } from "async";
-import bcrypt from "bcryptjs";
-import mongoose, { ObjectId } from "mongoose";
-//Edneed objects
-import Users  from "../models/userDetails";
-import institute from "../models/InstituteModel";
 
-
-import * as constants from "../utils/Constants";
-import nconf from "nconf";
-import { mailer } from "../services/mailer";
+import userActivity from "../models/userActivity";
 import userModel from "../models/userDetails";
 import FuzzySearch from 'fuzzy-search';
 // var ObjectId = require('mongodb').ObjectId;
@@ -116,7 +104,7 @@ export default class ChatController {
             const data = await Chat.find({ users: { $elemMatch: { $eq: senderId } } })
                 .populate("users", "-password")
                 .populate("groupAdmin", "-password")
-                .populate("latestMessage")
+                // .populate("latestMessage")
                 .sort({ updatedAt: -1 })
                 .then(async (results: any) => {
                     results = await userModel.populate(results, {
@@ -141,7 +129,7 @@ export default class ChatController {
                     console.log("get all message",chatId);
                     try{
                         const messages = await Message.find({ chat:chatId })
-                        .populate("sender", "fullname email")
+                        .populate("sender")
                         .populate("chat");
                         return messages;
                     }
@@ -150,6 +138,8 @@ export default class ChatController {
                     }
                 }
 // TODO   SEND MESSAGE .................................
+
+
 
             public async sendMessage(Id:any,content:any,chatId:any){
                 console.log("send message")
@@ -186,12 +176,12 @@ export default class ChatController {
                   }
                   console.log("users")
                   
-                  var users = JSON.parse(users);
+                //   var users = JSON.parse(users);
                 //   var users=  JSON.parse(JSON.stringify(users))
                 
                   console.log("users")
                   console.log(users,"users")
-                  if (users.length < 2) {
+                  if (users.length < 1) {
                       return "More than 2 users are required to form a group chat"
                   }
                   users.push(senderId);
@@ -211,6 +201,103 @@ export default class ChatController {
                     return error;
                 }
             }
+
+public async blockperson(userId:any,blockId:any,chatId:any,status:any){
+    let userInfo:any;
+    if(status=="block"){
+        userInfo=await Chat.findOneAndDelete({_id:chatId})
+await userActivity.findOneAndUpdate({
+    userId:userId
+},{
+    $push:{
+        blockList:blockId
+    }
+})
+await userActivity.findOneAndUpdate({
+    userId:blockId
+},{
+    $push:{
+        blockbyOther:userId
+    }
+})
+
+}
+if(status=="unblock"){
+    userInfo=await Chat.findOneAndUpdate({chatId:chatId},{
+        $push:{
+           users:{$in:userId}
+        }
+    })
+    await userActivity.findOneAndUpdate({
+        userId:userId
+    },{
+        $pull:{
+            blockList:blockId
+        }
+    })
+    await userActivity.findOneAndUpdate({
+        userId:blockId
+    },{
+        $pull:{
+            blockbyOther:userId
+        }
+    })
+    
+
+
+}
+}
+public async leavegroup(userId:any,adminId:any,groupId:any){
+    let userInfo:any;
+    // if(adminId){
+    //     userInfo =await Chat.find({_id:groupId
+    //     },{
+    //         $pull:{
+    //             users:{$in:userId}
+    //         }
+    //     })
+    // }
+    userInfo =await Chat.findOneAndUpdate({_id:groupId
+    },{
+        $pull:{
+            users:{$in:userId}
+        }
+    })
+return userInfo
+
+}
+
+public async sendFriendRequest(sernderId:any,userId:any){
+
+}
+
+public async acceptFriendRequest(sernderId:any,userId:any){
+    let userInfo:any=await Chat.findOne({})
+
+}
+
+public async rejectFriendRequest(userId:any,senderId:any){
+    let userInfo:any=await userActivity.findByIdAndUpdate({userId:senderId},{
+        $push:{
+            rejectFriendRequest:senderId
+        }
+    })
+
+    await userActivity.findByIdAndUpdate({userId:userId},{
+        $push:{
+            friendRequestRejectbyOther:senderId
+        }
+    })
+
+
+    return userInfo
+
+}
+
+
+
+
+
 }
 
 

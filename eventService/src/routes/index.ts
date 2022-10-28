@@ -46,28 +46,28 @@ router.get("/searchUser", async (req, res) => {
        
         const controller = new ChatController();
         const response = await controller.getAllUser(id,searchValue,senderId);
-        console.log(response, "response")
-        return res.send(response);
+        res.status(200).json(successResponse("searchUser",response,res.statusCode));
     } catch (error) {
-        console.error("error in /createFeeStructure", error);
-        return res.send(error);
+        res.status(500).json(errorResponse("error in searchUser", res.statusCode));
     }
 });
 
+
+
+
 // TODO........ 2nd   access Chat
 
-router.post("/accessChat/:Id",async(req:any,res:any)=>{
+router.post("/accessChat",async(req:any,res:any)=>{
     try {
-        const senderId:any=req.params.Id;
+        const senderId =req.body.senderId;
     // const { userId,senderId } = req.body;
-    const { userId}:any = req.body;
+    const  userId = req.body.userId;
         const controller = new ChatController();
         const response = await controller.accessChat(userId,senderId);
-        console.log(response, "response")
-        return res.send(response);
-    } catch (error) {
-        console.error("error in /createFeeStructure", error);
-        return res.send(error);
+        res.status(200).json(successResponse("accessChat",response,res.statusCode));
+    }catch(error) {
+        console.error("error in accessChat ", error);
+        res.status(500).json(errorResponse("error in accessChat", res.statusCode));
     }
 })
 
@@ -80,14 +80,12 @@ router.get("/fetchChat/:Id",async(req:any,res:any)=>{
 
         const controller = new ChatController();
         const response = await controller.fetchChat(senderId);
-        console.log(response, "response")
-        return res.send(response);
-    } catch (error) {
-        console.error("error in /createFeeStructure", error);
-        return res.send(error);
+        res.status(200).json(successResponse("fetchChat",response,res.statusCode));
+    }catch(error) {
+        console.error("error in fetchChat ", error);
+        res.status(500).json(errorResponse("error in fetchChat", res.statusCode));
     }
 })
-
 // TODO  4th  get All Messages
 
 router.get("/getAllMessage/:chatId",async(req,res)=>{
@@ -96,13 +94,12 @@ try {
 
     const controller = new ChatController();
     const response = await controller.getALlMessage(chatId);
-    console.log(response, "response")
-    return res.send(response);
-} catch (error) {
-    console.error("error in /createFeeStructure", error);
-    return res.send(error);
+    res.status(200).json(successResponse("getAllMessage",response,res.statusCode));
+}catch(error) {
+    console.error("error in getAllMessage ", error);
+    res.status(500).json(errorResponse("error in getAllMessage", res.statusCode));
 }
-});
+})
 
 
 // TODO 5th send Message...........................
@@ -113,14 +110,11 @@ router.post("/sendMessage/:Id",async(req,res)=>{
         const { content, chatId }:any = req.body;
         const controller = new ChatController();
         const response = await controller.sendMessage(Id,content,chatId);
-        console.log(response, "response")
-        return res.send(response);
-    } catch (error) {
-        console.error("error in /createFeeStructure", error);
-        return res.send(error);
+        res.status(200).json(successResponse("sendMessage",response,res.statusCode));
+    }catch(error) {
+        console.error("error in sendMessage ", error);
+        res.status(500).json(errorResponse("error in sendMessage", res.statusCode));
     }
-
-
 })
 
 // TODO  6th  Create-Group-chat...................................................
@@ -133,16 +127,31 @@ router.post("/create-group-chat/:senderId",async(req,res)=>{
         // console.log(req.body)
         const controller=new ChatController();
         const response= await controller.createGroupChat(senderId,users,name);
-        return res.send(response);
-    }
-    catch(error){
-        return res.send(error);
+        res.status(200).json(successResponse("create-group-chat",response,res.statusCode));
+    }catch(error) {
+        console.error("error in create-group-chat ", error);
+        res.status(500).json(errorResponse("error in create-group-chat", res.statusCode));
     }
 })
 
 // //todo 
 
+router.post("/leavegroup",async(req,res)=>{
 
+    try{
+        const userId:any=req.body.userId;
+        const adminId:any=req.body.adminId;
+        const groupId:any=req.body.groupId;
+       
+        // console.log(req.body)
+        const controller=new ChatController();
+        const response= await controller.leavegroup(userId,adminId,groupId);
+        res.status(200).json(successResponse("leavegroup",response,res.statusCode));
+    }catch(error) {
+        console.error("error in leavegroup ", error);
+        res.status(500).json(errorResponse("error in leavegroup", res.statusCode));
+    }
+})
 
 // !todo   7th  send message
 router.post("/sendMessage/:Id",async(req,res)=>{
@@ -310,6 +319,28 @@ router.get("/find/:Id",async(req,res)=>{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const s31 = new aws.S3({
     accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
@@ -352,7 +383,7 @@ var upload1 = multer({
 })
  
 //Uploading single File to aws s3 bucket
-router.post('/upload', upload1.single('photos'), function (req:any, res:any ){
+router.post('/upload', upload1.single('file'), function (req:any, res:any ){
    res.send({
        data: req.files,
        msg: 'Successfully uploaded ' + req.files + ' files!'
@@ -360,7 +391,7 @@ router.post('/upload', upload1.single('photos'), function (req:any, res:any ){
 })
  
 //Uploading Multiple Files to aws s3 bucket
-router.post('/uploadabc', upload1.array('photos', 10), function (req:any, res:any) {
+router.post('/uploadfile', upload1.array('file', 50), function (req:any, res:any) {
     console.log("photos",req.files);
     
    res.send({
