@@ -1,9 +1,5 @@
 
-
-
 import userActivity from "../models/userActivity";
-
-
 import userModel from "../models/userDetails";
 import FuzzySearch from 'fuzzy-search';
 // var ObjectId = require('mongodb').ObjectId;

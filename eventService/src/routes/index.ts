@@ -383,7 +383,7 @@ var upload1 = multer({
 })
  
 //Uploading single File to aws s3 bucket
-router.post('/upload', upload1.single('photos'), function (req:any, res:any ){
+router.post('/upload', upload1.single('file'), function (req:any, res:any ){
    res.send({
        data: req.files,
        msg: 'Successfully uploaded ' + req.files + ' files!'
