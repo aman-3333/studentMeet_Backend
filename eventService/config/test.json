@@ -2,7 +2,7 @@
   "mongodb": "mongodb+srv://MidBazarAman:MidBazar@2021@cluster0.dqngt.mongodb.net/test",
   "host": "18.182.1.219",
   "env":"test",
-  "port": "3000",
+  "port": "3001",
   "base-url": "http://api.studentmeet.com"
 }
    
