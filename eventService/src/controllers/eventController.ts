@@ -284,10 +284,129 @@ return eventInfo
 
     }
 
-    public async filterEvent(sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
-
-
+    public async filterEvent(type:any,sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
         let eventInfo: any;
+      if (type=="event") {
+    
+
+      
+        if (category) {
+            eventInfo = await event.find({ category: category,type:"event", isDeleted: false });
+
+        } else if (subCategory) {
+            eventInfo = await event.find({ subCategory: subCategory, type:"event",isDeleted: false });
+        } else if (subSubCategory) {
+            eventInfo = await event.find({ subSubCategory: subSubCategory,type:"event", isDeleted: false });
+        }
+        else if (sort == "lessEarning") {
+            eventInfo = await event.find({ isDeleted: false,type:"event" });
+
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
+            return eventInfo
+        }
+        else if (sort == "mostEarning") {
+            eventInfo = await event.find({ isDeleted: false, type:"event"});
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
+            return eventInfo
+        }
+        else if (sort == "oldtonew") {
+            eventInfo = await event.find({ isDeleted: false, type:"event" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
+            return eventInfo
+
+        } else if (sort == "newtoold") {
+            eventInfo = await event.find({ isDeleted: false, type:"event" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
+            return eventInfo
+        } else if (sort == "lessAdvanced") {
+            eventInfo = await event.find({ isDeleted: false, type:"event" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return a.advancedEventMoney - b.advancedEventMoney });
+            return eventInfo
+        } else if (sort == "mostAdvanced") {
+            eventInfo = await event.find({ isDeleted: false, type:"event" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return b.advancedEventMoney - a.advancedEventMoney });
+            return eventInfo
+        }
+        if (search) {
+            eventInfo = await event.find({ isDeleted: false, type:"event" });
+            console.log("eventInfo", eventInfo);
+
+            const searcher = new FuzzySearch(eventInfo, ["eventName", "eventPartnerName"], {
+                caseSensitive: false,
+            });
+            eventInfo = searcher.search(search);
+            return eventInfo
+        }
+
+        if (limit && skip) {
+
+            eventInfo = eventInfo.slice(skip).slice(0, limit);
+
+        } 
+
+
+    }
+    if (type=="affilate") {
+    
+
+       
+        if (category) {
+            eventInfo = await event.find({ category: category,type:"affilate", isDeleted: false });
+
+        } else if (subCategory) {
+            eventInfo = await event.find({ subCategory: subCategory, type:"affilate",isDeleted: false });
+        } else if (subSubCategory) {
+            eventInfo = await event.find({ subSubCategory: subSubCategory,type:"affilate", isDeleted: false });
+        }
+        else if (sort == "lessEarning") {
+            eventInfo = await event.find({ isDeleted: false,type:"affilate" });
+
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
+            return eventInfo
+        }
+        else if (sort == "mostEarning") {
+            eventInfo = await event.find({ isDeleted: false, type:"affilate"});
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
+            return eventInfo
+        }
+        else if (sort == "oldtonew") {
+            eventInfo = await event.find({ isDeleted: false, type:"affilate" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
+            return eventInfo
+
+        } else if (sort == "newtoold") {
+            eventInfo = await event.find({ isDeleted: false, type:"affilate" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
+            return eventInfo
+        } else if (sort == "lessAdvanced") {
+            eventInfo = await event.find({ isDeleted: false, type:"affilate" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return a.advancedEventMoney - b.advancedEventMoney });
+            return eventInfo
+        } else if (sort == "mostAdvanced") {
+            eventInfo = await event.find({ isDeleted: false, type:"affilate" });
+            eventInfo = eventInfo.sort(function (a: any, b: any) { return b.advancedEventMoney - a.advancedEventMoney });
+            return eventInfo
+        }
+        if (search) {
+            eventInfo = await event.find({ isDeleted: false, type:"affilate" });
+            console.log("eventInfo", eventInfo);
+
+            const searcher = new FuzzySearch(eventInfo, ["eventName", "eventPartnerName"], {
+                caseSensitive: false,
+            });
+            eventInfo = searcher.search(search);
+            return eventInfo
+        }
+
+        if (limit && skip) {
+
+            eventInfo = eventInfo.slice(skip).slice(0, limit);
+
+        } 
+
+        
+    }
+    else{
         if (category) {
             eventInfo = await event.find({ category: category, isDeleted: false });
 
@@ -334,21 +453,17 @@ return eventInfo
             });
             eventInfo = searcher.search(search);
             return eventInfo
-        }
+    }
+    if (limit && skip) {
 
-        if (limit && skip) {
+        eventInfo = eventInfo.slice(skip).slice(0, limit);
 
-            eventInfo = eventInfo.slice(skip).slice(0, limit);
+    } 
 
-        } else {
-            eventInfo = await event.find({ category: category, isDeleted: false });
-            return eventInfo;
-        }
-        return eventInfo;
     }
 
 
-
+    }
 
 public async createEventOrganizerTeam(organizerId:any,eventId:any,suborganizerId:any){
 

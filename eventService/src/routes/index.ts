@@ -15,6 +15,7 @@ import eventPartnerController from "../controllers/eventPartnerController";
 import StateController from "../controllers/StateController";
 import UserroleController from "../controllers/userRoleController"
 import InstituteController from "../controllers/InstituteController";
+import StarPerformerController from "../controllers/StarPerformerController"
 import HashtagController from "../controllers/HashtagController";
 import CityController from "../controllers/CityController";
 import CategoryController from "../controllers/CategoryController";
@@ -758,6 +759,7 @@ router.get("/filterEvent", async (req, res) => {
     try {
         console.log("req.query",req.query);
         const sort = req.query.sort;
+        const type = req.query.type;
         const category = req.query.category;
         const subCategory = req.query.subCategory; 
          const subSubCategory = req.query.subSubCategory; 
@@ -765,7 +767,7 @@ router.get("/filterEvent", async (req, res) => {
            const skip = req.query.skip;
            const search = req.query.search;
         const controller = new eventController();
-        const response: any = await controller.filterEvent(sort, category, subCategory, subSubCategory, limit, skip, search);
+        const response: any = await controller.filterEvent(type,sort, category, subCategory, subSubCategory, limit, skip, search);
         res.status(200).json(successResponse("filterEvent ", response, res.statusCode));
     } catch (error) {
         console.error("error in filterEvent", error);
@@ -1797,9 +1799,144 @@ router.get("/deleteState/:id", async (req, res) => {
 
 
 
+/////////////////////////////////////////STAR PERFORMER////////////////////////
+
+router.post("/createStarPerformer", async (req, res) => {
+    try {
+        const body = req.body;
+        console.log("req.body",req.body);
+        
+        const controller = new StarPerformerController();
+        const response = await controller.createStarPerformer(body);
+        res.status(200).json(successResponse("create StarPerformer", response, res.statusCode));
+    } catch (error) {
+        console.error("error in StarPerformer", error);
+        res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
+    }
+});
+router.patch("/StarPerformer/:id", async (req, res) => {
+    try {
+        const StarPerformerId = req.params.id;
+        const body = req.body as any;
+        const controller = new StarPerformerController();
+        const response: any = await controller.editStarPerformer(body, StarPerformerId);
+        res.status(200).json(successResponse("edit StarPerformer", response, res.statusCode));
+    } catch (error) {
+        console.error("error in signup", error);
+        res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
+    }
+});
+
+router.get("/StarPerformerList", async (req, res) => {
+    try {
+        const controller = new StarPerformerController();
+        const response: any[] = await controller.getStarPerformerList();
+        res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
+    } catch (error) {
+        console.error("error in signup", error);
+        res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
+    }
+});
+router.get("/searchStarPerformer", async (req, res) => {
+    try {
+const searchValue=req.query.searchValue;
+        const controller = new StarPerformerController();
+        const response: any[] = await controller.searchStarPerformer(searchValue);
+        res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
+    } catch (error) {
+        console.error("error in signup", error);
+        res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
+    }
+});
+
+router.get("/StarPerformerInfobyid", async (req, res) => {
+    try {
+        const StarPerformerId:any = req.query.id;
+        const controller = new StarPerformerController();
+        const response: any = await controller.getStarPerformerInfoById(StarPerformerId);
+        res.status(200).json(successResponse("get StarPerformer", response, res.statusCode));
+    } catch (error) {
+        console.error("error in StarPerformer", error);
+        res.status(500).json(errorResponse("error in get StarPerformer", res.statusCode));
+    }
+});
 
 
+router.patch("/deleteStarPerformer", async (req, res) => {
+    try {
+        const StarPerformerId:any = req.body.StarPerformerId;
+        const controller = new StarPerformerController();
+        const response: any = await controller.deleteStarPerformer(StarPerformerId);
+        res.status(200).json(successResponse("delete StarPerformer", response, res.statusCode));
 
+    } catch (error) {
+        console.error("error in delete StarPerformer", error);
+        res.status(500).json(errorResponse("error in delete StarPerformer", res.statusCode));
+    }
+})
+
+router.post("/createStarPerformerThought", async (req, res) => {
+    try {
+        const body = req.body;
+        const controller = new StarPerformerController();
+        const response = await controller.createStarPerformerThought(body);
+        res.status(200).json(successResponse("create StarPerformer", response, res.statusCode));
+    } catch (error) {
+        console.error("error in StarPerformer", error);
+        res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
+    }
+});
+router.patch("/editPerformerThought", async (req, res) => {
+    try {
+        
+        const body = req.body as any;
+        const controller = new StarPerformerController();
+        const response: any = await controller.editStarPerformerThought(body);
+        res.status(200).json(successResponse("edit StarPerformer", response, res.statusCode));
+    } catch (error) {
+        console.error("error in StarPerformer", error);
+        res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
+    }
+});
+
+router.get("/getStarPerformerListThought", async (req, res) => {
+    try {
+        const controller = new StarPerformerController();
+        const response: any[] = await controller.getStarPerformerListThought();
+        res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
+    } catch (error) {
+        console.error("error in getStarPerformerListThought", error);
+        res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
+    }
+});
+
+
+router.get("/getStarPerformerThoughtById", async (req, res) => {
+    try {
+        const StarPerformerId:any = req.query.StarPerformerId;
+        const controller = new StarPerformerController();
+        const response: any = await controller.getStarPerformerThoughtById(StarPerformerId);
+        res.status(200).json(successResponse("get StarPerformer", response, res.statusCode));
+    } catch (error) {
+        console.error("error in StarPerformer", error);
+        res.status(500).json(errorResponse("error in get StarPerformer", res.statusCode));
+    }
+});
+
+
+router.patch("/deleteStarPerformer", async (req, res) => {
+    try {
+        const StarPerformerId = req.body.StarPerformerId;
+        const controller = new StarPerformerController();
+        const response: any = await controller.deleteStarPerformerThought(StarPerformerId);
+        res.status(200).json(successResponse("delete StarPerformer", response, res.statusCode));
+
+    } catch (error) {
+        console.error("error in deleteStarPerformerThought", error);
+        res.status(500).json(errorResponse("error in deleteStarPerformerThought", res.statusCode));
+    }
+})
+/////////////////////////////////////////////////////////////////////////////////////////////////
 router.post("/logineventPartner", async (req, res) => {
     try {
         const body = req.body as IPartner;
@@ -1838,8 +1975,9 @@ router.get("/geteventPartnerAdminPannel", async (req, res) => {
 
         const status = req.query.status;
         const categoryId = req.query.categoryId;
-        const stateId = req.query.stateId;
+        const StarPerformerId = req.query.stateId;
         const cityId = req.query.cityId;
+        const stateId = req.query.stateId;
         const limit = req.query.limit;
         const area = req.query.area;
         const skip = req.query.skip;

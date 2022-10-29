@@ -22,4 +22,4 @@ export interface ICategory extends Document {
     
 }
 
-export default model<ICategory>("category", schema);
+export default model<ICategory>("eventform", schema);
