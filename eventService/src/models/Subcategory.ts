@@ -2,7 +2,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     categoryId: { type: Schema.Types.ObjectId },
-    subCategoryName: { type: String, required: true, unique: true },
+    subCategoryName: { type: String, required: true,},
 
     subCategoryDescription: { type: String },
     picture: { type: String },

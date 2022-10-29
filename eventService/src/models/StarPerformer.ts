@@ -1,8 +1,9 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    starPerformerId:  { type: Schema.Types.ObjectId, ref: "User" },
-    ownerId: { type: Schema.Types.ObjectId, ref: "User" },
+    starPerformerId:  { type: Schema.Types.ObjectId, ref: "userdetail" },
+    starPerformerName: { type: String },
+    ownerId: { type: Schema.Types.ObjectId, ref: "userdetail" },
     like: { type: Number },
     eventCategory: [{ type: String }],
     totalEarning: { type: Number },
@@ -18,6 +19,7 @@ const schema = new Schema({
 
 export interface IPerformer extends Document {
     starPerformerId: ObjectId,
+    starPerformerName: String,
     ownerId:ObjectId,
     like:Number,
     totalEarning: Number,
