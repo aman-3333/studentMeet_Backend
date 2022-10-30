@@ -53,6 +53,21 @@ router.get("/searchUser", async (req, res) => {
     }
 });
 
+router.get("/getallfriend", async (req, res) => {
+    try {
+       console.log("req",req.query);
+       
+        let user:any=req.query.user;
+       
+        const controller = new ChatController();
+        const response = await controller.getFriend(user);
+        res.status(200).json(successResponse("getAllFriend",response,res.statusCode));
+    } catch (error) {
+        res.status(500).json(errorResponse("error in getAllFriend", res.statusCode));
+    }
+});
+
+
 
 
 
@@ -696,8 +711,10 @@ router.post("/eventCreateBYOrganizer", async (req, res) => {
         res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
     }
 });
-router.post("/bookForEventOrganize", async (req, res) => {
+router.post("/eventOrganize", async (req, res) => {
     try {
+        console.log("req",);
+        
         const body = req.body;
         const eventId = req.body.eventId; 
         const organizerId = req.body.organizerId;
@@ -742,17 +759,17 @@ router.post("/unfollowing", async (req, res) => {
     }
 });
 
-router.post("/bookEvent", async (req, res) => {
+router.post("/applyEvent", async (req, res) => {
     try {
         const eventId = req.body.eventId; 
         const userId = req.body.userId; 
         const status = req.body.status; 
         const controller = new eventController();
         const response: any = await controller.bookEvent(eventId,userId,status);
-        res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
+        res.status(200).json(successResponse("applyEvent ", response, res.statusCode));
     } catch (error) {
-        console.error("error in eventCreateBYOrganizer", error);
-        res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
+        console.error("error in applyEvent", error);
+        res.status(500).json(errorResponse("error in applyEvent", res.statusCode));
     }
 });
 router.get("/filterEvent", async (req, res) => {
