@@ -267,6 +267,19 @@ return userInfo
 
 }
 
+
+public async getFriend(user:any){
+    console.log("hello");
+    
+    let friendListInfo:any=await userActivity.findOne({userId:user,isDeleted:false})
+    console.log("friendList1",friendListInfo);
+    friendListInfo=friendListInfo.friendList
+    console.log("friendList",friendListInfo);
+    
+    friendListInfo=await userModel.find({_id:{$in:friendListInfo},isDeleted:false})
+    return friendListInfo
+}
+
 public async sendFriendRequest(sernderId:any,userId:any){
 
 }

@@ -23,7 +23,7 @@ export default class eventController {
     }
 
     public async geteventEventScreen() {
-        const eventList: IEvent[] = await event.find({ isDeleted: false, isActive: true, isEventVerified: true, isBookEventPaid: true });
+        const eventList: IEvent[] = await event.find({ isDeleted: false }).populate("organizerId","fullname");
         return eventList;
     }
     public async geteventOnHomeScreen() {
@@ -478,36 +478,34 @@ public async createEventOrganizerTeam(organizerId:any,eventId:any,suborganizerId
     })
 return eventInfo
 }
+
     public async bookEvent(eventId: any, userId: any,status:any) {
         let eventInfo: any
-        if(status=="book event"){
+     
         eventInfo  = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false,isEventBook:true }).lean()
         if (eventInfo) return ({ message: "you already booked this event" })
         eventInfo = await bookevent.create({ eventId: eventId, userId: userId,isEventBook:true })
         return eventInfo
-    }if(status=="origanize event "){
-        eventInfo = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventOrganize:true}).lean()
-        if (eventInfo) return ({ message: "you already origanize this event" })
-        eventInfo = await bookevent.create({ eventId: eventId, userId: userId , isEventOrganize:true})
-        return eventInfo
-    }else{
-        return ({message:"try another event"})
-    }
+    
 
     }
 
     public async applyForEventOrganize(eventId: any, organizerId: any, formId: any, status: any) {
-        let eventInfo: any = await event.findOne({ _id: eventId, isOrganized: true, isDeleted: false, isActive: true, isBookEventPaid: true }).lean()
-        if (!eventInfo) {
-            eventInfo = await event.updateOne(
+        let eventInfo: any = await event.findOne({ _id: eventId, isOrganized: true, isDeleted: false, isBookEventPaidz: true }).lean()
+        console.log("eventInfo1",eventInfo);
+        if (eventInfo) {
+            return ({ message: "already book" })
+        }
+        else {
+            
+            eventInfo = await event.findOneAndUpdate(
                 { _id: eventId },
                 { $push: { organizerId: organizerId } }
             );
-            await event.findOneAndUpdate({ _id: eventId, isOrganized: true })
+            console.log("eventInfo",eventInfo);
+            
+            eventInfo=    await event.findOneAndUpdate({ _id: eventId}, {$set:{isOrganized: true ,isBookEventPaid: true}}).lean()
             return eventInfo
-        }
-        else {
-            return ({ message: "already book" })
         }
     }
 
