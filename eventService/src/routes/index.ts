@@ -1131,8 +1131,8 @@ router.patch("/Category/:id", async (req, res) => {
 router.get("/categoryList", async (req, res) => {
     try {
         const controller = new CategoryController();
-        const businessTypeId = req.query.businessTypeId;
-        const response: ICategory[] = await controller.getCategory(businessTypeId);
+        const type = req.query.type;
+        const response = await controller.getCategory(type);
         res.status(200).json(successResponse("get category", response, res.statusCode));
     } catch(error) {
         console.error("error in get category", error);

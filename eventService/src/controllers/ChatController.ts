@@ -267,6 +267,10 @@ return userInfo
 
 }
 
+public async getAllFriend(userId:any){
+    let friendList:any=await userActivity.find({userId:userId,isDeleted:false}).populate("")
+}
+
 public async sendFriendRequest(sernderId:any,userId:any){
 
 }
