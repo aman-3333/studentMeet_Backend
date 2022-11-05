@@ -60,6 +60,7 @@ export default class eventController {
 
     public async eventActivity(userId: any, eventId: any, status: any, eventcomment: any, eventcommentId: any, body: any) {
         let userInfo: any;
+        let eventInfo:any;
         let data: any = []
         let a: any = []
         let info: any;
@@ -78,7 +79,7 @@ export default class eventController {
 
 
             if (!info) {
-                userInfo = await userActivity.updateMany(
+                userInfo = await userActivity.findOneAndUpdate(
                     {
                         userId: userId,
                     },
@@ -89,9 +90,9 @@ export default class eventController {
                         }
                     })
 
-                await event.findOneAndUpdate({ _id: body.eventLike },
+           eventInfo=     await event.findOneAndUpdate({ _id: body.eventLike },
                     { $inc: { eventLikeCount: 1 } }, { new: true }).lean()
-                await event.findOneAndUpdate({
+                    eventInfo=   await event.findOneAndUpdate({
                     _id: body.eventLike
                 }, {
                     $push: {
@@ -100,7 +101,7 @@ export default class eventController {
 
                     }
                 })
-                return userInfo;
+                return {userInfo,eventInfo};
             }
         }
         if (status == "removeeventLike") {
@@ -115,9 +116,9 @@ export default class eventController {
                     }
                 })
 
-            await event.findOneAndUpdate({ _id: body.eventLike },
+                eventInfo=    await event.findOneAndUpdate({ _id: body.eventLike },
                 { $inc: { eventLikeCount: -1 } }, { new: true })
-            await event.findOneAndUpdate({
+                eventInfo=   await event.findOneAndUpdate({
                 _id: body.eventLike
             }, {
                 $pull: {
@@ -125,13 +126,13 @@ export default class eventController {
                         userId
                 }
             })
-            return userInfo;
+            return {userInfo,eventInfo};
         } if (status == "readeventLike") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.eventLike;
 
 
-            let eventInfo: any = await event.find({ _id: { $in: userInfo } })
+          eventInfo = await event.find({ _id: { $in: userInfo } })
 
 
 
@@ -154,9 +155,9 @@ export default class eventController {
                                 body.eventFavorite
                         }
                     })
-                await event.findOneAndUpdate({ _id: body.eventFavorite },
+                    eventInfo=    await event.findOneAndUpdate({ _id: body.eventFavorite },
                     { $inc: { eventFavoriteCount: 1 } }, { new: true })
-                await event.findOneAndUpdate({
+                    eventInfo=   await event.findOneAndUpdate({
                     _id: body.eventFavorite
                 }, {
                     $push: {
@@ -165,11 +166,11 @@ export default class eventController {
 
                     }
                 })
-                return userInfo;
+                return {userInfo,eventInfo};
             }
         }
         if (status == "removeeventFavorite") {
-            userInfo = await userActivity.findOneAndUpdate(
+            eventInfo=    userInfo = await userActivity.findOneAndUpdate(
                 {
                     userId: userId,
                 },
@@ -179,10 +180,10 @@ export default class eventController {
                             body.eventFavorite
                     }
                 })
-            await event.findOneAndUpdate({ _id: body.eventFavorite },
+                eventInfo=    await event.findOneAndUpdate({ _id: body.eventFavorite },
                 { $inc: { eventFavoriteCount: -1 } }, { new: true })
 
-            await event.findOneAndUpdate({
+                eventInfo=    await event.findOneAndUpdate({
                 _id: body.eventFavorite
             }, {
                 $pull: {
@@ -190,13 +191,13 @@ export default class eventController {
                         userId
                 }
             })
-            return userInfo;
+            return {userInfo,eventInfo};
         } if (status == "readeventFavorite") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.eventFavorite;
 
 
-            let eventInfo: any = await event.find({ _id: { $in: userInfo } })
+             eventInfo = await event.find({ _id: { $in: userInfo } })
 
 
 
@@ -210,7 +211,7 @@ export default class eventController {
             for (let i = 0; i < body.eventcomment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: body.eventcomment[i].userId,
+                        userId: userId,
                     },
                     {
                         $push: {
@@ -221,32 +222,32 @@ export default class eventController {
                             }
                         }
                     })
-                await event.findOneAndUpdate(
+                    eventInfo=    await event.findOneAndUpdate(
                     {
                         _id: body.eventcomment[i].eventId,
                     },
                     {
                         $push: {
                             eventcomment: {
-                                userId: body.eventcomment[i].userId,
+                                userId: userId,
                                 comment: body.eventcomment[i].comment,
                                 dateTime: currentTime
                             }
                         }
                     })
-                await event.findOneAndUpdate({ _id: body.eventcomment[i].eventId },
+                    eventInfo=    await event.findOneAndUpdate({ _id: body.eventcomment[i].eventId },
                     { $inc: { eventCommentCount: 1 } }, { new: true })
 
 
 
-                return userInfo;
+                return {userInfo,eventInfo};
             }
         }
         if (status == "removeeventcomment") {
             for (let i = 0; i < body.eventcomment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: body.eventcomment[i].userId,
+                        userId:userId,
                     },
                     {
                         $pull: {
@@ -257,24 +258,24 @@ export default class eventController {
                             }
                         }
                     })
-                await event.findOneAndUpdate(
+                    eventInfo=    await event.findOneAndUpdate(
                     {
                         _id: body.eventcomment[i].eventId,
                     },
                     {
                         $pull: {
                             eventcomment: {
-                                userId: body.eventcomment[i].userId,
+                                userId: userId,
                                 comment: body.eventcomment[i].comment,
 
                             }
                         }
                     })
 
-                await event.findOneAndUpdate({ _id: body.eventcomment[i].eventId },
+                    eventInfo=   await event.findOneAndUpdate({ _id: body.eventcomment[i].eventId },
                     { $inc: { eventCommentCount: -1 } }, { new: true })
 
-                return userInfo;
+                return {userInfo,eventInfo};
             }
 
         } if (status == "readeventcomment") {

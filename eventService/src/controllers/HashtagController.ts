@@ -205,7 +205,7 @@ public async searchHashtag(search:any){
             for (let i = 0; i < body.Hashtagcomment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: body.Hashtagcomment[i].userId,
+                        userId: userId,
                     },
                     {
                         $push: {
@@ -223,7 +223,7 @@ public async searchHashtag(search:any){
                     {
                         $push: {
                             Hashtagcomment: {
-                                userId: body.Hashtagcomment[i].userId,
+                                userId: userId,
                                 comment: body.Hashtagcomment[i].comment,
                                 dateTime: currentTime
                             }
@@ -241,7 +241,7 @@ public async searchHashtag(search:any){
             for (let i = 0; i < body.Hashtagcomment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: body.Hashtagcomment[i].userId,
+                        userId: userId,
                     },
                     {
                         $pull: {
@@ -259,7 +259,7 @@ public async searchHashtag(search:any){
                     {
                         $pull: {
                             Hashtagcomment: {
-                                userId: body.Hashtagcomment[i].userId,
+                                userId: userId,
                                 comment: body.Hashtagcomment[i].comment,
     
                             }
