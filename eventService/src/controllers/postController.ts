@@ -185,7 +185,7 @@ export default class PostController {
             for (let i = 0; i < body.PostComment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: body.PostComment[i].userId,
+                        userId: userId,
                     },
                     {
                         $push: {
@@ -203,7 +203,7 @@ export default class PostController {
                     {
                         $push: {
                             PostComment: {
-                                userId: body.PostComment[i].userId,
+                                userId: userId,
                                 comment: body.PostComment[i].comment,
                                 dateTime: currentTime
                             }
@@ -221,7 +221,7 @@ export default class PostController {
             for (let i = 0; i < body.PostComment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: body.PostComment[i].userId,
+                        userId: userId,
                     },
                     {
                         $pull: {
@@ -239,7 +239,7 @@ export default class PostController {
                     {
                         $pull: {
                             PostComment: {
-                                userId: body.PostComment[i].userId,
+                                userId: userId,
                                 comment: body.PostComment[i].comment,
     
                             }
