@@ -10,16 +10,18 @@ const schema = new Schema({
     hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
     postLikeCount: { type: Number, default: 0 },
     shareount: { type: Number, default: 0 },
-    postCommentCount: { type: Number, default: 0 },
+    PostCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
-    likePost: [ { type: Schema.Types.ObjectId, ref: "userDetails" 
+    PostLike: [{
+        type: Schema.Types.ObjectId, ref: "userDetails"
     }],
-    favouritePost: [{ type: Schema.Types.ObjectId, ref: "userDetails" 
-}],
-    commentPost: [{
-      userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-        postMessage:{ type: String },
-        dateTime:{ type: Date },
+    PostFavourite: [{
+        type: Schema.Types.ObjectId, ref: "userDetails"
+    }],
+    PostComment: [{
+        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        comment: { type: String },
+        dateTime: { type: Date },
     }],
     sharePost: [{
        post: { type: Schema.Types.ObjectId, ref: "event" },
@@ -44,12 +46,12 @@ export interface IPost extends Document {
     shareount: Number,
     postCommentCount: Number,
     postFavouriteCount: Number,
-    likePost: [ObjectId],
-    favouritePost: [ObjectId],
-    commentPost: [{
-      userId: ObjectId,
-        postMessage:String,
-        dateTime:Date,
+    PostLike: [ObjectId],
+    PostFavourite: [ObjectId],
+    PostComment: [{
+        userId: ObjectId,
+        comment: String,
+        dateTime: Date,
     }],
     sharePost: [{
        Post: ObjectId,

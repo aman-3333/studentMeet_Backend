@@ -33,25 +33,25 @@ export default class PostController {
         return PostInfo;
     }
 
-    public async PostActivity(userId: any, PostId: any, status: any, Postcomment: any, PostcommentId: any, body: any) {
+    public async PostActivity(userId: any, PostId: any, status: any, PostComment: any, PostCommentId: any, body: any) {
         let userInfo: any;
         let data: any = []
         let a: any = []
         let info: any;
-
+    
         userInfo = await userActivity.findOne({ userId: userId }).lean();
-
-
+    
+    
         if (!userInfo) {
             userInfo = await userActivity.create({ userId: userId })
-            console.log("userInfo", userInfo);
+    
         }
-        console.log("userInfo", userInfo);
-
+    
+    
         if (status == "PostLike") {
-            info = await userActivity.findOne({ PostLike:body.PostLike }).lean();
-            console.log("info", info);
-
+            info = await userActivity.findOne({ PostLike: body.PostLike }).lean();
+    
+    
             if (!info) {
                 userInfo = await userActivity.updateMany(
                     {
@@ -63,18 +63,16 @@ export default class PostController {
                                 body.PostLike
                         }
                     })
-                let PostInfo: any = await Post.findOne({ _id: body.PostLike })
-                console.log("PostInfo", PostInfo);
-                PostInfo = PostInfo.PostLikeCount
-                PostInfo = PostInfo + 1
-                await Post.findOneAndUpdate({ _id: body.PostLike}, { $set: { PostLikeCount: PostInfo } },{new:true})
+    
+                await Post.findOneAndUpdate({ _id: body.PostLike },
+                    { $inc: { PostLikeCount: 1 } }, { new: true }).lean()
                 await Post.findOneAndUpdate({
                     _id: body.PostLike
                 }, {
                     $push: {
-                        likePost:
+                        PostLike:
                             userId
-
+    
                     }
                 })
                 return userInfo;
@@ -88,43 +86,38 @@ export default class PostController {
                 {
                     $pull: {
                         PostLike
-                       :body.PostLike
+                            : body.PostLike
                     }
                 })
-               
-            let PostInfo: any = await Post.findOne({ _id: body.PostLike})
-            console.log("PostInfo",PostInfo);
-
-
-            PostInfo = PostInfo.PostLikeCount
-            PostInfo = PostInfo - 1
-            await Post.findOneAndUpdate({ _id: body.PostLike}, { $set: { PostLikeCount: PostInfo } })
+    
+            await Post.findOneAndUpdate({ _id: body.PostLike },
+                { $inc: { PostLikeCount: -1 } }, { new: true })
             await Post.findOneAndUpdate({
                 _id: body.PostLike
             }, {
                 $pull: {
-                    likePost:
-                    userId
+                    PostLike:
+                        userId
                 }
             })
             return userInfo;
         } if (status == "readPostLike") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.PostLike;
-         console.log("userInfo",userInfo);
-         
-                let PostInfo: any = await Post.find({ _id:{$in:userInfo}})
-
-           
-            
+    
+    
+            let PostInfo: any = await Post.find({ _id: { $in: userInfo } })
+    
+    
+    
             return PostInfo;
         }
-      
-
-        if (status == "PostFavorite") {
-            info = await userActivity.findOne({ PostFavorite:{$in:body.PostFavorite }}).lean();
-            console.log("info", info);
-
+    
+    
+        if (status == "PostFavourite") {
+            info = await userActivity.findOne({ PostFavourite: { $in: body.PostFavourite } }).lean();
+    
+    
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
@@ -132,133 +125,178 @@ export default class PostController {
                     },
                     {
                         $push: {
-                            PostFavorite:
-                                body.PostFavorite
+                            PostFavourite:
+                                body.PostFavourite
                         }
                     })
-                let PostInfo: any = await Post.findOne({ _id: body.PostFavorite })
-                console.log("PostInfo", PostInfo);
-                PostInfo = PostInfo.PostFavoriteCount
-                PostInfo = PostInfo + 1
-                await Post.findOneAndUpdate({ _id: body.PostFavorite}, { $set: { PostFavoriteCount: PostInfo } },{new:true})
+                await Post.findOneAndUpdate({ _id: body.PostFavourite },
+                    { $inc: { PostFavouriteCount: 1 } }, { new: true })
                 await Post.findOneAndUpdate({
-                    _id: body.PostFavorite
+                    _id: body.PostFavourite
                 }, {
                     $push: {
-                        PostFavorite:
+                        PostFavourite:
                             userId
-
+    
                     }
                 })
                 return userInfo;
             }
         }
-        if (status == "removePostFavorite") {
+        if (status == "removePostFavourite") {
             userInfo = await userActivity.findOneAndUpdate(
                 {
                     userId: userId,
                 },
                 {
                     $pull: {
-                        PostFavorite:
-                        body.PostFavorite
+                        PostFavourite:
+                            body.PostFavourite
                     }
                 })
-               
-            let PostInfo: any = await Post.findOne({ _id: body.PostFavorite})
-            console.log("PostInfo",PostInfo);
-
-
-            PostInfo = PostInfo.PostFavoriteCount
-            PostInfo = PostInfo - 1
-            await Post.findOneAndUpdate({ _id: {$in:body.PostFavorite} }, { $set: { PostFavoriteCount: PostInfo } })
+            await Post.findOneAndUpdate({ _id: body.PostFavourite },
+                { $inc: { PostFavouriteCount: -1 } }, { new: true })
+    
             await Post.findOneAndUpdate({
-                _id: body.PostFavorite
+                _id: body.PostFavourite
             }, {
                 $pull: {
-                    PostFavorite:
-                   userId
+                    PostFavourite:
+                        userId
                 }
             })
             return userInfo;
-        } if (status == "readPostFavorite") {
+        } if (status == "readPostFavourite") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
-            userInfo = userInfo.PostFavorite;
-         console.log("userInfo",userInfo);
-         
-                let PostInfo: any = await Post.find({ _id:{$in:userInfo}})
-
-           
-            
+            userInfo = userInfo.PostFavourite;
+    
+    
+            let PostInfo: any = await Post.find({ _id: { $in: userInfo } })
+    
+    
+    
             return PostInfo;
         }
-
-        if (status == "Postcomment") {
-            let currentTime: any = new Date();;
-            for (let i = 0; i < body.Postcomment.length; i++) {
-                userInfo = await userActivity.updateMany(
+    
+        if (status == "PostComment") {
+    
+    
+            let currentTime: any = new Date();
+            for (let i = 0; i < body.PostComment.length; i++) {
+                userInfo = await userActivity.findOneAndUpdate(
                     {
-                        userId: userId,
+                        userId: body.PostComment[i].userId,
                     },
                     {
                         $push: {
-                            Postcomment: {
-                                PostId: body.Postcomment[i].PostId,
-                                comment: body.Postcomment[i].comment,
-                                time: currentTime
+                            PostComment: {
+                                PostId: body.PostComment[i].PostId,
+                                comment: body.PostComment[i].comment,
+                                dateTime: currentTime
                             }
                         }
                     })
-
-                await Post.aggregate([
-                    { $group: { _id: PostId, commentCount: { $sum: 1 } } }
-                ])
-
+                await Post.findOneAndUpdate(
+                    {
+                        _id: body.PostComment[i].PostId,
+                    },
+                    {
+                        $push: {
+                            PostComment: {
+                                userId: body.PostComment[i].userId,
+                                comment: body.PostComment[i].comment,
+                                dateTime: currentTime
+                            }
+                        }
+                    })
+                await Post.findOneAndUpdate({ _id: body.PostComment[i].PostId },
+                    { $inc: { PostCommentCount: 1 } }, { new: true })
+    
+    
+    
                 return userInfo;
             }
         }
-        if (status == "removePostcomment") {
-            userInfo = await userActivity.updateMany(
-                { _id: userId },
-                { $pull: { Postcomment: { PostId: PostId } } }
-            );
-
-            return userInfo;
-        } if (status == "readPostcomment") {
+        if (status == "removePostComment") {
+            for (let i = 0; i < body.PostComment.length; i++) {
+                userInfo = await userActivity.findOneAndUpdate(
+                    {
+                        userId: body.PostComment[i].userId,
+                    },
+                    {
+                        $pull: {
+                            PostComment: {
+                                PostId: body.PostComment[i].PostId,
+                                comment: body.PostComment[i].comment,
+    
+                            }
+                        }
+                    })
+                await Post.findOneAndUpdate(
+                    {
+                        _id: body.PostComment[i].PostId,
+                    },
+                    {
+                        $pull: {
+                            PostComment: {
+                                userId: body.PostComment[i].userId,
+                                comment: body.PostComment[i].comment,
+    
+                            }
+                        }
+                    })
+    
+                await Post.findOneAndUpdate({ _id: body.PostComment[i].PostId },
+                    { $inc: { PostCommentCount: -1 } }, { new: true })
+    
+                return userInfo;
+            }
+    
+        } if (status == "readPostComment") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
-            userInfo = userInfo.Postcomment;
-
-            console.log("comment", userInfo);
+            userInfo = userInfo.PostComment;
+    
+    
             for (let i = 0; i < userInfo.length; i++) {
                 let PostInfo: any = await Post.findOne({ _id: userInfo[i].PostId })
-
+    
                 let comment: any = userInfo[i].comment
-                let commentTime: any = userInfo[i].time
-
-                data.push({ PostInfo, comment, commentTime })
+                let DateTime: any = userInfo[i].dateTime
+    
+                data.push({ PostInfo, comment, DateTime })
             }
             return data;
         }
     }
-
-    public async readActivity(PostId:any,status:any){
-        let PostInfo:any
-        if(status=="readPostlike"){
+    
+    public async readPostActivity(PostId: any, status: any) {
+        let PostInfo: any
+        if (status == "readPostlike") {
             PostInfo = await Post.findOne({ _id: PostId }).lean();
-            PostInfo = PostInfo.likePost;
-                let userInfo: any = await userDetails.find({ _id:{$in:PostInfo}})
-          return userInfo
+            PostInfo = PostInfo.PostLike;
+            let userInfo: any = await userDetails.find({ _id: { $in: PostInfo } })
+            return userInfo
         }
-        if(status=="readcommentPost"){
+        if (status == "readPostComment") {
+            let a = []
             PostInfo = await Post.findOne({ _id: PostId }).lean();
-            PostInfo = PostInfo.commentPost;
-                let userInfo: any = await userDetails.find({ _id:{$in:PostInfo}})
-          return userInfo
-        }if(status=="readfavouritePost"){
+            PostInfo = PostInfo.PostComment;
+            for (let i = 0; i < PostInfo.length; i++) {
+                let userInfo: any = await userDetails.findOne({ _id: PostInfo[i].userId }, { fullname: true })
+                let comment = PostInfo[i].comment
+                let DateTime: any = PostInfo[i].dateTime
+    
+                a.push({ userInfo, comment, DateTime })
+            }
+            return a
+    
+    
+    
+        } if (status == "readPostFavourite") {
             PostInfo = await Post.findOne({ _id: PostId }).lean();
-            PostInfo = PostInfo.likePost;
-                let userInfo: any = await userDetails.find({ _id:{$in:PostInfo}})
-          return userInfo
+            PostInfo = PostInfo.PostFavourite;
+            let userInfo: any = await userDetails.find({ _id: { $in: PostInfo } })
+            return userInfo
         }
     }
 

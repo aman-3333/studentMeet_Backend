@@ -634,8 +634,8 @@ router.patch("/editevent/:id", async (req, res) => {
 router.get("/getallevent", async (req, res) => {
     try {
         const controller = new eventController();
-        const userId = req.body.userId;
-        const response: IEvent[] = await controller.geteventEventScreen();
+        const type = req.query.type;
+        const response: IEvent[] = await controller.geteventEventScreen(type);
         res.status(200).json(successResponse("get event", response, res.statusCode));
     } catch (error) {
         console.error("error in get event", error);
@@ -1427,7 +1427,7 @@ router.post("/HashtagActivity", async (req, res) => {
         
         const userId=req.body.userId;
         const HashtagId=req.body.HashtagId;
-        const hashtagId=req.body.hashtagId; 
+        
          const status=req.body.status; 
          const Hashtagcomment=req.body.Hashtagcomment;
         const HashtagcommentId=req.body.HashtagcommentId;
@@ -1446,9 +1446,9 @@ router.get("/readHashtagActivity", async (req, res) => {
     try{
         
         const status:any =req.query.status;
-        const hashtagId=req.query.hashtagId;
+        const HashtagId=req.query.HashtagId;
         const controller=new HashtagController();
-        const response:any =await controller.readHashtagActivity(hashtagId,status);
+        const response:any =await controller.readHashtagActivity(HashtagId,status);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
     }catch(error) {
         console.error("error in readActivity ", error);
