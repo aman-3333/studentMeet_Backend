@@ -18,6 +18,7 @@ const eventSchema = new Schema(
     eventDesription: { type: String },
     eventTermsAndCondition: { type: String },
     seatreamining:{ type: Number },
+    noOfParticipentBook:{ type: Number,default:0 },
     placeTo: { type: String },
     destination: { type: String },
     eventLikeCount: { type: Number,default:0 },
@@ -30,9 +31,9 @@ const eventSchema = new Schema(
   eventFavorite: [
        { type: Schema.Types.ObjectId, ref: "userdetail" },
   ],
-  commentEvent: [{
+  eventcomment: [{
       userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-      commentMessage:{ type: String },
+      comment:{ type: String },
       dateTime:{ type: Date },
   }],
   shareEvent: [{
@@ -46,6 +47,8 @@ const eventSchema = new Schema(
     organizerIncomePerParticipent: { type: Number },
     eventTotalAmount: { type: Number },
     totalParticipent: { type: Number },
+    remainingSeat: { type: Number, default: 0 },
+    isSeatfull: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     isBookEventPaid: { type: Boolean, default: false },
     isOrganized: { type: Boolean, default: false },
@@ -91,9 +94,9 @@ export interface IEvent extends Document {
 favouriteEvent: [{
     userId: ObjectId,
 }],
-commentEvent: [{
+eventcomment: [{
     userId: ObjectId,
-    commentMessage:String,
+    comment:String,
     dateTime:Date,
 }],
 shareEvent: [{
@@ -112,6 +115,9 @@ shareEvent: [{
   organizerTotalIncome: Number,
   organizerIncomePerParticipent: Number,
   totalParticipent: Number,
+  noOfParticipentBook: Number,
+  remainingSeat: Number,
+  isSeatfull: Boolean,
   isActive: Boolean,
   isDeleted: Boolean,
   isBookEventPaid: Boolean,

@@ -2,27 +2,27 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-    likePost: [{
+    PostLike: [{
         type: Schema.Types.ObjectId, ref: "post"
     }],
-    favouritePost: [{
+    PostFavourite: [{
         type: Schema.Types.ObjectId, ref: "post"
     }],
-    commentPost: [{
-        postId: { type: Schema.Types.ObjectId, ref: "post" },
-        postMessage: { type: String },
+    PostComment: [{
+        PostId: { type: Schema.Types.ObjectId, ref: "post" },
+        comment: { type: String },
         dateTime: { type: Date },
     }],
 
-    likeHashtag: [
+    HashtagLike: [
         { type: Schema.Types.ObjectId  , ref:"hashtag"},
     ],
-    commentHashtag: [{
-        hashtagId: { type: Schema.Types.ObjectId , ref:"hashtag"},
+    Hashtagcomment: [{
+        HashtagId: { type: Schema.Types.ObjectId , ref:"hashtag"},
         comment: { type: String },
-        time: { type: Date }
+        dateTime: { type: Date }
     }],
-    favouriteHashtag: [
+    HashtagFavourite: [
         { type: Schema.Types.ObjectId  , ref:"hashtag"},
     ],
     shareHashtag: [{
@@ -43,7 +43,7 @@ const schema = new Schema({
     eventcomment: [{
         eventId: { type: Schema.Types.ObjectId, ref: "event" },
         comment: { type: String },
-        time: { type: Date }
+        dateTime: { type: Date }
     }],
     eventFavorite: [
         { type: Schema.Types.ObjectId, ref: "event" },
@@ -80,24 +80,24 @@ const schema = new Schema({
 
 export interface IuserdetailActivity extends Document {
     userId: ObjectId,
-    likePost: [ObjectId],
-    favouritePost: [ObjectId],
-    commentPost: [{
-        postId: ObjectId,
-        postMessage: String,
+    PostLike: [ObjectId],
+    PostFavourite: [ObjectId],
+    PostComment: [{
+        PostId: ObjectId,
+        comment: String,
         dateTime: Date,
     }],
 
 
-    likeHashtag: [
+    HashtagLike: [
         ObjectId,
     ],
-    commentHashtag: [{
-        hashtagId: ObjectId,
+    Hashtagcomment: [{
+        HashtagId: ObjectId,
         comment: String,
-        time: Date
+        dateTime: Date
     }],
-    favouriteHashtag: [
+    HashtagFavourite: [
         ObjectId,
     ],
     shareHashtag: [{
@@ -117,7 +117,8 @@ export interface IuserdetailActivity extends Document {
     }],
     eventcomment: [{
         eventId: ObjectId,
-        comment: String
+        comment: String,
+        dateTime:Date
     }],
     eventFavorite: [{
         eventId: ObjectId,
