@@ -2,7 +2,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     categoryName: { type: String, required: true},
-  
+  type:{type:String},
     Description:{type:String},
     picture:{type:String},
     active:{type: Boolean, default: true},
@@ -16,6 +16,7 @@ export interface ICategory extends Document {
     categoryName: String,
     Description: String,
     picture: String,
+    type:String,
     active: Boolean,
     isDeleted: Boolean,
     userId: ObjectId,

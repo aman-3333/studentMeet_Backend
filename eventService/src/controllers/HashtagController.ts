@@ -58,7 +58,7 @@ public async searchHashtag(search:any){
         let data: any = []
         let a: any = []
         let info: any;
-    
+        let HashtagInfo: any
         userInfo = await userActivity.findOne({ userId: userId }).lean();
     
     
@@ -84,9 +84,9 @@ public async searchHashtag(search:any){
                         }
                     })
     
-                await Hashtag.findOneAndUpdate({ _id: body.HashtagLike },
+                    HashtagInfo=    await Hashtag.findOneAndUpdate({ _id: body.HashtagLike },
                     { $inc: { HashtagLikeCount: 1 } }, { new: true }).lean()
-                await Hashtag.findOneAndUpdate({
+                    HashtagInfo=  await Hashtag.findOneAndUpdate({
                     _id: body.HashtagLike
                 }, {
                     $push: {
@@ -110,9 +110,9 @@ public async searchHashtag(search:any){
                     }
                 })
     
-            await Hashtag.findOneAndUpdate({ _id: body.HashtagLike },
+                HashtagInfo=   await Hashtag.findOneAndUpdate({ _id: body.HashtagLike },
                 { $inc: { HashtagLikeCount: -1 } }, { new: true })
-            await Hashtag.findOneAndUpdate({
+                HashtagInfo=     await Hashtag.findOneAndUpdate({
                 _id: body.HashtagLike
             }, {
                 $pull: {
@@ -126,7 +126,7 @@ public async searchHashtag(search:any){
             userInfo = userInfo.HashtagLike;
     
     
-            let HashtagInfo: any = await Hashtag.find({ _id: { $in: userInfo } })
+            HashtagInfo = await Hashtag.find({ _id: { $in: userInfo } })
     
     
     
@@ -149,9 +149,9 @@ public async searchHashtag(search:any){
                                 body.HashtagFavourite
                         }
                     })
-                await Hashtag.findOneAndUpdate({ _id: body.HashtagFavourite },
+                    HashtagInfo=   await Hashtag.findOneAndUpdate({ _id: body.HashtagFavourite },
                     { $inc: { HashtagFavouriteCount: 1 } }, { new: true })
-                await Hashtag.findOneAndUpdate({
+                    HashtagInfo=    await Hashtag.findOneAndUpdate({
                     _id: body.HashtagFavourite
                 }, {
                     $push: {
@@ -174,10 +174,10 @@ public async searchHashtag(search:any){
                             body.HashtagFavourite
                     }
                 })
-            await Hashtag.findOneAndUpdate({ _id: body.HashtagFavourite },
+                HashtagInfo=      await Hashtag.findOneAndUpdate({ _id: body.HashtagFavourite },
                 { $inc: { HashtagFavouriteCount: -1 } }, { new: true })
     
-            await Hashtag.findOneAndUpdate({
+                HashtagInfo=   await Hashtag.findOneAndUpdate({
                 _id: body.HashtagFavourite
             }, {
                 $pull: {
@@ -191,7 +191,7 @@ public async searchHashtag(search:any){
             userInfo = userInfo.HashtagFavourite;
     
     
-            let HashtagInfo: any = await Hashtag.find({ _id: { $in: userInfo } })
+            HashtagInfo= await Hashtag.find({ _id: { $in: userInfo } })
     
     
     
@@ -216,7 +216,7 @@ public async searchHashtag(search:any){
                             }
                         }
                     })
-                await Hashtag.findOneAndUpdate(
+                    HashtagInfo=      await Hashtag.findOneAndUpdate(
                     {
                         _id: body.Hashtagcomment[i].HashtagId,
                     },
@@ -229,8 +229,8 @@ public async searchHashtag(search:any){
                             }
                         }
                     })
-                await Hashtag.findOneAndUpdate({ _id: body.Hashtagcomment[i].HashtagId },
-                    { $inc: { HashtagCommentCount: 1 } }, { new: true })
+                    HashtagInfo=    await Hashtag.findOneAndUpdate({ _id: body.Hashtagcomment[i].HashtagId },
+                    { $inc: { hashtagcommentCount: 1 } }, { new: true })
     
     
     
@@ -267,7 +267,7 @@ public async searchHashtag(search:any){
                     })
     
                 await Hashtag.findOneAndUpdate({ _id: body.Hashtagcomment[i].HashtagId },
-                    { $inc: { HashtagCommentCount: -1 } }, { new: true })
+                    { $inc: { hashtagcommentCount: -1 } }, { new: true })
     
                 return userInfo;
             }
@@ -278,7 +278,7 @@ public async searchHashtag(search:any){
     
     
             for (let i = 0; i < userInfo.length; i++) {
-                let HashtagInfo: any = await Hashtag.findOne({ _id: userInfo[i].HashtagId })
+                HashtagInfo = await Hashtag.findOne({ _id: userInfo[i].HashtagId })
     
                 let comment: any = userInfo[i].comment
                 let DateTime: any = userInfo[i].dateTime

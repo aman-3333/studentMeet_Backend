@@ -11,7 +11,7 @@ export default class StarPerformerController {
         console.log("StarPerformerInfo",StarPerformerInfo);
        let StarPerformername=await userDetails.findOne({_id:body.StarPerformerId,isDeleted:false}).lean();
        StarPerformername=StarPerformername.fullname
-       await userDetails.findOneAndUpdate({starPerformerId:body.StarPerformerId,isDeleted:false},{$set:{starPerformerName:StarPerformername}}).lean();
+       await StarPerformer.findOneAndUpdate({starPerformerId:body.StarPerformerId,isDeleted:false},{$set:{starPerformerName:StarPerformername}}).lean();
      
        return StarPerformerInfo;
     }
