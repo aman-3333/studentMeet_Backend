@@ -350,12 +350,8 @@ export default class eventController {
 
             if (category) {
                 eventInfo = await event.find({ category: category, type: "event", isDeleted: false });
-
-            } else if (subCategory) {
-                eventInfo = await event.find({ subCategory: subCategory, type: "event", isDeleted: false });
-            } else if (subSubCategory) {
-                eventInfo = await event.find({ subSubCategory: subSubCategory, type: "event", isDeleted: false });
-            }
+                return eventInfo
+            } 
             else if (sort == "lessEarning") {
                 eventInfo = await event.find({ isDeleted: false, type: "event" });
 
@@ -402,7 +398,7 @@ export default class eventController {
 
             }
 
-
+return eventInfo
         }
         if (type == "affilate") {
 
@@ -542,15 +538,14 @@ export default class eventController {
 
         eventInfo = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventBook: true }).lean()
         if (eventInfo) return ({ message: "you already booked this event" })
-        eventInfo = await bookevent.create({ eventId: eventId, userId: userId, isEventBook: true })
-
-        let eventData: any = await event.findOne({ _id: eventId, isDeleted: false }).lean()
-
-        let noOfParticipent = eventData.noOfParticipentBook
-
-
-        let remainingSeat = eventData.totalParticipent - noOfParticipent
-        await event.findOneAndUpdate({ _id: eventId, isDeleted: false, }, { $set: { noOfParticipentBook: noOfParticipent, remainingSeat: remainingSeat } }).lean()
+          await bookevent.create({ eventId: eventId, userId: userId, isEventBook: true })
+          eventInfo = await event.findOneAndUpdate({ _id: eventId, isDeleted:false },{$inc:{noOfParticipentBook:1}},{new:true}).lean()
+          let remainingSeat = eventInfo.totalParticipent-eventInfo.noOfParticipentBook
+          eventInfo=  await event.findOneAndUpdate({ _id: eventId, isDeleted:false },{$set:{remainingSeat:remainingSeat}},{new:true}).lean()
+        if(eventInfo.remainingSeat==0){
+           
+            await event.findOneAndUpdate({ _id: eventId, isDeleted:false },{$set:{isSeatfull:true}}).lean()
+        }
         return eventInfo
 
 
@@ -643,7 +638,7 @@ export default class eventController {
     }
 
 
-    public async feadbackEvent() {
+    public async feadbackEvent(userId:any,) {
 
     }
 
