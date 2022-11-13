@@ -21,6 +21,10 @@ export default class HashtagController {
         const HashtagList: IHashtag[] = await Hashtag.find({ isDeleted: false });
         return HashtagList;
     }
+    public async getHashtagListByUserId(userId:any) {
+        const HashtagList: IHashtag[] = await Hashtag.find({userId:userId ,isDeleted: false });
+        return HashtagList;
+    }
 
     public async getHashtagInfoById(HashtagId: any) {
         const HashtagInfo: any = await Hashtag.findOne({ _id: HashtagId, isDeleted: false }).lean();
