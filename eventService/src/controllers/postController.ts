@@ -13,8 +13,8 @@ export default class PostController {
 
     }
 
-    public async editPost(body: IPost, PostId: string) {
-        const PostInfo: IPost = await Post.findOneAndUpdate({ _id: PostId, isDeleted: false }, body, { new: true }).lean();
+    public async editPost(body: any) {
+        const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
         return PostInfo;
     }
 
@@ -23,16 +23,20 @@ export default class PostController {
         return PostList;
     }
 
-    public async getPostInfoById(PostId: string) {
+    public async getPostListBYUserId(userId:any) {
+        const PostList: IPost[] = await Post.find({userId:userId, isDeleted: false }).lean();
+        return PostList;
+    }
+
+    public async getPostInfoById(PostId: any) {
         const PostInfo: IPost = await Post.findOne({ _id: PostId, isDeleted: false }).lean();
         return PostInfo;
     }
 
-    public async deletePost(PostId: String) {
+    public async deletePost(PostId: any) {
         const PostInfo: IPost = await Post.findOneAndUpdate({ _id: PostId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
         return PostInfo;
     }
-
     public async PostActivity(userId: any, PostId: any, status: any, PostComment: any, PostCommentId: any, body: any) {
         let userInfo: any;
         let data: any = []
@@ -268,7 +272,6 @@ export default class PostController {
             return data;
         }
     }
-    
     public async readPostActivity(PostId: any, status: any) {
         let PostInfo: any
         if (status == "readPostlike") {

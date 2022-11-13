@@ -13,12 +13,12 @@ const eventSchema = new Schema(
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
     eventName: { type: String,required:true  },
-    type: { type: String,required:true },
+    type: { type: String,required:true,default:"event",enum:["event","affilate"] },
     eventPartnerName: { type: String },
     eventBannerImage: [{ type: String }],
     eventDesription: { type: String },
     eventTermsAndCondition: { type: String },
-    seatreamining:{ type: Number },
+    seatreamining:{ type: Number,default:0 },
     noOfParticipentBook:{ type: Number,default:0 },
     noOfDaysOrginaize:{ type: Number,default:0 },
     placeTo: { type: String },
@@ -43,12 +43,17 @@ const eventSchema = new Schema(
      userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
       friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
   }],
-    advancedEventMoney: { type: Number },
-    priceForParticipent: { type: Number },
-    organizerTotalIncome: { type: Number },
-    organizerIncomePerParticipent: { type: Number },
-    eventTotalAmount: { type: Number },
-    totalParticipent: { type: Number },
+    advancedEventMoney: Number,
+    priceForParticipent: { type: Number, default: 0 },
+    organizerTotalIncome: { type: Number, default: 0 },
+    organizerIncomePerParticipent: { type: Number, default: 0 },
+    eventTotalAmount: { type: Number, default: 0 },
+    feadBackEvent:[{
+      reting: { type: Number, default: 0 },
+      userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+      feadBackComment: { type: String }
+    }],
+    totalParticipent: { type: Number, default: 0 },
     remainingSeat: { type: Number, default: 0 },
     isSeatfull: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
@@ -68,8 +73,8 @@ const eventSchema = new Schema(
     eventStartDateTime: { type: Date },
     eventEndDateTime: { type: Date },
     bulkEntriesPrice: [{
-      noOfparticipent: { type: Number },
-      price: { type: Number }
+      noOfparticipent: { type: Number, default: 0 },
+      price: { type: Number, default: 0 }
     }]
   },
   {
@@ -94,6 +99,11 @@ export interface IEvent extends Document {
   eventBannerImage: [String],
   eventDesription: String,
   eventTermsAndCondition: String,
+  feadBackEvent:[{
+    reting: Number,
+    userId: ObjectId,
+    feadBackComment: String
+  }],
   likeEvent: [{
     userId: ObjectId,
 }],
