@@ -134,6 +134,21 @@ router.post("/sendMessage/:Id",async(req,res)=>{
     }
 })
 
+
+router.post("/blockpersonActivity",async(req,res)=>{
+    try {
+       const userId=req.body.userId;
+       const blockId=req.body.blockId;
+       const chatId=req.body.chatId;
+       const status=req.body.status;
+        const controller = new ChatController();
+        const response = await controller.blockperson(userId,blockId,chatId,status);
+        res.status(200).json(successResponse("sendMessage",response,res.statusCode));
+    }catch(error) {
+        console.error("error in sendMessage ", error);
+        res.status(500).json(errorResponse("error in sendMessage", res.statusCode));
+    }
+})
 // TODO  6th  Create-Group-chat...................................................
 
 router.post("/create-group-chat/:senderId",async(req,res)=>{
@@ -689,6 +704,20 @@ router.post("/eventActivity", async (req, res) => {
         res.status(500).json(errorResponse("error in eventActivity", res.statusCode));
     }
 })
+router.get("/getActivity", async (req, res) => {
+    try{
+        
+        const status:any =req.query.status;
+        const userId=req.query.userId;
+        const controller=new eventController();
+        const response:any =await controller.getActivity(userId,status);
+        res.status(200).json(successResponse("getFollowing",response,res.statusCode));
+    }catch(error) {
+        console.error("error in getFollowing ", error);
+        res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
+    }
+})
+
 router.get("/readActivity", async (req, res) => {
     try{
         
@@ -776,7 +805,7 @@ router.post("/applyEvent", async (req, res) => {
 });
 router.get("/filterEvent", async (req, res) => {
     try {
-        console.log("req.query",req.query);
+       
         const sort = req.query.sort;
         const type = req.query.type;
         const category = req.query.category;

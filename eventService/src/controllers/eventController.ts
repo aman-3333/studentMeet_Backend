@@ -25,7 +25,7 @@ export default class eventController {
         return eventList;
     }
     public async getEventByUserId(userId: any) {
-        const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false,isCreateByOrganizer:true })
+        const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false, isCreateByOrganizer: true })
         return eventList;
     }
     public async geteventOnHomeScreen(type: any) {
@@ -599,6 +599,9 @@ export default class eventController {
     }
 
 
+
+
+    ///////////////////////////////////eventActivity/////////////////////////////////////////////////
     public async unfollowing(userId: any, followingId: any) {
         let userInfo: any
         userInfo = await userActivity.findOne({ following: { $in: followingId } }).lean()
@@ -635,7 +638,6 @@ export default class eventController {
 
     public async feadBackEvent(body: any, eventId: any, reting: any, feadBackComment: any) {
         let eventInfo: any;
-console.log("feadBackComment",body.feadBackEvent);
 
         for (let i = 0; i < body.feadBackEvent.length; i++) {
             eventInfo = await event.findOneAndUpdate(
@@ -646,8 +648,8 @@ console.log("feadBackComment",body.feadBackEvent);
                     $push: {
                         feadBackEvent: {
                             reting: body.feadBackEvent[i].reting,
-                            userId:  body.feadBackEvent[i].userId,
-                            feadBackComment:  body.feadBackEvent[i].feadBackComment
+                            userId: body.feadBackEvent[i].userId,
+                            feadBackComment: body.feadBackEvent[i].feadBackComment
                         }
                     }
                 })
@@ -657,6 +659,24 @@ console.log("feadBackComment",body.feadBackEvent);
 
         return eventInfo
     }
+    public async getActivity(userId: any, status: any) {
+        let userInfo: any;
+        if (status == "following") {
+            userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("following", "fullname")
+        } if (status == "followers") {
+            userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("followers", "fullname")
+        } if (status == "blockbyOther") {
+            userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("blockbyOther", "fullname")
+        } if (status == "friendList") {
+            userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("friendList", "fullname")
+        } if (status == "blockList") {
+            userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("blockList", "fullname")
+        } if (status == "sendFriendRequest") {
+            userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("sendFriendRequest", "fullname")
+        }
+        return userInfo
+    }
+
 
 
 }
