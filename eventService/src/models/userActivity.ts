@@ -15,22 +15,22 @@ const schema = new Schema({
     }],
 
     HashtagLike: [
-        { type: Schema.Types.ObjectId  , ref:"hashtag"},
+        { type: Schema.Types.ObjectId, ref: "hashtag" },
     ],
     Hashtagcomment: [{
-        HashtagId: { type: Schema.Types.ObjectId , ref:"hashtag"},
+        HashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
         comment: { type: String },
         dateTime: { type: Date }
     }],
     HashtagFavourite: [
-        { type: Schema.Types.ObjectId  , ref:"hashtag"},
+        { type: Schema.Types.ObjectId, ref: "hashtag" },
     ],
     shareHashtag: [{
-        hashtagId: { type: Schema.Types.ObjectId , ref:"hashtag" },
+        hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
         friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
     }],
     hashtagSharedByOther: [{
-        hashtagId: { type: Schema.Types.ObjectId , ref:"hashtag" },
+        hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
         friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
     }],
     eventLike: [
@@ -60,9 +60,6 @@ const schema = new Schema({
         { type: Schema.Types.ObjectId, ref: "userdetail" },
     ],
     following: [{ type: Schema.Types.ObjectId, ref: "userdetail" },],
-
-
-
     friendList: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     sendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     rejectFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
@@ -87,8 +84,6 @@ export interface IuserdetailActivity extends Document {
         comment: String,
         dateTime: Date,
     }],
-
-
     HashtagLike: [
         ObjectId,
     ],
@@ -118,7 +113,7 @@ export interface IuserdetailActivity extends Document {
     eventcomment: [{
         eventId: ObjectId,
         comment: String,
-        dateTime:Date
+        dateTime: Date
     }],
     eventFavorite: [{
         eventId: ObjectId,
@@ -151,5 +146,4 @@ export interface IuserdetailActivity extends Document {
     isActive: Boolean,
     isDeleted: Boolean
 }
-
 export default model<IuserdetailActivity>("useractivity", schema);

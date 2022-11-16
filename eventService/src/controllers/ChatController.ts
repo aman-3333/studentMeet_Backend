@@ -205,8 +205,8 @@ export default class ChatController {
 public async blockperson(userId:any,blockId:any,chatId:any,status:any){
     let userInfo:any;
     if(status=="block"){
-        userInfo=await Chat.findOneAndDelete({_id:chatId})
-await userActivity.findOneAndUpdate({
+     
+        userInfo=await userActivity.findOneAndUpdate({
     userId:userId
 },{
     $push:{
@@ -223,12 +223,8 @@ await userActivity.findOneAndUpdate({
 
 }
 if(status=="unblock"){
-    userInfo=await Chat.findOneAndUpdate({chatId:chatId},{
-        $push:{
-           users:{$in:userId}
-        }
-    })
-    await userActivity.findOneAndUpdate({
+    
+    userInfo=  await userActivity.findOneAndUpdate({
         userId:userId
     },{
         $pull:{
@@ -246,7 +242,11 @@ if(status=="unblock"){
 
 
 }
+return userInfo
 }
+
+
+
 public async leavegroup(userId:any,adminId:any,groupId:any){
     let userInfo:any;
     // if(adminId){
