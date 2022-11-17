@@ -5,6 +5,7 @@ import userActivity from '../models/userActivity';
 import User from "../models/userDetails"
 import bookevent from "../models/eventBook"
 import userDetails from '../models/userDetails';
+import { sendNotification } from '../services/notification';
 export default class eventController {
 
     public async createevent(body: IEvent) {
@@ -17,6 +18,7 @@ export default class eventController {
     public async editevent(body: IEvent, eventId: string) {
 
         const eventInfo: IEvent = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, body, { new: true }).lean();
+      
         return eventInfo;
 
     }
@@ -659,7 +661,7 @@ export default class eventController {
 
         return eventInfo
     }
-    public async getActivity(userId: any, status: any) {
+     public async getActivity(userId: any, status: any) {
         let userInfo: any;
         if (status == "following") {
             userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("following", "fullname")
@@ -675,6 +677,46 @@ export default class eventController {
             userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("sendFriendRequest", "fullname")
         }
         return userInfo
+    }
+    public async RemoveActivity(userId: any, status: any,removeUserId:any) {
+        let userInfo: any;
+        if (status == "removeFollowing") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
+                $pull:{
+                    following:removeUserId
+                }
+            })
+         
+            
+        }
+        if (status == "removeFollowers") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
+                $pull:{
+                    followers:removeUserId  
+                }
+            })
+        }   if (status == "removeFriendList") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
+                $pull:{
+                    friendList:{$in:removeUserId}  
+                }
+            })
+        }   if (status == "removeSendFriendRequest") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
+                $pull:{
+                    sendFriendRequest:{$in:removeUserId}  
+                }
+            },{new:true})
+        }   if (status == "removeBlockList") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
+                $pull:{
+                    blockList:{$in:removeUserId}  
+                }
+            },{new:true})
+        }
+
+        return userInfo
+    
     }
 
 

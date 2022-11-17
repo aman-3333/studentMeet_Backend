@@ -717,6 +717,21 @@ router.get("/getActivity", async (req, res) => {
         res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
     }
 })
+router.get("/removeActivity", async (req, res) => {
+    try{
+        console.log("req",req);
+        
+        const status:any =req.query.status;
+        const userId=req.query.userId;
+        const removeUserId=req.query.removeUserId;
+        const controller=new eventController();
+        const response:any =await controller.RemoveActivity(userId,status,removeUserId);
+        res.status(200).json(successResponse("getFollowing",response,res.statusCode));
+    }catch(error) {
+        console.error("error in getFollowing ", error);
+        res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
+    }
+})
 
 router.get("/readActivity", async (req, res) => {
     try{
