@@ -302,8 +302,4 @@ export default class PostController {
             return userInfo
         }
     }
-
-
-
-
 }

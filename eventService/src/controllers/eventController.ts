@@ -27,6 +27,10 @@ export default class eventController {
         return eventList;
     }
     public async getEventByUserId(userId: any) {
+        const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false})
+        return eventList;
+    }
+    public async getEventCreateByUser(userId: any) {
         const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false, isCreateByOrganizer: true })
         return eventList;
     }
