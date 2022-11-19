@@ -671,6 +671,18 @@ router.get("/getEventByuserId", async (req, res) => {
         res.status(500).json(errorResponse("error in get geteventbyuserId", res.statusCode));
     }
 });
+router.get("/getEventCreateByUser", async (req, res) => {
+    try {
+        const controller = new eventController();
+        const userId = req.query.userId;
+        const response:any = await controller.getEventCreateByUser(userId);
+        res.status(200).json(successResponse("get EventCreateByUser", response, res.statusCode));
+    } catch (error) {
+        console.error("error in get EventCreateByUser", error);
+        res.status(500).json(errorResponse("error in get EventCreateByUser", res.statusCode));
+    }
+});
+
 
 
 
@@ -1267,7 +1279,7 @@ router.get("/searchInstitute", async (req, res) => {
     try {
         const controller = new InstituteController();
    const stateId =req.query.stateId
-   const searchValue =req.query.searchValue
+   const searchValue:any =req.query.searchValue
         const response: any = await controller.searchInstitute(stateId, searchValue);
         res.status(200).json(successResponse("get searchInstitute", response, res.statusCode));
     } catch (error) {
