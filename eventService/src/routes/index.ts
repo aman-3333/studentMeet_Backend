@@ -671,6 +671,7 @@ router.get("/getEventByuserId", async (req, res) => {
         console.error("error in get geteventbyuserId", error);
         res.status(500).json(errorResponse("error in get geteventbyuserId", res.statusCode));
     }
+    
 });
 router.get("/getEventCreateByUser", async (req, res) => {
     try {
