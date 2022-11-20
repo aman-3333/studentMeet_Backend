@@ -6,8 +6,6 @@ import nconf, { any } from "nconf";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 var razorpayConfig= require ("../../config/razorpay/betaProperties").RAZORPAY
-import { mailer } from "../services/mailer";
-import event from "../models/event";
 const fs = require('fs');
 const Hogan = require('hogan.js');
 
