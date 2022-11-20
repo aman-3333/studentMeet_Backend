@@ -34,6 +34,7 @@ const path = require('path');
 import eventController from "../controllers/eventController"
 import AuthController from "../controllers/AuthController";
 import { AnyAaaaRecord } from "dns";
+import PaymentController from "../controllers/PaymentController";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
 
@@ -2120,7 +2121,29 @@ router.get("/deleteShop/:id", async (req, res) => {
     }
 })
 
-
+//////////////////////////////razorpay/////////////////////////////////
+router.post("/createorder", async (req, res) => {
+    try {
+      const bookEventId = req.body.bookEventId;
+      const controller = new PaymentController();
+      const response:any = await controller.createbookEvent(bookEventId);
+      res.status(200).json(successResponse("createorder", response, res.statusCode));
+    } catch (error) {
+        console.error("error in createorder", error);
+        res.status(500).json(errorResponse("error in createorder", res.statusCode));
+    }
+});
+router.post("/paymentCallback", async (req, res) => {
+    try {
+      const data = req.body;
+      const controller = new PaymentController();
+      const response:any = await controller.paymentCallback(data);
+      res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
+    } catch (error) {
+        console.error("error in paymentCallback", error);
+        res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
+    }
+});
 //////////////////////////////////////////////post//////////////////////////////////////////////////
 
 router.post("/createPost", async (req, res) => {

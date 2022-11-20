@@ -33,17 +33,8 @@ const userSchema = new Schema(
     fulladdress: { type: String, trim: true },
     about: { type: String, trim: true },
     profile_picture: { type: String },
-    gcmid: { type: String },
-  signature: { type: String },
+    signature: { type: String },
     activeRole: { type: Schema.Types.ObjectId, ref: "role" },
-    ipAddress:{ type: String },
-    modelName:{ type: String },
-    manufacturer:{ type: String },
-    maxMemorybigint:{ type: Number, trim: true },
-    freeMemory:{ type: Number, trim: true },
-    osVersion:{ type: Number, trim: true },
-    networkCarrier:{ type: String },
-    dimension:{ type: String },
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     isSubscribed: { type: Boolean, default: true },
     video_user_id: { type: String },
@@ -56,19 +47,23 @@ const userSchema = new Schema(
     lastLoginDate: { type: Date },
     email_verify: { type: Boolean, default: false },
   isStarPerformer:{ type: Boolean, default: false },
-    
-
     parent_gender: { type: String },
     parent_email: { type: String },
-    parent_country_code: { type: Number, trim: true }
+    parent_country_code: { type: Number, trim: true },
+    gcmid: { type: String },
+    fcmtoken: { type: String },
+    ipAddress:{ type: String },
+    modelName:{ type: String },
+    manufacturer:{ type: String },
+    maxMemorybigint:{ type: Number, trim: true },
+    freeMemory:{ type: Number, trim: true },
+    osVersion:{ type: Number, trim: true },
+    networkCarrier:{ type: String },
+    dimension:{ type: String },
    
   },
   {
     timestamps: true,
   }
 );
-
-
-
-
 export default model ("userdetail", userSchema);

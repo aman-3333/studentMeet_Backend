@@ -8,7 +8,7 @@ const schema = new Schema({
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
-    hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
+    
     postLikeCount: { type: Number, default: 0 },
     shareount: { type: Number, default: 0 },
     PostCommentCount: { type: Number, default: 0 },

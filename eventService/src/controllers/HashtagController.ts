@@ -50,9 +50,6 @@ public async searchHashtag(search:any){
     }
 
 }
-
-
-
     public async deleteHashtag(HashtagId: String, userId: any) {
         const HashtagInfo: IHashtag = await Hashtag.findOneAndUpdate({ _id: HashtagId, isDeleted: false }, { $set: { isDeleted: true, deletedPersonId: userId } }, { new: true }).lean();
         return HashtagInfo;
