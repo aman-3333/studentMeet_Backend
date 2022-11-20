@@ -3,7 +3,9 @@
   "host": "18.182.1.219",
   "env":"test",
   "port": "3000",
-  "base-url": "http://api.studentmeet.com"
+  "base-url": "http://api.studentmeet.com",
+  "razorpay_key_id": "rzp_test_MkkFtprIQLTJ1",
+    "razorpay_key_secret": "rdlNYtQ2IuP6xPsbeVS9"
 }
    
   
