@@ -11,7 +11,11 @@ export default class HashtagController {
         HashtagInfo = await Hashtag.create(body);
         return HashtagInfo;
     }
-
+    public async createHashtageeee(body: any) {
+        let HashtagInfo: any;
+        HashtagInfo = await Hashtag.create(body);
+        return HashtagInfo;
+    }
     public async editHashtag(body: IHashtag, HashtagId: string) {
         const HashtagInfo: IHashtag = await Hashtag.findOneAndUpdate({ _id: HashtagId, isDeleted: false }, body, { new: true }).lean();
         return HashtagInfo;
