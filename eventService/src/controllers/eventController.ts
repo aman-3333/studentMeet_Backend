@@ -6,6 +6,7 @@ import User from "../models/userDetails"
 import bookevent from "../models/eventBook"
 import userDetails from '../models/userDetails';
 import { sendNotification } from '../services/notification';
+import post from '../models/post';
 export default class eventController {
 
     public async createevent(body: IEvent) {
@@ -18,7 +19,7 @@ export default class eventController {
     public async editevent(body: IEvent, eventId: string) {
 
         const eventInfo: IEvent = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, body, { new: true }).lean();
-      
+        await post.findOneAndUpdate({_id:eventId},{$set:{eventName:eventInfo.eventName}})
         return eventInfo;
 
     }

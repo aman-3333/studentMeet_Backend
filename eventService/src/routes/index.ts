@@ -2249,9 +2249,9 @@ router.get("/readPostActivity", async (req, res) => {
     }
 });
 
-router.get("/deletePost", async (req, res) => {
+router.post("/deletePost", async (req, res) => {
     try {
-        const PostId = req.query.PostId;
+        const PostId = req.body.PostId;
         const controller = new PostController();
         const response = await controller.deletePost(PostId);
         res.status(200).json(successResponse("delete Post", response, res.statusCode));
@@ -2262,6 +2262,20 @@ router.get("/deletePost", async (req, res) => {
     }
 })
 
+router.get("/searchPost", async (req, res) => {
+    try {
+        
+        
+        const search = req.query.search;
+        
+        const controller = new PostController();
+        const response = await controller.searchPost(search);
+        res.status(200).json(successResponse("search", response, res.statusCode));
+    } catch (error) {
+        console.error("error in search", error);
+        res.status(500).json(errorResponse("error in search", res.statusCode));
+    }
+});
 
 
 export default router;
