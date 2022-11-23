@@ -3,14 +3,15 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema({
 
     eventId: { type: Schema.Types.ObjectId, ref: "event" },
-    userId: { type: Schema.Types.ObjectId },
+    userId: { type: Schema.Types.ObjectId,ref: "userdetail" },
     image: [{ type: String }],
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
-    
+    userName:{ type: String },
+    eventName:{ type: String },
     postLikeCount: { type: Number, default: 0 },
-    shareount: { type: Number, default: 0 },
+    shareCount: { type: Number, default: 0 },
     PostCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
     PostLike: [{
@@ -45,7 +46,7 @@ export interface IPost extends Document {
     attechment: [String],
     hashtagId: ObjectId,
     postLikeCount: Number,
-    shareount: Number,
+    shareCount: Number,
     postCommentCount: Number,
     postFavouriteCount: Number,
     PostLike: [ObjectId],

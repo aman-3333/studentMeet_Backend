@@ -18,6 +18,7 @@ import Otp from "../models/Otp";
 import { baseUrl } from "../middleware/authMiddleware";
 import userActivity from "../models/userActivity";
 import StarPerformer from "../models/StarPerformer";
+import post from "../models/post";
 
 // import SignupOtp from "../models/SignupOtp";
 
@@ -95,6 +96,7 @@ export default class AuthController {
     public async editProfile(body: any) {
         let userInfo: any = await Users.findOneAndUpdate({ _id: body.userId, isDeleted: false }, body, { new: true }).lean();
         await StarPerformer.findOneAndUpdate({starPerformerId:body.userId,isDeleted:false},{$set:{starPerformerName:body.fullname}}).lean();
+        await post.findOneAndUpdate({userId:body.userId},{$set:{userName:userInfo.fullname}})
         return userInfo;
     }
 
