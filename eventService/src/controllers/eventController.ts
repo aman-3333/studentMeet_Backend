@@ -78,7 +78,7 @@ export default class eventController {
 
         if (status == "eventLike") {
             info = await userActivity.findOne({ eventLike: body.eventLike }).lean();
-
+            if(info) return{message:"alreadyEventLike"}
 
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -144,7 +144,7 @@ export default class eventController {
 
         if (status == "eventFavorite") {
             info = await userActivity.findOne({ eventFavorite: { $in: body.eventFavorite } }).lean();
-
+            if(info) return{message:"alreadyEventFavorite"}
 
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -300,12 +300,10 @@ export default class eventController {
     public async readActivity(eventId: any, status: any) {
         let eventInfo: any
         if (status == "readeventlike") {
-            eventInfo = await event.findOne({ _id: eventId }).lean();
+            eventInfo = await event.findOne({ _id: eventId }).populate("likeEvent","fullname");
             eventInfo = eventInfo.likeEvent;
 
-
-            let userInfo: any = await userDetails.find({ _id: { $in: eventInfo } })
-            return userInfo
+            return eventInfo
         }
         if (status == "readeventcomment") {
             let a = []
@@ -329,11 +327,10 @@ export default class eventController {
 
 
 
-        } if (status == "readeventfav") {
-            eventInfo = await event.findOne({ _id: eventId }).lean();
-            eventInfo = eventInfo.likeEvent;
-            let userInfo: any = await userDetails.find({ _id: { $in: eventInfo } })
-            return userInfo
+        } if (status == "readEventFavourite") {
+            eventInfo = await event.findOne({ _id: eventId }).populate("eventFavorite","fullname");
+            eventInfo = eventInfo.eventFavorite;
+            return eventInfo
         }
     }
     public async eventCreateBYOrganizer(body: any) {

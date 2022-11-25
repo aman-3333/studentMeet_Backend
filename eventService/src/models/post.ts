@@ -15,20 +15,20 @@ const schema = new Schema({
     PostCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
     PostLike: [{
-        type: Schema.Types.ObjectId, ref: "userDetails"
+        type: Schema.Types.ObjectId, ref: "userdetail"
     }],
     PostFavourite: [{
-        type: Schema.Types.ObjectId, ref: "userDetails"
+        type: Schema.Types.ObjectId, ref: "userdetail"
     }],
     PostComment: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
         comment: { type: String },
         dateTime: { type: Date },
     }],
     sharePost: [{
        post: { type: Schema.Types.ObjectId, ref: "event" },
-       userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+       userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
     }],
     isActive: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false }

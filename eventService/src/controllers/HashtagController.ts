@@ -79,8 +79,8 @@ public async searchHashtag(search:any){
     
     
         if (status == "HashtagLike") {
-            info = await userActivity.findOne({ HashtagLike: body.HashtagLike }).lean();
-    
+            info = await userActivity.findOne({ HashtagLike: {$in:body.HashtagLike} }).lean();
+            if(info) return{message:"alreadyHashtagLike"}
     
             if (!info) {
                 userInfo = await userActivity.updateMany(
@@ -146,7 +146,7 @@ public async searchHashtag(search:any){
     
         if (status == "HashtagFavourite") {
             info = await userActivity.findOne({ HashtagFavourite: { $in: body.HashtagFavourite } }).lean();
-    
+            if(info) return{message:"alreadyHashtagFavourite"}
     
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -302,10 +302,9 @@ public async searchHashtag(search:any){
     public async readHashtagActivity(HashtagId: any, status: any) {
         let HashtagInfo: any
         if (status == "readHashtaglike") {
-            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).lean();
-            HashtagInfo = HashtagInfo.likeHashtag;
-            let userInfo: any = await userDetails.find({ _id: { $in: HashtagInfo } })
-            return userInfo
+            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).populate("likeHashtag","fullname")
+            HashtagInfo=HashtagInfo.likeHashtag
+            return HashtagInfo
         }
         if (status == "readHashtagcomment") {
             let a = []
@@ -322,11 +321,10 @@ public async searchHashtag(search:any){
     
     
     
-        } if (status == "readHashtagfav") {
-            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).lean();
-            HashtagInfo = HashtagInfo.likeHashtag;
-            let userInfo: any = await userDetails.find({ _id: { $in: HashtagInfo } })
-            return userInfo
+        } if (status == "readHashtagFavourite") {
+            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).populate("HashtagFavourite","fullname")
+            HashtagInfo=HashtagInfo.HashtagFavourite
+            return HashtagInfo
         }
     }
 }
