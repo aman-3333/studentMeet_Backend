@@ -54,28 +54,43 @@ export default class PaymentController {
 
 
 
-  public async paymentCallback(data: any) {
-   
-    const bookEventData: any = await bookEvent.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).populate("eventId")
-    console.log("bookEventData",bookEventData);
-    
-    let resp
-    let Paymentresp: any
 
-      const generated_signature = crypto.createHmac("sha256", razorpayConfig.key_secret).update(bookEventData.order_id + "|" + data.razorpayPaymentId).digest("hex");
-    console.log("generated_signature",generated_signature);
-    
-      if (generated_signature) {
-        Paymentresp = await CapturePayment(data.razorpayPaymentId, bookEventData.eventId.priceForParticipent * 100, "INR",  razorpayConfig.key_id, razorpayConfig.key_secret)
+  // public async paymentCallback(data: any) {
+  //   console.log(data, "line64F")
+  //   const orderData: any = await Order.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).lean()
+
+  //   console.log(orderData, "line 65")
+  //   let resp
+  //   let Paymentresp: any
+  //   if (orderData && orderData._id) {
+  //     const generated_signature = crypto.createHmac("sha256", razorpayConfig.key_secret).update(orderData.order_id + "|" + data.razorpayPaymentId).digest("hex");
+  //     if (generated_signature == data.razorpaySignature) {
         
-        if (Paymentresp.status == 'captured') {
-          await bookEvent.updateOne({ bookEvent_id: data.razorpaybookEventId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId })
-        }
-      }
+  //       resp = "success"
+  //       Paymentresp = await CapturePayment(data.razorpayPaymentId, orderData.orderTotal * 100, "INR", this.razorpay_key_id, razorpayConfig.key_secret)
+  //       let prodresp: any[] = [];
+  //       if (orderData && orderData.orderProduct && orderData.orderProduct.length > 0) {
+  //         const products: any = orderData.orderProduct;
+  //         const orderUpdate = await Order.updateOne({ _id: orderData._id }, { Status: "Placed", receipt_generation_date: new Date() });
+  //         for (let p = 0; p < orderData.orderProduct.length; p++) {
+  //           if (products[p]._id && products[p].quantity) {
+  //             const q = 0 - products[p].quantity;
+  //             const resp1 = await Product.updateMany({ variations: { $elemMatch: { _id: products[p].variationId } } }, { $inc: { "variations.$.stock": q } }, { new: true }).lean();
 
-    
-    return resp
-  }
+  //             prodresp.push(resp1);
+  //           }
+  //         }
+  //       }
+        
+       
+  //       if (Paymentresp.status == 'captured') {
+  //         await Order.updateOne({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId })
+  //       }
+  //     }
+
+  //   }
+  //   return resp
+  // }
 
  
 }

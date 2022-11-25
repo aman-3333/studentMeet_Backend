@@ -2136,17 +2136,17 @@ router.post("/createorder", async (req, res) => {
         res.status(500).json(errorResponse("error in createorder", res.statusCode));
     }
 });
-router.post("/paymentCallback", async (req, res) => {
-    try {
-      const data = req.body;
-      const controller = new PaymentController();
-      const response:any = await controller.paymentCallback(data);
-      res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
-    } catch (error) {
-        console.error("error in paymentCallback", error);
-        res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
-    }
-});
+// router.post("/paymentCallback", async (req, res) => {
+//     try {
+//       const data = req.body;
+//       const controller = new PaymentController();
+//       const response:any = await controller.paymentCallback(data);
+//       res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
+//     } catch (error) {
+//         console.error("error in paymentCallback", error);
+//         res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
+//     }
+// });
 //////////////////////////////////////////////post//////////////////////////////////////////////////
 
 router.post("/createPost", async (req, res) => {
@@ -2237,8 +2237,8 @@ router.post("/postActivity", async (req, res) => {
 router.get("/readPostActivity", async (req, res) => {
     try {
         
-        const PostId = req.body.PostId; 
-        const status = req.body.status;
+        const PostId = req.query.PostId; 
+        const status = req.query.status;
         
         const controller = new PostController();
         const response = await controller.readPostActivity( PostId, status);

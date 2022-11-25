@@ -55,11 +55,16 @@ export default class PostController {
     
     
         if (status == "PostLike") {
+            console.log("mmm");
+            
             info = await userActivity.findOne({ PostLike: body.PostLike }).lean();
+       if(info) return{message:"alreadylike"}
     
     
             if (!info) {
-                userInfo = await userActivity.updateMany(
+                console.log("l,");
+                
+                userInfo = await userActivity.findOneAndUpdate(
                     {
                         userId: userId,
                     },
@@ -71,8 +76,8 @@ export default class PostController {
                     })
     
                 await Post.findOneAndUpdate({ _id: body.PostLike },
-                    { $inc: { PostLikeCount: 1 } }, { new: true }).lean()
-                await Post.findOneAndUpdate({
+                    { $inc: { postLikeCount: 1 } }, { new: true }).lean()
+             let postInfo:any=   await Post.findOneAndUpdate({
                     _id: body.PostLike
                 }, {
                     $push: {
@@ -81,7 +86,7 @@ export default class PostController {
     
                     }
                 })
-                return userInfo;
+                return postInfo;
             }
         }
         if (status == "removePostLike") {
@@ -97,7 +102,7 @@ export default class PostController {
                 })
     
             await Post.findOneAndUpdate({ _id: body.PostLike },
-                { $inc: { PostLikeCount: -1 } }, { new: true })
+                { $inc: { postLikeCount: -1 } }, { new: true })
             await Post.findOneAndUpdate({
                 _id: body.PostLike
             }, {
@@ -123,7 +128,7 @@ export default class PostController {
         if (status == "PostFavourite") {
             info = await userActivity.findOne({ PostFavourite: { $in: body.PostFavourite } }).lean();
     
-    
+            if(info) return{message:"alreadyFavourite"}
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
@@ -136,7 +141,7 @@ export default class PostController {
                         }
                     })
                 await Post.findOneAndUpdate({ _id: body.PostFavourite },
-                    { $inc: { PostFavouriteCount: 1 } }, { new: true })
+                    { $inc: { postFavouriteCount: 1 } }, { new: true })
                 await Post.findOneAndUpdate({
                     _id: body.PostFavourite
                 }, {
@@ -161,7 +166,7 @@ export default class PostController {
                     }
                 })
             await Post.findOneAndUpdate({ _id: body.PostFavourite },
-                { $inc: { PostFavouriteCount: -1 } }, { new: true })
+                { $inc: { postFavouriteCount: -1 } }, { new: true })
     
             await Post.findOneAndUpdate({
                 _id: body.PostFavourite
@@ -275,12 +280,13 @@ export default class PostController {
         }
     }
     public async readPostActivity(PostId: any, status: any) {
+        console.log("s",PostId, status);
+        
         let PostInfo: any
         if (status == "readPostlike") {
-            PostInfo = await Post.findOne({ _id: PostId }).lean();
-            PostInfo = PostInfo.PostLike;
-            let userInfo: any = await userDetails.find({ _id: { $in: PostInfo } })
-            return userInfo
+            PostInfo = await Post.findOne({ _id: PostId }).populate("PostLike","fullname")
+            PostInfo=PostInfo.PostLike
+            return PostInfo
         }
         if (status == "readPostComment") {
             let a = []
@@ -298,15 +304,14 @@ export default class PostController {
     
     
         } if (status == "readPostFavourite") {
-            PostInfo = await Post.findOne({ _id: PostId }).lean();
-            PostInfo = PostInfo.PostFavourite;
-            let userInfo: any = await userDetails.find({ _id: { $in: PostInfo } })
-            return userInfo
+            PostInfo = await Post.findOne({ _id: PostId }).populate("PostFavourite","fullname");
+            PostInfo=PostInfo.PostFavourite
+            return PostInfo
         }
     }
     public async searchPost(search:any){
         if(search){
-            let PostInfo:any=await Post.find({isDeleted:false}).populate("eventId")
+            let PostInfo:any=await Post.find({isDeleted:false})
             console.log("PostInfo",PostInfo);
             
             PostInfo = new FuzzySearch(PostInfo, ["userName","eventName"], {
