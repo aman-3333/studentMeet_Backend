@@ -103,7 +103,7 @@ export default class eventController {
 
                     }
                 })
-                return { userInfo, eventInfo };
+                return eventInfo;
             }
         }
         if (status == "removeeventLike") {
@@ -128,7 +128,7 @@ export default class eventController {
                         userId
                 }
             })
-            return { userInfo, eventInfo };
+            return eventInfo;
         } if (status == "readeventLike") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.eventLike;
@@ -168,7 +168,7 @@ export default class eventController {
 
                     }
                 })
-                return { userInfo, eventInfo };
+                return eventInfo;
             }
         }
         if (status == "removeeventFavorite") {
@@ -193,7 +193,7 @@ export default class eventController {
                         userId
                 }
             })
-            return { userInfo, eventInfo };
+            return eventInfo;
         } if (status == "readeventFavorite") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.eventFavorite;
@@ -242,7 +242,7 @@ export default class eventController {
 
 
 
-                return { userInfo, eventInfo };
+                return eventInfo;
             }
         }
         if (status == "removeeventcomment") {
@@ -277,7 +277,7 @@ export default class eventController {
                 eventInfo = await event.findOneAndUpdate({ _id: body.eventcomment[i].eventId },
                     { $inc: { eventCommentCount: -1 } }, { new: true })
 
-                return { userInfo, eventInfo };
+                return eventInfo;
             }
 
         } if (status == "readeventcomment") {
@@ -300,7 +300,7 @@ export default class eventController {
     public async readActivity(eventId: any, status: any) {
         let eventInfo: any
         if (status == "readeventlike") {
-            eventInfo = await event.findOne({ _id: eventId }).populate("likeEvent","fullname");
+            eventInfo = await event.findOne({ _id: eventId }).populate("likeEvent");
             eventInfo = eventInfo.likeEvent;
 
             return eventInfo
@@ -328,7 +328,7 @@ export default class eventController {
 
 
         } if (status == "readEventFavourite") {
-            eventInfo = await event.findOne({ _id: eventId }).populate("eventFavorite","fullname");
+            eventInfo = await event.findOne({ _id: eventId }).populate("eventFavorite");
             eventInfo = eventInfo.eventFavorite;
             return eventInfo
         }

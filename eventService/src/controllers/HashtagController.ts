@@ -105,7 +105,7 @@ public async searchHashtag(search:any){
     
                     }
                 })
-                return userInfo;
+                return HashtagInfo;
             }
         }
         if (status == "removeHashtagLike") {
@@ -130,7 +130,7 @@ public async searchHashtag(search:any){
                         userId
                 }
             })
-            return userInfo;
+            return HashtagInfo;
         } if (status == "readHashtagLike") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.HashtagLike;
@@ -170,7 +170,7 @@ public async searchHashtag(search:any){
     
                     }
                 })
-                return userInfo;
+                return HashtagInfo;
             }
         }
         if (status == "removeHashtagFavourite") {
@@ -195,7 +195,7 @@ public async searchHashtag(search:any){
                         userId
                 }
             })
-            return userInfo;
+            return HashtagInfo;
         } if (status == "readHashtagFavourite") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.HashtagFavourite;
@@ -244,7 +244,7 @@ public async searchHashtag(search:any){
     
     
     
-                return userInfo;
+                return HashtagInfo;
             }
         }
         if (status == "removeHashtagcomment") {
@@ -262,7 +262,7 @@ public async searchHashtag(search:any){
                             }
                         }
                     })
-                await Hashtag.findOneAndUpdate(
+                    HashtagInfo=  await Hashtag.findOneAndUpdate(
                     {
                         _id: body.Hashtagcomment[i].HashtagId,
                     },
@@ -276,10 +276,10 @@ public async searchHashtag(search:any){
                         }
                     })
     
-                await Hashtag.findOneAndUpdate({ _id: body.Hashtagcomment[i].HashtagId },
+                    HashtagInfo=   await Hashtag.findOneAndUpdate({ _id: body.Hashtagcomment[i].HashtagId },
                     { $inc: { hashtagcommentCount: -1 } }, { new: true })
     
-                return userInfo;
+                return HashtagInfo;
             }
     
         } if (status == "readHashtagcomment") {
@@ -302,7 +302,7 @@ public async searchHashtag(search:any){
     public async readHashtagActivity(HashtagId: any, status: any) {
         let HashtagInfo: any
         if (status == "readHashtaglike") {
-            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).populate("likeHashtag","fullname")
+            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).populate("likeHashtag")
             HashtagInfo=HashtagInfo.likeHashtag
             return HashtagInfo
         }
@@ -322,7 +322,7 @@ public async searchHashtag(search:any){
     
     
         } if (status == "readHashtagFavourite") {
-            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).populate("HashtagFavourite","fullname")
+            HashtagInfo = await Hashtag.findOne({ _id: HashtagId }).populate("HashtagFavourite")
             HashtagInfo=HashtagInfo.HashtagFavourite
             return HashtagInfo
         }
