@@ -44,7 +44,7 @@ export default class PostController {
         let data: any = []
         let a: any = []
         let info: any;
-    
+       let PostInfo :any;
         userInfo = await userActivity.findOne({ userId: userId }).lean();
     
     
@@ -57,7 +57,9 @@ export default class PostController {
         if (status == "PostLike") {
             console.log("mmm");
             
-            info = await userActivity.findOne({ PostLike: body.PostLike }).lean();
+            info = await userActivity.findOne({ PostLike: {$in:body.PostLike} }).lean();
+            console.log("info", info);
+            
        if(info) return{message:"alreadylike"}
     
     
@@ -77,7 +79,7 @@ export default class PostController {
     
                 await Post.findOneAndUpdate({ _id: body.PostLike },
                     { $inc: { postLikeCount: 1 } }, { new: true }).lean()
-             let postInfo:any=   await Post.findOneAndUpdate({
+                    PostInfo =   await Post.findOneAndUpdate({
                     _id: body.PostLike
                 }, {
                     $push: {
@@ -85,8 +87,8 @@ export default class PostController {
                             userId
     
                     }
-                })
-                return postInfo;
+                },{ new: true })
+                return PostInfo;
             }
         }
         if (status == "removePostLike") {
@@ -103,21 +105,21 @@ export default class PostController {
     
             await Post.findOneAndUpdate({ _id: body.PostLike },
                 { $inc: { postLikeCount: -1 } }, { new: true })
-            await Post.findOneAndUpdate({
+                PostInfo =   await Post.findOneAndUpdate({
                 _id: body.PostLike
             }, {
                 $pull: {
                     PostLike:
                         userId
                 }
-            })
-            return userInfo;
+            },{ new: true })
+            return PostInfo;
         } if (status == "readPostLike") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.PostLike;
     
     
-            let PostInfo: any = await Post.find({ _id: { $in: userInfo } })
+            PostInfo = await Post.find({ _id: { $in: userInfo } })
     
     
     
@@ -142,7 +144,7 @@ export default class PostController {
                     })
                 await Post.findOneAndUpdate({ _id: body.PostFavourite },
                     { $inc: { postFavouriteCount: 1 } }, { new: true })
-                await Post.findOneAndUpdate({
+                    PostInfo =   await Post.findOneAndUpdate({
                     _id: body.PostFavourite
                 }, {
                     $push: {
@@ -150,8 +152,8 @@ export default class PostController {
                             userId
     
                     }
-                })
-                return userInfo;
+                },{ new: true })
+                return PostInfo;
             }
         }
         if (status == "removePostFavourite") {
@@ -168,15 +170,15 @@ export default class PostController {
             await Post.findOneAndUpdate({ _id: body.PostFavourite },
                 { $inc: { postFavouriteCount: -1 } }, { new: true })
     
-            await Post.findOneAndUpdate({
+                PostInfo = await Post.findOneAndUpdate({
                 _id: body.PostFavourite
             }, {
                 $pull: {
                     PostFavourite:
                         userId
                 }
-            })
-            return userInfo;
+            },{ new: true })
+            return   PostInfo ;
         } if (status == "readPostFavourite") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
             userInfo = userInfo.PostFavourite;
@@ -207,7 +209,7 @@ export default class PostController {
                             }
                         }
                     })
-                await Post.findOneAndUpdate(
+                    PostInfo =    await Post.findOneAndUpdate(
                     {
                         _id: body.PostComment[i].PostId,
                     },
@@ -225,7 +227,7 @@ export default class PostController {
     
     
     
-                return userInfo;
+                return  PostInfo ;
             }
         }
         if (status == "removePostComment") {
@@ -243,7 +245,7 @@ export default class PostController {
                             }
                         }
                     })
-                await Post.findOneAndUpdate(
+                    PostInfo =    await Post.findOneAndUpdate(
                     {
                         _id: body.PostComment[i].PostId,
                     },
@@ -260,7 +262,7 @@ export default class PostController {
                 await Post.findOneAndUpdate({ _id: body.PostComment[i].PostId },
                     { $inc: { PostCommentCount: -1 } }, { new: true })
     
-                return userInfo;
+                return  PostInfo ;
             }
     
         } if (status == "readPostComment") {

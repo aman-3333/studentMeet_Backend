@@ -23,9 +23,9 @@ export default class PaymentController {
   public async createbookEvent(bookEventId: any) {
     let shopDetails: any
     let resp
-    const bookEventDetail: any = await bookEvent.findOne({ _id: bookEventId }).populate("eventId")
-    // const EventDetail: any = await event.findOne({ _id: bookEventDetail.eventId })
-    console.log("bookEventDetail",bookEventDetail);
+   const bookEventDetail: any = await bookEvent.findOne({ _id: bookEventId }).populate("eventId")
+   
+    
     
     let receiptID = this.getRandomId()
     const totalAmount = bookEventDetail.eventId.priceForParticipent * 100
@@ -41,13 +41,15 @@ export default class PaymentController {
       key_secret:razorpayConfig.key_secret
     });
     const response = await razorpay.orders.create(options);
+    console.log("response",response);
+    
     if (response && response.id) {
       // let prodresp: any[] = [];
      
-      resp = await bookEvent.findOneAndUpdate({ _id: bookEventId }, {$set:{ order_id: response.id, receipt: receiptID, }}, { new: true });
+    await bookEvent.findOneAndUpdate({ _id: bookEventId }, {$set:{ order_id: response.id, receipt: receiptID, }}, { new: true });
      
     }
-    return resp
+    return response
   }
 
 
