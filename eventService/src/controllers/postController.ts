@@ -286,7 +286,7 @@ export default class PostController {
         
         let PostInfo: any
         if (status == "readPostlike") {
-            PostInfo = await Post.findOne({ _id: PostId }).populate("PostLike","fullname")
+            PostInfo = await Post.findOne({ _id: PostId }).populate("PostLike")
             PostInfo=PostInfo.PostLike
             return PostInfo
         }
@@ -306,7 +306,7 @@ export default class PostController {
     
     
         } if (status == "readPostFavourite") {
-            PostInfo = await Post.findOne({ _id: PostId }).populate("PostFavourite","fullname");
+            PostInfo = await Post.findOne({ _id: PostId }).populate("PostFavourite");
             PostInfo=PostInfo.PostFavourite
             return PostInfo
         }
