@@ -534,9 +534,12 @@ export default class eventController {
 
     public async bookEvent(eventId: any, userId: any, status: any) {
         let eventInfo: any
-        eventInfo = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventBook: true }).lean()
-        if (eventInfo) return ({ message: "you already booked this event" })
-        let bookeventData: any = await bookevent.create({ eventId: eventId, userId: userId })
+        let bookeventData: any 
+        eventInfo = await event.findOne({ _id: eventId,  isDeleted: false }).lean()
+        bookeventData = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventBook: true }).lean()
+        
+        if (bookeventData) return ({ message: "you already booked this event" })
+        bookeventData = await bookevent.create({ eventId: eventId, userId: userId })
         bookeventData = await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
         return bookeventData
     }

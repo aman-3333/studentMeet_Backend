@@ -821,7 +821,7 @@ router.post("/unfollowing", async (req, res) => {
     }
 });
 
-router.post("/applyEvent", async (req, res) => {
+router.post("/checkout", async (req, res) => {
     try {
         const eventId = req.body.eventId; 
         const userId = req.body.userId; 
@@ -2125,7 +2125,7 @@ router.get("/deleteShop/:id", async (req, res) => {
 })
 
 //////////////////////////////razorpay/////////////////////////////////
-router.post("/createOrder", async (req, res) => {
+router.post("/createPayment", async (req, res) => {
     try {
       const bookEventId = req.body.bookEventId;
       const controller = new PaymentController();
@@ -2136,17 +2136,17 @@ router.post("/createOrder", async (req, res) => {
         res.status(500).json(errorResponse("error in createorder", res.statusCode));
     }
 });
-// router.post("/paymentCallback", async (req, res) => {
-//     try {
-//       const data = req.body;
-//       const controller = new PaymentController();
-//       const response:any = await controller.paymentCallback(data);
-//       res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
-//     } catch (error) {
-//         console.error("error in paymentCallback", error);
-//         res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
-//     }
-// });
+router.post("/paymentCapture", async (req, res) => {
+    try {
+      const data = req.body;
+      const controller = new PaymentController();
+      const response:any = await controller.paymentCallback(data);
+      res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
+    } catch (error) {
+        console.error("error in paymentCallback", error);
+        res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
+    }
+});
 //////////////////////////////////////////////post//////////////////////////////////////////////////
 
 router.post("/createPost", async (req, res) => {

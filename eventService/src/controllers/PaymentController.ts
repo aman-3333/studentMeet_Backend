@@ -51,7 +51,6 @@ export default class PaymentController {
       const generated_signature = crypto.createHmac("sha256", razorpayConfig.key_secret).update(orderData.order_id + "|" + data.razorpayPaymentId).digest("hex");
       if (generated_signature == data.razorpaySignature) {
         Paymentresp = await CapturePayment(data.razorpayPaymentId, orderData.orderTotal * 100, "INR", razorpayConfig.key_id, razorpayConfig.key_secret)
-
         if (Paymentresp.status == 'captured') {
           resp = await bookEvent.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId })
           let eventInfo: any = await event.findOneAndUpdate({ _id: resp.eventId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
