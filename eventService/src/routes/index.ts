@@ -2125,7 +2125,7 @@ router.get("/deleteShop/:id", async (req, res) => {
 })
 
 //////////////////////////////razorpay/////////////////////////////////
-router.post("/createorder", async (req, res) => {
+router.post("/createOrder", async (req, res) => {
     try {
       const bookEventId = req.body.bookEventId;
       const controller = new PaymentController();

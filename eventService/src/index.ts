@@ -106,12 +106,7 @@ setEnvironment();
 mongoose.connect(nconf.get('mongodb'),
   {
     useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify:true
-  }
-  // ,
-  // () => {
-  //   console.log("Connected to edneed DB for auth api");
-  // }
-).then(() => {
+  }).then(() => {
   console.log("Connected to  DB for auth api");
 }).catch((error:any) => {
   console.log(error)

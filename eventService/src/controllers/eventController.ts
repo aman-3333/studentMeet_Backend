@@ -537,15 +537,16 @@ export default class eventController {
 
         eventInfo = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventBook: true }).lean()
         if (eventInfo) return ({ message: "you already booked this event" })
-        await bookevent.create({ eventId: eventId, userId: userId, isEventBook: true })
+     let bookeventData:any=   await bookevent.create({ eventId: eventId, userId: userId })
         eventInfo = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
         let remainingSeat = eventInfo.totalParticipent - eventInfo.noOfParticipentBook
         eventInfo = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $set: { remainingSeat: remainingSeat } }, { new: true }).lean()
+        bookeventData =   await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
         if (eventInfo.remainingSeat == 0) {
 
             await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $set: { isSeatfull: true } }).lean()
         }
-        return eventInfo
+        return bookeventData
 
 
     }
