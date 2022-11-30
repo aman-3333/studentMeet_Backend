@@ -19,7 +19,7 @@ export default class eventController {
     public async editevent(body: IEvent, eventId: string) {
 
         const eventInfo: IEvent = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, body, { new: true }).lean();
-        await post.findOneAndUpdate({_id:eventId},{$set:{eventName:eventInfo.eventName}})
+        await post.findOneAndUpdate({ _id: eventId }, { $set: { eventName: eventInfo.eventName } })
         return eventInfo;
 
     }
@@ -28,7 +28,7 @@ export default class eventController {
         return eventList;
     }
     public async getEventByUserId(userId: any) {
-        const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false})
+        const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false })
         return eventList;
     }
     public async getEventCreateByUser(userId: any) {
@@ -78,7 +78,7 @@ export default class eventController {
 
         if (status == "eventLike") {
             info = await userActivity.findOne({ eventLike: body.eventLike }).lean();
-            if(info) return{message:"alreadyEventLike"}
+            if (info) return { message: "alreadyEventLike" }
 
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -144,7 +144,7 @@ export default class eventController {
 
         if (status == "eventFavorite") {
             info = await userActivity.findOne({ eventFavorite: { $in: body.eventFavorite } }).lean();
-            if(info) return{message:"alreadyEventFavorite"}
+            if (info) return { message: "alreadyEventFavorite" }
 
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -534,26 +534,17 @@ export default class eventController {
 
     public async bookEvent(eventId: any, userId: any, status: any) {
         let eventInfo: any
-
         eventInfo = await bookevent.findOne({ eventId: eventId, userId: userId, isDeleted: false, isEventBook: true }).lean()
         if (eventInfo) return ({ message: "you already booked this event" })
-     let bookeventData:any=   await bookevent.create({ eventId: eventId, userId: userId })
-        eventInfo = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
-        let remainingSeat = eventInfo.totalParticipent - eventInfo.noOfParticipentBook
-        eventInfo = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $set: { remainingSeat: remainingSeat } }, { new: true }).lean()
-        bookeventData =   await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
-        if (eventInfo.remainingSeat == 0) {
-
-            await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $set: { isSeatfull: true } }).lean()
-        }
+        let bookeventData: any = await bookevent.create({ eventId: eventId, userId: userId })
+        bookeventData = await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
         return bookeventData
-
-
     }
 
     public async applyForEventOrganize(eventId: any, organizerId: any, formId: any, status: any) {
-        let eventInfo: any = await event.findOne({ _id: eventId, isOrganized: true, isDeleted: false, isBookEventPaidz: true }).lean()
-
+        let eventInfo: any = await event.findOne({ _id: eventId, isOrganized: true, isDeleted: false, isBookEventPaid: true }).lean()
+        console.log("eventInfo", eventInfo);
+        
         if (eventInfo) {
             return ({ message: "already book" })
         }
@@ -561,11 +552,12 @@ export default class eventController {
 
             eventInfo = await event.findOneAndUpdate(
                 { _id: eventId },
-                { $push: { organizerId: organizerId } }
+                { $set: { organizerId: organizerId } }
             );
 
-
-            eventInfo = await event.findOneAndUpdate({ _id: eventId }, { $set: { isOrganized: true, isBookEventPaid: true } }).lean()
+            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganize:true })
+            bookeventData = await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
+            
             return eventInfo
         }
     }
@@ -664,7 +656,7 @@ export default class eventController {
 
         return eventInfo
     }
-     public async getActivity(userId: any, status: any) {
+    public async getActivity(userId: any, status: any) {
         let userInfo: any;
         if (status == "following") {
             userInfo = await userActivity.find({ userId: userId, isDeleted: false }).populate("following", "fullname")
@@ -681,45 +673,45 @@ export default class eventController {
         }
         return userInfo
     }
-    public async RemoveActivity(userId: any, status: any,removeUserId:any) {
+    public async RemoveActivity(userId: any, status: any, removeUserId: any) {
         let userInfo: any;
         if (status == "removeFollowing") {
-            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
-                $pull:{
-                    following:removeUserId
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false }, {
+                $pull: {
+                    following: removeUserId
                 }
             })
-         
-            
+
+
         }
         if (status == "removeFollowers") {
-            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
-                $pull:{
-                    followers:removeUserId  
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false }, {
+                $pull: {
+                    followers: removeUserId
                 }
             })
-        }   if (status == "removeFriendList") {
-            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
-                $pull:{
-                    friendList:{$in:removeUserId}  
+        } if (status == "removeFriendList") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false }, {
+                $pull: {
+                    friendList: { $in: removeUserId }
                 }
             })
-        }   if (status == "removeSendFriendRequest") {
-            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
-                $pull:{
-                    sendFriendRequest:{$in:removeUserId}  
+        } if (status == "removeSendFriendRequest") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false }, {
+                $pull: {
+                    sendFriendRequest: { $in: removeUserId }
                 }
-            },{new:true})
-        }   if (status == "removeBlockList") {
-            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false },{
-                $pull:{
-                    blockList:{$in:removeUserId}  
+            }, { new: true })
+        } if (status == "removeBlockList") {
+            userInfo = await userActivity.findOneAndUpdate({ userId: userId, isDeleted: false }, {
+                $pull: {
+                    blockList: { $in: removeUserId }
                 }
-            },{new:true})
+            }, { new: true })
         }
 
         return userInfo
-    
+
     }
 
 
