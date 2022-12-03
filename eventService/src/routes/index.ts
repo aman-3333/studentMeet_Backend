@@ -821,7 +821,7 @@ router.post("/unfollowing", async (req, res) => {
     }
 });
 
-router.post("/checkout", async (req, res) => {
+router.post("/applyEvent", async (req, res) => {
     try {
         const eventId = req.body.eventId; 
         const userId = req.body.userId; 
@@ -2125,7 +2125,7 @@ router.get("/deleteShop/:id", async (req, res) => {
 })
 
 //////////////////////////////razorpay/////////////////////////////////
-router.post("/createPayment", async (req, res) => {
+router.post("/checkoutPayment", async (req, res) => {
     try {
       const bookEventId = req.body.bookEventId;
       const controller = new PaymentController();
