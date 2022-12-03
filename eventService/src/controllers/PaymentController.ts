@@ -49,7 +49,7 @@ export default class PaymentController {
     let Paymentresp: any
     if (orderData && orderData._id) {
       const generated_signature = crypto.createHmac("sha256", razorpayConfig.key_secret).update(orderData.order_id + "|" + data.razorpayPaymentId).digest("hex");
-      if (generated_signature == data.razorpaySignature) {
+
         Paymentresp = await CapturePayment(data.razorpayPaymentId, orderData.orderTotal * 100, "INR", razorpayConfig.key_id, razorpayConfig.key_secret)
         if (Paymentresp.status == 'captured') {
           resp = await bookEvent.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
@@ -61,7 +61,7 @@ export default class PaymentController {
         }
       }
 
-    }
+    
     return resp
   }
 
