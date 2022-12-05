@@ -542,22 +542,17 @@ export default class eventController {
 
     public async applyForEventOrganize(eventId: any, organizerId: any, formId: any, status: any) {
         let eventInfo: any = await event.findOne({ _id: eventId, isOrganized: true, isDeleted: false, isBookEventPaid: true }).lean()
-        console.log("eventInfo", eventInfo);
-        
         if (eventInfo) {
             return ({ message: "already book" })
         }
         else {
 
-            eventInfo = await event.findOneAndUpdate(
-                { _id: eventId },
-                { $set: { organizerId: organizerId } }
-            );
+            eventInfo = await event.findOne({ _id: eventId,  isDeleted: false  }).lean()
 
-            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganize:true })
+            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganizer:true })
             bookeventData = await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
             
-            return eventInfo
+            return bookeventData
         }
     }
 

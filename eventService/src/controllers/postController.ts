@@ -282,7 +282,7 @@ export default class PostController {
         }
     }
     public async readPostActivity(PostId: any, status: any) {
-        console.log("s",PostId, status);
+       
         
         let PostInfo: any
         if (status == "readPostlike") {
@@ -325,4 +325,6 @@ export default class PostController {
         }
     
     }
+
+    
 }

@@ -9,8 +9,8 @@ export async function mailer(emaildata: any) {
     port: 465,
     secure: true,
     auth: {
-      user: 'info@edneed.com',
-      pass: 'EdneedInfo@23518'
+      user: 'info@toofunn.com',
+      pass: 'toofunn@233518'
     }
   });
   try {

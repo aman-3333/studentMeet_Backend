@@ -17,11 +17,9 @@ var message={
 fcm.send(message,(err:any,response:any)=>{
 if(err){
     console.log("something has gon wrong");
-    
 }
 else{
     console.log("successful send ",response);
-    
 }
 })
 }
