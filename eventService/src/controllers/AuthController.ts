@@ -62,11 +62,8 @@ export default class AuthController {
 
         otp = couponGenerator();
         otpInfo = await Otp.findOneAndUpdate({ contact: body.contact }, { $set: { otp: otp } }, { new: true })
-        if (otpInfo) {
-            await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } }, { new: true })
-
-        }
-        else if (!otpInfo) {
+       
+     if (!otpInfo) {
             createUser = await Users.create({
                 contact
                     : body.contact, country_code
@@ -106,13 +103,13 @@ export default class AuthController {
     }
     public async verifyotp(body: any) {
         let otp = body.otp;
-        let data: any = await Users.findOne({
+        let userInfo: any = await Users.findOne({
             contact: body.contact,
             country_code: body.country_code,
             isDeleted: false,
         }).lean();
 
-        if (data) {
+        if (userInfo) {
             let otpInfo = await Otp.findOne({
                 contact: body.contact,
                 country_code: body.country_code,
@@ -123,7 +120,7 @@ export default class AuthController {
 
             if (otpInfo) {
 
-                return { Status: "Sucess", Details: "OTP Match" };
+                return { Status: "Sucess", Details: "OTP Match",userInfo };
 
             }
 
