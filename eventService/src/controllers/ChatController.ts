@@ -245,8 +245,6 @@ if(status=="unblock"){
 return userInfo
 }
 
-
-
 public async leavegroup(userId:any,adminId:any,groupId:any){
     let userInfo:any;
     // if(adminId){
@@ -266,7 +264,6 @@ public async leavegroup(userId:any,adminId:any,groupId:any){
 return userInfo
 
 }
-
 
 public async getFriend(user:any){
     console.log("hello");

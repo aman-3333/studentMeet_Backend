@@ -44,54 +44,46 @@ export default class StarPerformerController {
     }
 
     
-    public async filterStarPerformer(type: any, sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
+    public async filterStarPerformer(type: any, sort: any, earningCoin: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
         let StarPerformerInfo: any;
-            if (category) {
-                StarPerformerInfo = await StarPerformer.find({ category: category, isDeleted: false });
+            if (earningCoin =="silver") {
+                StarPerformerInfo = await StarPerformer.find({ earningCoin: "silver", isDeleted: false });
     
-            } else if (subCategory) {
-                StarPerformerInfo = await StarPerformer.find({ subCategory: subCategory, isDeleted: false });
-            } else if (subSubCategory) {
-                StarPerformerInfo = await StarPerformer.find({ subSubCategory: subSubCategory, isDeleted: false });
+            } else if (earningCoin=="gold") {
+                StarPerformerInfo = await StarPerformer.find({ subCategory: "gold", isDeleted: false });
+            } else if (earningCoin == "diamond") {
+                StarPerformerInfo = await StarPerformer.find({ earningCoin: "diamond", isDeleted: false });
             }
-            else if (sort == "lessEarning") {
+            else if (sort == "lessEvent") {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
     
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
-                return StarPerformerInfo
+                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.noOfEventOriginze - b.noOfEventOriginze });
+                
             }
-            else if (sort == "mostEarning") {
+            else if (sort == "mostEvent") {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
-                return StarPerformerInfo
+                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.noOfEventOriginze - a.noOfEventOriginze });
+               
             }
-            else if (sort == "oldtonew") {
+            else if (sort == "lessRating") {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
-                return StarPerformerInfo
+                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.rating - b.rating });
+             
     
-            } else if (sort == "newtoold") {
+            } else if (sort == "mostRating") {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
-                return StarPerformerInfo
-            } else if (sort == "lessAdvanced") {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.advancedStarPerformerMoney - b.advancedStarPerformerMoney });
-                return StarPerformerInfo
-            } else if (sort == "mostAdvanced") {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.advancedStarPerformerMoney - a.advancedStarPerformerMoney });
-                return StarPerformerInfo
+                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.rating - a.rating });
+               
             }
             if (search) {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
     
     
-                const searcher = new FuzzySearch(StarPerformerInfo, ["StarPerformerName", "StarPerformerPartnerName"], {
+                const searcher = new FuzzySearch(StarPerformerInfo, ["StarPerformerName"], {
                     caseSensitive: false,
                 });
                 StarPerformerInfo = searcher.search(search);
-                return StarPerformerInfo
+               
             }
             if (limit && skip) {
     
@@ -99,7 +91,7 @@ export default class StarPerformerController {
     
             }
     
-        
+        return StarPerformerInfo
     
     
     }
