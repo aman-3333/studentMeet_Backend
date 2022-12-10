@@ -61,7 +61,7 @@ export default class AuthController {
         }
 
         otp = couponGenerator();
-        otpInfo = await Otp.findOneAndUpdate({ contact: body.contact }, { $set: { otp: otp } }, { new: true })
+        otpInfo = await Otp.findOneAndUpdate({ contact: body.contact }, { $set: { otp: "1234" } }, { new: true })
        
      if (!otpInfo) {
             createUser = await Users.create({
@@ -83,7 +83,12 @@ export default class AuthController {
   
             await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } })
         }
-
+else{
+  createUser = await Users.findOne({
+    contact
+        : body.contact
+})
+}
         return {
             otpInfo, createUser
         }
@@ -130,7 +135,7 @@ export default class AuthController {
             }
 
         }
-
+return userInfo
     }
 
     public async sendotpByApi(body: any) {
@@ -183,6 +188,7 @@ export default class AuthController {
 
       
   public async verifyotpByApi(body: IOtp) {
+    let userInfo:any;
     const otpInfo = await Otp.findOne({
       contact: body.contact,
       country_code: body.country_code,
@@ -195,7 +201,7 @@ export default class AuthController {
     let resp = await verifyOtp(otpInfo, body.otp);
 
     if (resp.Status == "Success" && resp.Details != "OTP Expired") {
-      let userInfo:any=await Users.findOne({ contact: body.contact})
+      userInfo =await Users.findOne({ contact: body.contact})
       if(!userInfo){
         await Users.create({  contact: body.contact,
           country_code: body.country_code})
@@ -212,7 +218,7 @@ export default class AuthController {
     if (resp.Status == "Success" && resp.Details == "OTP Expired") {
       return { Status: "Error", Details: "OTP Expired" };
     }
-    return resp;
+    return {resp,userInfo};
   }
 }
 
