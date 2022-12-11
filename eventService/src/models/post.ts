@@ -4,7 +4,7 @@ const schema = new Schema({
 
     eventId: { type: Schema.Types.ObjectId, ref: "event" },
     userId: { type: Schema.Types.ObjectId,ref: "userdetail" },
-    image: [{ type: String }],
+    eventBannerImage: [{ type: String }],
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
@@ -40,7 +40,7 @@ export interface IPost extends Document {
     eventId: ObjectId,
     userId: ObjectId,
    
-    image: [String],
+    eventBannerImage: [String],
     description: String,
     video: [String],
     attechment: [String],
