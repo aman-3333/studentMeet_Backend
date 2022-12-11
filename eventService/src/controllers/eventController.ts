@@ -311,15 +311,20 @@ export default class eventController {
 
 
             for (let i = 0; i < eventInfo.length; i++) {
+                
                 let userInfo: any = await userDetails.findOne({ _id: eventInfo[i].userId }, { fullname: true })
 
 
                 let comment = eventInfo[i].comment
                 let DateTime: any = eventInfo[i].dateTime
-
+          
                 a.push({ userInfo, comment, DateTime })
+
             }
-            return a
+            var y = [...a].reverse();
+ 
+     
+            return y
 
 
 

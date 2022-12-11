@@ -307,7 +307,9 @@ public async searchHashtag(search:any){
     
                 a.push({ userInfo, comment, DateTime })
             }
-            return a
+            var y = [...a].reverse();
+
+            return y
     
     
     
