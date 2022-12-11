@@ -56,11 +56,11 @@ export default class CategoryController {
     }
     //////////////////////SubCategory////////////////////////////////////////////////////////////
     public async createSubCategory(body: ISubCategory) {
-        console.log("body", body);
+     
 
         let subCategoryInfo: ISubCategory;
         subCategoryInfo = await SubCategory.create(body);
-        console.log("subCategoryInfo", subCategoryInfo);
+       
         return subCategoryInfo;
     }
 

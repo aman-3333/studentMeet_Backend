@@ -8,7 +8,7 @@ export default class StarPerformerController {
         let StarPerformerInfo: any;
     
             StarPerformerInfo = await StarPerformer.create(body);
-        console.log("StarPerformerInfo",StarPerformerInfo);
+      
        let StarPerformername=await userDetails.findOne({_id:body.StarPerformerId,isDeleted:false}).lean();
        StarPerformername=StarPerformername.fullname
        await StarPerformer.findOneAndUpdate({starPerformerId:body.StarPerformerId,isDeleted:false},{$set:{starPerformerName:StarPerformername}}).lean();
@@ -29,7 +29,7 @@ export default class StarPerformerController {
     public async searchStarPerformer(searchValue:any) {
         if(searchValue){
         let StarPerformerList: any = await StarPerformer.find({isDeleted: false})
-        console.log("StarPerformerList",StarPerformerList);
+        
         
         StarPerformerList = new FuzzySearch(StarPerformerList, ["starPerformerName"], {
             caseSensitive: false,

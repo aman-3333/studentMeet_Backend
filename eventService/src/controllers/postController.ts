@@ -55,16 +55,16 @@ export default class PostController {
     
     
         if (status == "PostLike") {
-            console.log("mmm");
+           
             
             info = await userActivity.findOne({ PostLike: {$in:body.PostLike} }).lean();
-            console.log("info", info);
+          
             
        if(info) return{message:"alreadylike"}
     
     
             if (!info) {
-                console.log("l,");
+              
                 
                 userInfo = await userActivity.findOneAndUpdate(
                     {
@@ -313,9 +313,7 @@ export default class PostController {
     }
     public async searchPost(search:any){
         if(search){
-            let PostInfo:any=await Post.find({isDeleted:false})
-            console.log("PostInfo",PostInfo);
-            
+            let PostInfo:any=await Post.find({isDeleted:false});  
             PostInfo = new FuzzySearch(PostInfo, ["userName","eventName"], {
                 caseSensitive: false,
             });
