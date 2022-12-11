@@ -21,20 +21,20 @@ export default class SubscriptionController {
 
 
     public async buySubscription(coupon: any, subscriptionId: any) {
-        console.log("id", typeof (coupon));
+      
         let deductionAmount: any;
         let couponInfo: any;
         let subscriptionInfo: any;
 
         couponInfo = await Coupon.findOne({ code: { $in: coupon } }).lean()
-        console.log("couponInfo", couponInfo);
+ 
 
         if (couponInfo) {
             subscriptionInfo = await Subscription.findOne({ _id: subscriptionId, isDeleted: false }).lean();
-            console.log("subscriptionInfo", subscriptionInfo);
+      
             if (couponInfo.discountPrice) {
                 deductionAmount = subscriptionInfo.amount - couponInfo.discountPrice;
-                console.log("deductionAmount", deductionAmount);
+            
 
             }
             couponInfo = await Coupon.updateMany(

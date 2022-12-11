@@ -42,7 +42,7 @@ export default class eventController {
     public async geteventInfo(eventId: any, status: any) {
         let eventInfo: any;
         eventInfo = await event.find({ _id: eventId, isDeleted: false }).populate("organizerId")
-       console.log("eventInfo", eventInfo);
+       
        
         return  eventInfo;
     }
@@ -549,9 +549,8 @@ export default class eventController {
 
             eventInfo = await event.findOne({ _id: eventId,  isDeleted: false  }).lean()
 
-            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganizer:true })
-            bookeventData = await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
-            
+            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganizer:true,orderTotal:eventInfo.priceForParticipent })
+           
             return bookeventData
         }
     }

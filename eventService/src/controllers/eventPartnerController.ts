@@ -136,7 +136,7 @@ public async getpartnerlist(){
             }).lean();
 
             let resp = await verifyOtp(otpInfo, otp);
-            console.log("resp", resp);
+            
 
             if (resp.Status == "Success" && resp.Details != "OTP Expired") {
 
