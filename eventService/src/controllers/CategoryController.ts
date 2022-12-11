@@ -51,8 +51,6 @@ export default class CategoryController {
        
         const categoryInfo: ICategory = await Category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return categoryInfo;
-
-
     }
     //////////////////////SubCategory////////////////////////////////////////////////////////////
     public async createSubCategory(body: ISubCategory) {

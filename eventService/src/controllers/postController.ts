@@ -301,7 +301,8 @@ export default class PostController {
     
                 a.push({ userInfo, comment, DateTime })
             }
-            return a
+            var y = [...a].reverse();
+            return y
     
     
     
