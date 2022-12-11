@@ -51,6 +51,7 @@ const userSchema = new Schema(
     parent_email: { type: String },
     parent_country_code: { type: Number, trim: true },
     gcmid: { type: String },
+    
     fcmtoken: { type: String },
     ipAddress:{ type: String },
     modelName:{ type: String },
