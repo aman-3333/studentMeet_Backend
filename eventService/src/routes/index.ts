@@ -500,7 +500,7 @@ router.post("/verifyotpByApi", async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
-        const response = await controller.verifyotpByApi(body);
+        const response:any = await controller.verifyotpByApi(body);
         res.status(200).json(successResponse("verifyotpByApi", response, res.statusCode));
     } catch (error) {
      
@@ -2152,6 +2152,8 @@ router.post("/paymentCapture", async (req, res) => {
 router.post("/createPost", async (req, res) => {
     try {
         const body = req.body;
+        console.log("re",req.body);
+        
         const controller = new PostController();
         const response = await controller.createPost(body);
         res.status(200).json(successResponse("create Post", response, res.statusCode));

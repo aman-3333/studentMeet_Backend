@@ -4,12 +4,14 @@ import userDetails from "../models/userDetails";
 import FuzzySearch from "fuzzy-search";
 import event from "../models/event";
 export default class PostController {
-
     public async createPost(body: any) {
         let PostInfo: any;
+        let eventInfo:any;
             PostInfo = await Post.create(body);
-            let userInfo:any=await userDetails.findOne({_id:PostInfo.userId,isDeleted:false}).lean()
-            let eventInfo:any=await event.findOne({_id:PostInfo.eventId,isDeleted:false}).lean()
+            let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
+            console.log("userInfo",userInfo);
+            
+           if(body.eventInfo){eventInfo =await event.findOne({_id:body.eventId,isDeleted:false}).lean()}
             await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname,eventName:eventInfo.eventName}})
         return PostInfo;
 
@@ -41,8 +43,8 @@ export default class PostController {
     }
     public async PostActivity(userId: any, PostId: any, status: any, PostComment: any, PostCommentId: any, body: any) {
         let userInfo: any;
-        let data: any = []
-        let a: any = []
+        let data: any = [];
+        let a: any = [];
         let info: any;
        let PostInfo :any;
         userInfo = await userActivity.findOne({ userId: userId }).lean();
