@@ -11,8 +11,6 @@ const schema = new Schema({
     totalClick: { type: Number,default:0  },
     bannerImage: [{ type: String }],
 
-  
-
     HashtagLike: [
         { type: Schema.Types.ObjectId  , ref:"userdetail"},
     ],

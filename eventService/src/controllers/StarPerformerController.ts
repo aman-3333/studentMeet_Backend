@@ -22,7 +22,7 @@ export default class StarPerformerController {
     }
 
     public async getStarPerformerList() {
-        const StarPerformerList: any[] = await StarPerformer.find({  isDeleted: false,isActive:true });
+        const StarPerformerList: any[] = await StarPerformer.find({  isDeleted: false,isActive:true }).populate("starPerformerId","profile_picture");
         return StarPerformerList;
     }
 

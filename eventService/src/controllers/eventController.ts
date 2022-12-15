@@ -24,7 +24,7 @@ export default class eventController {
 
     }
     public async geteventEventScreen(type: any) {
-        const eventList: IEvent[] = await event.find({ type: type, isDeleted: false }).populate("organizerId", "fullname");
+        const eventList: IEvent[] = await event.find({ type: type, isDeleted: false }).populate("organizerId");
         return eventList;
     }
     public async getEventByUserId(userId: any) {
@@ -345,9 +345,6 @@ export default class eventController {
     public async filterEvent(type: any, sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
         let eventInfo: any;
         if (type == "event") {
-
-
-
             if (category) {
                 eventInfo = await event.find({ category: category, type: "event", isDeleted: false });
                 return eventInfo
@@ -382,7 +379,7 @@ export default class eventController {
                 return eventInfo
             }
             if (search) {
-                eventInfo = await event.find({ isDeleted: false, type: "event" });
+                eventInfo = await event.find({ isDeleted: false, type: "event" }).populate("organizerId","fullname");
 
 
                 const searcher = new FuzzySearch(eventInfo, ["eventName", "eventPartnerName"], {
