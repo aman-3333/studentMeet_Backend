@@ -1,5 +1,5 @@
 var FCM=require('fcm-node');
-var serverKey='';
+var serverKey='AAAA9mFkxvw:APA91bG0MYFAOeR_IDBtDNegKWqCGeN-zx1faQ7ay0GGJJL9LCJtwDc2FIYAiFkrrU5UK_Ns7bLUW86hfRSEmcwn83iDWuw9DXEz1Mobn_4MXwcbK2OKO9jZQF43Pr8QTzw78EC6NxOk';
 var fcm =new FCM(serverKey)
 
 

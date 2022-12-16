@@ -24,7 +24,7 @@ export default class eventController {
 
     }
     public async geteventEventScreen(type: any) {
-        const eventList: IEvent[] = await event.find({ type: type, isDeleted: false }).populate("organizerId", "fullname");
+        const eventList: IEvent[] = await event.find({ type: type, isDeleted: false }).populate("organizerId");
         return eventList;
     }
     public async getEventByUserId(userId: any) {
@@ -42,7 +42,7 @@ export default class eventController {
     public async geteventInfo(eventId: any, status: any) {
         let eventInfo: any;
         eventInfo = await event.find({ _id: eventId, isDeleted: false }).populate("organizerId")
-       console.log("eventInfo", eventInfo);
+       
        
         return  eventInfo;
     }
@@ -311,15 +311,20 @@ export default class eventController {
 
 
             for (let i = 0; i < eventInfo.length; i++) {
+                
                 let userInfo: any = await userDetails.findOne({ _id: eventInfo[i].userId }, { fullname: true })
 
 
                 let comment = eventInfo[i].comment
                 let DateTime: any = eventInfo[i].dateTime
-
+          
                 a.push({ userInfo, comment, DateTime })
+
             }
-            return a
+            var y = [...a].reverse();
+ 
+     
+            return y
 
 
 
@@ -340,9 +345,6 @@ export default class eventController {
     public async filterEvent(type: any, sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
         let eventInfo: any;
         if (type == "event") {
-
-
-
             if (category) {
                 eventInfo = await event.find({ category: category, type: "event", isDeleted: false });
                 return eventInfo
@@ -377,7 +379,7 @@ export default class eventController {
                 return eventInfo
             }
             if (search) {
-                eventInfo = await event.find({ isDeleted: false, type: "event" });
+                eventInfo = await event.find({ isDeleted: false, type: "event" }).populate("organizerId","fullname");
 
 
                 const searcher = new FuzzySearch(eventInfo, ["eventName", "eventPartnerName"], {
@@ -549,9 +551,8 @@ export default class eventController {
 
             eventInfo = await event.findOne({ _id: eventId,  isDeleted: false  }).lean()
 
-            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganizer:true })
-            bookeventData = await bookevent.findOneAndUpdate({ _id: bookeventData._id, isDeleted: false }, { $set: { orderTotal: eventInfo.priceForParticipent } }, { new: true }).lean()
-            
+            let bookeventData: any = await bookevent.create({ eventId: eventId, userId: organizerId,isEventOrganizer:true,orderTotal:eventInfo.priceForParticipent })
+           
             return bookeventData
         }
     }

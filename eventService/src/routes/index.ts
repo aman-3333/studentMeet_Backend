@@ -57,7 +57,7 @@ router.get("/searchUser", async (req, res) => {
 
 router.get("/getallfriend", async (req, res) => {
     try {
-       console.log("req",req.query);
+     
        
         let user:any=req.query.user;
        
@@ -84,7 +84,7 @@ router.post("/accessChat",async(req:any,res:any)=>{
         const response = await controller.accessChat(userId,senderId);
         res.status(200).json(successResponse("accessChat",response,res.statusCode));
     }catch(error) {
-        console.error("error in accessChat ", error);
+    
         res.status(500).json(errorResponse("error in accessChat", res.statusCode));
     }
 })
@@ -100,7 +100,7 @@ router.get("/fetchChat/:Id",async(req:any,res:any)=>{
         const response = await controller.fetchChat(senderId);
         res.status(200).json(successResponse("fetchChat",response,res.statusCode));
     }catch(error) {
-        console.error("error in fetchChat ", error);
+      
         res.status(500).json(errorResponse("error in fetchChat", res.statusCode));
     }
 })
@@ -114,7 +114,7 @@ try {
     const response = await controller.getALlMessage(chatId);
     res.status(200).json(successResponse("getAllMessage",response,res.statusCode));
 }catch(error) {
-    console.error("error in getAllMessage ", error);
+
     res.status(500).json(errorResponse("error in getAllMessage", res.statusCode));
 }
 })
@@ -130,7 +130,7 @@ router.post("/sendMessage/:Id",async(req,res)=>{
         const response = await controller.sendMessage(Id,content,chatId);
         res.status(200).json(successResponse("sendMessage",response,res.statusCode));
     }catch(error) {
-        console.error("error in sendMessage ", error);
+      
         res.status(500).json(errorResponse("error in sendMessage", res.statusCode));
     }
 })
@@ -146,7 +146,7 @@ router.post("/blockpersonActivity",async(req,res)=>{
         const response = await controller.blockperson(userId,blockId,chatId,status);
         res.status(200).json(successResponse("sendMessage",response,res.statusCode));
     }catch(error) {
-        console.error("error in sendMessage ", error);
+   
         res.status(500).json(errorResponse("error in sendMessage", res.statusCode));
     }
 })
@@ -162,7 +162,7 @@ router.post("/create-group-chat/:senderId",async(req,res)=>{
         const response= await controller.createGroupChat(senderId,users,name);
         res.status(200).json(successResponse("create-group-chat",response,res.statusCode));
     }catch(error) {
-        console.error("error in create-group-chat ", error);
+       
         res.status(500).json(errorResponse("error in create-group-chat", res.statusCode));
     }
 })
@@ -181,7 +181,7 @@ router.post("/leavegroup",async(req,res)=>{
         const response= await controller.leavegroup(userId,adminId,groupId);
         res.status(200).json(successResponse("leavegroup",response,res.statusCode));
     }catch(error) {
-        console.error("error in leavegroup ", error);
+  
         res.status(500).json(errorResponse("error in leavegroup", res.statusCode));
     }
 })
@@ -190,12 +190,12 @@ router.post("/leavegroup",async(req,res)=>{
 router.post("/sendMessage/:Id",async(req,res)=>{
     try {
     const { content, chatId } = req.body;
-    console.log("content",content , "chatId",chatId )
+   
     const SenderId=req.params.Id;
-    console.log("senderId",SenderId)
+  
     // console.log(req.body)
     if (!content || !chatId) {
-      console.log("Invalid data passed into request");
+      
     //   return res.send().Status(400);
     return res.status(401).send("invalid data passed !chat or !content")
     }
@@ -245,7 +245,7 @@ router.post("/sendMessage/:Id",async(req,res)=>{
 // Todo 8th  Get:Message
 
 router.get("/getAllMessage/:chatId",async(req,res)=>{
-    console.log("get message")
+   
 try {
 const messages = await Message.find({ chat: req.params.chatId })
 .populate("sender", "fullname email")
@@ -341,7 +341,7 @@ router.get("/find/:Id",async(req,res)=>{
     let id=req.params.Id;
     try{
         const data=await userrole.find({_id:id})
-        console.log("data",data)
+       
         res.send(data)
     }
     catch(e){
@@ -425,7 +425,7 @@ router.post('/upload', upload1.single('file'), function (req:any, res:any ){
  
 //Uploading Multiple Files to aws s3 bucket
 router.post('/uploadfile', upload1.array('file', 50), function (req:any, res:any) {
-    console.log("photos",req.files);
+   
     
    res.send({
        data: req.files,
@@ -478,7 +478,7 @@ router.post("/sendotp", async (req, res) => {
         const response = await controller.sendotp(body);
         res.status(200).json(successResponse("sendotp", response, res.statusCode));
     } catch (error) {
-        console.error("error in sendotp", error);
+  
         res.status(500).json(errorResponse("error in sendotp", res.statusCode));
     }
 })
@@ -490,7 +490,7 @@ router.post("/sendotpbyapi", async (req, res) => {
         const response = await controller.sendotpByApi(body);
         res.status(200).json(successResponse("sendotpbyapi", response, res.statusCode));
     } catch (error) {
-        console.error("error in sendotpbyapi", error);
+        
         res.status(500).json(errorResponse("error in sendotpbyapi", res.statusCode));
     }
 })
@@ -500,10 +500,10 @@ router.post("/verifyotpByApi", async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
-        const response = await controller.verifyotpByApi(body);
+        const response:any = await controller.verifyotpByApi(body);
         res.status(200).json(successResponse("verifyotpByApi", response, res.statusCode));
     } catch (error) {
-        console.error("error in verifyotpByApi", error);
+     
         res.status(500).json(errorResponse("error in verifyotpByApi", res.statusCode));
     }
 })
@@ -514,7 +514,7 @@ router.post("/verifyotp", async (req, res) => {
         const response:any = await controller.verifyotp(body);
         res.status(200).json(successResponse("verifyotp", response, res.statusCode));
     } catch (error) {
-        console.error("error in verifyotp", error);
+        
         res.status(500).json(errorResponse("error in verifyotp", res.statusCode));
     }
 })
@@ -525,7 +525,7 @@ router.patch("/editprofile", async (req, res) => {
         const response = await controller.editProfile(body);
         res.status(200).json(successResponse("editprofile", response, res.statusCode));
     } catch (error) {
-        console.error("error in editProfile", error);
+      
         res.status(500).json(errorResponse("error in editProfile", res.statusCode));
     }
 })
@@ -538,7 +538,7 @@ router.get("/viewProfile", async (req, res) => {
         const response = await controller.viewProfile(userId);
         res.status(200).json(successResponse("viewProfile", response, res.statusCode));
     } catch (error) {
-        console.error("error in viewProfile", error);
+     
         res.status(500).json(errorResponse("error in viewProfile", res.statusCode));
     }
 });
@@ -562,7 +562,7 @@ router.post("/createEventGuildLines", async (req, res) => {
         const response = await controller.createEventGuildLines(body);
         res.status(200).json(successResponse("create EventGuildLines", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in create EventGuildLines", res.statusCode));
     }
 });
@@ -575,7 +575,7 @@ router.patch("/EventGuildLines/:id", async (req, res) => {
         const response: IEventGuildLines = await controller.editEventGuildLines(body, EventGuildLinesId);
         res.status(200).json(successResponse("edit EventGuildLines", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in edit EventGuildLines", res.statusCode));
     }
 });
@@ -587,7 +587,7 @@ router.get("/EventGuildLinesList", async (req, res) => {
         const response: IEventGuildLines[] = await controller.getEventGuildLinesList(CategoryId);
         res.status(200).json(successResponse("EventGuildLines list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in EventGuildLines list", res.statusCode));
     }
 });
@@ -600,7 +600,7 @@ router.get("/eventGuildLinesById", async (req, res) => {
         const response: any = await controller.getEventGuildLinesInfoById(EventGuildLinesId);
         res.status(200).json(successResponse("get EventGuildLines", response, res.statusCode));
     } catch (error) {
-        console.error("error in EventGuildLines", error);
+        
         res.status(500).json(errorResponse("error in get EventGuildLines", res.statusCode));
     }
 });
@@ -614,7 +614,7 @@ router.get("/deleteEventGuildLines/:id", async (req, res) => {
         res.status(200).json(successResponse("delete EventGuildLines", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in delete EventGuildLines", error);
+
         res.status(500).json(errorResponse("error in delete EventGuildLines", res.statusCode));
     }
 })
@@ -627,7 +627,7 @@ router.post("/createevent", async (req, res) => {
         const response: IEvent = await controller.createevent(body);
         res.status(200).json(successResponse("create event", response, res.statusCode));
     } catch (error) {
-        console.error("error in create event", error);
+
         res.status(500).json(errorResponse("error in create event", res.statusCode));
     }
 });
@@ -643,7 +643,7 @@ router.patch("/editevent/:id", async (req, res) => {
         const response: IEvent = await controller.editevent(body, eventId);
         res.status(200).json(successResponse("event update", response, res.statusCode));
     } catch (error) {
-        console.error("error in event update", error);
+    
         res.status(500).json(errorResponse("error in event update", res.statusCode));
     }
 });
@@ -655,7 +655,7 @@ router.get("/getallevent", async (req, res) => {
         const response: IEvent[] = await controller.geteventEventScreen(type);
         res.status(200).json(successResponse("get event", response, res.statusCode));
     } catch (error) {
-        console.error("error in get event", error);
+       
         res.status(500).json(errorResponse("error in get event", res.statusCode));
     }
 });
@@ -668,10 +668,10 @@ router.get("/getEventByuserId", async (req, res) => {
         const response:any = await controller.getEventByUserId(userId);
         res.status(200).json(successResponse("get geteventbyuserId", response, res.statusCode));
     } catch (error) {
-        console.error("error in get geteventbyuserId", error);
+      
         res.status(500).json(errorResponse("error in get geteventbyuserId", res.statusCode));
     }
-    console.log("amankp'");
+  
     
     
 });
@@ -682,7 +682,7 @@ router.get("/getEventCreateByUser", async (req, res) => {
         const response:any = await controller.getEventCreateByUser(userId);
         res.status(200).json(successResponse("get EventCreateByUser", response, res.statusCode));
     } catch (error) {
-        console.error("error in get EventCreateByUser", error);
+        
         res.status(500).json(errorResponse("error in get EventCreateByUser", res.statusCode));
     }
 });
@@ -698,7 +698,7 @@ router.get("/geteventinfobyid", async (req, res) => {
         const response: any = await controller.geteventInfo(eventId,status);
         res.status(200).json(successResponse("get event by Id ", response, res.statusCode));
     } catch (error) {
-        console.error("error in get event by Id", error);
+   
         res.status(500).json(errorResponse("error in get event by Id", res.statusCode));
     }
 });
@@ -716,7 +716,7 @@ router.post("/eventActivity", async (req, res) => {
         const response:any =await controller.eventActivity(userId,eventId,  status,hashtagcomment,hashtagcommentId, body);
         res.status(200).json(successResponse("eventActivity",response,res.statusCode));
     }catch(error) {
-        console.error("error in eventActivity ", error);
+    
         res.status(500).json(errorResponse("error in eventActivity", res.statusCode));
     }
 })
@@ -729,13 +729,13 @@ router.get("/getActivity", async (req, res) => {
         const response:any =await controller.getActivity(userId,status);
         res.status(200).json(successResponse("getFollowing",response,res.statusCode));
     }catch(error) {
-        console.error("error in getFollowing ", error);
+       
         res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
     }
 })
 router.get("/removeActivity", async (req, res) => {
     try{
-        console.log("req",req);
+        
         
         const status:any =req.query.status;
         const userId=req.query.userId;
@@ -744,7 +744,7 @@ router.get("/removeActivity", async (req, res) => {
         const response:any =await controller.RemoveActivity(userId,status,removeUserId);
         res.status(200).json(successResponse("getFollowing",response,res.statusCode));
     }catch(error) {
-        console.error("error in getFollowing ", error);
+       
         res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
     }
 })
@@ -758,7 +758,7 @@ router.get("/readActivity", async (req, res) => {
         const response:any =await controller.readActivity(eventId,status);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
     }catch(error) {
-        console.error("error in readActivity ", error);
+      
         res.status(500).json(errorResponse("error in readActivity", res.statusCode));
     }
 })
@@ -769,13 +769,13 @@ router.post("/eventCreateBYOrganizer", async (req, res) => {
         const response: any = await controller.eventCreateBYOrganizer(body);
         res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
-        console.error("error in eventCreateBYOrganizer", error);
+      
         res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
     }
 });
 router.post("/eventOrganize", async (req, res) => {
     try {
-        console.log("req",);
+      
         
         const body = req.body;
         const eventId = req.body.eventId; 
@@ -786,7 +786,7 @@ router.post("/eventOrganize", async (req, res) => {
         const response: any = await controller.applyForEventOrganize(eventId, organizerId, formId, status);
         res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
-        console.error("error in eventCreateBYOrganizer", error);
+        
         res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
     }
 });
@@ -802,7 +802,7 @@ router.post("/following", async (req, res) => {
         const response: any = await controller.following(userId,followingId);
         res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
-        console.error("error in eventCreateBYOrganizer", error);
+       
         res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
     }
 });
@@ -816,7 +816,7 @@ router.post("/unfollowing", async (req, res) => {
         const response: any = await controller.unfollowing(userId,followingId);
         res.status(200).json(successResponse("eventCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
-        console.error("error in eventCreateBYOrganizer", error);
+     
         res.status(500).json(errorResponse("error in eventCreateBYOrganizer", res.statusCode));
     }
 });
@@ -830,7 +830,7 @@ router.post("/applyEvent", async (req, res) => {
         const response: any = await controller.bookEvent(eventId,userId,status);
         res.status(200).json(successResponse("applyEvent ", response, res.statusCode));
     } catch (error) {
-        console.error("error in applyEvent", error);
+
         res.status(500).json(errorResponse("error in applyEvent", res.statusCode));
     }
 });
@@ -849,7 +849,7 @@ router.get("/filterEvent", async (req, res) => {
         const response: any = await controller.filterEvent(type,sort, category, subCategory, subSubCategory, limit, skip, search);
         res.status(200).json(successResponse("filterEvent ", response, res.statusCode));
     } catch (error) {
-        console.error("error in filterEvent", error);
+       
         res.status(500).json(errorResponse("error filterEvent", res.statusCode));
     }
 });
@@ -863,7 +863,7 @@ router.patch("/feadBackEvent", async (req, res) => {
         const response: IEvent = await controller.feadBackEvent(body,eventId, reting,feadBackComment);
         res.status(200).json(successResponse("feadBackEvent event", response, res.statusCode));
     } catch (error) {
-        console.error("error in feadBackEvent event", error);
+        
         res.status(500).json(errorResponse("error in feadBackEvent event", res.statusCode));
     }
 })
@@ -878,7 +878,7 @@ router.post("/eventorganizerteam", async (req, res) => {
         const response: IEvent = await controller.createEventOrganizerTeam(organizerId,eventId,suborganizerId);
         res.status(200).json(successResponse("delete event", response, res.statusCode));
     } catch (error) {
-        console.error("error in delete event", error);
+      
         res.status(500).json(errorResponse("error in delete event", res.statusCode));
     }
 })
@@ -890,7 +890,7 @@ router.patch("/deleteevent/:id", async (req, res) => {
         const response: IEvent = await controller.deleteevent(eventId, userId);
         res.status(200).json(successResponse("delete event", response, res.statusCode));
     } catch (error) {
-        console.error("error in delete event", error);
+      
         res.status(500).json(errorResponse("error in delete event", res.statusCode));
     }
 })
@@ -903,7 +903,7 @@ router.patch("/deleteevent/:id", async (req, res) => {
         const response: IEvent = await controller.deleteevent(eventId, userId);
         res.status(200).json(successResponse("delete event", response, res.statusCode));
     } catch (error) {
-        console.error("error in delete event", error);
+      
         res.status(500).json(errorResponse("error in delete event", res.statusCode));
     }
 })
@@ -1201,7 +1201,7 @@ router.post("/createCategory", async (req, res) => {
         const response:ICategory = await controller.createCategory(body);
         res.status(200).json(successResponse("create category", response, res.statusCode));
     } catch(error) {
-        console.error("error in create category", error);
+     
         res.status(500).json(errorResponse("error in create category", res.statusCode));
     }
 });
@@ -1215,7 +1215,7 @@ router.patch("/Category/:id", async (req, res) => {
         const response: ICategory = await controller.editCategory(body, categoryId);
         res.status(200).json(successResponse("category update", response, res.statusCode));
     } catch(error) {
-        console.error("error in category update", error);
+       
         res.status(500).json(errorResponse("error in category update", res.statusCode));
     }
 });
@@ -1227,7 +1227,7 @@ router.get("/categoryList", async (req, res) => {
         const response = await controller.getCategory(type);
         res.status(200).json(successResponse("get category", response, res.statusCode));
     } catch(error) {
-        console.error("error in get category", error);
+     
         res.status(500).json(errorResponse("error in get category", res.statusCode));
     }
 });
@@ -1238,7 +1238,7 @@ router.get("/getCategoryCustomer", async (req, res) => {
         const response: ICategory[] = await controller.getCategoryCustomer();
         res.status(200).json(successResponse("get category", response, res.statusCode));
     } catch (error) {
-        console.error("error in get category", error);
+      
         res.status(500).json(errorResponse("error in get category", res.statusCode));
     }
 });
@@ -1251,7 +1251,7 @@ router.get("/categoryInfoById", async (req, res) => {
         const response: any = await controller.getCategoryInfoById(categoryId);
         res.status(200).json(successResponse("get category by Id ", response, res.statusCode));
     } catch(error) {
-        console.error("error in get category by Id", error);
+     
         res.status(500).json(errorResponse("error in get category by Id", res.statusCode));
     }
 });
@@ -1262,7 +1262,7 @@ router.patch("/deleteCategory/:id", async (req, res) => {
         const response: ICategory = await controller.deleteCategory(categoryId);
         res.status(200).json(successResponse("category update", response, res.statusCode));
     } catch(error) {
-        console.error("error in category update", error);
+  
         res.status(500).json(errorResponse("error in category update", res.statusCode));
     }
 });
@@ -1275,7 +1275,7 @@ router.post("/createInstitute", async (req, res) => {
         const response:IInstitute = await controller.createInstitute(body);
         res.status(200).json(successResponse("create Institute", response, res.statusCode));
     } catch(error) {
-        console.error("error in create Institute", error);
+       
         res.status(500).json(errorResponse("error in create Institute", res.statusCode));
     }
 });
@@ -1287,7 +1287,7 @@ router.get("/searchInstitute", async (req, res) => {
         const response: any = await controller.searchInstitute(stateId, searchValue);
         res.status(200).json(successResponse("get searchInstitute", response, res.statusCode));
     } catch (error) {
-        console.error("error in get searchInstitute", error);
+       
         res.status(500).json(errorResponse("error in get searchInstitute", res.statusCode));
     }
 });
@@ -1301,7 +1301,7 @@ router.patch("/Institute/:id", async (req, res) => {
         const response: IInstitute = await controller.editInstitute(body, InstituteId);
         res.status(200).json(successResponse("Institute update", response, res.statusCode));
     } catch(error) {
-        console.error("error in Institute update", error);
+    
         res.status(500).json(errorResponse("error in Institute update", res.statusCode));
     }
 });
@@ -1313,7 +1313,7 @@ router.get("/InstituteList", async (req, res) => {
         const response: any= await controller.getInstitute(stateId);
         res.status(200).json(successResponse("get Institute", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Institute", error);
+       
         res.status(500).json(errorResponse("error in get Institute", res.statusCode));
     }
 });
@@ -1326,7 +1326,7 @@ router.get("/searchInstitute", async (req, res) => {
         const response: any = await controller.searchInstitute(stateId, searchValue);
         res.status(200).json(successResponse("get Institute", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Institute", error);
+       
         res.status(500).json(errorResponse("error in get Institute", res.statusCode));
     }
 });
@@ -1339,7 +1339,7 @@ router.get("/getInstituteInfoById", async (req, res) => {
         const response:any = await controller.getInstituteInfoById(InstituteId);
         res.status(200).json(successResponse("get Institute by Id ", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Institute by Id", error);
+      
         res.status(500).json(errorResponse("error in get Institute by Id", res.statusCode));
     }
 });
@@ -1350,7 +1350,7 @@ router.patch("/deleteInstitute/:id", async (req, res) => {
         const response: any = await controller.deleteInstitute(InstituteId);
         res.status(200).json(successResponse("Institute update", response, res.statusCode));
     } catch(error) {
-        console.error("error in Institute update", error);
+        
         res.status(500).json(errorResponse("error in Institute update", res.statusCode));
     }
 });
@@ -1363,7 +1363,7 @@ router.post("/createUserrole", async (req, res) => {
         const response:IUserrole = await controller.createUserrole(body);
         res.status(200).json(successResponse("create Userrole", response, res.statusCode));
     } catch(error) {
-        console.error("error in create Userrole", error);
+      
         res.status(500).json(errorResponse("error in create Userrole", res.statusCode));
     }
 });
@@ -1377,7 +1377,7 @@ router.patch("/editUserrole/:id", async (req, res) => {
         const response: IUserrole = await controller.editUserrole(body, UserroleId);
         res.status(200).json(successResponse("Userrole update", response, res.statusCode));
     } catch(error) {
-        console.error("error in Userrole update", error);
+        
         res.status(500).json(errorResponse("error in Userrole update", res.statusCode));
     }
 });
@@ -1389,7 +1389,7 @@ router.get("/UserroleList", async (req, res) => {
         const response: IUserrole[] = await controller.getUserrole();
         res.status(200).json(successResponse("get Userrole", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Userrole", error);
+   
         res.status(500).json(errorResponse("error in get Userrole", res.statusCode));
     }
 });
@@ -1403,7 +1403,7 @@ router.get("/getUserroleInfoById", async (req, res) => {
         const response: IUserrole = await controller.getUserroleInfoById(UserroleInfoById);
         res.status(200).json(successResponse("get Userrole by Id ", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Userrole by Id", error);
+        
         res.status(500).json(errorResponse("error in get Userrole by Id", res.statusCode));
     }
 });
@@ -1414,7 +1414,7 @@ router.patch("/deleteUserrole/:id", async (req, res) => {
         const response: IUserrole = await controller.deleteUserrole(UserroleId);
         res.status(200).json(successResponse("Userrole update", response, res.statusCode));
     } catch(error) {
-        console.error("error in Userrole update", error);
+        
         res.status(500).json(errorResponse("error in Userrole update", res.statusCode));
     }
 });
@@ -1428,7 +1428,7 @@ router.post("/createHashtag", async (req, res) => {
         const response:IHashtag = await controller.createHashtag(body);
         res.status(200).json(successResponse("create Hashtag", response, res.statusCode));
     } catch(error) {
-        console.error("error in create Hashtag", error);
+     
         res.status(500).json(errorResponse("error in create Hashtag", res.statusCode));
     }
 });
@@ -1442,7 +1442,7 @@ router.patch("/createHashtag/:id", async (req, res) => {
         const response: IHashtag = await controller.editHashtag(body, HashtagId);
         res.status(200).json(successResponse("Hashtag update", response, res.statusCode));
     } catch(error) {
-        console.error("error in Hashtag update", error);
+       
         res.status(500).json(errorResponse("error in Hashtag update", res.statusCode));
     }
 });
@@ -1454,7 +1454,7 @@ router.get("/HashtagList", async (req, res) => {
         const response: IHashtag[] = await controller.getHashtagList();
         res.status(200).json(successResponse("get Hashtag", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Hashtag", error);
+       
         res.status(500).json(errorResponse("error in get Hashtag", res.statusCode));
     }
 });
@@ -1465,7 +1465,7 @@ router.get("/HashtagListByUserId", async (req, res) => {
         const response: IHashtag[] = await controller.getHashtagListByUserId(UserId);
         res.status(200).json(successResponse("get Hashtag", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Hashtag", error);
+       
         res.status(500).json(errorResponse("error in get Hashtag", res.statusCode));
     }
 });
@@ -1478,7 +1478,7 @@ router.get("/searchHashtag", async (req, res) => {
         const response: IHashtag[] = await controller.searchHashtag(search);
         res.status(200).json(successResponse("get Hashtag", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Hashtag", error);
+    
         res.status(500).json(errorResponse("error in get Hashtag", res.statusCode));
     }
 });
@@ -1490,7 +1490,7 @@ router.get("/hashtaginfobyid", async (req, res) => {
         const response: IHashtag = await controller.getHashtagInfoById(hashtagId);
         res.status(200).json(successResponse("get Hashtag by Id ", response, res.statusCode));
     } catch(error) {
-        console.error("error in get Hashtag by Id", error);
+        
         res.status(500).json(errorResponse("error in get Hashtag by Id", res.statusCode));
     }
 });
@@ -1503,7 +1503,7 @@ router.patch("/deleteHashtag/:id", async (req, res) => {
         const response:IHashtag =await controller.deleteHashtag(HashtagId,userId);
         res.status(200).json(successResponse("delete Hashtag",response,res.statusCode));
     }catch(error) {
-        console.error("error in Hashtag ", error);
+       
         res.status(500).json(errorResponse("error in delete Hashtag", res.statusCode));
     }
 })
@@ -1522,7 +1522,7 @@ router.post("/HashtagActivity", async (req, res) => {
         const response:IHashtag =await controller.HashtagActivity(userId, HashtagId, status, Hashtagcomment, HashtagcommentId, body);
         res.status(200).json(successResponse("hashtagActivity",response,res.statusCode));
     }catch(error) {
-        console.error("error in hashtagActivity ", error);
+     
         res.status(500).json(errorResponse("error in hashtagActivity", res.statusCode));
     }
 })
@@ -1537,7 +1537,7 @@ router.get("/readHashtagActivity", async (req, res) => {
         const response:any =await controller.readHashtagActivity(HashtagId,status);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
     }catch(error) {
-        console.error("error in readActivity ", error);
+       
         res.status(500).json(errorResponse("error in readActivity", res.statusCode));
     }
 })
@@ -1558,7 +1558,7 @@ router.post("/subCategory", async (req, res) => {
         const response: ISubCategory = await controller.createSubCategory(body);
         res.status(200).json(successResponse("create subcategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in create subcategory", error);
+    
         res.status(500).json(errorResponse("error in create subcategory", res.statusCode));
     }
 });
@@ -1572,7 +1572,7 @@ router.patch("/subCategory/:id", async (req, res) => {
         const response: ISubCategory = await controller.editSubCategory(body, categoryId);
         res.status(200).json(successResponse("subCategory update", response, res.statusCode));
     } catch (error) {
-        console.error("error in subCategory update", error);
+    
         res.status(500).json(errorResponse("error in subCategory update", res.statusCode));
     }
 });
@@ -1585,7 +1585,7 @@ router.get("/subCategoryList", async (req, res) => {
         const response: ISubCategory[] = await controller.getSubCategory(categoryId);
         res.status(200).json(successResponse("get subCategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in get subCategory", error);
+     
         res.status(500).json(errorResponse("error in get subCategory", res.statusCode));
     }
 });
@@ -1597,7 +1597,7 @@ router.get("/getAllSubCategory", async (req, res) => {
         const response: ISubCategory[] = await controller.getAllSubCategory();
         res.status(200).json(successResponse("get subCategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in get subCategory", error);
+      
         res.status(500).json(errorResponse("error in get subCategory", res.statusCode));
     }
 });
@@ -1610,7 +1610,7 @@ router.get("/subCategoryinfobyid", async (req, res) => {
         const response: any = await controller.getSubCategoryInfoById(subCategoryId);
         res.status(200).json(successResponse("get subCategory by Id ", response, res.statusCode));
     } catch (error) {
-        console.error("error in get subCategory by Id", error);
+       
         res.status(500).json(errorResponse("error in get subCategory by Id", res.statusCode));
     }
 });
@@ -1624,7 +1624,7 @@ router.patch("/subCategory/delete/:id", async (req, res) => {
         const response: ISubCategory = await controller.deleteSubCategory(subCategoryId, userId);
         res.status(200).json(successResponse("delete subCategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in delete subCategory", error);
+      
         res.status(500).json(errorResponse("error in delete subCategory", res.statusCode));
     }
 })
@@ -1636,7 +1636,7 @@ router.post("/subSubCategory", async (req, res) => {
         const response: ISubSubCategory = await controller.createsubSubCategory(body);
         res.status(200).json(successResponse("create subSubCategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in create subSubCategory", error);
+       
         res.status(500).json(errorResponse("error in create subSubCategory", res.statusCode));
     }
 });
@@ -1650,7 +1650,7 @@ router.patch("/subSubCategory/:id", async (req, res) => {
         const response: ISubSubCategory = await controller.editsubSubCategory(body, subSubCategoryId);
         res.status(200).json(successResponse("subSubCategory update", response, res.statusCode));
     } catch (error) {
-        console.error("error in subSubCategory update", error);
+     
         res.status(500).json(errorResponse("error in subSubCategory update", res.statusCode));
     }
 });
@@ -1663,7 +1663,7 @@ router.get("/subSubCategoryList", async (req, res) => {
         const response: ISubSubCategory[] = await controller.getSubSubCategory(subCategoryId);
         res.status(200).json(successResponse("get subSubCategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in get subSubCategory", error);
+       
         res.status(500).json(errorResponse("error in get subSubCategory", res.statusCode));
     }
 });
@@ -1677,7 +1677,7 @@ router.get("/subSubCategoryinfobyid", async (req, res) => {
         const response: any = await controller.getCategorySubSubInfoById(subSubCategoryId);
         res.status(200).json(successResponse("get subSubCategory by Id ", response, res.statusCode));
     } catch (error) {
-        console.error("error in get subSubCategory by Id", error);
+      
         res.status(500).json(errorResponse("error in get subSubCategory by Id", res.statusCode));
     }
 });
@@ -1691,7 +1691,7 @@ router.patch("/subSubCategory/:id", async (req, res) => {
         const response: ISubSubCategory = await controller.deleteSubSubCategory(subSubCategoryId, userId);
         res.status(200).json(successResponse("delete subSubCategory", response, res.statusCode));
     } catch (error) {
-        console.error("error in delete subSubCategory", error);
+        
         res.status(500).json(errorResponse("error in delete subSubCategory", res.statusCode));
     }
 })
@@ -1743,7 +1743,7 @@ router.post("/eventPartner/Registration", async (req, res) => {
         const response: any = await controller.createeventPartner(body);
         res.status(200).json(successResponse("create shop", response, res.statusCode));
     } catch (error) {
-        console.error("error in Registration", error);
+
         res.status(500).json(errorResponse("error in create shop", res.statusCode));
     }
 });
@@ -1756,7 +1756,7 @@ router.patch("/editeventPartner/:id", async (req, res) => {
         const response: IPartner = await controller.editeventPartner(body, eventPartnerId);
         res.status(200).json(successResponse("edit shop", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+    
         res.status(500).json(errorResponse("error in edit shop", res.statusCode));
     }
 });
@@ -1768,7 +1768,7 @@ router.get("/geteventPartnerShopByUser/:userId", async (req, res) => {
         const response: IPartner = await controller.geteventPartnerByUserId(userId);
         res.status(200).json(successResponse("get eventPartner shop", response, res.statusCode));
     } catch (error) {
-        console.log("error while fetching eventPartner shop", error);
+       
         res.status(500).json(errorResponse("error in fetching eventPartner shop", res.statusCode));
     }
 });
@@ -1780,7 +1780,7 @@ router.post("/createCity", async (req, res) => {
         const response = await controller.createCity(body);
         res.status(200).json(successResponse("create City", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+   
         res.status(500).json(errorResponse("error in create City", res.statusCode));
     }
 });
@@ -1793,7 +1793,7 @@ router.patch("/City/:id", async (req, res) => {
         const response: ICity = await controller.editCity(body, CityId);
         res.status(200).json(successResponse("edit City", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+      
         res.status(500).json(errorResponse("error in edit City", res.statusCode));
     }
 });
@@ -1805,7 +1805,7 @@ router.get("/CityList", async (req, res) => {
         const response: ICity[] = await controller.getCityList(stateId);
         res.status(200).json(successResponse("City list", response, res.statusCode));
     } catch (error) {
-        console.error("error in City", error);
+      
         res.status(500).json(errorResponse("error in City list", res.statusCode));
     }
 });
@@ -1818,7 +1818,7 @@ router.get("/Cityinfobyid", async (req, res) => {
         const response: any = await controller.getCityInfoById(CityId);
         res.status(200).json(successResponse("getCity", response, res.statusCode));
     } catch (error) {
-        console.error("error in getCity", error);
+      
         res.status(500).json(errorResponse("error in getCity", res.statusCode));
     }
 });
@@ -1832,7 +1832,7 @@ router.get("/deleteCity/:id", async (req, res) => {
         res.status(200).json(successResponse("deleteCity", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in deleteCity", error);
+       
         res.status(500).json(errorResponse("error in deleteCity", res.statusCode));
     }
 })
@@ -1844,7 +1844,7 @@ router.post("/createState", async (req, res) => {
         const response = await controller.createState(body);
         res.status(200).json(successResponse("create State", response, res.statusCode));
     } catch (error) {
-        console.error("error in State", error);
+     
         res.status(500).json(errorResponse("error in create State", res.statusCode));
     }
 });
@@ -1856,7 +1856,7 @@ router.patch("/State/:id", async (req, res) => {
         const response: IState = await controller.editState(body, StateId);
         res.status(200).json(successResponse("edit State", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in edit State", res.statusCode));
     }
 });
@@ -1867,7 +1867,7 @@ router.get("/StateList", async (req, res) => {
         const response: IState[] = await controller.getStateList();
         res.status(200).json(successResponse("State list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+        
         res.status(500).json(errorResponse("error in State list", res.statusCode));
     }
 });
@@ -1880,7 +1880,7 @@ router.get("/StateInfobyid", async (req, res) => {
         const response: IState = await controller.getStateInfoById(StateId);
         res.status(200).json(successResponse("get State", response, res.statusCode));
     } catch (error) {
-        console.error("error in State", error);
+    
         res.status(500).json(errorResponse("error in get State", res.statusCode));
     }
 });
@@ -1894,7 +1894,7 @@ router.get("/deleteState/:id", async (req, res) => {
         res.status(200).json(successResponse("delete State", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in delete State", error);
+  
         res.status(500).json(errorResponse("error in delete State", res.statusCode));
     }
 })
@@ -1907,13 +1907,13 @@ router.get("/deleteState/:id", async (req, res) => {
 router.post("/createStarPerformer", async (req, res) => {
     try {
         const body = req.body;
-        console.log("req.body",req.body);
+     
         
         const controller = new StarPerformerController();
         const response = await controller.createStarPerformer(body);
         res.status(200).json(successResponse("create StarPerformer", response, res.statusCode));
     } catch (error) {
-        console.error("error in StarPerformer", error);
+       
         res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
     }
 });
@@ -1925,18 +1925,38 @@ router.patch("/StarPerformer/:id", async (req, res) => {
         const response: any = await controller.editStarPerformer(body, StarPerformerId);
         res.status(200).json(successResponse("edit StarPerformer", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+     
         res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
     }
 });
-
+router.get("/filterStar", async (req, res) => {
+    try {
+       
+        const sort = req.query.sort;
+        const type = req.query.type;
+        const category = req.query.category;
+        const subCategory = req.query.subCategory; 
+         const subSubCategory = req.query.subSubCategory; 
+         const limit = req.query.limit;
+           const skip = req.query.skip;
+           const earningCoin = req.query.earningCoin;
+           
+           const search = req.query.search;
+        const controller = new StarPerformerController();
+        const response: any = await controller.filterStarPerformer(type, sort, earningCoin, subCategory, subSubCategory, limit, skip, search);
+        res.status(200).json(successResponse("filterStarPerformer ", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("error filterEvent", res.statusCode));
+    }
+});
 router.get("/StarPerformerList", async (req, res) => {
     try {
         const controller = new StarPerformerController();
         const response: any[] = await controller.getStarPerformerList();
         res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+
         res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
     }
 });
@@ -1947,7 +1967,7 @@ const searchValue=req.query.searchValue;
         const response: any[] = await controller.searchStarPerformer(searchValue);
         res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+      
         res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
     }
 });
@@ -1959,7 +1979,7 @@ router.get("/StarPerformerInfobyid", async (req, res) => {
         const response: any = await controller.getStarPerformerInfoById(StarPerformerId);
         res.status(200).json(successResponse("get StarPerformer", response, res.statusCode));
     } catch (error) {
-        console.error("error in StarPerformer", error);
+       
         res.status(500).json(errorResponse("error in get StarPerformer", res.statusCode));
     }
 });
@@ -1973,7 +1993,7 @@ router.patch("/deleteStarPerformer", async (req, res) => {
         res.status(200).json(successResponse("delete StarPerformer", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in delete StarPerformer", error);
+       
         res.status(500).json(errorResponse("error in delete StarPerformer", res.statusCode));
     }
 })
@@ -1985,7 +2005,7 @@ router.post("/createStarPerformerThought", async (req, res) => {
         const response = await controller.createStarPerformerThought(body);
         res.status(200).json(successResponse("create StarPerformer", response, res.statusCode));
     } catch (error) {
-        console.error("error in StarPerformer", error);
+       
         res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
     }
 });
@@ -1997,7 +2017,7 @@ router.patch("/editPerformerThought", async (req, res) => {
         const response: any = await controller.editStarPerformerThought(body);
         res.status(200).json(successResponse("edit StarPerformer", response, res.statusCode));
     } catch (error) {
-        console.error("error in StarPerformer", error);
+       
         res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
     }
 });
@@ -2008,7 +2028,7 @@ router.get("/getStarPerformerListThought", async (req, res) => {
         const response: any[] = await controller.getStarPerformerListThought();
         res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
     } catch (error) {
-        console.error("error in getStarPerformerListThought", error);
+       
         res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
     }
 });
@@ -2021,7 +2041,7 @@ router.get("/getStarPerformerThoughtById", async (req, res) => {
         const response: any = await controller.getStarPerformerThoughtById(StarPerformerId);
         res.status(200).json(successResponse("get StarPerformer", response, res.statusCode));
     } catch (error) {
-        console.error("error in StarPerformer", error);
+        
         res.status(500).json(errorResponse("error in get StarPerformer", res.statusCode));
     }
 });
@@ -2035,7 +2055,7 @@ router.patch("/deleteStarPerformer", async (req, res) => {
         res.status(200).json(successResponse("delete StarPerformer", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in deleteStarPerformerThought", error);
+       
         res.status(500).json(errorResponse("error in deleteStarPerformerThought", res.statusCode));
     }
 })
@@ -2047,7 +2067,7 @@ router.post("/logineventPartner", async (req, res) => {
         const response: IPartner = await controller.logineventPartner(body);
         res.status(200).json(successResponse("logineventPartner", response, res.statusCode));
     } catch (error) {
-        console.error("error in logineventPartner", error);
+        
         res.status(500).json(errorResponse("error in logineventPartner", res.statusCode));
     }
 });
@@ -2066,7 +2086,7 @@ router.patch("/eventPartnerActivate", async (req, res) => {
         const response: IPartner = await controller.eventPartnerActivate(status, ownerId, planId, eventPartnerId);
         res.status(200).json(successResponse("edit shop", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+      
         res.status(500).json(errorResponse("error in edit shop", res.statusCode));
     }
 });
@@ -2090,7 +2110,7 @@ router.get("/geteventPartnerAdminPannel", async (req, res) => {
             categoryId, stateId, cityId, limit, skip, search);
         res.status(200).json(successResponse("shop list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in shop list", res.statusCode));
     }
 });
@@ -2105,7 +2125,7 @@ router.get("/eventpartnerInfoById", async (req, res) => {
         const response: any = await controller.geteventPartnerInfoById(partnerId);
         res.status(200).json(successResponse("get shop", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in get shop", res.statusCode));
     }
 });
@@ -2119,7 +2139,7 @@ router.get("/deleteShop/:id", async (req, res) => {
         res.status(200).json(successResponse("delete shop", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in delete shop", error);
+        
         res.status(500).json(errorResponse("error in delete shop", res.statusCode));
     }
 })
@@ -2132,7 +2152,7 @@ router.post("/checkoutPayment", async (req, res) => {
       const response:any = await controller.createbookEvent(bookEventId);
       res.status(200).json(successResponse("createorder", response, res.statusCode));
     } catch (error) {
-        console.error("error in createorder", error);
+       
         res.status(500).json(errorResponse("error in createorder", res.statusCode));
     }
 });
@@ -2143,7 +2163,7 @@ router.post("/paymentCapture", async (req, res) => {
       const response:any = await controller.paymentCallback(data);
       res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
     } catch (error) {
-        console.error("error in paymentCallback", error);
+      
         res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
     }
 });
@@ -2152,11 +2172,13 @@ router.post("/paymentCapture", async (req, res) => {
 router.post("/createPost", async (req, res) => {
     try {
         const body = req.body;
+        console.log("re",req.body);
+        
         const controller = new PostController();
         const response = await controller.createPost(body);
         res.status(200).json(successResponse("create Post", response, res.statusCode));
     } catch (error) {
-        console.error("error in Post", error);
+        
         res.status(500).json(errorResponse("error in create Post", res.statusCode));
     }
 });
@@ -2168,7 +2190,7 @@ router.patch("/editPost", async (req, res) => {
         const response = await controller.editPost(body);
         res.status(200).json(successResponse("edit Post", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+      
         res.status(500).json(errorResponse("error in edit Post", res.statusCode));
     }
 });
@@ -2179,7 +2201,7 @@ router.get("/PostList", async (req, res) => {
         const response= await controller.getPostList();
         res.status(200).json(successResponse("Post list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in Post list", res.statusCode));
     }
 });
@@ -2190,7 +2212,7 @@ router.get("/PostList", async (req, res) => {
         const response= await controller.getPostList();
         res.status(200).json(successResponse("Post list", response, res.statusCode));
     } catch (error) {
-        console.error("error in signup", error);
+       
         res.status(500).json(errorResponse("error in Post list", res.statusCode));
     }
 });
@@ -2201,7 +2223,7 @@ router.get("/getPostListBYUserId", async (req, res) => {
         const response= await controller.getPostListBYUserId(userId);
         res.status(200).json(successResponse("getPostListBYUserId", response, res.statusCode));
     } catch (error) {
-        console.error("error in getPostListBYUserId", error);
+       
         res.status(500).json(errorResponse("error in getPostListBYUserId", res.statusCode));
     }
 });
@@ -2213,7 +2235,7 @@ router.get("/PostInfobyid", async (req, res) => {
         const response = await controller.getPostInfoById(PostId);
         res.status(200).json(successResponse("get Post", response, res.statusCode));
     } catch (error) {
-        console.error("error in Post", error);
+       
         res.status(500).json(errorResponse("error in get Post", res.statusCode));
     }
 });
@@ -2230,7 +2252,7 @@ router.post("/postActivity", async (req, res) => {
         const response = await controller.PostActivity(userId, PostId, status, PostComment, PostCommentId, body);
         res.status(200).json(successResponse("postActivity", response, res.statusCode));
     } catch (error) {
-        console.error("error in postActivity", error);
+      
         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
     }
 });
@@ -2244,7 +2266,7 @@ router.get("/readPostActivity", async (req, res) => {
         const response = await controller.readPostActivity( PostId, status);
         res.status(200).json(successResponse("postActivity", response, res.statusCode));
     } catch (error) {
-        console.error("error in postActivity", error);
+      
         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
     }
 });
@@ -2257,7 +2279,7 @@ router.post("/deletePost", async (req, res) => {
         res.status(200).json(successResponse("delete Post", response, res.statusCode));
 
     } catch (error) {
-        console.error("error in delete Post", error);
+       
         res.status(500).json(errorResponse("error in delete Post", res.statusCode));
     }
 })
@@ -2272,7 +2294,7 @@ router.get("/searchPost", async (req, res) => {
         const response = await controller.searchPost(search);
         res.status(200).json(successResponse("search", response, res.statusCode));
     } catch (error) {
-        console.error("error in search", error);
+        
         res.status(500).json(errorResponse("error in search", res.statusCode));
     }
 });

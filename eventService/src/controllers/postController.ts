@@ -4,12 +4,14 @@ import userDetails from "../models/userDetails";
 import FuzzySearch from "fuzzy-search";
 import event from "../models/event";
 export default class PostController {
-
     public async createPost(body: any) {
         let PostInfo: any;
+        let eventInfo:any;
             PostInfo = await Post.create(body);
-            let userInfo:any=await userDetails.findOne({_id:PostInfo.userId,isDeleted:false}).lean()
-            let eventInfo:any=await event.findOne({_id:PostInfo.eventId,isDeleted:false}).lean()
+            let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
+            console.log("userInfo",userInfo);
+            
+           if(body.eventInfo){eventInfo =await event.findOne({_id:body.eventId,isDeleted:false}).lean()}
             await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname,eventName:eventInfo.eventName}})
         return PostInfo;
 
@@ -21,7 +23,7 @@ export default class PostController {
     }
 
     public async getPostList() {
-        const PostList: IPost[] = await Post.find({ isDeleted: false });
+        const PostList: IPost[] = await Post.find({ isDeleted: false }).populate("userId","profile_picture");
         return PostList;
     }
 
@@ -41,8 +43,8 @@ export default class PostController {
     }
     public async PostActivity(userId: any, PostId: any, status: any, PostComment: any, PostCommentId: any, body: any) {
         let userInfo: any;
-        let data: any = []
-        let a: any = []
+        let data: any = [];
+        let a: any = [];
         let info: any;
        let PostInfo :any;
         userInfo = await userActivity.findOne({ userId: userId }).lean();
@@ -55,16 +57,16 @@ export default class PostController {
     
     
         if (status == "PostLike") {
-            console.log("mmm");
+           
             
             info = await userActivity.findOne({ PostLike: {$in:body.PostLike} }).lean();
-            console.log("info", info);
+          
             
        if(info) return{message:"alreadylike"}
     
     
             if (!info) {
-                console.log("l,");
+              
                 
                 userInfo = await userActivity.findOneAndUpdate(
                     {
@@ -301,7 +303,8 @@ export default class PostController {
     
                 a.push({ userInfo, comment, DateTime })
             }
-            return a
+            var y = [...a].reverse();
+            return y
     
     
     
@@ -313,7 +316,7 @@ export default class PostController {
     }
     public async searchPost(search:any){
         if(search){
-            let PostInfo:any=await Post.find({isDeleted:false})
+            let PostInfo:any=await Post.find({isDeleted:false}).populate("userId","profile_picture");  
             console.log("PostInfo",PostInfo);
             
             PostInfo = new FuzzySearch(PostInfo, ["userName","eventName"], {

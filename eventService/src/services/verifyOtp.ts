@@ -4,7 +4,7 @@ export async function verifyOtp(otpInfo: any, otp: String) {
     var config = {
         method: 'get',
 
-        url: 'https://2factor.in/API/V1/09cd0315-b240-11ec-a4c2-0200cd936042/SMS/VERIFY/' + otpInfo.otpId + '/' + otp,
+        url: 'https://2factor.in/API/V1/f943f4f2-7c7a-11ed-9158-0200cd936042/SMS/VERIFY/' + otpInfo.otpId + '/' + otp,
 
         headers: {
             'Content-Type': 'application/json'

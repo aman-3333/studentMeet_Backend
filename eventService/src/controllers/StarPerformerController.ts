@@ -8,7 +8,7 @@ export default class StarPerformerController {
         let StarPerformerInfo: any;
     
             StarPerformerInfo = await StarPerformer.create(body);
-        console.log("StarPerformerInfo",StarPerformerInfo);
+      
        let StarPerformername=await userDetails.findOne({_id:body.StarPerformerId,isDeleted:false}).lean();
        StarPerformername=StarPerformername.fullname
        await StarPerformer.findOneAndUpdate({starPerformerId:body.StarPerformerId,isDeleted:false},{$set:{starPerformerName:StarPerformername}}).lean();
@@ -22,14 +22,14 @@ export default class StarPerformerController {
     }
 
     public async getStarPerformerList() {
-        const StarPerformerList: any[] = await StarPerformer.find({  isDeleted: false,isActive:true });
+        const StarPerformerList: any[] = await StarPerformer.find({  isDeleted: false,isActive:true }).populate("starPerformerId","profile_picture");
         return StarPerformerList;
     }
 
     public async searchStarPerformer(searchValue:any) {
         if(searchValue){
         let StarPerformerList: any = await StarPerformer.find({isDeleted: false})
-        console.log("StarPerformerList",StarPerformerList);
+        
         
         StarPerformerList = new FuzzySearch(StarPerformerList, ["starPerformerName"], {
             caseSensitive: false,
@@ -77,12 +77,13 @@ export default class StarPerformerController {
             }
             if (search) {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                console.log("StarPerformerInfo",StarPerformerInfo);
     
-    
-                const searcher = new FuzzySearch(StarPerformerInfo, ["StarPerformerName"], {
+                const searcher = new FuzzySearch(StarPerformerInfo, ["starPerformerName"], {
                     caseSensitive: false,
                 });
                 StarPerformerInfo = searcher.search(search);
+               console.log("StarPerformerInfo",StarPerformerInfo);
                
             }
             if (limit && skip) {
