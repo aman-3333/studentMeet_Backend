@@ -23,7 +23,7 @@ export default class PostController {
     }
 
     public async getPostList() {
-        const PostList: IPost[] = await Post.find({ isDeleted: false });
+        const PostList: IPost[] = await Post.find({ isDeleted: false }).populate("userId","profile_picture");
         return PostList;
     }
 

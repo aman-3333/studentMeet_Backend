@@ -216,23 +216,8 @@ export default class AuthController {
 public async sendotpByApi(body: any) {
   let phone = body.country_code.toString() + body.contact.toString();
   const userInfo = await Users.findOne({ contact: body.contact }).lean();
-  if (body.action == "checkexist") {
-    if (!userInfo) {
-      return {
-        Status: "Error",
-        Details: "Invalid number. Please recheck and enter again.",
-      };
-    }
-  }
-  if (body.action == "checknotexist") {
-    if (userInfo) {
-      return {
-        Status: "Error",
-        Details:
-          "This phone number is already taken. Please try with a new number.",
-      };
-    }
-  }
+ 
+ 
   let otp = generateOTP(6);
   let resp = await generateOtp(phone, otp);
 
