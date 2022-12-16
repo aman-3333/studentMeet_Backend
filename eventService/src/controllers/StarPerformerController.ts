@@ -77,12 +77,13 @@ export default class StarPerformerController {
             }
             if (search) {
                 StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                console.log("StarPerformerInfo",StarPerformerInfo);
     
-    
-                const searcher = new FuzzySearch(StarPerformerInfo, ["StarPerformerName"], {
+                const searcher = new FuzzySearch(StarPerformerInfo, ["starPerformerName"], {
                     caseSensitive: false,
                 });
                 StarPerformerInfo = searcher.search(search);
+               console.log("StarPerformerInfo",StarPerformerInfo);
                
             }
             if (limit && skip) {

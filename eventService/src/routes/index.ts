@@ -1929,7 +1929,27 @@ router.patch("/StarPerformer/:id", async (req, res) => {
         res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
     }
 });
-
+router.get("/filterStar", async (req, res) => {
+    try {
+       
+        const sort = req.query.sort;
+        const type = req.query.type;
+        const category = req.query.category;
+        const subCategory = req.query.subCategory; 
+         const subSubCategory = req.query.subSubCategory; 
+         const limit = req.query.limit;
+           const skip = req.query.skip;
+           const earningCoin = req.query.earningCoin;
+           
+           const search = req.query.search;
+        const controller = new StarPerformerController();
+        const response: any = await controller.filterStarPerformer(type, sort, earningCoin, subCategory, subSubCategory, limit, skip, search);
+        res.status(200).json(successResponse("filterStarPerformer ", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("error filterEvent", res.statusCode));
+    }
+});
 router.get("/StarPerformerList", async (req, res) => {
     try {
         const controller = new StarPerformerController();
