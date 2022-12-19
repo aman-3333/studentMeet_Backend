@@ -56,6 +56,16 @@ export default class eventController {
 
     }
 
+
+    public async getParticipantsList(eventId: any) {
+
+        var ParticipantInfo: any = await bookevent.find({ eventId: eventId, isDeleted: false }).populate("userId")
+        ParticipantInfo=ParticipantInfo.map((e:any)=>e.userId)
+        return ParticipantInfo;
+
+
+    }
+
     public async eventActivity(userId: any, eventId: any, status: any, eventcomment: any, eventcommentId: any, body: any) {
         let userInfo: any;
         let eventInfo: any;

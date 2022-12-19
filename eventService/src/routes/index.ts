@@ -659,6 +659,17 @@ router.get("/getallevent", async (req, res) => {
         res.status(500).json(errorResponse("error in get event", res.statusCode));
     }
 });
+router.get("/geteventParticipants", async (req, res) => {
+    try {
+        const controller = new eventController();
+        const eventId = req.query.eventId;
+        const response: IEvent[] = await controller.getParticipantsList(eventId);
+        res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("getParticipantsList", res.statusCode));
+    }
+});
 
 
 router.get("/getEventByuserId", async (req, res) => {

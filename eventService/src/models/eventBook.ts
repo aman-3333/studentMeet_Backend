@@ -3,10 +3,10 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema({
     
     eventId: { type: Schema.Types.ObjectId, ref: "event" },
-    userId: { type: Schema.Types.ObjectId },
+    userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
     isEventBook: { type: Boolean, default: false },
     isEventOrganizer: { type: Boolean, default: false },
-     order_id: { type: String },
+    order_id: { type: String },
     receipt: { type: String },
     payment_status: { type: String },
     payment_method: { type: String },

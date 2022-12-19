@@ -1,5 +1,5 @@
 {
-    "mongodb": "mongodb+srv://toofunn:toofunn@2022@cluster0.qzci5pi.mongodb.net/test",
+  "mongodb": "mongodb+srv://MidBazarAman:MidBazar@2021@cluster0.dqngt.mongodb.net/test",
     "host": "54.92.91.147",
     "env":"prod",
     "port": "3000",
