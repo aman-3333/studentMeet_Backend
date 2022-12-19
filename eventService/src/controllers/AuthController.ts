@@ -215,7 +215,7 @@ export default class AuthController {
 
 public async sendotpByApi(body: any) {
   let phone = body.country_code.toString() + body.contact.toString();
-  const userInfo = await Users.findOne({ contact: body.contact }).lean();
+
  
  
   let otp = generateOTP(6);
@@ -226,19 +226,6 @@ public async sendotpByApi(body: any) {
       contact: body.contact,
       country_code: body.country_code,
     }).lean();
-    const userInfo = await Users.findOne({ contact: body.contact }).lean();
-    if (userInfo) {
-      const user = await Users.findOne({
-        contact: body.contact,
-        country_code: body.country_code,
-      }).lean();
-      if (!user) {
-        await Users.findOneAndUpdate(
-          { contact: body.contact },
-          { $set: { country_code: body.country_code } }
-        );
-      }
-    }
     if (!otpInfo) {
       const info = new Otp({
         contact: body.contact,
@@ -259,8 +246,9 @@ public async sendotpByApi(body: any) {
 
 
 public async verifyotpByApi(body: any) {
-  let otp = body.otp;
-  let data: any = await Users.findOne({
+  let data: any;
+  let userInfo:any;
+  data= await Users.findOne({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
@@ -276,17 +264,70 @@ public async verifyotpByApi(body: any) {
 
 
       if (otpInfo) {
-
-          return { Status: "Sucess", Details: "OTP Match" };
+        
+        userInfo =    await Users.findOneAndUpdate(
+                  {
+                    contact: body.contact,
+                    country_code: body.country_code,
+                    isDeleted: false,
+                  },
+                  { $set: { contact_verify: true, fcmtoken: body.fcmtoken,
+                    ipAddress:body.ipAddress,
+                    modelName:body.modelName,
+                    manufacturer:body.manufacturer,
+                    maxMemorybigint:body.maxMemorybigint,
+                    freeMemory:body.freeMemory,
+                    osVersion: body.osVersion,
+                    networkCarrier:body.networkCarrier,
+                    dimension:body.dimension} }
+                );
+              
+          return { Status: "Sucess", Details: "OTP Match",userInfo  };
 
       }
 
       else {
 
-          return { Status: "Error", Details: "OTP Mismatch" };
+          return { Status: "Error", Details: "OTP Mismatch",userInfo };
       }
 
   }
+
+  if (!data) {
+    let otpInfo = await Otp.findOne({
+        contact: body.contact,
+        country_code: body.country_code,
+        otp: body.otp
+    }).lean();
+
+
+
+    if (otpInfo) {
+      userInfo= await Users.create({
+                  
+                    contact: body.contact,
+                    country_code: body.country_code,
+                   
+                 contact_verify: true, fcmtoken: body.fcmtoken,
+                    ipAddress:body.ipAddress,
+                    modelName:body.modelName,
+                    manufacturer:body.manufacturer,
+                    maxMemorybigint:body.maxMemorybigint,
+                    freeMemory:body.freeMemory,
+                    osVersion: body.osVersion,
+                    networkCarrier:body.networkCarrier,
+                    dimension:body.dimension }
+                );
+        return { Status: "Sucess", Details: "OTP Match",userInfo };
+
+    }
+
+    else {
+
+        return { Status: "Error", Details: "OTP Mismatch" };
+    }
+
+}
 
 }
 
