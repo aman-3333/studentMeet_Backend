@@ -21,7 +21,10 @@ export default class PostController {
         const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
         return PostInfo;
     }
-
+    public async editPost2(body: any) {
+        const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
+        return PostInfo;
+    }
     public async getPostList() {
         const PostList: IPost[] = await Post.find({ isDeleted: false }).populate("userId","profile_picture");
         return PostList;
