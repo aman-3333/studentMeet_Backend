@@ -713,6 +713,19 @@ router.get("/geteventinfobyid", async (req, res) => {
         res.status(500).json(errorResponse("error in get event by Id", res.statusCode));
     }
 });
+router.get("/getFriendActivity", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+       
+        const controller = new eventController();
+        const response: any = await controller.getFriendActivity(userId);
+        res.status(200).json(successResponse("getFriendActivity", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in getFriendActivity", res.statusCode));
+    }
+});
+
 router.post("/eventActivity", async (req, res) => {
     try{
         

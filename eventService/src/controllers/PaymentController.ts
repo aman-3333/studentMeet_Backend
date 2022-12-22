@@ -6,6 +6,8 @@ import nconf, { any } from "nconf";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import event from "../models/event";
+import userActivity from "../models/userActivity";
+import friendEventActivity from "../models/friendEventActivity";
 var razorpayConfig = require("../../config/razorpay/betaProperties").RAZORPAY
 const fs = require('fs');
 const Hogan = require('hogan.js');
@@ -54,7 +56,32 @@ export default class PaymentController {
         if (Paymentresp.status == 'captured') {
           resp = await bookEvent.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
           let eventInfo: any = await event.findOneAndUpdate({ _id: resp.eventId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
-          if (resp.isEventOrganizer == true) await event.findOneAndUpdate({ _id: eventInfo._id }, { $set: { isOrganized: true, isBookEventPaid: true,organizerId:resp.userId } },{new:true}).lean()
+          let friendInfo:any=   await userActivity.findOneAndUpdate({userId:resp.userId,isDeleted:false}).lean()
+             friendInfo=friendInfo.friendList;
+             friendInfo.forEach(async(element:any) => {
+              await friendEventActivity.findOneAndUpdate({userId:element},
+                  {$push:{
+                      friendActivity:{
+                          friendId:resp.userId,
+                          eventId:eventInfo._id,
+                          Activity:"Apply Event"
+                         }
+              }})
+            });
+          if (resp.isEventOrganizer == true) {
+            await event.findOneAndUpdate({ _id: eventInfo._id }, { $set: { isOrganized: true, isBookEventPaid: true,organizerId:resp.userId } },{new:true}).lean()
+           
+            friendInfo.forEach(async(element:any) => {
+                await friendEventActivity.findOneAndUpdate({userId:element},
+                    {$push:{
+                        friendActivity:{
+                            friendId:resp.userId,
+                            eventId:eventInfo._id,
+                            Activity:"Organize Event"
+                           }
+                }})
+              });
+          }
           let remainingSeat = eventInfo.totalParticipent - eventInfo.noOfParticipentBook
           eventInfo = await event.findOneAndUpdate({ _id: eventInfo._id, isDeleted: false }, { $set: { remainingSeat: remainingSeat } }, { new: true }).lean()
           if (eventInfo.remainingSeat == 0) await event.findOneAndUpdate({ _id: eventInfo._id, isDeleted: false }, { $set: { isSeatfull: true } }).lean()
