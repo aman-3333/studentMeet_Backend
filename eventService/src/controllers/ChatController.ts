@@ -277,13 +277,50 @@ public async getFriend(user:any){
     return friendListInfo
 }
 
-public async sendFriendRequest(sernderId:any,userId:any){
+public async sendFriendRequest(senderId:any,userId:any){
+    console.log("senderId:any,userId:any",senderId,userId);
+    
+let userInfo:any= await userActivity.findOneAndUpdate({userId:senderId},{
+    $push:{
+        sendFriendRequest:userId
+    }
+})
+console.log("userInfo",userInfo);
 
+await userActivity.findOneAndUpdate({userId:userId},{
+    $push:{
+        sendFriendRequestBYOther:senderId
+    }
+})
+return userInfo
 }
 
-public async acceptFriendRequest(sernderId:any,userId:any){
-    let userInfo:any=await Chat.findOne({})
+public async cancelSendFriendRequest(senderId:any,userId:any){
+    let userInfo:any= await userActivity.findOneAndUpdate({userId:senderId},{
+        $push:{
+            cancelSendFriendRequest:userId
+        }
+    })
+    await userActivity.findOneAndUpdate({userId:userId},{
+        $push:{
+            cancelSendFriendRequest:senderId
+        }
+    })
+    return userInfo
+    }
 
+public async acceptFriendRequest(senderId:any,userId:any){
+    let userInfo:any= await userActivity.findByIdAndUpdate({userId:senderId},{
+        $push:{
+            friendList:userId
+        }
+    })
+    await userActivity.findByIdAndUpdate({userId:userId},{
+        $push:{
+            friendList:senderId
+        }
+    })
+return userInfo
 }
 
 public async rejectFriendRequest(userId:any,senderId:any){
