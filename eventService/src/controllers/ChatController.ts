@@ -308,7 +308,7 @@ public async cancelSendFriendRequest(senderId:any,userId:any){
     })
     return userInfo
     }
-
+///aman
 public async acceptFriendRequest(senderId:any,userId:any){
     let userInfo:any= await userActivity.findByIdAndUpdate({userId:senderId},{
         $push:{
