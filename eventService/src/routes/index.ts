@@ -88,7 +88,32 @@ router.post("/accessChat",async(req:any,res:any)=>{
         res.status(500).json(errorResponse("error in accessChat", res.statusCode));
     }
 })
+router.post("/sendFriendRequest",async(req:any,res:any)=>{
+    try {
+        const senderId =req.body.senderId;
+    // const { userId,senderId } = req.body;
+    const  userId = req.body.userId;
+        const controller = new ChatController();
+        const response = await controller.sendFriendRequest(senderId,userId);
+        res.status(200).json(successResponse("sendFriendRequest",response,res.statusCode));
+    }catch(error) {
+    
+        res.status(500).json(errorResponse("error in sendFriendRequest", res.statusCode));
+    }
+})
+router.post("/cancelSendRequest",async(req:any,res:any)=>{
+    try {
+        const senderId =req.body.senderId;
+    // const { userId,senderId } = req.body;
+    const  userId = req.body.userId;
+        const controller = new ChatController();
+        const response = await controller.cancelSendFriendRequest(senderId,userId);
+        res.status(200).json(successResponse("sendFriendRequest",response,res.statusCode));
+    }catch(error) {
 
+        res.status(500).json(errorResponse("error in sendFriendRequest", res.statusCode));
+    }
+})
 
 // TODO........ 3rd  fetch Chat
 

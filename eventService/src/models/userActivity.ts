@@ -62,6 +62,8 @@ const schema = new Schema({
     following: [{ type: Schema.Types.ObjectId, ref: "userdetail" },],
     friendList: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     sendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    sendFriendRequestBYOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    cancelSendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     rejectFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     friendRequestRejectbyOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     blockList: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
@@ -133,6 +135,8 @@ export interface IuserdetailActivity extends Document {
     following: [
         ObjectId
     ],
+    sendFriendRequestBYOther:  [ObjectId],
+    cancelSendFriendRequest:  [ObjectId],
     friendList: [ObjectId],
     friendRequestRejectbyOther: [ObjectId],
     sendFriendRequest: [ObjectId],
