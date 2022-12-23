@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "tsc && nodemon build/index.js env=test",
+    "start": "tsc && nodemon build/index.js env=prod",
     "buildmac": "rm -rf dist && mkdir dist && webpack --mode development && cp package.json dist && cp -r config dist && cp -r email dist",
     "build-prod-mac": "rm -rf dist && mkdir dist && webpack --mode production && cp package.json dist && cp -r config dist && cp -r email dist",
     "buildwindow": "rmdir /s /q dist && webpack --mode development && copy package.json .\\dist\\ && xcopy /y config .\\dist\\config\\",
@@ -19,7 +19,7 @@
     "ext": "ts",
     "exec": "ts-node src/index.ts"
   },
-  "author": "aman sharma",
+  "author": "Aman Sharma",
   "license": "ISC",
   "dependencies": {
     "@types/async": "^3.2.5",

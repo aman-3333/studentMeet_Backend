@@ -2,6 +2,7 @@ import FuzzySearch from 'fuzzy-search';
 import moment from 'moment';
 import event, { IEvent } from '../models/event'
 import userActivity from '../models/userActivity';
+import friendActivity from '../models/friendEventActivity';
 import User from "../models/userDetails"
 import bookevent from "../models/eventBook"
 import userDetails from '../models/userDetails';
@@ -27,6 +28,7 @@ export default class eventController {
         const eventList: IEvent[] = await event.find({ type: type, isDeleted: false }).populate("organizerId");
         return eventList;
     }
+
     public async getEventByUserId(userId: any) {
         const eventList: IEvent[] = await event.find({ organizerId: userId, isDeleted: false })
         return eventList;
@@ -42,9 +44,14 @@ export default class eventController {
     public async geteventInfo(eventId: any, status: any) {
         let eventInfo: any;
         eventInfo = await event.find({ _id: eventId, isDeleted: false }).populate("organizerId")
-       
-       
         return  eventInfo;
+    }
+
+    public async getFriendActivity(userId:any){
+        
+        let ActivityInfo: any;
+        ActivityInfo = await friendActivity.find({ userId: userId }).populate("friendActivity.eventId").populate("friendActivity.friendId")
+        return ActivityInfo;
     }
 
 
@@ -52,6 +59,16 @@ export default class eventController {
 
         const eventInfo: IEvent = await event.findOneAndUpdate({ _id: eventId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return eventInfo;
+
+
+    }
+
+
+    public async getParticipantsList(eventId: any) {
+
+        var ParticipantInfo: any = await bookevent.find({ eventId: eventId, isDeleted: false }).populate("userId")
+        ParticipantInfo=ParticipantInfo.map((e:any)=>e.userId)
+        return ParticipantInfo;
 
 
     }
@@ -70,8 +87,6 @@ export default class eventController {
             userInfo = await userActivity.create({ userId: userId })
 
         }
-
-
         if (status == "eventLike") {
             info = await userActivity.findOne({ eventLike: body.eventLike }).lean();
             if (info) return { message: "alreadyEventLike" }
@@ -99,6 +114,18 @@ export default class eventController {
 
                     }
                 })
+                
+                let friendInfo=userInfo.friendList;
+                friendInfo.forEach(async(element:any) => {
+                    await friendActivity.findOneAndUpdate({userId:element},
+                        {$push:{
+                            friendActivity:{
+                                friendId:userId,
+                                eventId:body.eventLike,
+                                Activity:"Like Event"
+                               }
+                    }})
+                  });
                 return eventInfo;
             }
         }
@@ -164,6 +191,18 @@ export default class eventController {
 
                     }
                 })
+              
+                let friendInfo=userInfo.friendList;
+                friendInfo.forEach(async(element:any) => {
+                    await friendActivity.findOneAndUpdate({userId:element},
+                        {$push:{
+                            friendActivity:{
+                                friendId:userId,
+                                eventId:body.eventFavorite,
+                                Activity:"Favorite Event"
+                               }
+                    }})
+                  });
                 return eventInfo;
             }
         }
@@ -235,7 +274,6 @@ export default class eventController {
                     })
                 eventInfo = await event.findOneAndUpdate({ _id: body.eventcomment[i].eventId },
                     { $inc: { eventCommentCount: 1 } }, { new: true })
-
 
 
                 return eventInfo;
@@ -557,38 +595,7 @@ export default class eventController {
         }
     }
 
-    public async following(userId: any, followingId: any) {
-        let userInfo: any
-        userInfo = await userActivity.findOne({ following: { $in: followingId } }).lean()
-        if (!userInfo) {
-            userInfo = await userActivity.findOneAndUpdate({
-                userId: userId,
-            }, {
-                $push: {
-                    following: followingId
-                }
-            }).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            }, {
-                $push: {
-                    followers: userId
-                }
-            }).lean()
-
-            await userActivity.findOneAndUpdate({
-                userId: userId,
-            },
-                { $inc: { followingCount: 1 } }).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            },
-                { $inc: { followersCount: 1 } }).lean()
-
-        }
-
-        return userInfo
-    }
+   
 
 
 
@@ -626,7 +633,38 @@ export default class eventController {
 
         return userInfo
     }
+    public async following(userId: any, followingId: any) {
+        let userInfo: any
+        userInfo = await userActivity.findOne({ following: { $in: followingId } }).lean()
+        if (!userInfo) {
+            userInfo = await userActivity.findOneAndUpdate({
+                userId: userId,
+            }, {
+                $push: {
+                    following: followingId
+                }
+            }).lean()
+            await userActivity.findOneAndUpdate({
+                userId: followingId,
+            }, {
+                $push: {
+                    followers: userId
+                }
+            }).lean()
 
+            await userActivity.findOneAndUpdate({
+                userId: userId,
+            },
+                { $inc: { followingCount: 1 } }).lean()
+            await userActivity.findOneAndUpdate({
+                userId: followingId,
+            },
+                { $inc: { followersCount: 1 } }).lean()
+
+        }
+
+        return userInfo
+    }
 
     public async feadBackEvent(body: any, eventId: any, reting: any, feadBackComment: any) {
         let eventInfo: any;

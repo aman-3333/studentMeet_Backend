@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
 import Users from "../models/userDetails";
+import friendActivity from '../models/friendEventActivity';
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
@@ -135,89 +136,8 @@ export default class AuthController {
     return userInfo
   }
 
-//   public async sendotpByApi(body: any) {
-//     let createUser: any;
-//     let  otpInfo :any;
-//     let phone = body.country_code.toString() + body.contact.toString();
-//     let otp = generateOTP(6);
-//     let resp = await generateOtp(phone, otp);
-// console.log("resp",resp);
-
-//     if (resp.Status == "Success") {
-//       otpInfo = await Otp.findOne({ contact: body.contact })
-//       const userInfo = await Users.findOne({ contact: body.contact }).lean();
-//       if (!userInfo) {
-//         createUser = await Users.create({
-//           contact
-//             : body.contact, country_code
-//             : body.country_code
-//         })
-//         await userActivity.create({
-//           userId
-//             : createUser._id
-//         })
-//         otpInfo = await Otp.create({
-
-//           contact: body.contact,
-//           country_code: body.country_code,
-//           otp: otp,
-//           otpId: otp
-//         })
-//       }
-//     }
-//     return { resp, createUser };
-//   }
-
-
-
-
-//   public async verifyotpByApi(body: any) {
-//     let userInfo: any;
-//     const otpInfo = await Otp.findOne({
-//       contact: body.contact,
-//       country_code: body.country_code,
-//     }).lean();
-
-//     // If details are not found by the requested details
-//     if (otpInfo === null || otpInfo === "null" || !otpInfo) {
-//       return { Status: "Error", Details: "Invalid request." };
-//     }
-//     let resp = await verifyOtp(otpInfo, body.otp);
-// console.log("resp",resp);
-
-//     if (resp.Status == "Success" && resp.Details != "OTP Expired") {
-//       userInfo = await Users.findOne({ contact: body.contact })
-    
-//       await Users.findOneAndUpdate(
-//         {
-//           contact: body.contact,
-//           country_code: body.country_code,
-//           isDeleted: false,
-//         },
-//         { $set: { contact_verify: true, fcmtoken: body.fcmtoken,
-//           ipAddress:body.ipAddress,
-//           modelName:body.modelName,
-//           manufacturer:body.manufacturer,
-//           maxMemorybigint:body.maxMemorybigint,
-//           freeMemory:body.freeMemory,
-//           osVersion: body.osVersion,
-//           networkCarrier:body.networkCarrier,
-//           dimension:body.dimension} }
-//       );
-//     }
-//     if (resp.Status == "Success" && resp.Details == "OTP Expired") {
-//       return { Status: "Error", Details: "OTP Expired" };
-//     }
-//     return { resp, userInfo };
-//   }
-
-
-
 public async sendotpByApi(body: any) {
   let phone = body.country_code.toString() + body.contact.toString();
-  const userInfo = await Users.findOne({ contact: body.contact }).lean();
- 
- 
   let otp = generateOTP(6);
   let resp = await generateOtp(phone, otp);
 
@@ -226,19 +146,6 @@ public async sendotpByApi(body: any) {
       contact: body.contact,
       country_code: body.country_code,
     }).lean();
-    const userInfo = await Users.findOne({ contact: body.contact }).lean();
-    if (userInfo) {
-      const user = await Users.findOne({
-        contact: body.contact,
-        country_code: body.country_code,
-      }).lean();
-      if (!user) {
-        await Users.findOneAndUpdate(
-          { contact: body.contact },
-          { $set: { country_code: body.country_code } }
-        );
-      }
-    }
     if (!otpInfo) {
       const info = new Otp({
         contact: body.contact,
@@ -246,7 +153,7 @@ public async sendotpByApi(body: any) {
         otp: otp,
         otpId: resp.Details,
       });
-      const data = await info.save();
+       await info.save();
     } else {
       await Otp.findOneAndUpdate(
         { contact: body.contact, country_code: body.country_code },
@@ -259,8 +166,9 @@ public async sendotpByApi(body: any) {
 
 
 public async verifyotpByApi(body: any) {
-  let otp = body.otp;
-  let data: any = await Users.findOne({
+  let data: any;
+  let userInfo:any;
+  data= await Users.findOne({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
@@ -276,17 +184,80 @@ public async verifyotpByApi(body: any) {
 
 
       if (otpInfo) {
-
-          return { Status: "Sucess", Details: "OTP Match" };
+        
+        userInfo =    await Users.findOneAndUpdate(
+                  {
+                    contact: body.contact,
+                    country_code: body.country_code,
+                    isDeleted: false,
+                  },
+                  { $set: { contact_verify: true, fcmtoken: body.fcmtoken,
+                    ipAddress:body.ipAddress,
+                    modelName:body.modelName,
+                    manufacturer:body.manufacturer,
+                    maxMemorybigint:body.maxMemorybigint,
+                    freeMemory:body.freeMemory,
+                    osVersion: body.osVersion,
+                    networkCarrier:body.networkCarrier,
+                    dimension:body.dimension} }
+                );
+             
+              
+          return { Status: "Sucess", Details: "OTP Match",userInfo  };
 
       }
 
       else {
 
-          return { Status: "Error", Details: "OTP Mismatch" };
+          return { Status: "Error", Details: "OTP Mismatch",userInfo };
       }
 
   }
+
+  if (!data) {
+    let otpInfo = await Otp.findOne({
+        contact: body.contact,
+        country_code: body.country_code,
+        otp: body.otp
+    }).lean();
+
+
+
+    if (otpInfo) {
+      userInfo= await Users.create({
+                  
+                    contact: body.contact,
+                    country_code: body.country_code,
+                    contact_verify: true, fcmtoken: body.fcmtoken,
+                    ipAddress:body.ipAddress,
+                    modelName:body.modelName,
+                    manufacturer:body.manufacturer,
+                    maxMemorybigint:body.maxMemorybigint,
+                    freeMemory:body.freeMemory,
+                    osVersion: body.osVersion,
+                    networkCarrier:body.networkCarrier,
+                    dimension:body.dimension }
+                );
+                await userActivity.create({
+                            userId
+                              : userInfo._id
+                          })
+                     let data=     await friendActivity.create({
+                            userId
+                              : userInfo._id
+                          })
+                          console.log("dtaa",data);
+                          
+        return { Status: "Sucess", Details: "OTP Match",userInfo };
+
+    }
+
+    else {
+
+        return { Status: "Error", Details: "OTP Mismatch" };
+    }
+
+}
 
 }
 

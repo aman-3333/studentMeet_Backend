@@ -88,7 +88,32 @@ router.post("/accessChat",async(req:any,res:any)=>{
         res.status(500).json(errorResponse("error in accessChat", res.statusCode));
     }
 })
+router.post("/sendFriendRequest",async(req:any,res:any)=>{
+    try {
+        const senderId =req.body.senderId;
+    // const { userId,senderId } = req.body;
+    const  userId = req.body.userId;
+        const controller = new ChatController();
+        const response = await controller.sendFriendRequest(senderId,userId);
+        res.status(200).json(successResponse("sendFriendRequest",response,res.statusCode));
+    }catch(error) {
+    
+        res.status(500).json(errorResponse("error in sendFriendRequest", res.statusCode));
+    }
+})
+router.post("/cancelSendRequest",async(req:any,res:any)=>{
+    try {
+        const senderId =req.body.senderId;
+    // const { userId,senderId } = req.body;
+    const  userId = req.body.userId;
+        const controller = new ChatController();
+        const response = await controller.cancelSendFriendRequest(senderId,userId);
+        res.status(200).json(successResponse("sendFriendRequest",response,res.statusCode));
+    }catch(error) {
 
+        res.status(500).json(errorResponse("error in sendFriendRequest", res.statusCode));
+    }
+})
 
 // TODO........ 3rd  fetch Chat
 
@@ -659,6 +684,17 @@ router.get("/getallevent", async (req, res) => {
         res.status(500).json(errorResponse("error in get event", res.statusCode));
     }
 });
+router.get("/geteventParticipants", async (req, res) => {
+    try {
+        const controller = new eventController();
+        const eventId = req.query.eventId;
+        const response: IEvent[] = await controller.getParticipantsList(eventId);
+        res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("getParticipantsList", res.statusCode));
+    }
+});
 
 
 router.get("/getEventByuserId", async (req, res) => {
@@ -702,6 +738,19 @@ router.get("/geteventinfobyid", async (req, res) => {
         res.status(500).json(errorResponse("error in get event by Id", res.statusCode));
     }
 });
+router.get("/getFriendActivity", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+       
+        const controller = new eventController();
+        const response: any = await controller.getFriendActivity(userId);
+        res.status(200).json(successResponse("getFriendActivity", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in getFriendActivity", res.statusCode));
+    }
+});
+
 router.post("/eventActivity", async (req, res) => {
     try{
         
