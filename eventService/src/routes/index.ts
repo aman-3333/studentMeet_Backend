@@ -54,6 +54,18 @@ router.get("/searchUser", async (req, res) => {
         res.status(500).json(errorResponse("error in searchUser", res.statusCode));
     }
 });
+router.get("/getFriendRequest", async (req, res) => {
+    try {
+       
+        let userId:any=req.query.userId;
+       
+        const controller = new ChatController();
+        const response = await controller.getFriendRequest(userId);
+        res.status(200).json(successResponse("getFriendRequest",response,res.statusCode));
+    } catch (error) {
+        res.status(500).json(errorResponse("error in getFriendRequest", res.statusCode));
+    }
+});
 
 router.get("/getallfriend", async (req, res) => {
     try {
@@ -108,13 +120,38 @@ router.post("/cancelSendRequest",async(req:any,res:any)=>{
     const  userId = req.body.userId;
         const controller = new ChatController();
         const response = await controller.cancelSendFriendRequest(senderId,userId);
-        res.status(200).json(successResponse("sendFriendRequest",response,res.statusCode));
+        res.status(200).json(successResponse("cancelSendRequest",response,res.statusCode));
     }catch(error) {
 
-        res.status(500).json(errorResponse("error in sendFriendRequest", res.statusCode));
+        res.status(500).json(errorResponse("error in cancelSendRequest", res.statusCode));
     }
 })
+router.post("/acceptRequest",async(req:any,res:any)=>{
+    try {
+        const friendId =req.body.friendId;
+    // const { userId,friendId } = req.body;
+    const  userId = req.body.userId;
+        const controller = new ChatController();
+        const response = await controller.acceptFriendRequest(friendId,userId);
+        res.status(200).json(successResponse("acceptRequest",response,res.statusCode));
+    }catch(error) {
 
+        res.status(500).json(errorResponse("error in acceptRequest", res.statusCode));
+    }
+})
+router.post("/rejectRequest",async(req:any,res:any)=>{
+    try {
+        const friendId =req.body.friendId;
+    // const { userId,friendId } = req.body;
+    const  userId = req.body.userId;
+        const controller = new ChatController();
+        const response = await controller.rejectFriendRequest(friendId,userId);
+        res.status(200).json(successResponse("rejectRequest",response,res.statusCode));
+    }catch(error) {
+
+        res.status(500).json(errorResponse("error in rejectRequest", res.statusCode));
+    }
+})
 // TODO........ 3rd  fetch Chat
 
 router.get("/fetchChat/:Id",async(req:any,res:any)=>{
