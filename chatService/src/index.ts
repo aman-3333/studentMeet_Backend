@@ -7,8 +7,7 @@ import mongoose from "mongoose";
 import Auth from "./middleware/authMiddleware";
 import nconf from "nconf";
 import setEnvironment from "./env";
-import morganMiddleware from './middleware/morganMiddleware' ; 
-import Logger from "./lib/logger";
+
 
 const PORT = process.env.PORT || nconf.get('port');
 
@@ -109,7 +108,7 @@ io.on("connection", (socket:any) => {
 
 
 app.use("", Router);
-app.use(morganMiddleware)
+
 
 setEnvironment();
 

@@ -7,8 +7,7 @@ import mongoose from "mongoose";
 import Auth from "./middleware/authMiddleware";
 import nconf from "nconf";
 import setEnvironment from "./env";
-import morganMiddleware from './middleware/morganMiddleware';
-import Logger from "./lib/logger";
+
 import router from "./routes";
 const http = require('http');
 const PORT = process.env.PORT || nconf.get('port');
@@ -28,7 +27,7 @@ app.use(
 );
 
 app.use("/eventService", Auth.authManagement, router);
-app.use(morganMiddleware)
+
 const server1:any = http.createServer(app);
 const io = require("socket.io")(server1,{
   pingTimeout: 20000,
@@ -115,7 +114,7 @@ mongoose.connect(nconf.get('mongodb'),
 
 var server = app.listen(nconf.get('port'), () => {
   console.log("event Service is running on port", nconf.get('port'));
-  Logger.debug(`Server is up and running @ http://localhost:${nconf.get('port')}`);
+
 });
 server.timeout = 1000000;
 // typescript

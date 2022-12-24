@@ -13,7 +13,7 @@ export default class ChatController {
     public async getAllUser(id: any, searchValue: any, senderId: any) {
         console.log("get all user");
         try {
-            let allData: any = await userModel.find({ _id: { $ne: senderId } })
+            let allData: any = await userModel.find({ _id: { $ne: senderId } ,isDeleted:false})
             console.log("allData",allData);
             
             if (searchValue) {
@@ -37,7 +37,7 @@ export default class ChatController {
     // TODO ACCESS CHAT................................
 
     public async acceptChat(chatId:any){
-        let userInfo:any=await Chat.findByIdAndUpdate({_id:chatId},{$set:{isAlreadyFriend:true}})
+        let userInfo:any=await Chat.findOneAndUpdate({_id:chatId},{$set:{isAlreadyFriend:true}})
         return userInfo
     }
     public async accessChat(userId: any, senderId: any) {
@@ -123,6 +123,7 @@ export default class ChatController {
         }
     }
 
+    
 
     // TODO   TO GET ALL MESSAGE...................
                 public async getALlMessage(chatId:any){
@@ -161,7 +162,7 @@ export default class ChatController {
                       path: "chat.users",
                       select: "fullname pic email",
                     });
-                    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
+                    await Chat.findOneAndUpdate(chatId, { latestMessage: message });
                     return message;
             }
 
@@ -285,6 +286,7 @@ let userInfo:any= await userActivity.findOneAndUpdate({userId:senderId},{
         sendFriendRequest:userId
     }
 })
+
 console.log("userInfo",userInfo);
 
 await userActivity.findOneAndUpdate({userId:userId},{
@@ -292,6 +294,13 @@ await userActivity.findOneAndUpdate({userId:userId},{
         sendFriendRequestBYOther:senderId
     }
 })
+return userInfo
+}
+
+public async getFriendRequest(userId:any){
+
+let userInfo:any= await userActivity.findOne({userId:userId,isDeleted:false}).populate("sendFriendRequestBYOther")
+userInfo=userInfo.sendFriendRequestBYOther;
 return userInfo
 }
 
@@ -308,34 +317,48 @@ public async cancelSendFriendRequest(senderId:any,userId:any){
     })
     return userInfo
     }
-///aman
-public async acceptFriendRequest(senderId:any,userId:any){
-    let userInfo:any= await userActivity.findByIdAndUpdate({userId:senderId},{
+
+public async acceptFriendRequest(friendId:any,userId:any){
+
+
+    console.log("userInfo",userId);
+    let userInfo:any =   await userActivity.findOneAndUpdate({userId:userId},{
+        $push:{
+            friendList:friendId
+        }
+    })
+    console.log("userInfo",userInfo);
+    
+    await userActivity.findOneAndUpdate({userId:friendId},{
         $push:{
             friendList:userId
         }
     })
-    await userActivity.findByIdAndUpdate({userId:userId},{
-        $push:{
-            friendList:senderId
+    await userActivity.findOneAndUpdate({userId:userId},{
+        $pull:{
+            sendFriendRequestBYOther:friendId
         }
     })
 return userInfo
 }
 
-public async rejectFriendRequest(userId:any,senderId:any){
-    let userInfo:any=await userActivity.findByIdAndUpdate({userId:senderId},{
+public async rejectFriendRequest(friendId:any,userId:any){
+    let userInfo:any=await userActivity.findOneAndUpdate({userId:friendId},{
         $push:{
-            rejectFriendRequest:senderId
+            rejectFriendRequest:friendId
         }
     })
 
-    await userActivity.findByIdAndUpdate({userId:userId},{
+    await userActivity.findOneAndUpdate({userId:userId},{
         $push:{
-            friendRequestRejectbyOther:senderId
+            friendRequestRejectbyOther:friendId
         }
     })
-
+    await userActivity.findOneAndUpdate({userId:userId},{
+        $pull:{
+            sendFriendRequestBYOther:friendId
+        }
+    })
 
     return userInfo
 
