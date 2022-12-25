@@ -573,7 +573,7 @@ router.post("/verifyotp", async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
-        const response:any = await controller.verifyotp(body);
+        const response:any = await controller.verifyotpByApi(body);
         res.status(200).json(successResponse("verifyotp", response, res.statusCode));
     } catch (error) {
         
@@ -1509,9 +1509,9 @@ router.patch("/deleteUserrole/:id", async (req, res) => {
 router.post("/createHashtag", async (req, res) => {
     try {
         const body = req.body as IHashtag;
-     
+        const fcmtoken = req.headers.authorization;
         const controller = new HashtagController();
-        const response:IHashtag = await controller.createHashtag(body);
+        const response:IHashtag = await controller.createHashtag(body,fcmtoken);
         res.status(200).json(successResponse("create Hashtag", response, res.statusCode));
     } catch(error) {
      
