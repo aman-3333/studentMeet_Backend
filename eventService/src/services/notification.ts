@@ -14,6 +14,8 @@ var message={
         vibrate:true
     }
 };
+console.log("message",message);
+
 fcm.send(message,(err:any,response:any)=>{
 if(err){
     console.log("something has gon wrong");
