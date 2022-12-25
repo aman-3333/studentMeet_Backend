@@ -28,8 +28,8 @@ app.use(
 
 app.use("/eventService", Auth.authManagement, router);
 
-const server1:any = http.createServer(app);
-const io = require("socket.io")(server1,{
+const server:any = http.createServer(app);
+const io = require("socket.io")(server,{
   pingTimeout: 20000,
 pingInterval: 25000,
   cors: {
@@ -48,8 +48,12 @@ io.on("connection", (socket:any) => {
     let id=userData.token_data.userid;
     // console.log(id)
 
+
+
     // socket.join(userData._id);
-    socket.join(id);
+    socket.join(id)
+
+;
 
 
 
@@ -94,7 +98,9 @@ io.on("connection", (socket:any) => {
 }); */
    socket.on("setupl", (id:any) => {
     
-    socket.leave(id);
+    socket.leave(id)
+
+;
    });
   
 
@@ -112,7 +118,7 @@ mongoose.connect(nconf.get('mongodb'),
 })
 
 
-var server = app.listen(nconf.get('port'), () => {
+server.listen(nconf.get('port'), () => {
   console.log("event Service is running on port", nconf.get('port'));
 
 });
