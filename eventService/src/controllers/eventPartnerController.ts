@@ -1,5 +1,5 @@
 import eventPartner, { IPartner } from "../models/eventPartner";
-import Category, { ICategory } from "../models/Category";
+import Category, { ICategory } from "../models/category";
 
 
 

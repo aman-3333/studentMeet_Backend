@@ -1,9 +1,11 @@
 
 
-import Institute from "../models/InstituteModel";
+import school from "../models/school";
 import FuzzySearch from "fuzzy-search";
 import { ObjectId } from "mongoose";
 
+
+import Institute from "../models/InstituteModel";
 
 
 
@@ -11,7 +13,53 @@ export default class InstituteController {
 
   
 
-//////////////////////////////Institute///////////////////////////////////////////////////////////
+//////////////////////////////school///////////////////////////////////////////////////////////
+
+
+    public async createschool(body: any) {
+        let schoolInfo: any;
+        schoolInfo = await school.create(body);
+
+        return schoolInfo;
+    }
+
+
+    public async editschool(body: any, schoolId: string) {
+       
+        const schoolInfo: any = await school.findOneAndUpdate({ _id: schoolId, isDeleted: false }, body, { new: true }).lean();
+        return schoolInfo;
+
+    }
+
+
+    public async getschool(stateId:any) {
+        const schoolList: any[] = await school.find({ schoolStateId:stateId, isDeleted: false });
+        return schoolList;
+    }
+    public async searchschool(stateId:any,searchValue:any) {
+        if(searchValue){
+        let schoolList: any = await school.find({schoolStateId:stateId,isDeleted: false });
+        schoolList = new FuzzySearch(schoolList, ["schoolName"], {
+            caseSensitive: false,
+        });
+        schoolList = schoolList.search(searchValue);
+        return schoolList;
+    }}
+
+
+    public async getschoolInfoById(schoolId: any) {
+        const schoolInfo: any = await school.findOne({ _id: schoolId, isDeleted: false }).lean();
+       
+        return schoolInfo;
+    }
+
+    public async deleteschool(schoolId: any) {
+       
+        const schoolInfo: any = await school.findOneAndUpdate({ _id: schoolId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
+        return schoolInfo;
+
+
+    }
 
 
     public async createInstitute(body: any) {
@@ -58,6 +106,12 @@ export default class InstituteController {
 
 
     }
-    //////////////////////SubInstitute////////////////////////////////////////////////////////////
+    //////////////////////Subschool////////////////////////////////////////////////////////////
     
 }
+
+
+
+
+
+

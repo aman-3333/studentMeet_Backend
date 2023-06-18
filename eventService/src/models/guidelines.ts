@@ -13,7 +13,7 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface IEventGuildLines extends Document {
+export interface IGuideLines extends Document {
     guildLines: String,
     type:String,
     ownerId: ObjectId,
@@ -24,4 +24,4 @@ export interface IEventGuildLines extends Document {
     isDeleted: Boolean
 }
 
-export default model<IEventGuildLines>("eventguildlines", schema);
+export default model<IGuideLines>("eventguildlines", schema);

@@ -1,5 +1,5 @@
 import State, { IState } from "../models/State";
-import { ICategory } from "../models/Category";
+import { ICategory } from "../models/category";
 export default class StateController {
 
     public async createState(body: any) {

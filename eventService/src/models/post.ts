@@ -2,9 +2,9 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
 
-    eventId: { type: Schema.Types.ObjectId, ref: "event" },
+   
     userId: { type: Schema.Types.ObjectId,ref: "userdetail" },
-    eventBannerImage: [{ type: String }],
+    Image: [{ type: String }],
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
@@ -37,10 +37,9 @@ const schema = new Schema({
 });
 
 export interface IPost extends Document {
-    eventId: ObjectId,
+
     userId: ObjectId,
-   
-    eventBannerImage: [String],
+    Image: [String],
     description: String,
     video: [String],
     attechment: [String],

@@ -5,16 +5,16 @@ const chatModel = new Schema(
   {
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
-    users: [{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
+    users: [{ type:Schema.Types.ObjectId, ref: 'userDetails' }],
     latestMessage: {
       type:Schema.Types.ObjectId,
       ref: "Message",
     },
-    groupAdmin: { type:Schema.Types.ObjectId, ref: "userdetail" },
+    groupAdmin: { type:Schema.Types.ObjectId, ref: "userDetails" },
     isAlreadyFriend:{type:Boolean,default:false},
-    friendList:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
-    rejectFriendRequest:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
-    blockList:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
+    friendList:[{ type:Schema.Types.ObjectId, ref: 'userDetails' }],
+    rejectFriendRequest:[{ type:Schema.Types.ObjectId, ref: 'userDetails' }],
+    blockList:[{ type:Schema.Types.ObjectId, ref: 'userDetails' }],
     isBlocked:{type:Boolean,default:false},
   },
   { timestamps: true }
@@ -30,7 +30,7 @@ export interface Chat extends Document {
   blockList:[ObjectID];
   friendList:[ObjectID],
   rejectFriendRequest:[ObjectID],
-  userdetail: string[] ;
+  userDetails: string[] ;
   latestMessage:string[] ;
   groupAdmin:ObjectID;
 }

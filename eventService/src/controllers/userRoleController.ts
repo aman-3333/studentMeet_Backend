@@ -1,4 +1,4 @@
-import Userrole, { IUserrole } from "../models/UserRole";
+import Userrole, { IUserrole } from "../models/userRole";
 
 export default class UserroleController {
 

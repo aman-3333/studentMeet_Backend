@@ -3,7 +3,7 @@ import userActivity from "../models/userActivity";
 import userModel from "../models/userDetails";
 import FuzzySearch from 'fuzzy-search';
 // var ObjectId = require('mongodb').ObjectId;
-import Chat from "../models/chatModel";
+import Chat from "../models/chat";
 import Message from "../models/messageModel";
 
 

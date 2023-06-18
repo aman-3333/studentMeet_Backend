@@ -1,6 +1,6 @@
 
-import Category, { ICategory } from "../models/Category";
-import SubCategory, { ISubCategory } from "../models/Subcategory";
+import Category, { ICategory } from "../models/category";
+import SubCategory, { ISubCategory } from "../models/subcategory";
 import SubSubCategory, { ISubSubCategory } from "../models/subSubCategory";
 
 
@@ -129,7 +129,6 @@ export default class CategoryController {
 
         const subSubCategoryInfo: ISubSubCategory = await Category.findOneAndUpdate({ _id: subSubCategoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return subSubCategoryInfo;
-
 
     }
 }

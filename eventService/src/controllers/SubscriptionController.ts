@@ -1,6 +1,6 @@
-import Subscription, { ISubscription } from "../models/Subscription";
+import Subscription, { ISubscription } from "../models/subscription";
 
-import Coupon from "../models/Coupons"
+import Coupon from "../models/coupons"
 
 
 import { ObjectId } from "mongoose";
