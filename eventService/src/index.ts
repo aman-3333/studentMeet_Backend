@@ -8,7 +8,7 @@ import Auth from "./middleware/authMiddleware";
 import nconf from "nconf";
 import setEnvironment from "./env";
 
-import router from "./routes";
+import router from "./routes/fileUpload";
 const http = require('http');
 const PORT = process.env.PORT || nconf.get('port');
 
@@ -25,8 +25,59 @@ app.use(
     },
   })
 );
+/////////////Api Routes/////////////////////
 
-app.use("/eventService", Auth.authManagement, router);
+import category from "./routes/category";
+import chat from "./routes/chat";
+import city from "./routes/city";
+import guidelines from "./routes/guidelines";
+import index from "./routes/fileUpload";
+import institute from "./routes/institute";
+import post from "./routes/post";
+import starPermormer from "./routes/starPermormer";
+import state from "./routes/state";
+import user from "./routes/userDetails";
+import userRole from "./routes/userRole";
+
+
+app.use("/api/category", category);
+app.use("/api/chat", chat);
+app.use("/api/city", city);
+app.use("/api/guidelines", guidelines);1
+app.use("/api/index", index);
+app.use("/api/institute", institute);
+app.use("/api/post", post);
+app.use("/api/starPermormer", starPermormer);
+app.use("/api/state", state);
+app.use("/api/user", user);
+app.use("/api/userRole", userRole);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////
+//  app.use("/eventService", Auth.authManagement,router);
 
 const server:any = http.createServer(app);
 const io = require("socket.io")(server,{

@@ -1,5 +1,5 @@
-import City, { ICity } from "../models/City";
-import { ICategory } from "../models/Category";
+import City, { ICity } from "../models/city";
+import { ICategory } from "../models/category";
 export default class CityController {
 
     public async createCity(body: any) {
