@@ -6,10 +6,11 @@ import UserroleController from "../controllers/userRoleController";
 
 router.post("/createUserrole", async (req, res) => {
     try {
-        const body = req.body as IUserrole;
+        const body = req.body;
+     console.log(req.body,"req.body");
      
         const controller = new UserroleController();
-        const response:IUserrole = await controller.createUserrole(body);
+        const response = await controller.createUserrole(body);
         res.status(200).json(successResponse("create Userrole", response, res.statusCode));
     } catch(error) {
       

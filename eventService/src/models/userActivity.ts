@@ -67,7 +67,6 @@ const schema = new Schema({
     rejectFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     friendRequestRejectbyOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     blockList: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-
     blockbyOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     followersCount: { type: Number, default: 0 },
     followingCount: { type: Number, default: 0 },

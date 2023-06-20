@@ -1,13 +1,13 @@
-import bookEvent from "../models/eventBook"
+import bookSponsorship from "../models/sponsershipBook"
 import { CapturePayment, createVendorAccount } from "../services/razorpayServices"
 
 
 import nconf, { any } from "nconf";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-import event from "../models/event";
+import Sponsorship from "../models/sponser";
 import userActivity from "../models/userActivity";
-import friendEventActivity from "../models/friendEventActivity";
+import friendSponsorshipActivity from "../models/friendSponsershipActivity";
 var razorpayConfig = require("../../config/razorpay/betaProperties").RAZORPAY
 const fs = require('fs');
 const Hogan = require('hogan.js');
@@ -23,12 +23,12 @@ export default class PaymentController {
     random_num = d.getFullYear() + f(d.getMonth() + 1) + f(d.getDate()) + random_num;
     return random_num
   };
-  public async createbookEvent(bookEventId: any) {
+  public async createbookSponsorship(bookSponsorshipId: any) {
     let shopDetails: any
     let resp
-    const bookEventDetail: any = await bookEvent.findOne({ _id: bookEventId }).lean()
+    const bookSponsorshipDetail: any = await bookSponsorship.findOne({ _id: bookSponsorshipId }).lean()
     let receiptID = this.getRandomId()
-    const totalAmount = bookEventDetail.orderTotal * 100
+    const totalAmount = bookSponsorshipDetail.orderTotal * 100
     const options = {
       amount: totalAmount,
       currency: 'INR',
@@ -40,13 +40,13 @@ export default class PaymentController {
     });
     const response = await razorpay.orders.create(options);
     if (response && response.id) {
-      resp = await bookEvent.findOneAndUpdate({ _id: bookEventId }, { $set: { order_id: response.id, receipt: receiptID, } }, { new: true });
+      resp = await bookSponsorship.findOneAndUpdate({ _id: bookSponsorshipId }, { $set: { order_id: response.id, receipt: receiptID, } }, { new: true });
     }
     return resp;
   }
 
   public async paymentCallback(data: any) {
-    const orderData: any = await bookEvent.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).lean()
+    const orderData: any = await bookSponsorship.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).lean()
     let resp: any;
     let Paymentresp: any
     if (orderData && orderData._id) {
@@ -54,37 +54,37 @@ export default class PaymentController {
 
         Paymentresp = await CapturePayment(data.razorpayPaymentId, orderData.orderTotal * 100, "INR", razorpayConfig.key_id, razorpayConfig.key_secret)
         if (Paymentresp.status == 'captured') {
-          resp = await bookEvent.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
-          let eventInfo: any = await event.findOneAndUpdate({ _id: resp.eventId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
+          resp = await bookSponsorship.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
+          let SponsorshipInfo: any = await Sponsorship.findOneAndUpdate({ _id: resp.SponsorshipId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
           let friendInfo:any=   await userActivity.findOneAndUpdate({userId:resp.userId,isDeleted:false}).lean()
              friendInfo=friendInfo.friendList;
              friendInfo.forEach(async(element:any) => {
-              await friendEventActivity.findOneAndUpdate({userId:element},
+              await friendSponsorshipActivity.findOneAndUpdate({userId:element},
                   {$push:{
                       friendActivity:{
                           friendId:resp.userId,
-                          eventId:eventInfo._id,
-                          Activity:"Apply Event"
+                          SponsorshipId:SponsorshipInfo._id,
+                          Activity:"Apply Sponsorship"
                          }
               }})
             });
-          if (resp.isEventOrganizer == true) {
-            await event.findOneAndUpdate({ _id: eventInfo._id }, { $set: { isOrganized: true, isBookEventPaid: true,organizerId:resp.userId } },{new:true}).lean()
+          if (resp.isSponsorshipOrganizer == true) {
+            await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id }, { $set: { isOrganized: true, isBookSponsorshipPaid: true,organizerId:resp.userId } },{new:true}).lean()
            
             friendInfo.forEach(async(element:any) => {
-                await friendEventActivity.findOneAndUpdate({userId:element},
+                await friendSponsorshipActivity.findOneAndUpdate({userId:element},
                     {$push:{
                         friendActivity:{
                             friendId:resp.userId,
-                            eventId:eventInfo._id,
-                            Activity:"Organize Event"
+                            SponsorshipId:SponsorshipInfo._id,
+                            Activity:"Organize Sponsorship"
                            }
                 }})
               });
           }
-          let remainingSeat = eventInfo.totalParticipent - eventInfo.noOfParticipentBook
-          eventInfo = await event.findOneAndUpdate({ _id: eventInfo._id, isDeleted: false }, { $set: { remainingSeat: remainingSeat } }, { new: true }).lean()
-          if (eventInfo.remainingSeat == 0) await event.findOneAndUpdate({ _id: eventInfo._id, isDeleted: false }, { $set: { isSeatfull: true } }).lean()
+          let remainingSeat = SponsorshipInfo.totalParticipent - SponsorshipInfo.noOfParticipentBook
+          SponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id, isDeleted: false }, { $set: { remainingSeat: remainingSeat } }, { new: true }).lean()
+          if (SponsorshipInfo.remainingSeat == 0) await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id, isDeleted: false }, { $set: { isSeatfull: true } }).lean()
         }
       }
 

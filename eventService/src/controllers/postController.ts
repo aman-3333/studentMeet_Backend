@@ -2,7 +2,7 @@ import Post, { IPost } from "../models/post";
 import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import FuzzySearch from "fuzzy-search";
-import event from "../models/event";
+import event from "../models/sponser";
 export default class PostController {
     public async createPost(body: any) {
         let PostInfo: any;
