@@ -33,7 +33,7 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface IBookEvent extends Document {
+export interface ISponsorshipForm extends Document {
     eventId: ObjectId,
     userId: ObjectId,
     isEventBook: Boolean,
@@ -62,4 +62,4 @@ export interface IBookEvent extends Document {
     isDeleted: Boolean
 }
 
-export default model<IBookEvent>("bookevent", schema);
+export default model<ISponsorshipForm>("bookevent", schema);

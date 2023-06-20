@@ -16,31 +16,17 @@ const userSchema = new Schema(
       defult: "Other",
       enum: ["Male", "Female", "Other"],
     },
-    parent_name: { type: String, trim: true },
-    parent_contact: { type: Number, trim: true },
     fulladdress: { type: String, trim: true },
-  
     profile_picture: { type: String },
     signature: { type: String },
-    activeRole: { type: Schema.Types.ObjectId, ref: "role" },
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     isSubscribed: { type: Boolean, default: true },
-    video_user_id: { type: String },
-    admission_no: { type: String },
     password_change: { type: Boolean, default: true },
-    usertype: { type: String, default: "student" },
+    usertype: { type: String, default: "normel" },
     roleId:{type:Number,default:0},
-    otherUserTypeName: { type: String, default: "" },
-    isDeleted: { type: Boolean, default: false },
     lastLoginDate: { type: Date },
     email_verify: { type: Boolean, default: false },
     isStarPerformer:{ type: Boolean, default: false },
-    parent_gender: { type: String },
-    parent_email: { type: String },
-    parent_country_code: { type: Number, trim: true },
-
-
-
     facebookID: { type: String },
     googleID: { type: String },
     otp: { type: String },
@@ -53,7 +39,7 @@ const userSchema = new Schema(
     resetToken: { type: String },
     resetShortToken: { type: String },
     resetExpires: { type: Date },
-   
+    isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -1,12 +1,12 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 import { DATETIME_FORMAT } from "../utils/Constants";
 
-const friendeventactivitySchema = new Schema( 
+const friendSponsershipactivitySchema = new Schema( 
   {
     userId:{type:Schema.Types.ObjectId,ref:"userdetail"},
    friendActivity:[{
     friendId:{type:Schema.Types.ObjectId,ref:"userdetail"},
-    eventId:{type:Schema.Types.ObjectId,ref:"event"},
+    SponsershipId:{type:Schema.Types.ObjectId,ref:"Sponsership"},
     Activity:{type:String}
    }]
   },
@@ -15,15 +15,15 @@ const friendeventactivitySchema = new Schema(
   }
 );
 
-export interface IFriendEventActivity extends Document {
+export interface IFriendSponsershipActivity extends Document {
         userId:ObjectId,
        friendActivity:[{
         friendId:ObjectId,
-        eventId:ObjectId,
+        SponsershipId:ObjectId,
         Activity:String
        }]
       
 }
 // user
 
-export default model<IFriendEventActivity>("friendeventactivity", friendeventactivitySchema);
+export default model<IFriendSponsershipActivity>("friendSponsershipactivity", friendSponsershipactivitySchema);

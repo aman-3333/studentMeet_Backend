@@ -1,9 +1,8 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    userRole: { type: String, required: true },
+    postType: { type: String, required: true },
     Description: { type: String },
-    roleId:{ type: Number,unique:true },
     picture: { type: String },
     active: { type: Boolean, default: true },
     ownerId: { type: Schema.Types.ObjectId },
@@ -12,9 +11,8 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface IUserrole extends Document {
-    userRole: String,
-    roleId:Number,
+export interface IPostType extends Document {
+    postType: String,
     Description: String,
     ownerId: ObjectId,
     picture: String,
@@ -22,4 +20,4 @@ export interface IUserrole extends Document {
     isDeleted: Boolean
 }
 
-export default model<IUserrole>("userrole", schema);
+export default model<IPostType>("post", schema);

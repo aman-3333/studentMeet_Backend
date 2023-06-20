@@ -1,39 +1,39 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 import { DATETIME_FORMAT } from "../utils/Constants";
 
-const eventSchema = new Schema(
+const sponsorshipSchema = new Schema(
   {
     organizerId: { type: Schema.Types.ObjectId, ref: "userdetail" },
     suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    eventFormId: [{ type: Schema.Types.ObjectId, ref: "eventform" }],
-    eventPartnerId: [{ type: Schema.Types.ObjectId, ref: "eventPartner" }],
+  sponsorshipFormId: [{ type: Schema.Types.ObjectId, ref: "eventform" }],
+  sponsorshipPartnerId: [{ type: Schema.Types.ObjectId, ref: "eventPartner" }],
     participentId: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    eventGuideLines: { type: Schema.Types.ObjectId },
+  sponsorshipGuideLines: { type: Schema.Types.ObjectId },
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
-    eventName: { type: String,required:true  },
+  sponsorshipName: { type: String,required:true  },
     type: { type: String,required:true,default:"event",enum:["event","affilate"] },
-    eventPartnerName: { type: String },
-    eventBannerImage: [{ type: String }],
-    eventDesription: { type: String },
-    eventTermsAndCondition: { type: String },
+  sponsorshipPartnerName: { type: String },
+  sponsorshipBannerImage: [{ type: String }],
+  sponsorshipDesription: { type: String },
+  sponsorshipTermsAndCondition: { type: String },
     seatreamining:{ type: Number,default:0 },
     noOfParticipentBook:{ type: Number,default:0 },
     noOfDaysOrginaize:{ type: Number,default:0 },
     placeTo: { type: String },
     destination: { type: String },
-    eventLikeCount: { type: Number,default:0 },
-    eventFavoriteCount: { type: Number,default:0 },
-    eventCommentCount:  { type: Number,default:0 },
-    eventShareCount: { type: Number,default:0  },
+  sponsorshipLikeCount: { type: Number,default:0 },
+  sponsorshipFavoriteCount: { type: Number,default:0 },
+  sponsorshipCommentCount:  { type: Number,default:0 },
+  sponsorshipShareCount: { type: Number,default:0  },
     likeEvent: [
       { type: Schema.Types.ObjectId, ref: "userdetail" },
   ],
-  eventFavorite: [
+sponsorshipFavorite: [
        { type: Schema.Types.ObjectId, ref: "userdetail" },
   ],
-  eventcomment: [{
+sponsorshipcomment: [{
       userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
       comment:{ type: String },
       dateTime:{ type: Date },
@@ -47,7 +47,7 @@ const eventSchema = new Schema(
     priceForParticipent: { type: Number, default: 0 },
     organizerTotalIncome: { type: Number, default: 0 },
     organizerIncomePerParticipent: { type: Number, default: 0 },
-    eventTotalAmount: { type: Number, default: 0 },
+  sponsorshipTotalAmount: { type: Number, default: 0 },
     feadBackEvent:[{
       reting: { type: Number, default: 0 },
       userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
@@ -70,8 +70,8 @@ const eventSchema = new Schema(
     registrationEndDate: { type: Date },
     affilateOrginaizeStartDateTime: { type: Date },
     affilateOrginaizeEndDateTime: { type: Date },
-    eventStartDateTime: { type: Date },
-    eventEndDateTime: { type: Date },
+  sponsorshipStartDateTime: { type: Date },
+  sponsorshipEndDateTime: { type: Date },
     bulkEntriesPrice: [{
       noOfparticipent: { type: Number, default: 0 },
       price: { type: Number, default: 0 }
@@ -82,23 +82,23 @@ const eventSchema = new Schema(
   }
 );
 
-export interface IEvent extends Document {
+export interface ISponsorship extends Document {
   organizerId:ObjectId,
   suborganizerId: [ObjectId],
-  eventFormId: [ObjectId],
-  eventPartnerId: [ObjectId],
+sponsorshipFormId: [ObjectId],
+sponsorshipPartnerId: [ObjectId],
   category: ObjectId,
   subCategory: ObjectId,
   subSubCategory: ObjectId,
   participentId: ObjectId,
-  eventGuideLines: ObjectId,
-  eventName: String,
+sponsorshipGuideLines: ObjectId,
+sponsorshipName: String,
  
   type:  String ,
-  eventPartnerName: String,
-  eventBannerImage: [String],
-  eventDesription: String,
-  eventTermsAndCondition: String,
+sponsorshipPartnerName: String,
+sponsorshipBannerImage: [String],
+sponsorshipDesription: String,
+sponsorshipTermsAndCondition: String,
   feadBackEvent:[{
     reting: Number,
     userId: ObjectId,
@@ -121,11 +121,11 @@ shareEvent: [{
 }],
   placeTo: String,
   destination: String,
-  eventLikeCount: Number,
-  eventTotalAmount: Number,
-  eventFavoriteCount: Number,
-  eventCommentCount:  Number,
-  eventShareCount: String,
+sponsorshipLikeCount: Number,
+sponsorshipTotalAmount: Number,
+sponsorshipFavoriteCount: Number,
+sponsorshipCommentCount:  Number,
+sponsorshipShareCount: String,
   advancedEventMoney: Number,
   priceForParticipent: Number,
   organizerTotalIncome: Number,
@@ -148,8 +148,8 @@ shareEvent: [{
   affilateOrginaizeEndDateTime: Date,
   registrationEndDate: Date,
   registrationStartDateTime: Date,
-  eventStartDateTime: Date,
-  eventEndDateTime: Date,
+sponsorshipStartDateTime: Date,
+sponsorshipEndDateTime: Date,
   bulkEntriesPrice: [{
     noOfparticipent: Number,
     price: Number
@@ -157,4 +157,4 @@ shareEvent: [{
 }
 // user
 
-export default model<IEvent>("event", eventSchema);
+export default model<ISponsorship>("sponsorship",sponsorshipSchema);

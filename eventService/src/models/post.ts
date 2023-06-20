@@ -3,7 +3,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema({
 
    
-    userId: { type: Schema.Types.ObjectId,ref: "userdetail" },
+    userId: { type: Schema.Types.ObjectId,ref: "userDetails" },
     Image: [{ type: String }],
     description:{ type: String },
     video: [{ type: String }],
@@ -15,20 +15,20 @@ const schema = new Schema({
     PostCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
     PostLike: [{
-        type: Schema.Types.ObjectId, ref: "userdetail"
+        type: Schema.Types.ObjectId, ref: "userDetails"
     }],
     PostFavourite: [{
-        type: Schema.Types.ObjectId, ref: "userdetail"
+        type: Schema.Types.ObjectId, ref: "userDetails"
     }],
     PostComment: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+        userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
         comment: { type: String },
         dateTime: { type: Date },
     }],
     sharePost: [{
        post: { type: Schema.Types.ObjectId, ref: "event" },
-       userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+       userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
     isActive: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false }

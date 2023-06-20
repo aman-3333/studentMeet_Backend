@@ -1,4 +1,4 @@
-import eventPartner, { IPartner } from "../models/eventPartner";
+import SponsorsPartner, { IPartner } from "../models/sponserPartner";
 import Category, { ICategory } from "../models/category";
 
 
@@ -41,7 +41,7 @@ function generateToken(length: Number) {
 
 
 
-export default class eventPartnerController {
+export default class SponsorsPartnerController {
 
 
 
@@ -50,20 +50,20 @@ export default class eventPartnerController {
 
 
 
-    public async createeventPartner(body: any) {
-        let createeventPartnerInfo: IPartner;
-        createeventPartnerInfo = await eventPartner.create(body);
+    public async createSponsorsPartner(body: any) {
+        let createSponsorsPartnerInfo: IPartner;
+        createSponsorsPartnerInfo = await SponsorsPartner.create(body);
 
-        return createeventPartnerInfo;
+        return createSponsorsPartnerInfo;
     }
-    // public async createeventPartner(body: any) {
+    // public async createSponsorsPartner(body: any) {
        
     //     let resp: any;
         
     //     let info: any;
     //     let otpArray: any = [];
     //     let phone = body.country_code.toString() + body.contact.toString();
-    //     const userInfo = await eventPartner.findOne({ contact: body.contact }).lean();
+    //     const userInfo = await SponsorsPartner.findOne({ contact: body.contact }).lean();
 
 
 
@@ -100,10 +100,10 @@ export default class eventPartnerController {
 
     //     console.log("resp", resp);
     //    if(info){
-    //     let createeventPartnerInfo: IPartner;
-    //         createeventPartnerInfo = await eventPartner.create(body);
+    //     let createSponsorsPartnerInfo: IPartner;
+    //         createSponsorsPartnerInfo = await SponsorsPartner.create(body);
     
-    //         return createeventPartnerInfo;
+    //         return createSponsorsPartnerInfo;
     //    }
 
 
@@ -113,7 +113,7 @@ export default class eventPartnerController {
 
 
 public async getpartnerlist(){
-    let partnerlist:any=await eventPartner.aggregate([{
+    let partnerlist:any=await SponsorsPartner.aggregate([{
         $match:{
             isDeleted:false
         }
@@ -121,9 +121,9 @@ public async getpartnerlist(){
     return partnerlist
 }
   
-    public async logineventPartner(body: any) {
+    public async loginSponsorsPartner(body: any) {
         let otp = body.otp;
-        let data: any = await eventPartner.findOne({
+        let data: any = await SponsorsPartner.findOne({
             contact: body.contact,
             country_code: body.country_code,
             isDeleted: false,
@@ -140,7 +140,7 @@ public async getpartnerlist(){
 
             if (resp.Status == "Success" && resp.Details != "OTP Expired") {
 
-                data = await eventPartner.findOneAndUpdate(
+                data = await SponsorsPartner.findOneAndUpdate(
                     {
                         contact: body.contact,
                         country_code: body.country_code,
@@ -168,75 +168,75 @@ public async getpartnerlist(){
         }
 
     }
-    public async editeventPartner(body: IPartner, eventPartnerId: string) {
-        const eventPartnerInfo: IPartner = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, body, { new: true }).lean();
-        return eventPartnerInfo;
+    public async editSponsorsPartner(body: IPartner, SponsorsPartnerId: string) {
+        const SponsorsPartnerInfo: IPartner = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, body, { new: true }).lean();
+        return SponsorsPartnerInfo;
     }
 
-    public async geteventPartnerByUserId(userId: any) {
-        const eventPartnerInfo: IPartner = await eventPartner.findOne({ eventPartnerId: userId, isDeleted: false }).lean();
-        return eventPartnerInfo;
+    public async getSponsorsPartnerByUserId(userId: any) {
+        const SponsorsPartnerInfo: IPartner = await SponsorsPartner.findOne({ SponsorsPartnerId: userId, isDeleted: false }).lean();
+        return SponsorsPartnerInfo;
     }
 
-    public async eventPartnerActivate(status: any, ownerId: any, planId: any, eventPartnerId: any) {
-        let eventPartnerInfo: any;
+    public async SponsorsPartnerActivate(status: any, ownerId: any, planId: any, SponsorsPartnerId: any) {
+        let SponsorsPartnerInfo: any;
         if (status == 'Active') {
-            eventPartnerInfo = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { isActive: true } }).lean()
+            SponsorsPartnerInfo = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { isActive: true } }).lean()
         } else if (status == 'Disactive') {
-            eventPartnerInfo = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { isActive: false } }).lean()
+            SponsorsPartnerInfo = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { isActive: false } }).lean()
         } else if (status == 'Plan Active') {
-            eventPartnerInfo = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { planId: planId } }).lean()
+            SponsorsPartnerInfo = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { planId: planId } }).lean()
         } else if (status == 'Plan DisActive') {
-            eventPartnerInfo = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { planId: 0 } }).lean()
+            SponsorsPartnerInfo = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { planId: 0 } }).lean()
         } else if (status == 'BlackList') {
-            eventPartnerInfo = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { isActive: false, isBlackList: true } }).lean()
+            SponsorsPartnerInfo = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { isActive: false, isBlackList: true } }).lean()
         } else if (status == 'Remove BlackList') {
-            eventPartnerInfo = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { isActive: true, isBlackList: false } }).lean()
+            SponsorsPartnerInfo = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { isActive: true, isBlackList: false } }).lean()
         }
-        return eventPartnerInfo
+        return SponsorsPartnerInfo
     }
 
 
 
-    public async geteventPartnerAdminPannel(latitude: any, longitude: any, area: any, status: any, categoryId: any, stateId: any, cityId: any, limit: any, skip: any, search: any) {
-        let eventPartnerInfo: any = await eventPartner.find({ category: categoryId, isDeleted: false });
+    public async getSponsorsPartnerAdminPannel(latitude: any, longitude: any, area: any, status: any, categoryId: any, stateId: any, cityId: any, limit: any, skip: any, search: any) {
+        let SponsorsPartnerInfo: any = await SponsorsPartner.find({ category: categoryId, isDeleted: false });
         if (status == 'Active') {
-            eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.isActive == true)
+            SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.isActive == true)
         } else if (status == 'Disactive') {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.isActive == false)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.isActive == false)
         } else if (status == 'BlackList') {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.isBlackList == true)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.isBlackList == true)
         } else if (status == 'Remove BlackList') {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.isBlackList == false)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.isBlackList == false)
         } else if (status == 'contact verify') {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.contact_verify == true)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.contact_verify == true)
         } else if (status == 'contact notverify') {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.contact_verify == false)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.contact_verify == false)
         } else if (stateId) {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.state == stateId)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.state == stateId)
         } else if (cityId) {
-            eventPartnerInfo = eventPartnerInfo = eventPartnerInfo.filter((item: any) => item.city == cityId)
+            SponsorsPartnerInfo = SponsorsPartnerInfo = SponsorsPartnerInfo.filter((item: any) => item.city == cityId)
         }
         if (limit && skip) {
 
-            eventPartnerInfo = eventPartnerInfo.slice(skip).slice(0, limit);
+            SponsorsPartnerInfo = SponsorsPartnerInfo.slice(skip).slice(0, limit);
 
         }
-        return eventPartnerInfo;
+        return SponsorsPartnerInfo;
     }
 
-    public async geteventPartnerInfoById(partnerId: any) {
-        let eventPartnerInfo: any = await eventPartner.aggregate([{
+    public async getSponsorsPartnerInfoById(partnerId: any) {
+        let SponsorsPartnerInfo: any = await SponsorsPartner.aggregate([{
             "$match": {
                 _id: partnerId
             }
         }])
-        return eventPartnerInfo;
+        return SponsorsPartnerInfo;
     }
 
-    public async deleteeventPartner(eventPartnerId: String) {
-        const eventPartnerInfo: IPartner = await eventPartner.findOneAndUpdate({ _id: eventPartnerId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
-        return eventPartnerInfo;
+    public async deleteSponsorsPartner(SponsorsPartnerId: String) {
+        const SponsorsPartnerInfo: IPartner = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
+        return SponsorsPartnerInfo;
     }
 
 }

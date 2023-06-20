@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
 import Users from "../models/userDetails";
-import friendActivity from '../models/friendEventActivity';
+import friendActivity from '../models/friendSponsershipActivity';
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
@@ -98,7 +98,7 @@ export default class AuthController {
 
   public async editProfile(body: any) {
     let userInfo: any = await Users.findOneAndUpdate({ _id: body.userId, isDeleted: false }, body, { new: true }).lean();
-    await StarPerformer.findOneAndUpdate({ starPerformerId: body.userId, isDeleted: false }, { $set: { starPerformerName: body.fullname } }).lean();
+    
     await post.findOneAndUpdate({ userId: body.userId }, { $set: { userName: userInfo.fullname } })
     return userInfo;
   }
