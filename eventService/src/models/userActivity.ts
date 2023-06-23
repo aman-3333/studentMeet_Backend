@@ -1,7 +1,7 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+    userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     PostLike: [{
         type: Schema.Types.ObjectId, ref: "post"
     }],
@@ -27,47 +27,67 @@ const schema = new Schema({
     ],
     shareHashtag: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
     hashtagSharedByOther: [{
         hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    eventLike: [
-        { type: Schema.Types.ObjectId, ref: "event" },
+    sponsershipLike: [
+        { type: Schema.Types.ObjectId, ref: "sponsership" },
     ],
-    priceDownEvent: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
+    priceDownsponsership: [{
+        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
         message: { type: String }
     }],
-    eventcomment: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
+    SponsorshipComment: [{
+        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
         comment: { type: String },
         dateTime: { type: Date }
-    }],
-    eventFavorite: [
-        { type: Schema.Types.ObjectId, ref: "event" },
+    }], 
+    sponsershipFavorite: [
+        { type: Schema.Types.ObjectId, ref: "sponsership" },
     ],
-    eventShare: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+    sponsershipShare: [{
+        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    eventSharedByOther: [{
-        eventId: { type: Schema.Types.ObjectId, ref: "event" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+    sponsershipSharedByOther: [{
+        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    followers: [
-        { type: Schema.Types.ObjectId, ref: "userdetail" },
+    userFollowers: [
+        { type: Schema.Types.ObjectId, ref: "userDetails" },
     ],
-    following: [{ type: Schema.Types.ObjectId, ref: "userdetail" },],
-    friendList: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    sendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    sendFriendRequestBYOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    cancelSendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    rejectFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    friendRequestRejectbyOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    blockList: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
-    blockbyOther: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    userFollowing: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    brandFollowers: [
+        { type: Schema.Types.ObjectId, ref: "sponser" },
+    ],
+    brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponser" }],
+    schoolFollowers: [
+        { type: Schema.Types.ObjectId, ref: "school" },
+    ],
+    schoolFollowing: [{ type: Schema.Types.ObjectId, ref: "school" }],
+    academyFollowers: [
+        { type: Schema.Types.ObjectId, ref: "academy" },
+    ],
+    academyFollowing: [{ type: Schema.Types.ObjectId, ref: "academy" }],
+    retailerFollowers: [
+        { type: Schema.Types.ObjectId, ref: "retailer" },
+    ],
+    retailerFollowing: [{ type: Schema.Types.ObjectId, ref: "retailer" }],
+   instituteFollowers: [
+        { type: Schema.Types.ObjectId, ref: "InstituteModel" },
+    ],
+    instituteFollowing: [{ type: Schema.Types.ObjectId, ref: "InstituteModel" }],
+    friendList: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    sendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    sendFriendRequestBYOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    cancelSendFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    rejectFriendRequest: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    friendRequestRejectbyOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    blockList: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    blockbyOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     followersCount: { type: Number, default: 0 },
     followingCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
@@ -76,7 +96,7 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface IuserdetailActivity extends Document {
+export interface IuserDetailsActivity extends Document {
     userId: ObjectId,
     PostLike: [ObjectId],
     PostFavourite: [ObjectId],
@@ -104,36 +124,59 @@ export interface IuserdetailActivity extends Document {
         hashtagId: ObjectId,
         friendId: ObjectId,
     }],
-    eventLike: [{
-        eventId: ObjectId,
+    sponsershipLike: [{
+        sponsershipId: ObjectId,
     }],
-    priceDownEvent: [{
-        eventId: ObjectId,
+    priceDownsponsership: [{
+        sponsershipId: ObjectId,
         message: String
     }],
-    eventcomment: [{
-        eventId: ObjectId,
+    SponsorshipComment: [{
+        sponsershipId: ObjectId,
         comment: String,
         dateTime: Date
     }],
-    eventFavorite: [{
-        eventId: ObjectId,
+    sponsershipFavorite: [{
+        sponsershipId: ObjectId,
     }],
-    eventShare: [{
-        eventId: ObjectId,
+    sponsershipShare: [{
+        sponsershipId: ObjectId,
         friendId: ObjectId,
     }],
-    eventSharedByOther: [{
-        eventId: ObjectId,
+    sponsershipSharedByOther: [{
+        sponsershipId: ObjectId,
         friendId: ObjectId,
     }],
-    followers: [
+    userFollowers: [
         ObjectId
 
     ],
-    following: [
+    userFollowing: [
         ObjectId
     ],
+ 
+    brandFollowers: [
+       ObjectId
+    ],
+    brandFollowing: [ObjectId],
+    schoolFollowers: [
+       ObjectId
+    ],
+    schoolFollowing: [ObjectId],
+    academyFollowers: [
+       ObjectId
+    ],
+    academyFollowing: [ObjectId],
+    retailerFollowers: [
+       ObjectId
+    ],
+    retailerFollowing: [ObjectId],
+   instituteFollowers: [
+       ObjectId
+    ],
+    instituteFollowing: [ObjectId],
+
+
     sendFriendRequestBYOther:  [ObjectId],
     cancelSendFriendRequest:  [ObjectId],
     friendList: [ObjectId],
@@ -149,4 +192,4 @@ export interface IuserdetailActivity extends Document {
     isActive: Boolean,
     isDeleted: Boolean
 }
-export default model<IuserdetailActivity>("useractivity", schema);
+export default model<IuserDetailsActivity>("useractivity", schema);

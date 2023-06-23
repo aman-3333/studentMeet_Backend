@@ -73,7 +73,7 @@ export default class SponsorshipController {
 
     }
 
-    public async SponsorshipActivity(userId: any, SponsorshipId: any, status: any, Sponsorshipcomment: any, SponsorshipcommentId: any, body: any) {
+    public async SponsorshipActivity(userId: any, SponsorshipId: any, status: any, sponsorshipComment: any, sponsorshipCommentId: any, body: any) {
         let userInfo: any;
         let sponsorshipInfo: any;
         let data: any = []
@@ -87,9 +87,9 @@ export default class SponsorshipController {
             userInfo = await userActivity.create({ userId: userId })
 
         }
-        if (status == "SponsorshipLike") {
-            info = await userActivity.findOne({ SponsorshipLike: body.SponsorshipLike }).lean();
-            if (info) return { message: "alreadySponsorshipLike" }
+        if (status == "sponsershipLike") {
+            info = await userActivity.findOne({ sponsershipLike: body.sponsershipLike }).lean();
+            if (info) return { message: "alreadysponsershipLike" }
 
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -98,15 +98,15 @@ export default class SponsorshipController {
                     },
                     {
                         $push: {
-                            SponsorshipLike:
-                                body.SponsorshipLike
+                            sponsershipLike:
+                                body.sponsershipLike
                         }
                     })
 
-                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.SponsorshipLike },
-                    { $inc: { SponsorshipLikeCount: 1 } }, { new: true }).lean()
+                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.sponsershipLike },
+                    { $inc: { sponsershipLikeCount: 1 } }, { new: true }).lean()
                 sponsorshipInfo = await Sponsorship.findOneAndUpdate({
-                    _id: body.SponsorshipLike
+                    _id: body.sponsershipLike
                 }, {
                     $push: {
                         likeSponsorship:
@@ -121,7 +121,7 @@ export default class SponsorshipController {
                         {$push:{
                             friendActivity:{
                                 friendId:userId,
-                                SponsorshipId:body.SponsorshipLike,
+                                SponsorshipId:body.sponsershipLike,
                                 Activity:"Like Sponsorship"
                                }
                     }})
@@ -129,22 +129,22 @@ export default class SponsorshipController {
                 return sponsorshipInfo;
             }
         }
-        if (status == "removeSponsorshipLike") {
+        if (status == "removesponsershipLike") {
             userInfo = await userActivity.findOneAndUpdate(
                 {
                     userId: userId,
                 },
                 {
                     $pull: {
-                        SponsorshipLike
-                            : body.SponsorshipLike
+                        sponsershipLike
+                            : body.sponsershipLike
                     }
                 })
 
-            sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.SponsorshipLike },
-                { $inc: { SponsorshipLikeCount: -1 } }, { new: true })
+            sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.sponsershipLike },
+                { $inc: { sponsershipLikeCount: -1 } }, { new: true })
             sponsorshipInfo = await Sponsorship.findOneAndUpdate({
-                _id: body.SponsorshipLike
+                _id: body.sponsershipLike
             }, {
                 $pull: {
                     likeSponsorship:
@@ -152,9 +152,9 @@ export default class SponsorshipController {
                 }
             })
             return sponsorshipInfo;
-        } if (status == "readSponsorshipLike") {
+        } if (status == "readsponsershipLike") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
-            userInfo = userInfo.SponsorshipLike;
+            userInfo = userInfo.sponsershipLike;
 
 
             sponsorshipInfo = await Sponsorship.find({ _id: { $in: userInfo } })
@@ -165,9 +165,9 @@ export default class SponsorshipController {
         }
 
 
-        if (status == "SponsorshipFavorite") {
-            info = await userActivity.findOne({ SponsorshipFavorite: { $in: body.SponsorshipFavorite } }).lean();
-            if (info) return { message: "alreadySponsorshipFavorite" }
+        if (status == "sponsershipFavorite") {
+            info = await userActivity.findOne({ sponsershipFavorite: { $in: body.sponsershipFavorite } }).lean();
+            if (info) return { message: "already sponsershipFavorite" }
 
             if (!info) {
                 userInfo = await userActivity.findOneAndUpdate(
@@ -176,17 +176,17 @@ export default class SponsorshipController {
                     },
                     {
                         $push: {
-                            SponsorshipFavorite:
-                                body.SponsorshipFavorite
+                            sponsershipFavorite:
+                                body.sponsershipFavorite
                         }
                     })
-                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.SponsorshipFavorite },
-                    { $inc: { SponsorshipFavoriteCount: 1 } }, { new: true })
+                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.sponsershipFavorite },
+                    { $inc: { sponsershipFavoriteCount: 1 } }, { new: true })
                 sponsorshipInfo = await Sponsorship.findOneAndUpdate({
-                    _id: body.SponsorshipFavorite
+                    _id: body.sponsershipFavorite
                 }, {
                     $push: {
-                        SponsorshipFavorite:
+                        sponsershipFavorite:
                             userId
 
                     }
@@ -198,7 +198,7 @@ export default class SponsorshipController {
                         {$push:{
                             friendActivity:{
                                 friendId:userId,
-                                SponsorshipId:body.SponsorshipFavorite,
+                                SponsorshipId:body.sponsershipFavorite,
                                 Activity:"Favorite Sponsorship"
                                }
                     }})
@@ -206,32 +206,32 @@ export default class SponsorshipController {
                 return sponsorshipInfo;
             }
         }
-        if (status == "removeSponsorshipFavorite") {
+        if (status == "removesponsershipFavorite") {
             sponsorshipInfo = userInfo = await userActivity.findOneAndUpdate(
                 {
                     userId: userId,
                 },
                 {
                     $pull: {
-                        SponsorshipFavorite:
-                            body.SponsorshipFavorite
+                        sponsershipFavorite:
+                            body.sponsershipFavorite
                     }
                 })
-            sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.SponsorshipFavorite },
-                { $inc: { SponsorshipFavoriteCount: -1 } }, { new: true })
+            sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.sponsershipFavorite },
+                { $inc: { sponsershipFavoriteCount: -1 } }, { new: true })
 
             sponsorshipInfo = await Sponsorship.findOneAndUpdate({
-                _id: body.SponsorshipFavorite
+                _id: body.sponsershipFavorite
             }, {
                 $pull: {
-                    SponsorshipFavorite:
+                    sponsershipFavorite:
                         userId
                 }
             })
             return sponsorshipInfo;
-        } if (status == "readSponsorshipFavorite") {
+        } if (status == "readsponsershipFavorite") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
-            userInfo = userInfo.SponsorshipFavorite;
+            userInfo = userInfo.sponsershipFavorite;
 
 
             sponsorshipInfo = await Sponsorship.find({ _id: { $in: userInfo } })
@@ -241,82 +241,82 @@ export default class SponsorshipController {
             return sponsorshipInfo;
         }
 
-        if (status == "Sponsorshipcomment") {
+        if (status == "sponsorshipComment") {
 
 
             let currentTime: any = new Date();
-            for (let i = 0; i < body.Sponsorshipcomment.length; i++) {
+            for (let i = 0; i < body.sponsorshipComment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
                         userId: userId,
                     },
                     {
                         $push: {
-                            Sponsorshipcomment: {
-                                SponsorshipId: body.Sponsorshipcomment[i].SponsorshipId,
-                                comment: body.Sponsorshipcomment[i].comment,
+                            sponsorshipComment: {
+                                SponsorshipId: body.sponsorshipComment[i].SponsorshipId,
+                                comment: body.sponsorshipComment[i].comment,
                                 dateTime: currentTime
                             }
                         }
                     })
                 sponsorshipInfo = await Sponsorship.findOneAndUpdate(
                     {
-                        _id: body.Sponsorshipcomment[i].SponsorshipId,
+                        _id: body.sponsorshipComment[i].SponsorshipId,
                     },
                     {
                         $push: {
-                            Sponsorshipcomment: {
+                            sponsorshipComment: {
                                 userId: userId,
-                                comment: body.Sponsorshipcomment[i].comment,
+                                comment: body.sponsorshipComment[i].comment,
                                 dateTime: currentTime
                             }
                         }
                     })
-                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.Sponsorshipcomment[i].SponsorshipId },
-                    { $inc: { SponsorshipCommentCount: 1 } }, { new: true })
+                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.sponsorshipComment[i].SponsorshipId },
+                    { $inc: { sponsorshipCommentCount: 1 } }, { new: true })
 
 
                 return sponsorshipInfo;
             }
         }
-        if (status == "removeSponsorshipcomment") {
-            for (let i = 0; i < body.Sponsorshipcomment.length; i++) {
+        if (status == "removesponsorshipComment") {
+            for (let i = 0; i < body.sponsorshipComment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(
                     {
                         userId: userId,
                     },
                     {
                         $pull: {
-                            Sponsorshipcomment: {
-                                SponsorshipId: body.Sponsorshipcomment[i].SponsorshipId,
-                                comment: body.Sponsorshipcomment[i].comment,
+                            sponsorshipComment: {
+                                SponsorshipId: body.sponsorshipComment[i].SponsorshipId,
+                                comment: body.sponsorshipComment[i].comment,
 
                             }
                         }
                     })
                 sponsorshipInfo = await Sponsorship.findOneAndUpdate(
                     {
-                        _id: body.Sponsorshipcomment[i].SponsorshipId,
+                        _id: body.sponsorshipComment[i].SponsorshipId,
                     },
                     {
                         $pull: {
-                            Sponsorshipcomment: {
+                            sponsorshipComment: {
                                 userId: userId,
-                                comment: body.Sponsorshipcomment[i].comment,
+                                comment: body.sponsorshipComment[i].comment,
 
                             }
                         }
                     })
 
-                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.Sponsorshipcomment[i].SponsorshipId },
-                    { $inc: { SponsorshipCommentCount: -1 } }, { new: true })
+                sponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: body.sponsorshipComment[i].SponsorshipId },
+                    { $inc: { sponsorshipCommentCount: -1 } }, { new: true })
 
                 return sponsorshipInfo;
             }
 
-        } if (status == "readSponsorshipcomment") {
+        } if (status == "readsponsorshipComment") {
             userInfo = await userActivity.findOne({ userId: userId }).lean();
-            userInfo = userInfo.Sponsorshipcomment;
+            userInfo = userInfo.sponsorshipComment;
 
 
             for (let i = 0; i < userInfo.length; i++) {
@@ -333,17 +333,17 @@ export default class SponsorshipController {
 
     public async readActivity(SponsorshipId: any, status: any) {
         let sponsorshipInfo: any
-        if (status == "readSponsorshiplike") {
+        if (status == "readsponsershipLike") {
             sponsorshipInfo = await Sponsorship.findOne({ _id: SponsorshipId }).populate("likeSponsorship");
             sponsorshipInfo = sponsorshipInfo.likeSponsorship;
 
             return sponsorshipInfo
         }
-        if (status == "readSponsorshipcomment") {
+        if (status == "readsponsorshipComment") {
             let a = []
             sponsorshipInfo = await Sponsorship.findOne({ _id: SponsorshipId }).lean();
 
-            sponsorshipInfo = sponsorshipInfo.Sponsorshipcomment;
+            sponsorshipInfo = sponsorshipInfo.sponsorshipComment;
 
 
 
@@ -362,13 +362,11 @@ export default class SponsorshipController {
             var y = [...a].reverse();
  
      
-            return y
-
-
+            return y 
 
         } if (status == "readSponsorshipFavourite") {
-            sponsorshipInfo = await Sponsorship.findOne({ _id: SponsorshipId }).populate("SponsorshipFavorite");
-            sponsorshipInfo = sponsorshipInfo.SponsorshipFavorite;
+            sponsorshipInfo = await Sponsorship.findOne({ _id: SponsorshipId }).populate("sponsershipFavorite");
+            sponsorshipInfo = sponsorshipInfo.sponsershipFavorite;
             return sponsorshipInfo
         }
     }
@@ -379,7 +377,7 @@ export default class SponsorshipController {
         return sponsorshipInfo;
 
     }
-
+ 
     public async filterSponsorship(type: any, sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
         let sponsorshipInfo: any;
         if (type == "Sponsorship") {
@@ -601,70 +599,7 @@ export default class SponsorshipController {
 
 
     ///////////////////////////////////SponsorshipActivity/////////////////////////////////////////////////
-    public async unfollowing(userId: any, followingId: any) {
-        let userInfo: any
-        userInfo = await userActivity.findOne({ following: { $in: followingId } }).lean()
-        if (userInfo) {
-            userInfo = await userActivity.findOneAndUpdate({
-                userId: userId,
-            }, {
-                $pull: {
-                    following: followingId
-                }
-            }).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            }, {
-                $pull: {
-                    followers: userId
-                }
-            }).lean()
-
-            await userActivity.findOneAndUpdate({
-                userId: userId,
-            },
-                { $inc: { followingCount: -1 } }).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            },
-                { $inc: { followersCount: -1 } }).lean()
-
-        }
-
-        return userInfo
-    }
-    public async following(userId: any, followingId: any) {
-        let userInfo: any
-        userInfo = await userActivity.findOne({ following: { $in: followingId } }).lean()
-        if (!userInfo) {
-            userInfo = await userActivity.findOneAndUpdate({
-                userId: userId,
-            }, {
-                $push: {
-                    following: followingId
-                }
-            }).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            }, {
-                $push: {
-                    followers: userId
-                }
-            }).lean()
-
-            await userActivity.findOneAndUpdate({
-                userId: userId,
-            },
-                { $inc: { followingCount: 1 } }).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            },
-                { $inc: { followersCount: 1 } }).lean()
-
-        }
-
-        return userInfo
-    }
+  
 
     public async feadBackSponsorship(body: any, SponsorshipId: any, reting: any, feadBackComment: any) {
         let sponsorshipInfo: any;

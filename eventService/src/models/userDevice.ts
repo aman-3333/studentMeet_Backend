@@ -4,7 +4,7 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 
 const userdeviceSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId,ref:"userDeatils" },
+    userId: { type: Schema.Types.ObjectId,ref:"userdetail" },
     gcmid: { type: String },
     fcmtoken: { type: String },
     ipAddress:{ type: String },

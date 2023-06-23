@@ -4,7 +4,7 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 
 const userAchievementSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId,ref:"userDeatils" },
+    userId: { type: Schema.Types.ObjectId,ref:"userdetail" },
    Achievement:[{
     tournament:{type:String},
     position:{type:String},

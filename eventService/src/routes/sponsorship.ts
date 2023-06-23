@@ -202,34 +202,7 @@ router.post("/SponsorshipOrganize", async (req, res) => {
 });
 
 
-router.post("/following", async (req, res) => {
-    try {
-        
-        const userId = req.body.userId; 
-        const followingId = req.body.followingId;
-      
-        const controller = new SponsorshipController();
-        const response: any = await controller.following(userId,followingId);
-        res.status(200).json(successResponse("SponsorshipCreateBYOrganizer ", response, res.statusCode));
-    } catch (error) {
-       
-        res.status(500).json(errorResponse("error in SponsorshipCreateBYOrganizer", res.statusCode));
-    }
-});
-router.post("/unfollowing", async (req, res) => {
-    try {
-        
-        const userId = req.body.userId; 
-        const followingId = req.body.followingId;
-      
-        const controller = new SponsorshipController();
-        const response: any = await controller.unfollowing(userId,followingId);
-        res.status(200).json(successResponse("SponsorshipCreateBYOrganizer ", response, res.statusCode));
-    } catch (error) {
-     
-        res.status(500).json(errorResponse("error in SponsorshipCreateBYOrganizer", res.statusCode));
-    }
-});
+
 
 router.post("/applySponsorship", async (req, res) => {
     try {

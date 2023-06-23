@@ -5,13 +5,13 @@ const schema = new Schema({
     Description: { type: String },
     picture: { type: String },
     active: { type: Boolean, default: true },
-    ownerId: { type: Schema.Types.ObjectId,ref:"userDetails" },
+    ownerId: { type: Schema.Types.ObjectId,ref:"userdetail" },
     isDeleted: { type: Boolean, default: false }
 }, {
     timestamps: true
 });
 
-export interface ISport extends Document {
+export interface ISports extends Document {
     sport: String,
     Description: String,
     ownerId: ObjectId,
@@ -20,4 +20,4 @@ export interface ISport extends Document {
     isDeleted: Boolean
 }
 
-export default model<ISport>("sport", schema);
+export default model<ISports>("sport", schema);

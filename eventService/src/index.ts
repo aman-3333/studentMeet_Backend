@@ -30,6 +30,7 @@ app.use(
 import category from "./routes/category";
 import chat from "./routes/chat";
 import city from "./routes/city";
+import followers from "./routes/followers";
 import guidelines from "./routes/guidelines";
 import index from "./routes/fileUpload";
 import institute from "./routes/institute";
@@ -43,6 +44,8 @@ import userRole from "./routes/userRole";
 app.use("/api/category", category);
 app.use("/api/chat", chat);
 app.use("/api/city", city);
+app.use("/api/follower", followers);
+app.use("/api/category", category);
 app.use("/api/guidelines", guidelines);1
 app.use("/api/index", index);
 app.use("/api/institute", institute);
