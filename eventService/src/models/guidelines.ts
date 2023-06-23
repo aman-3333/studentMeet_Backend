@@ -4,7 +4,7 @@ const schema = new Schema({
     guildLines: { type: String, required: true },
     type:{ type: String },
     categoryId: { type: Schema.Types.ObjectId,ref:"category" },
-    ownerId: { type: Schema.Types.ObjectId,ref:"userDetails" },
+    ownerId: { type: Schema.Types.ObjectId,ref:"userdetail" },
     guildLinesImages: [{ type: String }],
     guildLinesVideo: [{ type: String }],
     isActive: { type: Boolean, default: false },

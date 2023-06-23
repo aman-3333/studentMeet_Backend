@@ -3,16 +3,18 @@ import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import FuzzySearch from "fuzzy-search";
 import event from "../models/sponser";
+
 export default class PostController {
     public async createPost(body: any) {
         let PostInfo: any;
-        let eventInfo:any;
+    
             PostInfo = await Post.create(body);
             let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
-            console.log("userInfo",userInfo);
+           
             
-           if(body.eventInfo){eventInfo =await event.findOne({_id:body.eventId,isDeleted:false}).lean()}
-            await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname,eventName:eventInfo.eventName}})
+         
+            await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname}})
+
         return PostInfo;
 
     }
@@ -25,7 +27,7 @@ export default class PostController {
         const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
         return PostInfo;
     }
-    public async getPostList() {
+    public async getPostList(userId:any) {
         const PostList: IPost[] = await Post.find({ isDeleted: false }).populate("userId","profile_picture");
         return PostList;
     }
@@ -195,10 +197,7 @@ export default class PostController {
     
             return PostInfo;
         }
-    
         if (status == "PostComment") {
-    
-    
             let currentTime: any = new Date();
             for (let i = 0; i < body.PostComment.length; i++) {
                 userInfo = await userActivity.findOneAndUpdate(

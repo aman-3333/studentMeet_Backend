@@ -6,10 +6,11 @@ import PostController from "../controllers/postController";
 router.post("/createPost", async (req, res) => {
     try {
         const body = req.body;
-        console.log("re",req.body);
+      
         
         const controller = new PostController();
         const response = await controller.createPost(body);
+        console.log("response",response);
         res.status(200).json(successResponse("create Post", response, res.statusCode));
     } catch (error) {
         
@@ -31,8 +32,9 @@ router.patch("/editPost", async (req, res) => {
 
 router.get("/PostList", async (req, res) => {
     try {
+        const userId=req.query.userId;
         const controller = new PostController();
-        const response= await controller.getPostList();
+        const response= await controller.getPostList(userId);
         res.status(200).json(successResponse("Post list", response, res.statusCode));
     } catch (error) {
        
@@ -40,16 +42,7 @@ router.get("/PostList", async (req, res) => {
     }
 });
 
-router.get("/PostList", async (req, res) => {
-    try {
-        const controller = new PostController();
-        const response= await controller.getPostList();
-        res.status(200).json(successResponse("Post list", response, res.statusCode));
-    } catch (error) {
-       
-        res.status(500).json(errorResponse("error in Post list", res.statusCode));
-    }
-});
+
 router.get("/getPostListBYUserId", async (req, res) => {
     try {
         const controller = new PostController();
