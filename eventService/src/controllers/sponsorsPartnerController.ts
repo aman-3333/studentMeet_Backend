@@ -1,25 +1,6 @@
-import SponsorsPartner, { IPartner } from "../models/sponserPartner";
+import SponsorsPartner, { IPartner } from "../models/sponsorPartner";
+import Sponsorship, {ISponsorship} from "../models/sponsorshipDetails";
 import Category, { ICategory } from "../models/category";
-
-
-
-
-import { ObjectId } from "mongoose";
-import { generateOtp } from "../services/generateOtp";
-import { verifyOtp } from "../services/verifyOtp";
-import Otp from "../models/Otp";
-import FuzzySearch from "fuzzy-search";
-
-
-import fs from "fs"
-import { listeners } from "process";
-const aws = require("aws-sdk");
-const multer = require("multer");
-const multerS3 = require("multer-s3");
-var bodyParser = require('body-parser');
-
-var cors = require('cors');
-
 
 function generateOTP(length: Number) {
     var digits = "1234567890";
@@ -37,10 +18,6 @@ function generateToken(length: Number) {
     }
     return token;
 }
-
-
-
-
 export default class SponsorsPartnerController {
 
 
@@ -52,64 +29,20 @@ export default class SponsorsPartnerController {
 
     public async createSponsorsPartner(body: any) {
         let createSponsorsPartnerInfo: IPartner;
-        createSponsorsPartnerInfo = await SponsorsPartner.create(body);
+        createSponsorsPartnerInfo = await SponsorsPartner.create({
+            sponsorshipPartnerId:body.sponsorshipPartnerId
+        });
 
         return createSponsorsPartnerInfo;
     }
-    // public async createSponsorsPartner(body: any) {
-       
-    //     let resp: any;
-        
-    //     let info: any;
-    //     let otpArray: any = [];
-    //     let phone = body.country_code.toString() + body.contact.toString();
-    //     const userInfo = await SponsorsPartner.findOne({ contact: body.contact }).lean();
 
 
+    public async createSponsorship(body: any) {
+        let createSponsorsPartnerInfo: ISponsorship;
+        createSponsorsPartnerInfo = await Sponsorship.create(body);
 
-
-
-    //     const otpInfo = await Otp.findOne({
-    //         contact: body.contact,
-    //         country_code: body.country_code,
-    //     }).lean();
-
-    //     if (!otpInfo) {
-
-    //         console.log("resp", resp);
-    //         function couponGenerator() {
-    //             let text = "";
-    //             let possible = "0123456789";
-
-    //             for (let i = 0; i < 4; i++)
-    //                 text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    //             return text;
-    //         }
-    //         const info = new Otp({
-    //             contact: body.contact,
-    //             country_code: body.country_code,
-    //             otp: couponGenerator(),
-    //             otpId: couponGenerator()
-    //         });
-    //         await info.save();
-
-    //         await Otp.findOneAndUpdate({ _id: info._id }, { $set: { otp: "1234" } })
-    //     }
-
-
-    //     console.log("resp", resp);
-    //    if(info){
-    //     let createSponsorsPartnerInfo: IPartner;
-    //         createSponsorsPartnerInfo = await SponsorsPartner.create(body);
-    
-    //         return createSponsorsPartnerInfo;
-    //    }
-
-
-       
-
-    // }
+        return createSponsorsPartnerInfo;
+    }
 
 
 public async getpartnerlist(){
@@ -121,53 +54,53 @@ public async getpartnerlist(){
     return partnerlist
 }
   
-    public async loginSponsorsPartner(body: any) {
-        let otp = body.otp;
-        let data: any = await SponsorsPartner.findOne({
-            contact: body.contact,
-            country_code: body.country_code,
-            isDeleted: false,
-        }).lean();
+    // public async loginSponsorsPartner(body: any) {
+    //     let otp = body.otp;
+    //     let data: any = await SponsorsPartner.findOne({
+    //         contact: body.contact,
+    //         country_code: body.country_code,
+    //         isDeleted: false,
+    //     }).lean();
 
-        if (data) {
-            let otpInfo = await Otp.findOne({
-                contact: body.contact,
-                country_code: body.country_code,
-            }).lean();
+    //     if (data) {
+    //         let otpInfo = await Otp.findOne({
+    //             contact: body.contact,
+    //             country_code: body.country_code,
+    //         }).lean();
 
-            let resp = await verifyOtp(otpInfo, otp);
+    //         let resp = await verifyOtp(otpInfo, otp);
             
 
-            if (resp.Status == "Success" && resp.Details != "OTP Expired") {
+    //         if (resp.Status == "Success" && resp.Details != "OTP Expired") {
 
-                data = await SponsorsPartner.findOneAndUpdate(
-                    {
-                        contact: body.contact,
-                        country_code: body.country_code,
-                        isBlackList: false,
-                        isDeleted: false,
-                    },
-                    {
-                        $set: {
-                            contact_verify: true, appVersion: body.appVersion,
-                            deviceVersion: body.deviceVersion,
-                            deviceType: body.deviceType,
-                            deviceName: body.deviceName
-                        }
-                    },
-                    { new: true }
-                ).lean();
+    //             data = await SponsorsPartner.findOneAndUpdate(
+    //                 {
+    //                     contact: body.contact,
+    //                     country_code: body.country_code,
+    //                     isBlackList: false,
+    //                     isDeleted: false,
+    //                 },
+    //                 {
+    //                     $set: {
+    //                         contact_verify: true, appVersion: body.appVersion,
+    //                         deviceVersion: body.deviceVersion,
+    //                         deviceType: body.deviceType,
+    //                         deviceName: body.deviceName
+    //                     }
+    //                 },
+    //                 { new: true }
+    //             ).lean();
 
 
-            } else if (resp.Status == "Success" && resp.Details == "OTP Expired") {
-                return { Status: "Error", Details: "OTP Expired" };
-            } else {
-                return resp;
-            }
-            return data
-        }
+    //         } else if (resp.Status == "Success" && resp.Details == "OTP Expired") {
+    //             return { Status: "Error", Details: "OTP Expired" };
+    //         } else {
+    //             return resp;
+    //         }
+    //         return data
+    //     }
 
-    }
+    // }
     public async editSponsorsPartner(body: IPartner, SponsorsPartnerId: string) {
         const SponsorsPartnerInfo: IPartner = await SponsorsPartner.findOneAndUpdate({ _id: SponsorsPartnerId, isDeleted: false }, body, { new: true }).lean();
         return SponsorsPartnerInfo;

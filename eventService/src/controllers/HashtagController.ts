@@ -1,5 +1,5 @@
 import Hashtag, { IHashtag } from "../models/Hashtag";
-import event from "../models/sponser";
+import event from "../models/sponsorshipDetails";
 import UserActivity from "../models/userActivity"
 import FuzzySearch from "fuzzy-search";
 import userDetails from "../models/userDetails";

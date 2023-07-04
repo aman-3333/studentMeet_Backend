@@ -33,27 +33,27 @@ const schema = new Schema({
         hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    sponsershipLike: [
-        { type: Schema.Types.ObjectId, ref: "sponsership" },
+    sponsorshipLike: [
+        { type: Schema.Types.ObjectId, ref: "sponsorship" },
     ],
-    priceDownsponsership: [{
-        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
+    priceDownsponsorship: [{
+        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
         message: { type: String }
     }],
-    SponsorshipComment: [{
-        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
+    sponsorshipComment: [{
+        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
         comment: { type: String },
         dateTime: { type: Date }
     }], 
-    sponsershipFavorite: [
-        { type: Schema.Types.ObjectId, ref: "sponsership" },
+    sponsorshipFavorite: [
+        { type: Schema.Types.ObjectId, ref: "sponsorship" },
     ],
-    sponsershipShare: [{
-        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
+    sponsorshipShare: [{
+        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
-    sponsershipSharedByOther: [{
-        sponsershipId: { type: Schema.Types.ObjectId, ref: "sponsership" },
+    sponsorshipSharedByOther: [{
+        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
     userFollowers: [
@@ -61,9 +61,9 @@ const schema = new Schema({
     ],
     userFollowing: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
     brandFollowers: [
-        { type: Schema.Types.ObjectId, ref: "sponser" },
+        { type: Schema.Types.ObjectId, ref: "sponsor" },
     ],
-    brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponser" }],
+    brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponsor" }],
     schoolFollowers: [
         { type: Schema.Types.ObjectId, ref: "school" },
     ],
@@ -124,27 +124,27 @@ export interface IuserDetailsActivity extends Document {
         hashtagId: ObjectId,
         friendId: ObjectId,
     }],
-    sponsershipLike: [{
-        sponsershipId: ObjectId,
+    sponsorshipLike: [{
+        sponsorshipId: ObjectId,
     }],
-    priceDownsponsership: [{
-        sponsershipId: ObjectId,
+    priceDownsponsorship: [{
+        sponsorshipId: ObjectId,
         message: String
     }],
-    SponsorshipComment: [{
-        sponsershipId: ObjectId,
+    sponsorshipComment: [{
+        sponsorshipId: ObjectId,
         comment: String,
         dateTime: Date
     }],
-    sponsershipFavorite: [{
-        sponsershipId: ObjectId,
+    sponsorshipFavorite: [{
+        sponsorshipId: ObjectId,
     }],
-    sponsershipShare: [{
-        sponsershipId: ObjectId,
+    sponsorshipShare: [{
+        sponsorshipId: ObjectId,
         friendId: ObjectId,
     }],
-    sponsershipSharedByOther: [{
-        sponsershipId: ObjectId,
+    sponsorshipSharedByOther: [{
+        sponsorshipId: ObjectId,
         friendId: ObjectId,
     }],
     userFollowers: [

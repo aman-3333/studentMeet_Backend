@@ -1,4 +1,4 @@
-import SponsorshipForm, { ISponsorshipForm } from "../models/sponsershipBook";
+import SponsorshipForm, { ISponsorshipForm } from "../models/sponsorshipBook";
 import { ICategory } from "../models/category";
 export default class SponsorshipFormController {
 

@@ -2,9 +2,9 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     domain: { type: String},
-    partnerName: { type: String, required: true },
+    sponsorPartnerName: { type: String, required: true },
     businessIndustry: [{}],
-    partnerAddress: { type: String },
+    sponsorPartnerAddress: { type: String },
     otp: { type: String },
     otpId: { type: String },
     location: {
@@ -15,19 +15,18 @@ const schema = new Schema({
         },
         coordinates: {
             type: [Number],
-
         }
     },
-    partnerDescription: { type: String },
+    sponsorPartnerDescription: { type: String },
     contact: { type: Number },
     country_code: { type: Number },
     validContact: { type: Boolean, default: false },
     landline: { type: Number },
     whatsappNo: { type: Number, unique: false },
-    partnerEmail: { type: String },
-    partnerWebsite: { type: String },
-    partnerInstagram: { type: String },
-    partnerFacebookId: { type: String },
+    sponsorPartnerEmail: { type: String },
+    sponsorPartnerWebsite: { type: String },
+    sponsorPartnerInstagram: { type: String },
+    sponsorPartnerFacebookId: { type: String },
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
@@ -52,7 +51,7 @@ const schema = new Schema({
     isCreatedByOrginzer: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     contact_verify: { type: Boolean, default: false },
-    ispartnerVerified: { type: Boolean, default: false },
+    issponsorPartnerVerified: { type: Boolean, default: false },
     isFavourite: { type: Boolean, default: false },
     isRequestSend: { type: Boolean, default: false },
     isRequestAccept: { type: Boolean, default: false },
@@ -73,9 +72,9 @@ export interface IPartner extends Document {
     subSubCategory: ObjectId,
     ownerId: ObjectId,
     contactName: String,
-    partnerDescription: String,
-    partnerName: String,
-    partnerAddress: String,
+    sponsorPartnerDescription: String,
+    sponsorPartnerName: String,
+    sponsorPartnerAddress: String,
     otp: String,
     otpId: String,
     location: {
@@ -88,11 +87,11 @@ export interface IPartner extends Document {
     country_code: Number,
     landline: Number,
     validContact: Boolean,
-    partnerEmail: String,
-    partnerWebsite: String,
-    partnerInstagram: String,
-    partnerFacebookId: String,
-    partnerType: String,
+    sponsorPartnerEmail: String,
+    sponsorPartnerWebsite: String,
+    sponsorPartnerInstagram: String,
+    sponsorPartnerFacebookId: String,
+    sponsorPartnerType: String,
     createrId: ObjectId,
 
     planId: ObjectId,
@@ -114,7 +113,7 @@ export interface IPartner extends Document {
     country: String,
     isActive: Boolean,
     contact_verify: Boolean,
-    ispartnerVerified: Boolean,
+    issponsorPartnerVerified: Boolean,
     isFavourite: Boolean,
     isRequestSend: Boolean,
     isRequestAccept: Boolean,
@@ -126,4 +125,4 @@ export interface IPartner extends Document {
 }
 // user
 
-export default model<IPartner>("eventpartner", schema);
+export default model<IPartner>("sponsorPartner", schema);

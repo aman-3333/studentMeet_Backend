@@ -2,12 +2,13 @@ import express from "express";
 const router = express.Router();
 import {successResponse, errorResponse} from "../services/apiResponse";
 import SponsorsPartnerController from "../controllers/sponsorsPartnerController";
-import { IPartner } from "../models/sponserPartner";
+import { IPartner } from "../models/sponsorPartner";
+import { ISponsorship } from "../models/sponsorshipDetails";
 
 
 
 
-router.post("/SponsorsPartner/Registration", async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         const body = req.body as IPartner;
         const controller = new SponsorsPartnerController();
@@ -18,8 +19,18 @@ router.post("/SponsorsPartner/Registration", async (req, res) => {
         res.status(500).json(errorResponse("error in create shop", res.statusCode));
     }
 });
+router.post("/create/sponsorship", async (req, res) => {
+    try {
+        const body = req.body as ISponsorship;
+        const controller = new SponsorsPartnerController();
+        const response: any = await controller.createSponsorship(body);
+        res.status(200).json(successResponse("create shop", response, res.statusCode));
+    } catch (error) {
 
-router.patch("/editSponsorsPartner/:id", async (req, res) => {
+        res.status(500).json(errorResponse("error in create shop", res.statusCode));
+    }
+});
+router.patch("/edit/:id", async (req, res) => {
     try {
         const SponsorsPartnerId:any= req.params.id;
         const body = req.body as IPartner;
@@ -54,17 +65,17 @@ router.get("/getSponsorsPartnerShopByUser/:userId", async (req, res) => {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-router.post("/loginSponsorsPartner", async (req, res) => {
-    try {
-        const body = req.body as IPartner;
-        const controller = new SponsorsPartnerController();
-        const response: IPartner = await controller.loginSponsorsPartner(body);
-        res.status(200).json(successResponse("loginSponsorsPartner", response, res.statusCode));
-    } catch (error) {
+// router.post("/loginSponsorsPartner", async (req, res) => {
+//     try {
+//         const body = req.body as IPartner;
+//         const controller = new SponsorsPartnerController();
+//         const response: IPartner = await controller.loginSponsorsPartner(body);
+//         res.status(200).json(successResponse("loginSponsorsPartner", response, res.statusCode));
+//     } catch (error) {
         
-        res.status(500).json(errorResponse("error in loginSponsorsPartner", res.statusCode));
-    }
-});
+//         res.status(500).json(errorResponse("error in loginSponsorsPartner", res.statusCode));
+//     }
+// });
 
 
 

@@ -9,7 +9,7 @@ const schema = new Schema({
     video: [{ type: String }],
     attechment: [{ type: String }],
     userName:{ type: String },
-    eventName:{ type: String },
+    postType:{ type: String,enum:["General"]},
     postLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
     isAnyAchievement: { type: Boolean, default: false },
@@ -27,6 +27,7 @@ const schema = new Schema({
         userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
         comment: { type: String },
         dateTime: { type: Date },
+      
     }],
     sharePost: [{
        post: { type: Schema.Types.ObjectId, ref: "post" },
