@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
 import Users from "../models/userDetails";
-import friendActivity from '../models/friendSponsershipActivity';
+
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
@@ -244,11 +244,8 @@ public async verifyotpByApi(body: any) {
                             userId
                               : userInfo._id
                           })
-                     let data=     await friendActivity.create({
-                            userId
-                              : userInfo._id
-                          })
-                          console.log("dtaa",data);
+                   
+                          
                           
         return { Status: "Sucess", Details: "OTP Match",userInfo };
 

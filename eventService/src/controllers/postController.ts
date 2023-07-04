@@ -2,7 +2,7 @@ import Post, { IPost } from "../models/post";
 import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import FuzzySearch from "fuzzy-search";
-import event from "../models/sponser";
+import event from "../models/sponsorshipDetails";
 
 export default class PostController {
     public async createPost(body: any) {
@@ -53,26 +53,13 @@ export default class PostController {
         let info: any;
        let PostInfo :any;
         userInfo = await userActivity.findOne({ userId: userId }).lean();
-    
-    
         if (!userInfo) {
             userInfo = await userActivity.create({ userId: userId })
-    
         }
-    
-    
-        if (status == "PostLike") {
-           
-            
+        if (status == "PostLike") {  
             info = await userActivity.findOne({ PostLike: {$in:body.PostLike} }).lean();
-          
-            
        if(info) return{message:"alreadylike"}
-    
-    
-            if (!info) {
-              
-                
+            if (!info) {    
                 userInfo = await userActivity.findOneAndUpdate(
                     {
                         userId: userId,
@@ -260,7 +247,7 @@ export default class PostController {
                                 comment: body.PostComment[i].comment,
     
                             }
-                        }
+                        },
                     })
     
                 await Post.findOneAndUpdate({ _id: body.PostComment[i].PostId },
@@ -285,6 +272,12 @@ export default class PostController {
             return data;
         }
     }
+
+public async reCommentPost(userId:any,commentId:any){
+    let postInfo:any
+
+}
+
     public async readPostActivity(PostId: any, status: any) {
        
         

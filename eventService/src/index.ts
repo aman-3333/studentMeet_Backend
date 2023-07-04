@@ -26,7 +26,7 @@ app.use(
   })
 );
 /////////////Api Routes/////////////////////
-
+import academy from "./routes/academy";
 import category from "./routes/category";
 import chat from "./routes/chat";
 import city from "./routes/city";
@@ -36,11 +36,15 @@ import index from "./routes/fileUpload";
 import institute from "./routes/institute";
 import post from "./routes/post";
 import starPermormer from "./routes/starPermormer";
+import sponsorship from "./routes/sponsor";
+import sponsorsPartner from "./routes/sponsorsPartner";
+import sponsorshipForm from "./routes//sponsorshipForm";
 import state from "./routes/state";
 import user from "./routes/userDetails";
 import userRole from "./routes/userRole";
 
 
+app.use("/api/academy", academy);
 app.use("/api/category", category);
 app.use("/api/chat", chat);
 app.use("/api/city", city);
@@ -51,6 +55,9 @@ app.use("/api/index", index);
 app.use("/api/institute", institute);
 app.use("/api/post", post);
 app.use("/api/starPermormer", starPermormer);
+app.use("/api/sponsorship", sponsorship);
+app.use("/api/sponsorsPartner", sponsorsPartner);
+app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/state", state);
 app.use("/api/user", user);
 app.use("/api/userRole", userRole);
@@ -178,3 +185,4 @@ server.listen(nconf.get('port'), () => {
 });
 server.timeout = 1000000;
 // typescript
+

@@ -1,13 +1,13 @@
-import bookSponsorship from "../models/sponsershipBook"
+import bookSponsorship from "../models/sponsorshipBook"
 import { CapturePayment, createVendorAccount } from "../services/razorpayServices"
 
 
 import nconf, { any } from "nconf";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-import Sponsorship from "../models/sponser";
+import Sponsorship from "../models/sponsorshipDetails";
 import userActivity from "../models/userActivity";
-import friendSponsorshipActivity from "../models/friendSponsershipActivity";
+
 var razorpayConfig = require("../../config/razorpay/betaProperties").RAZORPAY
 const fs = require('fs');
 const Hogan = require('hogan.js');
@@ -57,30 +57,10 @@ export default class PaymentController {
           resp = await bookSponsorship.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
           let SponsorshipInfo: any = await Sponsorship.findOneAndUpdate({ _id: resp.SponsorshipId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
           let friendInfo:any=   await userActivity.findOneAndUpdate({userId:resp.userId,isDeleted:false}).lean()
-             friendInfo=friendInfo.friendList;
-             friendInfo.forEach(async(element:any) => {
-              await friendSponsorshipActivity.findOneAndUpdate({userId:element},
-                  {$push:{
-                      friendActivity:{
-                          friendId:resp.userId,
-                          SponsorshipId:SponsorshipInfo._id,
-                          Activity:"Apply Sponsorship"
-                         }
-              }})
-            });
+           
           if (resp.isSponsorshipOrganizer == true) {
             await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id }, { $set: { isOrganized: true, isBookSponsorshipPaid: true,organizerId:resp.userId } },{new:true}).lean()
-           
-            friendInfo.forEach(async(element:any) => {
-                await friendSponsorshipActivity.findOneAndUpdate({userId:element},
-                    {$push:{
-                        friendActivity:{
-                            friendId:resp.userId,
-                            SponsorshipId:SponsorshipInfo._id,
-                            Activity:"Organize Sponsorship"
-                           }
-                }})
-              });
+        
           }
           let remainingSeat = SponsorshipInfo.totalParticipent - SponsorshipInfo.noOfParticipentBook
           SponsorshipInfo = await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id, isDeleted: false }, { $set: { remainingSeat: remainingSeat } }, { new: true }).lean()
