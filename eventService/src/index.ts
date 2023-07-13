@@ -35,12 +35,15 @@ import guidelines from "./routes/guidelines";
 import index from "./routes/fileUpload";
 import institute from "./routes/institute";
 import post from "./routes/post";
+import product from "./routes/product";
 import starPermormer from "./routes/starPermormer";
 import sponsorship from "./routes/sponsor";
+import sportsBrand from "./routes/sportsBrand";
 import sponsorsPartner from "./routes/sponsorsPartner";
 import sponsorshipForm from "./routes//sponsorshipForm";
 import state from "./routes/state";
 import user from "./routes/userDetails";
+import vendor from "./routes/vendorShop";
 import userRole from "./routes/userRole";
 
 
@@ -54,12 +57,15 @@ app.use("/api/guidelines", guidelines);1
 app.use("/api/index", index);
 app.use("/api/institute", institute);
 app.use("/api/post", post);
+app.use("/api/product", product);
 app.use("/api/starPermormer", starPermormer);
 app.use("/api/sponsorship", sponsorship);
+app.use("/api/sportsbrand", sportsBrand);
 app.use("/api/sponsorsPartner", sponsorsPartner);
 app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/state", state);
 app.use("/api/user", user);
+app.use("/api/vendorshop", vendor);
 app.use("/api/userRole", userRole);
 
 

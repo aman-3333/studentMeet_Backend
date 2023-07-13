@@ -5,10 +5,12 @@ import SponsorshipModel, { ISponsorship } from '../models/sponsorshipDetails'
 import userActivity from '../models/userActivity';
 
 import User from "../models/userDetails"
-import bookSponsorship from "../models/sponsorshipBook"
+import SponsorshipApplyModel from "../models/sponsorshipApply"
 import userDetails from '../models/userDetails';
 import { sendNotification } from '../services/notification';
 import post from '../models/post';
+
+let currentTime: any = new Date();
 export default class SponsorshipController {
 //////////////////////////ADMIN SPONSORSHIP API/////////////////////////////////
     public async create(body: any) {
@@ -228,7 +230,6 @@ public async SponsorshipActivity(userId: any, SponsorshipId: any, status: any, s
     if (status == "sponsorshipComment") {
 
 
-        let currentTime: any = new Date();
         for (let i = 0; i < body.sponsorshipComment.length; i++) {
             userInfo = await userActivity.findOneAndUpdate(
                 {
@@ -318,125 +319,12 @@ public async SponsorshipActivity(userId: any, SponsorshipId: any, status: any, s
 
 public async filterSponsorship(type: any, sort: any, category: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
     let sponsorshipInfo: any;
-    if (type == "Sponsorship") {
-        if (category) {
-            sponsorshipInfo = await SponsorshipModel.find({ category: category, type: "Sponsorship", isDeleted: false });
-            return sponsorshipInfo
-        }
-        else if (sort == "lessEarning") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" });
+  
+  
+ 
+      if(category){
 
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
-            return sponsorshipInfo
-        }
-        else if (sort == "mostEarning") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
-            return sponsorshipInfo
-        }
-        else if (sort == "oldtonew") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
-            return sponsorshipInfo
-
-        } else if (sort == "newtoold") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
-            return sponsorshipInfo
-        } else if (sort == "lessAdvanced") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.advancedSponsorshipMoney - b.advancedSponsorshipMoney });
-            return sponsorshipInfo
-        } else if (sort == "mostAdvanced") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.advancedSponsorshipMoney - a.advancedSponsorshipMoney });
-            return sponsorshipInfo
-        }
-        if (search) {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "Sponsorship" }).populate("organizerId","fullname");
-
-
-            const searcher = new FuzzySearch(sponsorshipInfo, ["sponsorshipName", "SponsorshipPartnerName"], {
-                caseSensitive: false,
-            });
-            sponsorshipInfo = searcher.search(search);
-            return sponsorshipInfo
-        }
-
-        if (limit && skip) {
-
-            sponsorshipInfo = sponsorshipInfo.slice(skip).slice(0, limit);
-
-        }
-
-        return sponsorshipInfo
-    }
-    if (type == "affilate") { 
-        if (category) {
-            sponsorshipInfo = await SponsorshipModel.find({ category: category, type: "affilate", isDeleted: false });
-
-        } else if (subCategory) {
-            sponsorshipInfo = await SponsorshipModel.find({ subCategory: subCategory, type: "affilate", isDeleted: false });
-        } else if (subSubCategory) {
-            sponsorshipInfo = await SponsorshipModel.find({ subSubCategory: subSubCategory, type: "affilate", isDeleted: false });
-        }
-        else if (sort == "lessEarning") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.organizerTotalIncome - b.organizerTotalIncome });
-            return sponsorshipInfo
-        }
-        else if (sort == "mostEarning") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.organizerTotalIncome - a.organizerTotalIncome });
-            return sponsorshipInfo
-        }
-        else if (sort == "oldtonew") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.createdAt - b.createdAt });
-            return sponsorshipInfo
-
-        } else if (sort == "newtoold") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
-            return sponsorshipInfo
-        } else if (sort == "lessAdvanced") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.advancedSponsorshipMoney - b.advancedSponsorshipMoney });
-            return sponsorshipInfo
-        } else if (sort == "mostAdvanced") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.advancedSponsorshipMoney - a.advancedSponsorshipMoney });
-            return sponsorshipInfo
-        }
-        if (search) {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false, type: "affilate" });
-
-
-            const searcher = new FuzzySearch(sponsorshipInfo, ["sponsorshipName", "SponsorshipPartnerName"], {
-                caseSensitive: false,
-            });
-            sponsorshipInfo = searcher.search(search);
-            return sponsorshipInfo
-        }
-
-        if (limit && skip) {
-
-            sponsorshipInfo = sponsorshipInfo.slice(skip).slice(0, limit);
-
-        }
-        return sponsorshipInfo
-
-    }
-    else {
-        if (category) {
-            sponsorshipInfo = await SponsorshipModel.find({ category: category, isDeleted: false });
-
-        } else if (subCategory) {
-            sponsorshipInfo = await SponsorshipModel.find({ subCategory: subCategory, isDeleted: false });
-        } else if (subSubCategory) {
-            sponsorshipInfo = await SponsorshipModel.find({ subSubCategory: subSubCategory, isDeleted: false });
-        }
+      }
         else if (sort == "lessEarning") {
             sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
 
@@ -457,24 +345,6 @@ public async filterSponsorship(type: any, sort: any, category: any, subCategory:
             sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
             sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.createdAt - a.createdAt });
             return sponsorshipInfo
-        } else if (sort == "lessAdvanced") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return a.advancedSponsorshipMoney - b.advancedSponsorshipMoney });
-            return sponsorshipInfo
-        } else if (sort == "mostAdvanced") {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-            sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) { return b.advancedSponsorshipMoney - a.advancedSponsorshipMoney });
-            return sponsorshipInfo
-        }
-        if (search) {
-            sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-
-
-            const searcher = new FuzzySearch(sponsorshipInfo, ["sponsorshipName", "SponsorshipPartnerName"], {
-                caseSensitive: false,
-            });
-            sponsorshipInfo = searcher.search(search);
-            return sponsorshipInfo
         }
         if (limit && skip) {
 
@@ -482,7 +352,7 @@ public async filterSponsorship(type: any, sort: any, category: any, subCategory:
 
         }
 
-    }
+    
 
 
 }
@@ -509,32 +379,58 @@ public async searchSponsorship(search:any){
 }
 
 
-public async bookSponsorship(SponsorshipId: any, userId: any, status: any) {
+public async SponsorshipApplyModel(SponsorshipId: any, userId: any, status: any) {
     let sponsorshipInfo: any
-    let bookSponsorshipData: any 
+    let SponsorshipApplyModelData: any 
     sponsorshipInfo = await SponsorshipModel.findOne({ _id: SponsorshipId,  isDeleted: false }).lean()
    
 
-    if (bookSponsorshipData) return ({ message: "you already booked this Sponsorship" })
-    bookSponsorshipData = await bookSponsorship.create({ SponsorshipId: SponsorshipId, userId: userId })
-   // bookSponsorshipData = await bookSponsorshipModel.findOneAndUpdate({ _id: bookSponsorshipData._id, isDeleted: false }, { $set: { orderTotal: sponsorshipInfo.priceForParticipent } }, { new: true }).lean()
-    return bookSponsorshipData
+    if (SponsorshipApplyModelData) return ({ message: "you already booked this Sponsorship" })
+    SponsorshipApplyModelData = await SponsorshipApplyModel.create({ SponsorshipId: SponsorshipId, userId: userId })
+   // SponsorshipApplyModelData = await SponsorshipApplyModelModel.findOneAndUpdate({ _id: SponsorshipApplyModelData._id, isDeleted: false }, { $set: { orderTotal: sponsorshipInfo.priceForParticipent } }, { new: true }).lean()
+    return SponsorshipApplyModelData
 }
 
-public async applyForSponsorship(SponsorshipId: any, userId: any, formId: any, status: any) {
-    let sponsorshipInfo: any = await SponsorshipModel.findOne({ _id: SponsorshipId,  isDeleted: false,  }).lean()
+public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
+ 
+   
+   let sponsorshipInfo: any = await SponsorshipApplyModel.findOne({SponsorshipId: SponsorshipId }).lean()
+   sponsorshipInfo=sponsorshipInfo.applyInfo.filter((e:any)=>{e.userId==userId})
     if (sponsorshipInfo) {
         return ({ message: "already book" })
     }
     else {
 
-        sponsorshipInfo = await SponsorshipModel.findOne({ _id: SponsorshipId,  isDeleted: false  }).lean()
-
-        let bookSponsorshipData: any = await bookSponsorship.create({ SponsorshipId: SponsorshipId, userId: userId ,isSponsorshipOrganizer:true })
        
-        return bookSponsorshipData
+           
+            sponsorshipInfo = await SponsorshipApplyModel.findOneAndUpdate(
+                {
+                    SponsorshipId: SponsorshipId,
+                },
+                {
+                    $push: {
+                        applyInfo: {
+                            userId: body.applyInfo.userId,
+                            text: body.applyInfo.text,
+                            dateTime: currentTime
+                           
+                        }
+                    }
+                })
+               
+
+
+            return sponsorshipInfo;
+        
+       
+    
     }
 }
+
+
+
+
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     

@@ -151,17 +151,16 @@ router.get("/readActivity", async (req, res) => {
     }
 })
 
-router.post("/SponsorshipOrganize", async (req, res) => {
+router.post("/applySponsorship", async (req, res) => {
     try {
       
         
-        const body = req.body;
+       const body=req.body
         const SponsorshipId = req.body.SponsorshipId; 
-        const organizerId = req.body.organizerId;
-         const formId = req.body.formId;
-          const status = req.body.status;
+        const userId = req.body.userId;
+         
         const controller = new SponsorshipController();
-        const response: any = await controller.applyForSponsorship(SponsorshipId, organizerId, formId, status);
+        const response: any = await controller.applySponsorship(SponsorshipId, userId,body);
         res.status(200).json(successResponse("SponsorshipCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
         
@@ -178,7 +177,7 @@ router.post("/applySponsorship", async (req, res) => {
         const userId = req.body.userId; 
         const status = req.body.status; 
         const controller = new SponsorshipController();
-        const response: any = await controller.bookSponsorship(SponsorshipId,userId,status);
+        const response: any = await controller.applySponsorship(SponsorshipId,userId,status);
         res.status(200).json(successResponse("applySponsorship ", response, res.statusCode));
     } catch (error) {
 
