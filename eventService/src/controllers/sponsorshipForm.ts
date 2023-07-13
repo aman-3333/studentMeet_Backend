@@ -1,4 +1,4 @@
-import SponsorshipForm, { ISponsorshipForm } from "../models/sponsorshipBook";
+import SponsorshipForm, { ISponsorshipApply } from "../models/sponsorshipApply";
 import { ICategory } from "../models/category";
 export default class SponsorshipFormController {
 
@@ -12,13 +12,13 @@ export default class SponsorshipFormController {
 
     }
 
-    public async editSponsorshipForm(body: ISponsorshipForm, SponsorshipFormId: string) {
-        const SponsorshipFormInfo: ISponsorshipForm = await SponsorshipForm.findOneAndUpdate({ _id: SponsorshipFormId, isDeleted: false }, body, { new: true }).lean();
+    public async editSponsorshipForm(body: ISponsorshipApply, SponsorshipFormId: string) {
+        const SponsorshipFormInfo: ISponsorshipApply = await SponsorshipForm.findOneAndUpdate({ _id: SponsorshipFormId, isDeleted: false }, body, { new: true }).lean();
         return SponsorshipFormInfo;
     }
 
     public async getSponsorshipFormList(stateId: any) {
-        const SponsorshipFormList: ISponsorshipForm[] = await SponsorshipForm.find({ stateId: stateId, isDeleted: false });
+        const SponsorshipFormList: ISponsorshipApply[] = await SponsorshipForm.find({ stateId: stateId, isDeleted: false });
         return SponsorshipFormList;
     }
 
@@ -28,7 +28,7 @@ export default class SponsorshipFormController {
     }
 
     public async deleteSponsorshipForm(SponsorshipFormId: String) {
-        const SponsorshipFormInfo: ISponsorshipForm = await SponsorshipForm.findOneAndUpdate({ _id: SponsorshipFormId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
+        const SponsorshipFormInfo: ISponsorshipApply = await SponsorshipForm.findOneAndUpdate({ _id: SponsorshipFormId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
         return SponsorshipFormInfo;
     }
 }

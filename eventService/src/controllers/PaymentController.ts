@@ -1,4 +1,4 @@
-import bookSponsorship from "../models/sponsorshipBook"
+import bookSponsorship from "../models/sponsorshipApply"
 import { CapturePayment, createVendorAccount } from "../services/razorpayServices"
 
 
