@@ -3,7 +3,7 @@ const router = express.Router();
 import {successResponse, errorResponse} from "../services/apiResponse";
 import PostController from "../controllers/postController";
 
-router.post("/createPost", async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         const body = req.body;
       
@@ -17,7 +17,7 @@ router.post("/createPost", async (req, res) => {
         res.status(500).json(errorResponse("error in create Post", res.statusCode));
     }
 });
-router.patch("/editPost", async (req, res) => {
+router.post("/edit", async (req, res) => {
     try {
         
         const body = req.body;
@@ -30,11 +30,11 @@ router.patch("/editPost", async (req, res) => {
     }
 });
 
-router.get("/PostList", async (req, res) => {
+router.get("/list", async (req, res) => {
     try {
-        const userId=req.query.userId;
+      
         const controller = new PostController();
-        const response= await controller.getPostList(userId);
+        const response= await controller.getPostList();
         res.status(200).json(successResponse("Post list", response, res.statusCode));
     } catch (error) {
        
@@ -43,7 +43,7 @@ router.get("/PostList", async (req, res) => {
 });
 
 
-router.get("/getPostListBYUserId", async (req, res) => {
+router.get("/getlist/byuserid", async (req, res) => {
     try {
         const controller = new PostController();
         const userId = req.query.userId;
@@ -55,7 +55,7 @@ router.get("/getPostListBYUserId", async (req, res) => {
     }
 });
 
-router.get("/PostInfobyid", async (req, res) => {
+router.get("/infobyid", async (req, res) => {
     try {
         const PostId = req.query.id;
         const controller = new PostController();
@@ -66,7 +66,7 @@ router.get("/PostInfobyid", async (req, res) => {
         res.status(500).json(errorResponse("error in get Post", res.statusCode));
     }
 });
-router.post("/postActivity", async (req, res) => {
+router.post("/activity", async (req, res) => {
     try {
         const userId = req.body.userId;
         const PostId = req.body.PostId; 
@@ -83,7 +83,7 @@ router.post("/postActivity", async (req, res) => {
         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
     }
 });
-router.get("/readPostActivity", async (req, res) => {
+router.get("/read/activity", async (req, res) => {
     try {
         
         const PostId = req.query.PostId; 
@@ -98,11 +98,11 @@ router.get("/readPostActivity", async (req, res) => {
     }
 });
 
-router.post("/deletePost", async (req, res) => {
+router.post("/delete", async (req, res) => {
     try {
-        const PostId = req.body.PostId;
+        const postId = req.body.postId;
         const controller = new PostController();
-        const response = await controller.deletePost(PostId);
+        const response = await controller.deletePost(postId);
         res.status(200).json(successResponse("delete Post", response, res.statusCode));
 
     } catch (error) {
@@ -111,7 +111,7 @@ router.post("/deletePost", async (req, res) => {
     }
 })
 
-router.get("/searchPost", async (req, res) => {
+router.get("/search", async (req, res) => {
     try {
         
         

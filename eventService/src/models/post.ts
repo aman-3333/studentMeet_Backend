@@ -1,15 +1,18 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-
-   
     userId: { type: Schema.Types.ObjectId,ref: "userdetail" },
+    city: { type: Schema.Types.ObjectId,ref: "cities" },
+    state: { type: Schema.Types.ObjectId,ref: "states" },
+    country: { type: Schema.Types.ObjectId,ref: "countries" },
     Image: [{ type: String }],
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
     userName:{ type: String },
     postType:{ type: String,enum:["General"]},
+    seePost:{ type: String,enum:["anyone","friend","group"],default:"anyone"},
+    commentOnPost:{ type: String,enum:["anyone","friend","group"],default:"anyone"},
     postLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
     isAnyAchievement: { type: Boolean, default: false },
@@ -47,8 +50,9 @@ export interface IPost extends Document {
     Image: [String],
     description: String,
     video: [String],
+location: ObjectId,
     attechment: [String],
-    hashtagId: ObjectId,
+  
     postLikeCount: Number,
     shareCount: Number,
     postCommentCount: Number,
@@ -65,6 +69,8 @@ export interface IPost extends Document {
        userId: ObjectId,
         friendId: ObjectId,
     }],
+    seePost:String,
+    commentOnPost:String,
     isAnyAchievement: Boolean,
     isActive: Boolean,
     isDeleted: Boolean

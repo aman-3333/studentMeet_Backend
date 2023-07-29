@@ -26,6 +26,7 @@ app.use(
   })
 );
 /////////////Api Routes/////////////////////
+import auth from "./routes/auth"
 import academy from "./routes/academy";
 import category from "./routes/category";
 import chat from "./routes/chat";
@@ -46,7 +47,7 @@ import user from "./routes/userDetails";
 import vendor from "./routes/vendorShop";
 import userRole from "./routes/userRole";
 
-
+app.use("/api/auth", auth);
 app.use("/api/academy", academy);
 app.use("/api/category", category);
 app.use("/api/chat", chat);
