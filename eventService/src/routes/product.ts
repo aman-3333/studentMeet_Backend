@@ -92,6 +92,17 @@ router.post("/addtocart", async (req, res) => {
         res.status(500).json(errorResponse("error in addtocart Product", res.statusCode));
     }
 });
+router.post("/cart/product/remove", async (req, res) => {
+    try {
+        const body = req.body;
+        const controller = new ProductController();
+        const response = await controller.deleteCartProduct(body);
+        res.status(200).json(successResponse("remove Product", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in remove Product", res.statusCode));
+    }
+});
 
 
 router.get("/cartlist", async (req, res) => {
@@ -105,4 +116,6 @@ router.get("/cartlist", async (req, res) => {
         res.status(500).json(errorResponse("error in Product getcartList", res.statusCode));
     }
 });
+
+
 export default router;

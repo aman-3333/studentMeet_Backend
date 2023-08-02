@@ -140,21 +140,76 @@ public async searchProduct(search:any){
   
   
   public async getcartlist(userId:any){
-  let cartInfo:any=await cartProduct.findOne({userId:userId,isDeleted:false}).lean()
+    console.log(userId);
+    
+  let cartInfo:any=await cartProduct.findOne({userId:userId,isDeleted:false}).lean();
 
-  
   cartInfo=cartInfo.cartProduct
-  
+
   let data:any=[]
+  let  cartProduct1:any 
   for (let i = 0; i < cartInfo.length; i++) {
-  let  cartProduct:any =  await Product.findOne({_id:cartInfo[i].productId})
-    console.log(cartInfo,"cartInfo");
-    cartProduct.quantity=cartInfo.quantity
+  cartProduct1 =  await Product.findOne({_id:cartInfo[i].productId})
+
+  cartInfo[i].product=cartProduct1
+  
    
-  data.push(cartProduct)
+   
+  
   }
 
-  return data
+
+
+
+  return cartInfo
+  
+  
+  
+  
+  }
+
+
+  public async editCart(body:any){
+let cartInfo:any=await cartProduct.findOneAndUpdate({userId:body.userId}, body, { new: true }).lean();
+ return cartInfo 
+}
+
+  
+  public async deleteCartProduct(body:any){
+  let  cartInfo = await cartProduct.findOneAndUpdate(
+      {
+          userId: body.userId,
+      },
+      {
+          $pull: {
+            cartProduct: {
+                  _id: body._id
+              }
+          }
+      },{new:true})
+      return cartInfo
+  }
+  
+  public async buyProduct(userId:any){
+    console.log(userId);
+    
+  let cartInfo:any=await cartProduct.findOne({userId:userId,isDeleted:false}).lean();
+
+  cartInfo=cartInfo.cartProduct
+
+  let data:any=[]
+  let  cartProduct1:any 
+  for (let i = 0; i < cartInfo.length; i++) {
+  cartProduct1 =  await Product.findOne({_id:cartInfo[i].productId})
+
+  cartInfo[i].product=cartProduct1
+  
+  }
+
+
+
+
+  return cartInfo
   
   
   

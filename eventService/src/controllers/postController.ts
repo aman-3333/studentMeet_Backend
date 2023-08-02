@@ -10,9 +10,6 @@ export default class PostController {
     
             PostInfo = await Post.create(body);
             let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
-           
-            
-         
             await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname}})
 
         return PostInfo;
@@ -23,12 +20,33 @@ export default class PostController {
         const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
         return PostInfo;
     }
-    public async editPost2(body: any) {
-        const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
-        return PostInfo;
-    }
-    public async getPostList(userId:any) {
-        const PostList: IPost[] = await Post.find({ isDeleted: false }).populate("userId","profile_picture");
+  
+    public async getPostList() {
+        const PostList = await Post.aggregate([
+            { $match: {isDeleted:false}},
+            {
+              $lookup: {
+                'localField': 'userId',
+                'from': 'userdetails',
+                'foreignField': '_id',
+                'as': 'user',
+              },
+            },
+            // {
+            //   $lookup: {
+            //     'localField': '_id',
+            //     'from': 'states',
+            //     'foreignField': 'state',
+            //     'as': 'state',
+            //   },
+            // },
+            // {
+            
+            // },
+           
+          ]);
+
+
         return PostList;
     }
 
@@ -42,8 +60,10 @@ export default class PostController {
         return PostInfo;
     }
 
-    public async deletePost(PostId: any) {
-        const PostInfo: IPost = await Post.findOneAndUpdate({ _id: PostId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
+    public async deletePost(postId: any) {
+        console.log(postId,"postId");
+        
+        const PostInfo: IPost = await Post.findOneAndUpdate({ _id: postId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
         return PostInfo;
     }
     public async PostActivity(userId: any, PostId: any, status: any, PostComment: any, PostCommentId: any, body: any) {
@@ -310,17 +330,26 @@ public async reCommentPost(userId:any,commentId:any){
         }
     }
     public async searchPost(search:any){
-        if(search){
-            let PostInfo:any=await Post.find({isDeleted:false}).populate("userId","profile_picture");  
-            console.log("PostInfo",PostInfo);
+                let PostInfo:any=await Post.aggregate(
+                [
+                    {
+                      $search: {
+                        index: "search-text",
+                        text: {
+                          query: search,
+                          path: {
+                            wildcard: "*"
+                          }
+                        }
+                      }
+                    }
+                  ])
+              return  PostInfo 
             
-            PostInfo = new FuzzySearch(PostInfo, ["userName","eventName"], {
-                caseSensitive: false,
-            });
-            PostInfo = PostInfo.search(search);
-            return PostInfo
+            
+
     
-        }
+        
     
     }
 

@@ -18,6 +18,7 @@ import { verifyOtp } from "../services/verifyOtp";
 import Otp from "../models/Otp";
 import { baseUrl } from "../middleware/authMiddleware";
 import userActivity from "../models/userActivity";
+import userDevice from "../models/userDevice";
 import StarPerformer from "../models/StarPerformer";
 import post from "../models/post";
 
@@ -107,34 +108,7 @@ export default class AuthController {
     let userInfo: any = await Users.findOne({ _id: userId, isDeleted: false }).lean();
     return userInfo;
   }
-  public async verifyotp(body: any) {
-    let otp = body.otp;
-    let userInfo: any = await Users.findOne({
-      contact: body.contact,
-      country_code: body.country_code,
-      isDeleted: false,
-    }).lean();
-
-    if (userInfo) {
-      let otpInfo = await Otp.findOne({
-        contact: body.contact,
-        country_code: body.country_code,
-        otp: body.otp
-      }).lean();
-      if (otpInfo) {
-
-        return { Status: "Sucess", Details: "OTP Match", userInfo };
-
-      }
-
-      else {
-
-        return { Status: "Error", Details: "OTP Mismatch" };
-      }
-
-    }
-    return userInfo
-  }
+ 
 
 public async sendotpByApi(body: any) {
   let phone = body.country_code.toString() + body.contact.toString();
@@ -203,6 +177,22 @@ public async verifyotpByApi(body: any) {
                     dimension:body.dimension} }
                 );
              
+
+                await userDevice.findOneAndUpdate(
+                  {
+                    userId: userInfo._id,
+                  },
+                  { $set: { contact_verify: true,
+                    fcmtoken: body.fcmtoken,
+                    ipAddress:body.ipAddress,
+                    modelName:body.modelName,
+                    manufacturer:body.manufacturer,
+                    maxMemorybigint:body.maxMemorybigint,
+                    freeMemory:body.freeMemory,
+                    osVersion: body.osVersion,
+                    networkCarrier:body.networkCarrier,
+                    dimension:body.dimension} }
+                );
               
           return { Status: "Sucess", Details: "OTP Match",userInfo  };
 
@@ -227,9 +217,15 @@ public async verifyotpByApi(body: any) {
     if (otpInfo) {
       userInfo= await Users.create({
                   
-                    contact: body.contact,
-                    country_code: body.country_code,
-                    contact_verify: true,
+        contact: body.contact,
+        country_code: body.country_code,
+        contact_verify: true,
+       }
+    );
+       await userDevice.create({
+                  
+                    userId: userInfo._id,
+                   
                     fcmtoken: body.fcmtoken,
                     ipAddress:body.ipAddress,
                     modelName:body.modelName,
@@ -259,8 +255,5 @@ public async verifyotpByApi(body: any) {
 }
 
 }
-
-
-
 }
 
