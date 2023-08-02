@@ -330,17 +330,26 @@ public async reCommentPost(userId:any,commentId:any){
         }
     }
     public async searchPost(search:any){
-        if(search){
-            let PostInfo:any=await Post.find({isDeleted:false}).populate("userId","profile_picture");  
-            console.log("PostInfo",PostInfo);
+                let PostInfo:any=await Post.aggregate(
+                [
+                    {
+                      $search: {
+                        index: "search-text",
+                        text: {
+                          query: search,
+                          path: {
+                            wildcard: "*"
+                          }
+                        }
+                      }
+                    }
+                  ])
+              return  PostInfo 
             
-            PostInfo = new FuzzySearch(PostInfo, ["userName","eventName"], {
-                caseSensitive: false,
-            });
-            PostInfo = PostInfo.search(search);
-            return PostInfo
+            
+
     
-        }
+        
     
     }
 

@@ -113,8 +113,6 @@ router.post("/delete", async (req, res) => {
 
 router.get("/search", async (req, res) => {
     try {
-        
-        
         const search = req.query.search;
         
         const controller = new PostController();

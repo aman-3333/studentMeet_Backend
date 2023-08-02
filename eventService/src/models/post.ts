@@ -9,7 +9,7 @@ const schema = new Schema({
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
-    userName:{ type: String },
+    userName:{ type: String,index:true },
     postType:{ type: String,enum:["General"]},
     seePost:{ type: String,enum:["anyone","friend","group"],default:"anyone"},
     commentOnPost:{ type: String,enum:["anyone","friend","group"],default:"anyone"},
