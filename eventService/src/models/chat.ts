@@ -10,7 +10,7 @@ const chatModel = new Schema(
       type:Schema.Types.ObjectId,
       ref: "Message",
     },
-    groupAdmin: { type:Schema.Types.ObjectId, ref: "userdetail" },
+    groupAdmin: { type:Schema.Types.ObjectId, ref: "userdetails" },
     isAlreadyFriend:{type:Boolean,default:false},
     friendList:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
     rejectFriendRequest:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],

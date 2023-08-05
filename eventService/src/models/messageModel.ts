@@ -2,7 +2,7 @@ import {Document, model, Schema,ObjectId} from "mongoose";
 
 const messageSchema = new Schema(
   {
-    sender: { type: Schema.Types.ObjectId, ref: "userdetail" },
+    sender: { type: Schema.Types.ObjectId, ref: "userdetails" },
     content: { type: String, trim: true },
     chat: { type: Schema.Types.ObjectId, ref: "Chat" },
     fromDelete: {type:Boolean,default:false},

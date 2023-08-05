@@ -1,7 +1,7 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    userId: { type: Schema.Types.ObjectId,ref: "userdetail" },
+    userId: { type: Schema.Types.ObjectId,ref: "userdetails" },
     city: { type: Schema.Types.ObjectId,ref: "cities" },
     state: { type: Schema.Types.ObjectId,ref: "states" },
     country: { type: Schema.Types.ObjectId,ref: "countries" },
@@ -16,26 +16,26 @@ const schema = new Schema({
     postLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
     isAnyAchievement: { type: Boolean, default: false },
-    PostCommentCount: { type: Number, default: 0 },
+    postCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
-    PostLike: [{
-        type: Schema.Types.ObjectId, ref: "userdetail",
+    postLike: [{
+        type: Schema.Types.ObjectId, ref: "userdetails",
         
     }],
     PostFavourite: [{
-        type: Schema.Types.ObjectId, ref: "userdetail",
+        type: Schema.Types.ObjectId, ref: "userdetails",
         
     }],
-    PostComment: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+    postComment: [{
+        userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
         comment: { type: String },
         dateTime: { type: Date },
       
     }],
     sharePost: [{
-       post: { type: Schema.Types.ObjectId, ref: "post" },
-       userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+       post: { type: Schema.Types.ObjectId, ref: "posts" },
+       userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
         dateTime: { type: Date },
     }],
     isisActive: { type: Boolean, default: false },
@@ -57,9 +57,9 @@ location: ObjectId,
     shareCount: Number,
     postCommentCount: Number,
     postFavouriteCount: Number,
-    PostLike: [ObjectId],
+    postLike: [ObjectId],
     PostFavourite: [ObjectId],
-    PostComment: [{
+    postComment: [{
         userId: ObjectId,
         comment: String,
         dateTime: Date,

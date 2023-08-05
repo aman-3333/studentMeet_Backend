@@ -2,10 +2,10 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     
-    sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
+    sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
     applyInfo:[{
-        userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-        ownerId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+        userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+        ownerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
         dateTime:{type:Date},
         status:{type:String},
         text:{type:String}

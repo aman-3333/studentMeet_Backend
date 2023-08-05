@@ -2,13 +2,13 @@ import { Document, model, Schema } from "mongoose";
 
 const tokenSchema = new Schema(
     {
-        userid: {type: Schema.Types.ObjectId, required:true, ref:'user'},
-        token: String,
-        refreshToken: String,
-        tokenExpiryAt: Number,
-        refreshTokenExpiryAt: Number,
-        newTokenDuration:Number,
-        flag:Number
+        userid: {type: Schema.Types.ObjectId, required:true, ref:'userdetails'},
+        token: {type:String},
+        refreshToken: {type:String},
+        tokenExpiryAt: {type:Number},
+        refreshTokenExpiryAt: {type:Number},
+        newTokenDuration:{type:Number},
+        flag:{type:Number}
     },
     { timestamps: true }
 );

@@ -71,12 +71,12 @@ router.post("/activity", async (req, res) => {
         const userId = req.body.userId;
         const PostId = req.body.PostId; 
         const status = req.body.status;
-         const PostComment = req.body.PostComment;
-         const PostCommentId = req.body.PostCommentId;
+         const postComment = req.body.postComment;
+         const postCommentId = req.body.postCommentId;
          const body = req.body;
 
         const controller = new PostController();
-        const response = await controller.PostActivity(userId, PostId, status, PostComment, PostCommentId, body);
+        const response = await controller.PostActivity(userId, PostId, status, postComment, postCommentId, body);
         res.status(200).json(successResponse("postActivity", response, res.statusCode));
     } catch (error) {
       
