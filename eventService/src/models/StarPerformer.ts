@@ -1,9 +1,9 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    starPerformerId:  { type: Schema.Types.ObjectId, ref: "userdetail" },
+    starPerformerId:  { type: Schema.Types.ObjectId, ref: "userdetails" },
     starPerformerName: { type: String },
-    ownerId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+    ownerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
     like: { type: Number },
     eventCategory: [{ type: String }],
     earningCoin: { type: String },

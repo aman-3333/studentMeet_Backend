@@ -3,11 +3,11 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema({
 
    
-    postId: { type: Schema.Types.ObjectId,ref: "post" },
-    postCommentId: { type: Schema.Types.ObjectId,ref: "post" },
+    postId: { type: Schema.Types.ObjectId,ref: "posts" },
+    postCommentId: { type: Schema.Types.ObjectId,ref: "posts" },
    
    reCommentPost: [{
-        userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+        userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
         comment: { type: String },
         dateTime: { type: Date },
       

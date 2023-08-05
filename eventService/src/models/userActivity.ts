@@ -2,66 +2,27 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    PostLike: [{
-        type: Schema.Types.ObjectId, ref: "post"
-    }],
-    PostFavourite: [{
-        type: Schema.Types.ObjectId, ref: "post"
-    }],
-    PostComment: [{
-        PostId: { type: Schema.Types.ObjectId, ref: "post" },
-        comment: { type: String },
+    sharePost: [{
+        post: { type: Schema.Types.ObjectId, ref: "posts" },
+       
+         friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+         dateTime: { type: Date },
+     }],
+    sponsorshipShare: [{
+        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
         dateTime: { type: Date },
     }],
-
-    HashtagLike: [
-        { type: Schema.Types.ObjectId, ref: "hashtag" },
-    ],
-    Hashtagcomment: [{
-        HashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
-        comment: { type: String },
-        dateTime: { type: Date }
-    }],
-    HashtagFavourite: [
-        { type: Schema.Types.ObjectId, ref: "hashtag" },
-    ],
-    shareHashtag: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    }],
-    hashtagSharedByOther: [{
-        hashtagId: { type: Schema.Types.ObjectId, ref: "hashtag" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    }],
-    sponsorshipLike: [
-        { type: Schema.Types.ObjectId, ref: "sponsorship" },
-    ],
-    priceDownsponsorship: [{
-        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
-        message: { type: String }
-    }],
-    sponsorshipComment: [{
-        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
-        comment: { type: String },
-        dateTime: { type: Date }
-    }], 
-    sponsorshipFavorite: [
-        { type: Schema.Types.ObjectId, ref: "sponsorship" },
-    ],
-    sponsorshipShare: [{
-        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
-        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
-    }],
     sponsorshipSharedByOther: [{
-        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorship" },
+        sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
     }],
     userFollowers: [
         { type: Schema.Types.ObjectId, ref: "userDetails" },
     ],
-    userFollowing: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    userFollowing: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     brandFollowers: [
-        { type: Schema.Types.ObjectId, ref: "sponsor" },
+        { type: Schema.Types.ObjectId, ref: "userdetails" },
     ],
     brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponsor" }],
     schoolFollowers: [
@@ -69,9 +30,9 @@ const schema = new Schema({
     ],
     schoolFollowing: [{ type: Schema.Types.ObjectId, ref: "school" }],
     academyFollowers: [
-        { type: Schema.Types.ObjectId, ref: "academy" },
+        { type: Schema.Types.ObjectId, ref: "academies" },
     ],
-    academyFollowing: [{ type: Schema.Types.ObjectId, ref: "academy" }],
+    academyFollowing: [{ type: Schema.Types.ObjectId, ref: "academies" }],
     retailerFollowers: [
         { type: Schema.Types.ObjectId, ref: "retailer" },
     ],
@@ -98,95 +59,53 @@ const schema = new Schema({
 
 export interface IuserDetailsActivity extends Document {
     userId: ObjectId,
-    PostLike: [ObjectId],
-    PostFavourite: [ObjectId],
-    PostComment: [{
-        PostId: ObjectId,
-        comment: String,
-        dateTime: Date,
-    }],
-    HashtagLike: [
-        ObjectId,
-    ],
-    Hashtagcomment: [{
-        HashtagId: ObjectId,
-        comment: String,
-        dateTime: Date
-    }],
-    HashtagFavourite: [
-        ObjectId,
-    ],
-    shareHashtag: [{
-        hashtagId: ObjectId,
-        friendId: ObjectId,
-    }],
-    hashtagSharedByOther: [{
-        hashtagId: ObjectId,
-        friendId: ObjectId,
-    }],
-    sponsorshipLike: [{
-        sponsorshipId: ObjectId,
-    }],
-    priceDownsponsorship: [{
-        sponsorshipId: ObjectId,
-        message: String
-    }],
-    sponsorshipComment: [{
-        sponsorshipId: ObjectId,
-        comment: String,
-        dateTime: Date
-    }],
-    sponsorshipFavorite: [{
-        sponsorshipId: ObjectId,
-    }],
+    sharePost: [{
+        post: ObjectId,
+       
+         friendId: ObjectId,
+         dateTime: { type: Date },
+     }],
     sponsorshipShare: [{
         sponsorshipId: ObjectId,
         friendId: ObjectId,
+        dateTime: { type: Date },
     }],
     sponsorshipSharedByOther: [{
         sponsorshipId: ObjectId,
         friendId: ObjectId,
     }],
     userFollowers: [
-        ObjectId
-
+        ObjectId,
     ],
-    userFollowing: [
-        ObjectId
-    ],
- 
+    userFollowing: [ObjectId],
     brandFollowers: [
-       ObjectId
+        ObjectId,
     ],
     brandFollowing: [ObjectId],
     schoolFollowers: [
-       ObjectId
+        ObjectId,
     ],
     schoolFollowing: [ObjectId],
     academyFollowers: [
-       ObjectId
+        ObjectId,
     ],
     academyFollowing: [ObjectId],
     retailerFollowers: [
-       ObjectId
+        ObjectId,
     ],
     retailerFollowing: [ObjectId],
    instituteFollowers: [
-       ObjectId
+    ObjectId,
     ],
     instituteFollowing: [ObjectId],
-
-
-    sendFriendRequestBYOther:  [ObjectId],
-    cancelSendFriendRequest:  [ObjectId],
     friendList: [ObjectId],
-    friendRequestRejectbyOther: [ObjectId],
     sendFriendRequest: [ObjectId],
+    sendFriendRequestBYOther: [ObjectId],
+    cancelSendFriendRequest: [ObjectId],
     rejectFriendRequest: [ObjectId],
-    blockList: [ObjectId
-    ],
-    blockbyOther: [ObjectId
-    ],
+    friendRequestRejectbyOther: [ObjectId],
+    blockList: [ObjectId],
+    blockbyOther: [ObjectId],
     followersCount: Number,
     followingCount: Number,
     isActive: Boolean,

@@ -3,11 +3,11 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 
 const eventSchema = new Schema(
   {
-    organizerId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-    suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    organizerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+    suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     eventFormId: [{ type: Schema.Types.ObjectId, ref: "eventform" }],
     eventPartnerId: [{ type: Schema.Types.ObjectId, ref: "eventPartner" }],
-    participentId: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    participentId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     eventGuideLines: { type: Schema.Types.ObjectId },
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
@@ -25,20 +25,20 @@ const eventSchema = new Schema(
     eventCommentCount:  { type: Number,default:0 },
     eventShareCount: { type: Number,default:0  },
     likeEvent: [
-      { type: Schema.Types.ObjectId, ref: "userdetail" },
+      { type: Schema.Types.ObjectId, ref: "userdetails" },
   ],
   eventFavorite: [
-       { type: Schema.Types.ObjectId, ref: "userdetail" },
+       { type: Schema.Types.ObjectId, ref: "userdetails" },
   ],
   commentEvent: [{
-      userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+      userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
       commentMessage:{ type: String },
       dateTime:{ type: Date },
   }],
   shareEvent: [{
      Hashtag: { type: Schema.Types.ObjectId, ref: "event" },
-     userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-      friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+     userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+      friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
   }],
     advancedEventMoney: { type: Number },
     priceForParticipent: { type: Number },

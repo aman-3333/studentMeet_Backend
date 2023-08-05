@@ -4,6 +4,11 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 const userSchema = new Schema(
   {
     fullname: { type: String,index:1 },
+    user_name:{type:String,unique:true},
+    achievement_id:{type:Schema.Types.ObjectId,ref:"achievement"},
+    academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
+    bank_details:{type:Schema.Types.ObjectId,ref:"achievement"},
+    
     contact: { type: Number, trim: true },
     country_code: { type: Number, trim: true },
     whatsapp_contact: { type: Number, trim: true },

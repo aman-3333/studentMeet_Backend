@@ -3,8 +3,8 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 
 const sponsorshipSchema = new Schema(
   {  
-    organizerId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-    suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userdetail" }],
+    organizerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+    suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
   sponsorshipFormId: [ {type: Schema.Types.ObjectId, ref: "sponsorPartner" }],
   sponsorshipPartnerId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
     participentId: [{ type: Schema.Types.ObjectId, ref: "userdeta " }],
@@ -24,25 +24,25 @@ const sponsorshipSchema = new Schema(
   sponsorshipCommentCount:  { type: Number,default:0 },
   sponsorshipShareCount: { type: Number,default:0  },
     likesponsor: [
-      { type: Schema.Types.ObjectId, ref: "userdetail" },
+      { type: Schema.Types.ObjectId, ref: "userdetails" },
   ],
 sponsorshipFavorite: [
-       { type: Schema.Types.ObjectId, ref: "userdetail" },
+       { type: Schema.Types.ObjectId, ref: "userdetails" },
   ],
 sponsorshipComment: [{
-      userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+      userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
       comment:{ type: String },
       dateTime:{ type: Date },
   }],
   sharesponsor: [{
     sponsor: { type: Schema.Types.ObjectId, ref: "sponsor" },
-     userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
-      friendId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+     userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+      friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
   }],
   
     feadBacksponsor:[{
       reting: { type: Number, default: 0 },
-      userId: { type: Schema.Types.ObjectId, ref: "userdetail" },
+      userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
       feadBackComment: { type: String }
     }],
     

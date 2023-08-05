@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
 import Users from "../models/userDetails";
-
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
@@ -28,6 +27,7 @@ const fs = require("fs");
 const Hogan = require("hogan.js");
 const saltRounds = 10;
 
+
 function generateOTP(length: Number) {
   var digits = "1234567890";
   let OTP = "";
@@ -45,9 +45,17 @@ function generateToken(length: Number) {
   return token;
 }
 
-
+function makeid(length = 5) {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
 export default class AuthController {
 
+  
   public async sendotp(body: any) {
     let otp: any;
     let createUser: any;
