@@ -20,6 +20,7 @@ import userActivity from "../models/userActivity";
 import userDevice from "../models/userDevice";
 import StarPerformer from "../models/StarPerformer";
 import post from "../models/post";
+import userConfig from "../models/userConfig";
 const { createJwtToken } = require("../utils/JwtToken");
 // import SignupOtp from "../models/SignupOtp";
 
@@ -183,11 +184,9 @@ console.log(body);
       const token = createJwtToken({ userId: userData._id });
       if (otpInfo) {
         
-        userInfo =    await userDevice.findOneAndUpdate(
+       await userDevice.findOneAndUpdate(
                   {
-                    contact: body.contact,
-                    country_code: body.country_code,
-                    isDeleted: false,
+                    userId: userData._id,
                   },
                   { $set: { contact_verify: true,
                     fcmtoken: body.fcmtoken,
@@ -198,14 +197,34 @@ console.log(body);
                     freeMemory:body.freeMemory,
                     osVersion: body.osVersion,
                     networkCarrier:body.networkCarrier,
-                    dimension:body.dimension} }
+                    dimension:body.dimension
+                  } }
                 );
-               
+                
+                await userConfig.findOneAndUpdate(
+                  {
+                    userId: userData._id,
+                  },
+                  { $set: { current_app_version: body.current_app_version,
+                  device_token: body.device_token,
+                  location_coords:body.location_coords,
+                  uninstalled_on:body.uninstalled_on,
+                  } }
+                );
 
-              
+                await Users.findOneAndUpdate(
+                  {
+                    userId: userData._id,
+                  },
+                  { $set: { contact_verify: true
+                  } }
+                );
+              }
+
+        
               
                 
-          return { Status: "Sucess", Details: "OTP Match",userInfo,token  };
+          return { Status: "Sucess", Details: "OTP Match",userData,token  };
       }
 
       else {
@@ -216,6 +235,5 @@ console.log(body);
   }
 
 
-}
 }
 
