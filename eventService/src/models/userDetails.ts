@@ -1,5 +1,11 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 import { DATETIME_FORMAT } from "../utils/Constants";
+import Jwt  from "jsonwebtoken";
+
+
+ let sessionSecret='base64:Olvke97cjrcZg4ZYv2nlXxHTLNIs2XWFw9oVuH/OH5E=';
+let  sessionExpiration=  60 * 60 * 24 * 365;
+ let saltRounds= process.env.SALT_ROUNDS || 12;
 
 const userSchema = new Schema(
   {
@@ -50,4 +56,5 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
 export default model ("userdetail", userSchema);

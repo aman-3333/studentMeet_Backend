@@ -26,6 +26,7 @@ import { AnyAaaaRecord } from "dns";
 import PaymentController from "../controllers/PaymentController";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 
 
 
@@ -244,7 +245,7 @@ router.post('/uploadfile', upload1.array('file', 50), function (req:any, res:any
 
 
 //////////////////////////////razorpay/////////////////////////////////
-router.post("/checkoutPayment", async (req, res) => {
+router.post("/checkoutPayment", checkAuth, async (req, res) => {
     try {
       const bookSponsorshipId = req.body.bookSponsorshipId;
       const controller = new PaymentController();
@@ -255,7 +256,7 @@ router.post("/checkoutPayment", async (req, res) => {
         res.status(500).json(errorResponse("error in createorder", res.statusCode));
     }
 });
-router.post("/paymentCapture", async (req, res) => {
+router.post("/paymentCapture", checkAuth, async (req, res) => {
     try {
       const data = req.body;
       const controller = new PaymentController();

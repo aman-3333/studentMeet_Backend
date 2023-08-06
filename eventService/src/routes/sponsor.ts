@@ -1,11 +1,12 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import SponsorshipController from "../controllers/sponsorshipController";
 import { ISponsorship } from "../models/sponsorshipDetails"
 
 
-router.post("/create", async (req, res) => {
+router.post("/create", checkAuth, async (req, res) => {
     try {
         const body = req.body;
 console.log(body,"body");
@@ -24,7 +25,7 @@ console.log(body,"body");
 
 
 
-router.patch("/edit/:id", async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const SponsorshipId = req.params.id;
 
@@ -39,7 +40,7 @@ router.patch("/edit/:id", async (req, res) => {
 });
 
 
-router.get("/get/participants", async (req, res) => {
+router.get("/get/participants", checkAuth, async (req, res) => {
     try {
         const controller = new SponsorshipController();
         const SponsorshipId = req.query.SponsorshipId;
@@ -51,7 +52,7 @@ router.get("/get/participants", async (req, res) => {
     }
 });
 
-router.get("/getallsponsor", async (req, res) => {
+router.get("/getallsponsor", checkAuth, async (req, res) => {
     try {
         const controller = new SponsorshipController();
         
@@ -63,7 +64,7 @@ router.get("/getallsponsor", async (req, res) => {
     }
 });
 
-router.get("/getbyid", async (req, res) => {
+router.get("/getbyid", checkAuth, async (req, res) => {
     try {
         const SponsorshipId = req.query.SponsorshipId;
         const status = req.query.status;
@@ -77,7 +78,7 @@ router.get("/getbyid", async (req, res) => {
 });
 
 
-router.get("/search", async (req, res) => {
+router.get("/search", checkAuth, async (req, res) => {
     try {
         const search = req.query.search;
     
@@ -90,7 +91,7 @@ router.get("/search", async (req, res) => {
     }
 });
 
-router.post("/activity", async (req, res) => {
+router.post("/activity", checkAuth, async (req, res) => {
     try{
         
         const userId:any =req.body.userId;
@@ -108,7 +109,7 @@ router.post("/activity", async (req, res) => {
         res.status(500).json(errorResponse("error in SponsorshipActivity", res.statusCode));
     }
 })
-router.get("/getActivity", async (req, res) => {
+router.get("/getActivity", checkAuth, async (req, res) => {
     try{
         
         const status:any =req.query.status;
@@ -121,7 +122,7 @@ router.get("/getActivity", async (req, res) => {
         res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
     }
 })
-router.get("/removeActivity", async (req, res) => {
+router.get("/removeActivity", checkAuth, async (req, res) => {
     try{
         
         
@@ -137,7 +138,7 @@ router.get("/removeActivity", async (req, res) => {
     }
 })
 
-router.get("/readActivity", async (req, res) => {
+router.get("/readActivity", checkAuth, async (req, res) => {
     try{
         
         const status:any =req.query.status;
@@ -151,7 +152,7 @@ router.get("/readActivity", async (req, res) => {
     }
 })
 
-router.post("/applySponsorship", async (req, res) => {
+router.post("/applySponsorship", checkAuth, async (req, res) => {
     try {
       
         
@@ -171,7 +172,7 @@ router.post("/applySponsorship", async (req, res) => {
 
 
 
-router.post("/applySponsorship", async (req, res) => {
+router.post("/applySponsorship", checkAuth, async (req, res) => {
     try {
         const SponsorshipId = req.body.SponsorshipId; 
         const userId = req.body.userId; 
@@ -184,7 +185,7 @@ router.post("/applySponsorship", async (req, res) => {
         res.status(500).json(errorResponse("error in applySponsorship", res.statusCode));
     }
 });
-router.get("/filterSponsorship", async (req, res) => {
+router.get("/filterSponsorship", checkAuth, async (req, res) => {
     try {
        
         const sort = req.query.sort;
@@ -203,7 +204,7 @@ router.get("/filterSponsorship", async (req, res) => {
         res.status(500).json(errorResponse("error filterSponsorship", res.statusCode));
     }
 });
-router.patch("/feadBackSponsorship", async (req, res) => {
+router.patch("/feadBackSponsorship", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const SponsorshipId = req.body.SponsorshipId;
@@ -220,7 +221,7 @@ router.patch("/feadBackSponsorship", async (req, res) => {
 
 
 
-router.patch("/deleteSponsorship/:id", async (req, res) => {
+router.patch("/deleteSponsorship/:id", checkAuth, async (req, res) => {
     try {
         const SponsorshipId = req.body.SponsorshipId;
         const userId = req.body.userId;
@@ -233,7 +234,7 @@ router.patch("/deleteSponsorship/:id", async (req, res) => {
     }
 })
 
-router.patch("/deleteSponsorship/:id", async (req, res) => {
+router.patch("/deleteSponsorship/:id", checkAuth, async (req, res) => {
     try {
         const SponsorshipId = req.body.SponsorshipId;
         const userId = req.body.userId;

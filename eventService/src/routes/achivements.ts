@@ -1,10 +1,11 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IAchivement } from "../models/achivement";
 
 import AchivementController from "../controllers/AchivementController";
-router.post("/createAchivement", async (req, res) => {
+router.post("/createAchivement", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new AchivementController();
@@ -16,7 +17,7 @@ router.post("/createAchivement", async (req, res) => {
     }
 });
 
-router.patch("/Achivement/:id", async (req, res) => {
+router.patch("/Achivement/:id", checkAuth, async (req, res) => {
     try {
         const AchivementId = req.params.id;
         const body = req.body as IAchivement;
@@ -29,7 +30,7 @@ router.patch("/Achivement/:id", async (req, res) => {
     }
 });
 
-router.get("/AchivementList", async (req, res) => {
+router.get("/AchivementList", checkAuth, async (req, res) => {
     try {
         const controller = new AchivementController();
         const stateId = req.query.stateId;
@@ -42,7 +43,7 @@ router.get("/AchivementList", async (req, res) => {
 });
 
 
-router.get("/Achivementinfobyid", async (req, res) => {
+router.get("/Achivementinfobyid", checkAuth, async (req, res) => {
     try {
         const AchivementId: any = req.query.AchivementId;
         const controller = new AchivementController();
@@ -55,7 +56,7 @@ router.get("/Achivementinfobyid", async (req, res) => {
 });
 
 
-router.get("/deleteAchivement/:id", async (req, res) => {
+router.get("/deleteAchivement/:id", checkAuth, async (req, res) => {
     try {
         const AchivementId = req.params.id;
         const controller = new AchivementController();

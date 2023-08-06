@@ -20,7 +20,7 @@ import userActivity from "../models/userActivity";
 import userDevice from "../models/userDevice";
 import StarPerformer from "../models/StarPerformer";
 import post from "../models/post";
-
+const { createJwtToken } = require("../utils/JwtToken");
 // import SignupOtp from "../models/SignupOtp";
 
 const fs = require("fs");
@@ -83,6 +83,22 @@ export default class AuthController {
         userId
           : createUser._id
       })
+
+       await userDevice.create(
+        {
+          userId
+          : createUser._id,
+
+          fcmtoken: body.fcmtoken,
+          ipAddress:body.ipAddress,
+          modelName:body.modelName,
+          manufacturer:body.manufacturer,
+          maxMemorybigint:body.maxMemorybigint,
+          freeMemory:body.freeMemory,
+          osVersion: body.osVersion,
+          networkCarrier:body.networkCarrier,
+          dimension:body.dimension} 
+      );
       otpInfo = await Otp.create({
 
         contact: body.contact,
@@ -148,26 +164,26 @@ public async sendotpByApi(body: any) {
 
 
 public async verifyotpByApi(body: any) {
-  let data: any;
+  let userData: any;
   let userInfo:any;
-  data= await Users.findOne({
+  userData= await Users.findOne({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
   }).lean();
 
-  if (data) {
+  if (userData) {
       let otpInfo = await Otp.findOne({
           contact: body.contact,
           country_code: body.country_code,
           otp: body.otp
       }).lean();
+console.log(body);
 
-
-
+      const token = createJwtToken({ userId: userData._id });
       if (otpInfo) {
         
-        userInfo =    await Users.findOneAndUpdate(
+        userInfo =    await userDevice.findOneAndUpdate(
                   {
                     contact: body.contact,
                     country_code: body.country_code,
@@ -184,26 +200,12 @@ public async verifyotpByApi(body: any) {
                     networkCarrier:body.networkCarrier,
                     dimension:body.dimension} }
                 );
-             
+               
 
-                await userDevice.findOneAndUpdate(
-                  {
-                    userId: userInfo._id,
-                  },
-                  { $set: { contact_verify: true,
-                    fcmtoken: body.fcmtoken,
-                    ipAddress:body.ipAddress,
-                    modelName:body.modelName,
-                    manufacturer:body.manufacturer,
-                    maxMemorybigint:body.maxMemorybigint,
-                    freeMemory:body.freeMemory,
-                    osVersion: body.osVersion,
-                    networkCarrier:body.networkCarrier,
-                    dimension:body.dimension} }
-                );
               
-          return { Status: "Sucess", Details: "OTP Match",userInfo  };
-
+              
+                
+          return { Status: "Sucess", Details: "OTP Match",userInfo,token  };
       }
 
       else {
@@ -213,54 +215,6 @@ public async verifyotpByApi(body: any) {
 
   }
 
-  if (!data) {
-    let otpInfo = await Otp.findOne({
-        contact: body.contact,
-        country_code: body.country_code,
-        otp: body.otp
-    }).lean();
-
-
-
-    if (otpInfo) {
-      userInfo= await Users.create({
-                  
-        contact: body.contact,
-        country_code: body.country_code,
-        contact_verify: true,
-       }
-    );
-       await userDevice.create({
-                  
-                    userId: userInfo._id,
-                   
-                    fcmtoken: body.fcmtoken,
-                    ipAddress:body.ipAddress,
-                    modelName:body.modelName,
-                    manufacturer:body.manufacturer,
-                    maxMemorybigint:body.maxMemorybigint,
-                    freeMemory:body.freeMemory,
-                    osVersion: body.osVersion,
-                    networkCarrier:body.networkCarrier,
-                    dimension:body.dimension }
-                );
-                await userActivity.create({
-                            userId
-                              : userInfo._id
-                          })
-                   
-                          
-                          
-        return { Status: "Sucess", Details: "OTP Match",userInfo };
-
-    }
-
-    else {
-
-        return { Status: "Error", Details: "OTP Mismatch" };
-    }
-
-}
 
 }
 }

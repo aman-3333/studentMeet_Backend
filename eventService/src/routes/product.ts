@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IProduct } from "../models/product";
 import ProductController from "../controllers/ProductController";
-router.post("/create", async (req, res) => {
+router.post("/create", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new ProductController();
@@ -15,7 +16,7 @@ router.post("/create", async (req, res) => {
     }
 });
 
-router.patch("/edit/:id", async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const ProductId = req.params.id;
         const body = req.body as IProduct;
@@ -28,7 +29,7 @@ router.patch("/edit/:id", async (req, res) => {
     }
 });
 
-router.get("/list", async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new ProductController();
         const stateId = req.query.stateId;
@@ -41,7 +42,7 @@ router.get("/list", async (req, res) => {
 });
 
 
-router.get("/filter", async (req, res) => {
+router.get("/filter", checkAuth, async (req, res) => {
     try {
         
         const query = req.query;
@@ -55,7 +56,7 @@ router.get("/filter", async (req, res) => {
 });
 
 
-router.get("/infobyid", async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const ProductId: any = req.query.ProductId;
         const controller = new ProductController();
@@ -68,7 +69,7 @@ router.get("/infobyid", async (req, res) => {
 });
 
 
-router.get("/delete/:id", async (req, res) => {
+router.get("/delete/:id", checkAuth, async (req, res) => {
     try {
         const ProductId = req.params.id;
         const controller = new ProductController();
@@ -81,7 +82,7 @@ router.get("/delete/:id", async (req, res) => {
     }
 })
 
-router.post("/addtocart", async (req, res) => {
+router.post("/addtocart", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new ProductController();
@@ -92,7 +93,7 @@ router.post("/addtocart", async (req, res) => {
         res.status(500).json(errorResponse("error in addtocart Product", res.statusCode));
     }
 });
-router.post("/cart/product/remove", async (req, res) => {
+router.post("/cart/product/remove", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new ProductController();
@@ -105,7 +106,7 @@ router.post("/cart/product/remove", async (req, res) => {
 });
 
 
-router.get("/cartlist", async (req, res) => {
+router.get("/cartlist", checkAuth, async (req, res) => {
     try {
         const controller = new ProductController();
         const userId = req.query.userId;

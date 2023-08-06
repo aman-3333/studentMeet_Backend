@@ -1,5 +1,6 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
 import ChatController from "../controllers/ChatController";
@@ -7,7 +8,7 @@ import Message from "../models/messageModel"
 import userrole from "../models/userDetails"
 import Chat from "../models/chat";
 
-router.get("/searchUser", async (req, res) => {
+router.get("/searchUser", checkAuth, async (req, res) => {
     try {
         const id:any=req.query.institute;
         let searchValue:any = req.query.searchValue;
@@ -20,7 +21,7 @@ router.get("/searchUser", async (req, res) => {
         res.status(500).json(errorResponse("error in searchUser", res.statusCode));
     }
 });
-router.get("/getFriendRequest", async (req, res) => {
+router.get("/getFriendRequest", checkAuth, async (req, res) => {
     try {
        
         let userId:any=req.query.userId;
@@ -33,7 +34,7 @@ router.get("/getFriendRequest", async (req, res) => {
     }
 });
 
-router.get("/getallfriend", async (req, res) => {
+router.get("/getallfriend", checkAuth, async (req, res) => {
     try {
      
        

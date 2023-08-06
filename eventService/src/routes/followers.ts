@@ -1,9 +1,10 @@
 import followersController from "../controllers/followersController";
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
-router.post("/following", async (req, res) => {
+router.post("/following", checkAuth, async (req, res) => {
     try {
         
         const userId = req.body.userId; 
@@ -17,7 +18,7 @@ router.post("/following", async (req, res) => {
         res.status(500).json(errorResponse("error in following", res.statusCode));
     }
 });
-router.post("/unfollowing", async (req, res) => {
+router.post("/unfollowing", checkAuth, async (req, res) => {
     try {
         
         const userId = req.body.userId; 
@@ -32,7 +33,7 @@ router.post("/unfollowing", async (req, res) => {
     }
 });
 
-router.get("/getFollowers", async (req, res) => {
+router.get("/getFollowers", checkAuth, async (req, res) => {
     try {
         
         const userId = req.query.userId; 

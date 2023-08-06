@@ -29,19 +29,19 @@ export default class PaymentController {
     const bookSponsorshipDetail: any = await bookSponsorship.findOne({ _id: bookSponsorshipId }).lean()
     let receiptID = this.getRandomId()
     const totalAmount = bookSponsorshipDetail.orderTotal * 100
-    const options = {
-      amount: totalAmount,
-      currency: 'INR',
-      receipt: receiptID,
-    };
-    const razorpay = new Razorpay({
-      key_id: razorpayConfig.key_id,
-      key_secret: razorpayConfig.key_secret
-    });
-    const response = await razorpay.orders.create(options);
-    if (response && response.id) {
-      resp = await bookSponsorship.findOneAndUpdate({ _id: bookSponsorshipId }, { $set: { order_id: response.id, receipt: receiptID, } }, { new: true });
-    }
+    // const options = {
+    //   amount: totalAmount,
+    //   currency: 'INR',
+    //   receipt: receiptID,
+    // };
+    // const razorpay = new Razorpay({
+    //   key_id: razorpayConfig.key_id,
+    //   key_secret: razorpayConfig.key_secret
+    // });
+    // const response = await razorpay.orders.create(options);
+    // if (response && response.id) {
+    //   resp = await bookSponsorship.findOneAndUpdate({ _id: bookSponsorshipId }, { $set: { order_id: response.id, receipt: receiptID, } }, { new: true });
+    // }
     return resp;
   }
 
