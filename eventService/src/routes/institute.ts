@@ -9,7 +9,9 @@ import  { IInstitute } from "../models/InstituteModel";
 
 router.post("/createInstitute", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
      
         const controller = new InstituteController();
         const response:IInstitute = await controller.createInstitute(body);
@@ -36,7 +38,9 @@ router.patch("/Institute/:id", checkAuth, async (req, res) => {
     try {
         const InstituteId = req.params.id;
         
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new InstituteController();
         const response: IInstitute = await controller.editInstitute(body, InstituteId);
         res.status(200).json(successResponse("Institute update", response, res.statusCode));

@@ -6,7 +6,9 @@ import { ISportsBrand } from "../models/sportsBrand";
 import SportsBrandController from "../controllers/SportsBrandController";
 router.post("/create", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new SportsBrandController();
         const response = await controller.createSportsBrand(body);
         res.status(200).json(successResponse("create SportsBrand", response, res.statusCode));

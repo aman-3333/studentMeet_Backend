@@ -4,9 +4,11 @@ const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { ICity } from "../models/city";
 import authController from "../controllers/AuthController";
-router.post("/sendotp", checkAuth, async (req, res) => {
+router.post("/sendotp",  async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new authController();
         const response = await controller.sendotp(body);
         res.status(200).json(successResponse("sendotp", response, res.statusCode));
@@ -16,7 +18,7 @@ router.post("/sendotp", checkAuth, async (req, res) => {
     }
 });
 
-router.post("/verifyotp", checkAuth, async (req, res) => {
+router.post("/verifyotp",  async (req, res) => {
     try {
        
         const body = req.body 

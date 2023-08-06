@@ -7,7 +7,9 @@ import StarPerformerController from "../controllers/StarPerformerController"
 
 router.post("/createStarPerformer", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
      
         
         const controller = new StarPerformerController();
@@ -101,7 +103,9 @@ router.patch("/deleteStarPerformer", checkAuth, async (req, res) => {
 
 router.post("/createStarPerformerThought", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new StarPerformerController();
         const response = await controller.createStarPerformerThought(body);
         res.status(200).json(successResponse("create StarPerformer", response, res.statusCode));

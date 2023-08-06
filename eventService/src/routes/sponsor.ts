@@ -8,7 +8,9 @@ import { ISponsorship } from "../models/sponsorshipDetails"
 
 router.post("/create", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
 console.log(body,"body");
 
         const controller= new SponsorshipController();
@@ -206,7 +208,9 @@ router.get("/filterSponsorship", checkAuth, async (req, res) => {
 });
 router.patch("/feadBackSponsorship", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const SponsorshipId = req.body.SponsorshipId;
         const reting = req.body.reting;
         const feadBackComment = req.body.userId;
