@@ -7,7 +7,7 @@ import { IState } from "../models/State";
 import StateController from "../controllers/StateController";
 
 
-router.post("/createState", checkAuth, async (req, res) => {
+router.post("/create", checkAuth, async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -20,9 +20,10 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create State", res.statusCode));
     }
 });
-router.patch("/State/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const StateId = req.params.id;
+        req.body.user=res.locals.user
         const body = req.body as IState;
         const controller = new StateController();
         const response: IState = await controller.editState(body, StateId);
@@ -33,7 +34,7 @@ router.patch("/State/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/StateList", checkAuth, async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new StateController();
         const response: IState[] = await controller.getStateList();
@@ -45,7 +46,7 @@ router.get("/StateList", checkAuth, async (req, res) => {
 });
 
 
-router.get("/StateInfobyid", checkAuth, async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const StateId = req.query.id;
         const controller = new StateController();
@@ -58,9 +59,9 @@ router.get("/StateInfobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/deleteState/:id", checkAuth, async (req, res) => {
+router.get("/delete", checkAuth, async (req, res) => {
     try {
-        const StateId = req.params.id;
+        const StateId = req.body.stateId;
         const controller = new StateController();
         const response: IState = await controller.deleteState(StateId);
         res.status(200).json(successResponse("delete State", response, res.statusCode));

@@ -60,8 +60,8 @@ const checkAuth = require("../middleware/checkAuth");
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const s31 = new aws.S3({
-    accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
-    secretAccessKey: "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",
+    accessKeyId: "AKIAYU4IZUHWKHIADRZL",
+    secretAccessKey: "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",
 })
 
 
@@ -81,15 +81,16 @@ let upload = multer({ storage }).single('galleryImage')
 
 var s3 = new aws.S3({
   
-   accessKeyId: "AKIAT7AWQUCXUTJXNU7S",
-   secretAccessKey: "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",
+    accessKeyId: "AKIAYU4IZUHWKHIADRZL",
+    secretAccessKey: "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",
 
-   Bucket: "backendservicestudentmeet"
+
+   Bucket: "dibisha"
 })
 var upload1 = multer({
    storage: multerS3({
        s3: s3,
-       bucket:"backendservicestudentmeet",
+       bucket:"dibisha",
        metadata: function (req:any, file:any, cb:any) {
            cb(null, { fieldName: file.fieldname });
        },
@@ -100,15 +101,15 @@ var upload1 = multer({
 })
  
 //Uploading single File to aws s3 bucket
-router.post('/upload', upload1.single('file'), function (req:any, res:any ){
-   res.send({
-       data: req.files,
-       msg: 'Successfully uploaded ' + req.files + ' files!'
-   })
-})
+// router.post('/upload', upload1.single('file'), function (req:any, res:any ){
+//    res.send({
+//        data: req.files,
+//        msg: 'Successfully uploaded ' + req.files + ' files!'
+//    })
+// })
  
 //Uploading Multiple Files to aws s3 bucket
-router.post('/uploadfile', upload1.array('file', 50), function (req:any, res:any) {
+router.post('/upload', upload1.array('file', 50), function (req:any, res:any) {
    
     
    res.send({
@@ -245,7 +246,7 @@ router.post('/uploadfile', upload1.array('file', 50), function (req:any, res:any
 
 
 //////////////////////////////razorpay/////////////////////////////////
-router.post("/checkoutPayment", checkAuth, async (req, res) => {
+router.post("/checkoutPayment", async (req, res) => {
     try {
       const bookSponsorshipId = req.body.bookSponsorshipId;
       const controller = new PaymentController();
@@ -256,7 +257,7 @@ router.post("/checkoutPayment", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in createorder", res.statusCode));
     }
 });
-router.post("/paymentCapture", checkAuth, async (req, res) => {
+router.post("/paymentCapture", async (req, res) => {
     try {
       const data = req.body;
       const controller = new PaymentController();
