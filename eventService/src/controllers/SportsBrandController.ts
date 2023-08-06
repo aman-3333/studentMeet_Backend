@@ -1,5 +1,5 @@
 import SportsBrand, { ISportsBrand } from "../models/sportsBrand";
-import { ICategory } from "../models/category";
+
 export default class SportsBrandController {
 
     public async createSportsBrand(body: any) {

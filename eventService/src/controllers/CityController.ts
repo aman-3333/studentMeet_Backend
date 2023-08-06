@@ -1,5 +1,5 @@
 import City, { ICity } from "../models/city";
-import { ICategory } from "../models/category";
+
 export default class CityController {
 
     public async createCity(body: any) {
@@ -18,7 +18,17 @@ export default class CityController {
     }
 
     public async getCityList(stateId: any) {
-        const CityList: ICity[] = await City.find({ stateId: stateId, isDeleted: false });
+        let CityList: ICity[] = await City.find({ stateId: stateId, isDeleted: false });
+
+        CityList=  CityList.sort((a:any, b:any) => a.city.localeCompare(b.city))
+      
+    
+          
+          
+          
+          
+          
+          
         return CityList;
     }
 

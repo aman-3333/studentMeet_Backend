@@ -1,6 +1,6 @@
 import CartProduct from "../models/cartProduct";
 import VendorShop, { IVendorShop } from "../models/VendorShop";
-import { ICategory } from "../models/category";
+
 export default class VendorShopController {
 
     public async createVendorShop(body: any) {

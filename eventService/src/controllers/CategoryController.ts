@@ -1,7 +1,7 @@
 
-import Category, { ICategory } from "../models/category";
-import SubCategory, { ISubCategory } from "../models/subcategory";
-import SubSubCategory, { ISubSubCategory } from "../models/subSubCategory";
+import category, { ICategory } from "../models/category";
+import subCategory, { ISubCategory } from "../models/subcategory"
+import subSubCategory, { ISubSubCategory } from "../models/subSubCategory";
 
 
 import { ObjectId } from "mongoose";
@@ -18,7 +18,7 @@ export default class CategoryController {
 
     public async createCategory(body: ICategory) {
         let categoryInfo: ICategory;
-        categoryInfo = await Category.create(body);
+        categoryInfo = await category.create(body);
 
         return categoryInfo;
     }
@@ -26,30 +26,30 @@ export default class CategoryController {
 
     public async editCategory(body: ICategory, categoryId: string) {
 
-        const categoryInfo: ICategory = await Category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, body, { new: true }).lean();
+        const categoryInfo: ICategory = await category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, body, { new: true }).lean();
         return categoryInfo;
 
     }
 
 
     public async getCategory(type: any) {
-        const categoryList: any = await Category.find({ isDeleted: false,type:type});
+        const categoryList: any = await category.find({ isDeleted: false,type:type});
         return categoryList;
     }
     public async getCategoryCustomer() {
-        const categoryList: ICategory[] = await Category.find({ isDeleted: false });
+        const categoryList: ICategory[] = await category.find({ isDeleted: false });
         return categoryList;
     }
 
 
     public async getCategoryInfoById(categoryId: any) {
-        const categoryInfo: any = await Category.findOne({ _id: categoryId, isDeleted: false }).lean();
+        const categoryInfo: any = await category.findOne({ _id: categoryId, isDeleted: false }).lean();
         return categoryInfo;
     }
 
     public async deleteCategory(categoryId: string) {
        
-        const categoryInfo: ICategory = await Category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
+        const categoryInfo: ICategory = await category.findOneAndUpdate({ _id: categoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return categoryInfo;
     }
     //////////////////////SubCategory////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ export default class CategoryController {
      
 
         let subCategoryInfo: ISubCategory;
-        subCategoryInfo = await SubCategory.create(body);
+        subCategoryInfo = await subCategory.create(body);
        
         return subCategoryInfo;
     }
@@ -65,31 +65,31 @@ export default class CategoryController {
 
     public async editSubCategory(body: ISubCategory, subCategoryId: string) {
         
-        const subCategoryInfo: ISubCategory = await SubCategory.findOneAndUpdate({ _id: subCategoryId, isDeleted: false }, body, { new: true }).lean();
+        const subCategoryInfo: ISubCategory = await subCategory.findOneAndUpdate({ _id: subCategoryId, isDeleted: false }, body, { new: true }).lean();
         return subCategoryInfo;
 
     }
 
 
     public async getAllSubCategory() {
-        const subCategoryList: ISubCategory[] = await SubCategory.find({ isDeleted: false });
+        const subCategoryList: ISubCategory[] = await subCategory.find({ isDeleted: false });
         return subCategoryList;
     }
 
     public async getSubCategory(categoryId: any) {
-        const subCategoryList: ISubCategory[] = await SubCategory.find({ categoryId: categoryId, isDeleted: false }).lean();
+        const subCategoryList: ISubCategory[] = await subCategory.find({ categoryId: categoryId, isDeleted: false }).lean();
         return subCategoryList;
     }
 
     public async getSubCategoryInfoById(subCategoryId: string) {
-        const subCategoryInfo: any = await SubCategory.findOne({ _id: subCategoryId, isDeleted: false }).lean();
+        const subCategoryInfo: any = await subCategory.findOne({ _id: subCategoryId, isDeleted: false }).lean();
         return subCategoryInfo;
     }
 
     public async deleteSubCategory(subCategoryId: string, userId: String) {
       
 
-        const subCategoryInfo: ISubCategory = await Category.findOneAndUpdate({ _id: subCategoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
+        const subCategoryInfo: ISubCategory = await subCategory.findOneAndUpdate({ _id: subCategoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return subCategoryInfo;
 
 
@@ -100,7 +100,7 @@ export default class CategoryController {
     //////////////////////////////////////SubSubCategory////////////////////////////////////////
     public async createsubSubCategory(body: ISubSubCategory) {
         let subSubCategoryInfo: ISubSubCategory;
-        subSubCategoryInfo = await SubSubCategory.create(body);
+        subSubCategoryInfo = await subSubCategory.create(body);
 
         return subSubCategoryInfo;
     }
@@ -108,26 +108,26 @@ export default class CategoryController {
 
     public async editsubSubCategory(body: ISubSubCategory, subSubCategoryId: string) {
         
-        const subSubCategoryInfo: ISubSubCategory = await SubSubCategory.findOneAndUpdate({ _id: subSubCategoryId, isDeleted: false }, body, { new: true }).lean();
+        const subSubCategoryInfo: ISubSubCategory = await subSubCategory.findOneAndUpdate({ _id: subSubCategoryId, isDeleted: false }, body, { new: true }).lean();
         return subSubCategoryInfo;
 
     }
 
 
     public async getSubSubCategory(subCategoryId: any) {
-        const subSubCategoryList: ISubSubCategory[] = await SubSubCategory.find({ subCategoryId: subCategoryId, isDeleted: false });
+        const subSubCategoryList: ISubSubCategory[] = await subSubCategory.find({ subCategoryId: subCategoryId, isDeleted: false });
         return subSubCategoryList;
     }
 
     public async getCategorySubSubInfoById(subSubCategoryId: any) {
-        const subSubCategoryInfo: any = await SubSubCategory.findOne({ _id: subSubCategoryId, isDeleted: false }).lean();
+        const subSubCategoryInfo: any = await subSubCategory.findOne({ _id: subSubCategoryId, isDeleted: false }).lean();
         return subSubCategoryInfo;
     }
 
     public async deleteSubSubCategory(subSubCategoryId: string, userId: String) {
        
 
-        const subSubCategoryInfo: ISubSubCategory = await Category.findOneAndUpdate({ _id: subSubCategoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
+        const subSubCategoryInfo: ISubSubCategory = await subSubCategory.findOneAndUpdate({ _id: subSubCategoryId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return subSubCategoryInfo;
 
     }
