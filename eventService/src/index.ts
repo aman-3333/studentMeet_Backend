@@ -47,6 +47,7 @@ import index from "./routes/fileUpload";
 import institute from "./routes/institute";
 import post from "./routes/post";
 import product from "./routes/product";
+import fileUpload from "./routes/fileUpload";
 import starPermormer from "./routes/starPermormer";
 import sponsorship from "./routes/sponsor";
 import sportsBrand from "./routes/sportsBrand";
@@ -66,6 +67,8 @@ app.use("/api/follower", followers);
 app.use("/api/category", category);
 app.use("/api/guidelines", guidelines);1
 app.use("/api/index", index);
+app.use("/api/fileUpload", fileUpload);
+
 app.use("/api/institute", institute);
 app.use("/api/post", post);
 app.use("/api/product", product);

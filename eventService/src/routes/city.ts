@@ -4,7 +4,7 @@ const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { ICity } from "../models/city";
 import CityController from "../controllers/CityController";
-router.post("/createCity", checkAuth, async (req, res) => {
+router.post("/create", checkAuth, async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -18,7 +18,7 @@ const body = req.body;
     }
 });
 
-router.patch("/City/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const CityId = req.params.id;
         const body = req.body as ICity;
@@ -31,7 +31,7 @@ router.patch("/City/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/CityList", checkAuth, async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new CityController();
         const stateId = req.query.stateId;
@@ -44,7 +44,7 @@ router.get("/CityList", checkAuth, async (req, res) => {
 });
 
 
-router.get("/Cityinfobyid", checkAuth, async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const CityId: any = req.query.CityId;
         const controller = new CityController();
@@ -57,7 +57,7 @@ router.get("/Cityinfobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/deleteCity/:id", checkAuth, async (req, res) => {
+router.get("/delete/:id", checkAuth, async (req, res) => {
     try {
         const CityId = req.params.id;
         const controller = new CityController();
