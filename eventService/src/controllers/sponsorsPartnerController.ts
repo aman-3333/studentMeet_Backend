@@ -1,6 +1,6 @@
 import SponsorsPartner, { IPartner } from "../models/sponsorPartner";
 import Sponsorship, {ISponsorship} from "../models/sponsorshipDetails";
-import Category, { ICategory } from "../models/category";
+
 
 function generateOTP(length: Number) {
     var digits = "1234567890";

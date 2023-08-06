@@ -1,5 +1,5 @@
 import Achivement, { IAchivement } from "../models/achivement";
-import { ICategory } from "../models/category";
+
 export default class AchivementController {
 
     public async createAchivement(body: any) {

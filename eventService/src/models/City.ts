@@ -1,7 +1,7 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    City: { type: String, required: true },
+    city: { type: String, required: true },
     stateId: { type: Schema.Types.ObjectId, ref: "state" },
     userId: { type: Schema.Types.ObjectId },
     zipcode: { type: Number },
@@ -14,7 +14,7 @@ const schema = new Schema({
 });
 
 export interface ICity extends Document {
-    City: String,
+    city: String,
     stateId: ObjectId,
     zipcode: Number,
     userId: ObjectId,

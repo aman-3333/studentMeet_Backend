@@ -5,7 +5,7 @@ import Hashtag, { IHashtag } from "../models/Hashtag";
 import { ISubCategory } from "../models/subcategory";
 import { ISubSubCategory } from "../models/subSubCategory";
 import { IPartner } from "../models/sponsorPartner";
-import Category, { ICategory } from "../models/category";
+
 import express, { Application } from "express";
 const app: Application = express();
 import SponsorsPartnerController from "../controllers/sponsorsPartnerController";

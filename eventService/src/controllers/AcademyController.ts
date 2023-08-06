@@ -1,6 +1,6 @@
-import FuzzySearch from "fuzzy-search";
+
 import academy, { IAcademy } from "../models/academy";
-import { ICategory } from "../models/category";
+
 export default class academyController {
 
     public async createAcademy(body: any) {

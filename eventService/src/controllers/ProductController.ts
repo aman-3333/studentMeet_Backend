@@ -1,9 +1,5 @@
 import Product, { IProduct } from "../models/product";
-import category, { ICategory } from "../models/category";
-import sportsBrand from "../models/sportsBrand";
-import VendorShop from "../models/VendorShop";
-import subSubCategory from "../models/subSubCategory";
-import subcategory from "../models/subcategory";
+
 import cartProduct from "../models/cartProduct";
 
 export default class productController {

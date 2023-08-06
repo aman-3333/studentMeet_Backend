@@ -1,5 +1,5 @@
 import GuideLines, { IGuideLines } from "../models/guidelines";
-import { ICategory } from "../models/category";
+
 export default class GuideLinesController {
 
     public async createGuideLines(body: any) {
