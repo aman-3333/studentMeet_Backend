@@ -6,7 +6,9 @@ import { ISports } from "../models/sportsCategory";
 import SportsController from "../controllers/sportsCategoryController";
 router.post("/createSports", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new SportsController();
         const response = await controller.createSports(body);
         res.status(200).json(successResponse("create Sports", response, res.statusCode));

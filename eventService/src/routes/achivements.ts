@@ -7,7 +7,9 @@ import { IAchivement } from "../models/achivement";
 import AchivementController from "../controllers/AchivementController";
 router.post("/createAchivement", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new AchivementController();
         const response = await controller.createAchivement(body);
         res.status(200).json(successResponse("create Achivement", response, res.statusCode));

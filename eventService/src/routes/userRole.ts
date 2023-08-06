@@ -7,7 +7,9 @@ import UserroleController from "../controllers/userRoleController";
 
 router.post("/createUserrole", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
      console.log(req.body,"req.body");
      
         const controller = new UserroleController();

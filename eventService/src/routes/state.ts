@@ -9,7 +9,9 @@ import StateController from "../controllers/StateController";
 
 router.post("/createState", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new StateController();
         const response = await controller.createState(body);
         res.status(200).json(successResponse("create State", response, res.statusCode));

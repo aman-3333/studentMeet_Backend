@@ -6,7 +6,9 @@ import { IVendorShop } from "../models/VendorShop";
 import VendorShopController from "../controllers/VendorShopController";
 router.post("/create", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new VendorShopController();
         const response = await controller.createVendorShop(body);
         res.status(200).json(successResponse("create VendorShop", response, res.statusCode));

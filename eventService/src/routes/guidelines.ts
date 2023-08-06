@@ -6,7 +6,9 @@ import { IGuideLines } from "../models/guidelines";
 import GuideLinesController from "../controllers/guideLines"
 router.post("/createGuideLines", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new GuideLinesController();
         const response = await controller.createGuideLines(body);
         res.status(200).json(successResponse("create GuideLines", response, res.statusCode));

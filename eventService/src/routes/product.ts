@@ -6,7 +6,9 @@ import { IProduct } from "../models/product";
 import ProductController from "../controllers/ProductController";
 router.post("/create", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new ProductController();
         const response = await controller.createProduct(body);
         res.status(200).json(successResponse("create Product", response, res.statusCode));
@@ -84,7 +86,9 @@ router.get("/delete/:id", checkAuth, async (req, res) => {
 
 router.post("/addtocart", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new ProductController();
         const response = await controller.addtocart(body);
         res.status(200).json(successResponse("addtocart Product", response, res.statusCode));
@@ -95,7 +99,9 @@ router.post("/addtocart", checkAuth, async (req, res) => {
 });
 router.post("/cart/product/remove", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new ProductController();
         const response = await controller.deleteCartProduct(body);
         res.status(200).json(successResponse("remove Product", response, res.statusCode));

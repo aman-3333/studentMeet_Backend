@@ -6,7 +6,9 @@ import { IAcademy } from "../models/academy";
 import AcademyController from "../controllers/AcademyController";
 router.post("/createAcademy", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new AcademyController();
         const response = await controller.createAcademy(body);
         res.status(200).json(successResponse("create academy", response, res.statusCode));

@@ -6,6 +6,7 @@ import event from "../models/sponsorshipDetails";
 
 export default class PostController {
     public async createPost(body: any) {
+    body.userId= body.user._id
         let PostInfo: any;
     
             PostInfo = await Post.create(body);
@@ -89,6 +90,8 @@ export default class PostController {
     
                     }
                 },{ new: true })
+                await userActivity.findOneAndUpdate({ userId: PostInfo.userId },
+                    { $inc: { postLikeCount: 1 } }, { new: true })
                 return PostInfo;
             
         }
@@ -96,6 +99,7 @@ export default class PostController {
      
             await Post.findOneAndUpdate({ _id: body.postId },
                 { $inc: { postLikeCount: -1 } }, { new: true })
+                
                 PostInfo =   await Post.findOneAndUpdate({
                 _id: body.postId
             }, {
@@ -104,6 +108,9 @@ export default class PostController {
                         userId
                 }
             },{ new: true })
+
+            await userActivity.findOneAndUpdate({ userId: PostInfo.userId },
+                { $inc: { postLikeCount: -1 } }, { new: true })
             return PostInfo;
         }
    
@@ -133,7 +140,8 @@ export default class PostController {
                     { $inc: { postCommentCount: 1 } }, { new: true })
     
     
-    
+                    await userActivity.findOneAndUpdate({ userId: PostInfo.userId },
+                        { $inc: { postCommentCount: 1 } }, { new: true })
                 return  PostInfo ;
             }
         }
@@ -157,6 +165,8 @@ export default class PostController {
                     PostInfo =     await Post.findOneAndUpdate({ _id: body.postComment[i].postId },
                     { $inc: { postCommentCount: -1 } }, { new: true })
     
+                    await userActivity.findOneAndUpdate({ userId: PostInfo.userId },
+                        { $inc: { postCommentCount: -1 } }, { new: true })
                 return  PostInfo ;
             }
     
@@ -178,7 +188,7 @@ export default class PostController {
     }
 
 public async reCommentPost(userId:any,commentId:any){
-    let postInfo:any
+    let PostInfo:any
 
 }
 

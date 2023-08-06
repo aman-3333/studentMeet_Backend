@@ -8,12 +8,12 @@ import PostController from "../controllers/postController";
 
 router.post("/create",checkAuth,  async (req, res) => {
     try {
-        const body = req.body;
-      
         
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new PostController();
         const response = await controller.createPost(body);
-        console.log("response",response);
+       
         res.status(200).json(successResponse("create Post", response, res.statusCode));
     } catch (error) {
         
@@ -23,7 +23,9 @@ router.post("/create",checkAuth,  async (req, res) => {
 router.post("/edit", checkAuth, async (req, res) => {
     try {
         
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new PostController();
         const response = await controller.editPost(body);
         res.status(200).json(successResponse("edit Post", response, res.statusCode));
@@ -76,7 +78,9 @@ router.post("/activity", checkAuth, async (req, res) => {
         const status = req.body.status;
          const postComment = req.body.postComment;
          const postCommentId = req.body.postCommentId;
-         const body = req.body;
+         
+req.body.user=res.locals.user
+const body = req.body;
 
         const controller = new PostController();
         const response = await controller.PostActivity(userId, PostId, status, postComment, postCommentId, body);

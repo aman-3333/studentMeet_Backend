@@ -2,6 +2,8 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    postCommentCount:{type:Number},
+    postLikeCount:{type:Number},
     sharePost: [{
         post: { type: Schema.Types.ObjectId, ref: "posts" },
        
@@ -57,8 +59,10 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface IuserDetailsActivity extends Document {
+export interface IUserActivity extends Document {
     userId: ObjectId,
+    postCommentCount:Number,
+    postLikeCount:Number,
     sharePost: [{
         post: ObjectId,
        
@@ -111,4 +115,4 @@ export interface IuserDetailsActivity extends Document {
     isActive: Boolean,
     isDeleted: Boolean
 }
-export default model<IuserDetailsActivity>("useractivity", schema);
+export default model<IUserActivity>("useractivity", schema);

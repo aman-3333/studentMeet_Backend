@@ -6,7 +6,9 @@ import { ICity } from "../models/city";
 import CityController from "../controllers/CityController";
 router.post("/createCity", checkAuth, async (req, res) => {
     try {
-        const body = req.body;
+        
+req.body.user=res.locals.user
+const body = req.body;
         const controller = new CityController();
         const response = await controller.createCity(body);
         res.status(200).json(successResponse("create City", response, res.statusCode));
