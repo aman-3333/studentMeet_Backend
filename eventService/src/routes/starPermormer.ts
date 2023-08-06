@@ -1,10 +1,11 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
 import StarPerformerController from "../controllers/StarPerformerController"
 
-router.post("/createStarPerformer", async (req, res) => {
+router.post("/createStarPerformer", checkAuth, async (req, res) => {
     try {
         const body = req.body;
      
@@ -17,7 +18,7 @@ router.post("/createStarPerformer", async (req, res) => {
         res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
     }
 });
-router.patch("/StarPerformer/:id", async (req, res) => {
+router.patch("/StarPerformer/:id", checkAuth, async (req, res) => {
     try {
         const StarPerformerId = req.params.id;
         const body = req.body as any;
@@ -29,7 +30,7 @@ router.patch("/StarPerformer/:id", async (req, res) => {
         res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
     }
 });
-router.get("/filterStar", async (req, res) => {
+router.get("/filterStar", checkAuth, async (req, res) => {
     try {
        
         const sort = req.query.sort;
@@ -50,7 +51,7 @@ router.get("/filterStar", async (req, res) => {
         res.status(500).json(errorResponse("error filterEvent", res.statusCode));
     }
 });
-router.get("/StarPerformerList", async (req, res) => {
+router.get("/StarPerformerList", checkAuth, async (req, res) => {
     try {
         const controller = new StarPerformerController();
         const response: any[] = await controller.getStarPerformerList();
@@ -60,7 +61,7 @@ router.get("/StarPerformerList", async (req, res) => {
         res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
     }
 });
-router.get("/searchStarPerformer", async (req, res) => {
+router.get("/searchStarPerformer", checkAuth, async (req, res) => {
     try {
 const searchValue=req.query.searchValue;
         const controller = new StarPerformerController();
@@ -72,7 +73,7 @@ const searchValue=req.query.searchValue;
     }
 });
 
-router.get("/StarPerformerInfobyid", async (req, res) => {
+router.get("/StarPerformerInfobyid", checkAuth, async (req, res) => {
     try {
         const StarPerformerId:any = req.query.id;
         const controller = new StarPerformerController();
@@ -85,7 +86,7 @@ router.get("/StarPerformerInfobyid", async (req, res) => {
 });
 
 
-router.patch("/deleteStarPerformer", async (req, res) => {
+router.patch("/deleteStarPerformer", checkAuth, async (req, res) => {
     try {
         const StarPerformerId:any = req.body.StarPerformerId;
         const controller = new StarPerformerController();
@@ -98,7 +99,7 @@ router.patch("/deleteStarPerformer", async (req, res) => {
     }
 })
 
-router.post("/createStarPerformerThought", async (req, res) => {
+router.post("/createStarPerformerThought", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new StarPerformerController();
@@ -109,7 +110,7 @@ router.post("/createStarPerformerThought", async (req, res) => {
         res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
     }
 });
-router.patch("/editPerformerThought", async (req, res) => {
+router.patch("/editPerformerThought", checkAuth, async (req, res) => {
     try {
         
         const body = req.body as any;
@@ -122,7 +123,7 @@ router.patch("/editPerformerThought", async (req, res) => {
     }
 });
 
-router.get("/getStarPerformerListThought", async (req, res) => {
+router.get("/getStarPerformerListThought", checkAuth, async (req, res) => {
     try {
         const controller = new StarPerformerController();
         const response: any[] = await controller.getStarPerformerListThought();
@@ -134,7 +135,7 @@ router.get("/getStarPerformerListThought", async (req, res) => {
 });
 
 
-router.get("/getStarPerformerThoughtById", async (req, res) => {
+router.get("/getStarPerformerThoughtById", checkAuth, async (req, res) => {
     try {
         const StarPerformerId:any = req.query.StarPerformerId;
         const controller = new StarPerformerController();
@@ -147,7 +148,7 @@ router.get("/getStarPerformerThoughtById", async (req, res) => {
 });
 
 
-router.patch("/deleteStarPerformer", async (req, res) => {
+router.patch("/deleteStarPerformer", checkAuth, async (req, res) => {
     try {
         const StarPerformerId = req.body.StarPerformerId;
         const controller = new StarPerformerController();

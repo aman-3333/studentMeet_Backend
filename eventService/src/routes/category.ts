@@ -1,5 +1,6 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
 import { ISubCategory } from "../models/subcategory";
@@ -10,7 +11,7 @@ import CategoryController from "../controllers/CategoryController";
 
 
 
-router.post("/createCategory", async (req, res) => {
+router.post("/createCategory", checkAuth, async (req, res) => {
     try {
         const body = req.body as ICategory;
      
@@ -23,7 +24,7 @@ router.post("/createCategory", async (req, res) => {
     }
 });
 
-router.patch("/Category/:id", async (req, res) => {
+router.patch("/Category/:id", checkAuth, async (req, res) => {
     try {
         const categoryId = req.params.id;
         
@@ -37,7 +38,7 @@ router.patch("/Category/:id", async (req, res) => {
     }
 });
 
-router.get("/categoryList", async (req, res) => {
+router.get("/categoryList", checkAuth, async (req, res) => {
     try {
         const controller = new CategoryController();
         const type = req.query.type;
@@ -48,7 +49,7 @@ router.get("/categoryList", async (req, res) => {
         res.status(500).json(errorResponse("error in get category", res.statusCode));
     }
 });
-router.get("/getCategoryCustomer", async (req, res) => {
+router.get("/getCategoryCustomer", checkAuth, async (req, res) => {
     try {
         const controller = new CategoryController();
 
@@ -60,7 +61,7 @@ router.get("/getCategoryCustomer", async (req, res) => {
     }
 });
 
-router.get("/categoryInfoById", async (req, res) => {
+router.get("/categoryInfoById", checkAuth, async (req, res) => {
     try {
         const categoryId= req.query.categoryId;
         const userId=req.body.userId;
@@ -72,7 +73,7 @@ router.get("/categoryInfoById", async (req, res) => {
         res.status(500).json(errorResponse("error in get category by Id", res.statusCode));
     }
 });
-router.patch("/deleteCategory/:id", async (req, res) => {
+router.patch("/deleteCategory/:id", checkAuth, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const controller = new CategoryController();
@@ -84,7 +85,7 @@ router.patch("/deleteCategory/:id", async (req, res) => {
     }
 });
 
-router.post("/subCategory", async (req, res) => {
+router.post("/subCategory", checkAuth, async (req, res) => {
     try {
         const body = req.body as ISubCategory;
 
@@ -97,7 +98,7 @@ router.post("/subCategory", async (req, res) => {
     }
 });
 
-router.patch("/subCategory/:id", async (req, res) => {
+router.patch("/subCategory/:id", checkAuth, async (req, res) => {
     try {
         const categoryId = req.params.id;
 
@@ -111,7 +112,7 @@ router.patch("/subCategory/:id", async (req, res) => {
     }
 });
 
-router.get("/subCategoryList", async (req, res) => {
+router.get("/subCategoryList", checkAuth, async (req, res) => {
     try {
         const controller = new CategoryController();
         const categoryId = req.query.categoryId
@@ -124,7 +125,7 @@ router.get("/subCategoryList", async (req, res) => {
     }
 });
 
-router.get("/getAllSubCategory", async (req, res) => {
+router.get("/getAllSubCategory", checkAuth, async (req, res) => {
     try {
         const controller = new CategoryController();
         const userId = req.body.userId;
@@ -136,7 +137,7 @@ router.get("/getAllSubCategory", async (req, res) => {
     }
 });
 
-router.get("/subCategoryinfobyid", async (req, res) => {
+router.get("/subCategoryinfobyid", checkAuth, async (req, res) => {
     try {
         const subCategoryId: any = req.query.subCategoryId;
         const userId = req.body.userId;
@@ -150,7 +151,7 @@ router.get("/subCategoryinfobyid", async (req, res) => {
 });
 
 
-router.patch("/subCategory/delete/:id", async (req, res) => {
+router.patch("/subCategory/delete/:id", checkAuth, async (req, res) => {
     try {
         const subCategoryId = req.body.subCategoryId;
         const userId = req.body.userId;
@@ -162,7 +163,7 @@ router.patch("/subCategory/delete/:id", async (req, res) => {
         res.status(500).json(errorResponse("error in delete subCategory", res.statusCode));
     }
 })
-router.post("/subSubCategory", async (req, res) => {
+router.post("/subSubCategory", checkAuth, async (req, res) => {
     try {
         const body = req.body as ISubSubCategory;
 
@@ -175,7 +176,7 @@ router.post("/subSubCategory", async (req, res) => {
     }
 });
 
-router.patch("/subSubCategory/:id", async (req, res) => {
+router.patch("/subSubCategory/:id", checkAuth, async (req, res) => {
     try {
         const subSubCategoryId = req.params.id;
 
@@ -189,7 +190,7 @@ router.patch("/subSubCategory/:id", async (req, res) => {
     }
 });
 
-router.get("/subSubCategoryList", async (req, res) => {
+router.get("/subSubCategoryList", checkAuth, async (req, res) => {
     try {
         const subCategoryId = req.query.subCategoryId;
         const controller = new CategoryController();
@@ -203,7 +204,7 @@ router.get("/subSubCategoryList", async (req, res) => {
 });
 
 
-router.get("/subSubCategoryinfobyid", async (req, res) => {
+router.get("/subSubCategoryinfobyid", checkAuth, async (req, res) => {
     try {
         const subSubCategoryId: any = req.query.subSubCategoryId;
         const userId = req.body.userId;
@@ -217,7 +218,7 @@ router.get("/subSubCategoryinfobyid", async (req, res) => {
 });
 
 
-router.patch("/subSubCategory/:id", async (req, res) => {
+router.patch("/subSubCategory/:id", checkAuth, async (req, res) => {
     try {
         const subSubCategoryId = req.body.subSubCategoryId;
         const userId = req.body.userId;

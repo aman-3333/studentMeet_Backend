@@ -1,12 +1,13 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
 import { IState } from "../models/State";
 import StateController from "../controllers/StateController";
 
 
-router.post("/createState", async (req, res) => {
+router.post("/createState", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new StateController();
@@ -17,7 +18,7 @@ router.post("/createState", async (req, res) => {
         res.status(500).json(errorResponse("error in create State", res.statusCode));
     }
 });
-router.patch("/State/:id", async (req, res) => {
+router.patch("/State/:id", checkAuth, async (req, res) => {
     try {
         const StateId = req.params.id;
         const body = req.body as IState;
@@ -30,7 +31,7 @@ router.patch("/State/:id", async (req, res) => {
     }
 });
 
-router.get("/StateList", async (req, res) => {
+router.get("/StateList", checkAuth, async (req, res) => {
     try {
         const controller = new StateController();
         const response: IState[] = await controller.getStateList();
@@ -42,7 +43,7 @@ router.get("/StateList", async (req, res) => {
 });
 
 
-router.get("/StateInfobyid", async (req, res) => {
+router.get("/StateInfobyid", checkAuth, async (req, res) => {
     try {
         const StateId = req.query.id;
         const controller = new StateController();
@@ -55,7 +56,7 @@ router.get("/StateInfobyid", async (req, res) => {
 });
 
 
-router.get("/deleteState/:id", async (req, res) => {
+router.get("/deleteState/:id", checkAuth, async (req, res) => {
     try {
         const StateId = req.params.id;
         const controller = new StateController();

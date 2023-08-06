@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IGuideLines } from "../models/guidelines";
 import GuideLinesController from "../controllers/guideLines"
-router.post("/createGuideLines", async (req, res) => {
+router.post("/createGuideLines", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new GuideLinesController();
@@ -15,7 +16,7 @@ router.post("/createGuideLines", async (req, res) => {
     }
 });
 
-router.patch("/GuideLines/:id", async (req, res) => {
+router.patch("/GuideLines/:id", checkAuth, async (req, res) => {
     try {
         const GuideLinesId = req.params.id;
         const body = req.body as IGuideLines;
@@ -28,7 +29,7 @@ router.patch("/GuideLines/:id", async (req, res) => {
     }
 });
 
-router.get("/GuideLinesList", async (req, res) => {
+router.get("/GuideLinesList", checkAuth, async (req, res) => {
     try {
         const controller = new GuideLinesController();
         const CategoryId=req.query.CategoryId
@@ -41,7 +42,7 @@ router.get("/GuideLinesList", async (req, res) => {
 });
 
 
-router.get("/GuideLinesById", async (req, res) => {
+router.get("/GuideLinesById", checkAuth, async (req, res) => {
     try {
         const GuideLinesId:any = req.query.GuideLinesId;
         const controller = new GuideLinesController();
@@ -54,7 +55,7 @@ router.get("/GuideLinesById", async (req, res) => {
 });
 
 
-router.get("/deleteGuideLines/:id", async (req, res) => {
+router.get("/deleteGuideLines/:id", checkAuth, async (req, res) => {
     try {
         const GuideLinesId = req.params.id;
         const controller = new GuideLinesController();

@@ -1,5 +1,6 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import SponsorsPartnerController from "../controllers/sponsorsPartnerController";
 import { IPartner } from "../models/sponsorPartner";
@@ -8,7 +9,7 @@ import { ISponsorship } from "../models/sponsorshipDetails";
 
 
 
-router.post("/create", async (req, res) => {
+router.post("/create", checkAuth, async (req, res) => {
     try {
         const body = req.body as IPartner;
         const controller = new SponsorsPartnerController();
@@ -19,7 +20,7 @@ router.post("/create", async (req, res) => {
         res.status(500).json(errorResponse("error in create shop", res.statusCode));
     }
 });
-router.post("/create/sponsorship", async (req, res) => {
+router.post("/create/sponsorship", checkAuth, async (req, res) => {
     try {
         const body = req.body as ISponsorship;
         const controller = new SponsorsPartnerController();
@@ -30,7 +31,7 @@ router.post("/create/sponsorship", async (req, res) => {
         res.status(500).json(errorResponse("error in create shop", res.statusCode));
     }
 });
-router.patch("/edit/:id", async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const SponsorsPartnerId:any= req.params.id;
         const body = req.body as IPartner;
@@ -43,7 +44,7 @@ router.patch("/edit/:id", async (req, res) => {
     }
 });
 
-router.get("/getSponsorsPartnerShopByUser/:userId", async (req, res) => {
+router.get("/getSponsorsPartnerShopByUser/:userId", checkAuth, async (req, res) => {
     try {
         const userId = req.params.userId;
         const controller = new SponsorsPartnerController();
@@ -65,7 +66,7 @@ router.get("/getSponsorsPartnerShopByUser/:userId", async (req, res) => {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-// router.post("/loginSponsorsPartner", async (req, res) => {
+// router.post("/loginSponsorsPartner", checkAuth, async (req, res) => {
 //     try {
 //         const body = req.body as IPartner;
 //         const controller = new SponsorsPartnerController();
@@ -79,7 +80,7 @@ router.get("/getSponsorsPartnerShopByUser/:userId", async (req, res) => {
 
 
 
-router.patch("/SponsorsPartnerActivate", async (req, res) => {
+router.patch("/SponsorsPartnerActivate", checkAuth, async (req, res) => {
     try {
         const SponsorsPartnerId = req.body.SponsorsPartnerId;
         const status = req.body.status;
@@ -96,7 +97,7 @@ router.patch("/SponsorsPartnerActivate", async (req, res) => {
     }
 });
 
-router.get("/getSponsorsPartnerAdminPannel", async (req, res) => {
+router.get("/getSponsorsPartnerAdminPannel", checkAuth, async (req, res) => {
     try {
         const latitude = req.query.latitude;
         const longitude = req.query.longitude;
@@ -123,7 +124,7 @@ router.get("/getSponsorsPartnerAdminPannel", async (req, res) => {
 
 
 
-router.get("/SponsorsPartnerInfoById", async (req, res) => {
+router.get("/SponsorsPartnerInfoById", checkAuth, async (req, res) => {
     try {
         const partnerId: any = req.query.partnerId;
         const controller = new SponsorsPartnerController();
@@ -136,7 +137,7 @@ router.get("/SponsorsPartnerInfoById", async (req, res) => {
 });
 
 
-router.get("/deleteShop/:id", async (req, res) => {
+router.get("/deleteShop/:id", checkAuth, async (req, res) => {
     try {
         const shopId = req.params.id;
         const controller = new SponsorsPartnerController();

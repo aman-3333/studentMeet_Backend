@@ -1,12 +1,13 @@
 
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import InstituteController from "../controllers/InstituteController";
 import  { IInstitute } from "../models/InstituteModel";
 
 
-router.post("/createInstitute", async (req, res) => {
+router.post("/createInstitute", checkAuth, async (req, res) => {
     try {
         const body = req.body;
      
@@ -18,7 +19,7 @@ router.post("/createInstitute", async (req, res) => {
         res.status(500).json(errorResponse("error in create Institute", res.statusCode));
     }
 });
-router.get("/searchInstitute", async (req, res) => {
+router.get("/searchInstitute", checkAuth, async (req, res) => {
     try {
         const controller = new InstituteController();
    const stateId =req.query.stateId
@@ -31,7 +32,7 @@ router.get("/searchInstitute", async (req, res) => {
     }
 });
 
-router.patch("/Institute/:id", async (req, res) => {
+router.patch("/Institute/:id", checkAuth, async (req, res) => {
     try {
         const InstituteId = req.params.id;
         
@@ -45,7 +46,7 @@ router.patch("/Institute/:id", async (req, res) => {
     }
 });
 
-router.get("/InstituteList", async (req, res) => {
+router.get("/InstituteList", checkAuth, async (req, res) => {
     try {
         const controller = new InstituteController();
         const stateId=req.query.stateId;
@@ -56,7 +57,7 @@ router.get("/InstituteList", async (req, res) => {
         res.status(500).json(errorResponse("error in get Institute", res.statusCode));
     }
 });
-router.get("/searchInstitute", async (req, res) => {
+router.get("/searchInstitute", checkAuth, async (req, res) => {
     try {
         const stateId=req.query.stateId;
         const searchValue=req.query.searchValue;
@@ -70,7 +71,7 @@ router.get("/searchInstitute", async (req, res) => {
     }
 });
 
-router.get("/getInstituteInfoById", async (req, res) => {
+router.get("/getInstituteInfoById", checkAuth, async (req, res) => {
     try {
         const InstituteId: any= req.query.InstituteId;
         const userId=req.body.userId;
@@ -82,7 +83,7 @@ router.get("/getInstituteInfoById", async (req, res) => {
         res.status(500).json(errorResponse("error in get Institute by Id", res.statusCode));
     }
 });
-router.patch("/deleteInstitute/:id", async (req, res) => {
+router.patch("/deleteInstitute/:id", checkAuth, async (req, res) => {
     try {
         const InstituteId = req.params.id;
         const controller = new InstituteController();

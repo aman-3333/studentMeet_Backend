@@ -7,10 +7,13 @@ import mongoose from "mongoose";
 import Auth from "./middleware/authMiddleware";
 import nconf from "nconf";
 import setEnvironment from "./env";
-
+const session = require('express-session');
 import router from "./routes/fileUpload";
 const http = require('http');
 const PORT = process.env.PORT || nconf.get('port');
+
+
+
 
 const app: Application = express();
 app.use(cors());
@@ -23,6 +26,13 @@ app.use(
     swaggerOptions: {
       url: "/swagger.json",
     },
+  })
+);
+app.use(
+  session({
+    secret:"bsdhkw.NFK/JFW'K;JRHWF/J/rfG;",
+    resave: false,
+    saveUninitialized: true,
   })
 );
 /////////////Api Routes/////////////////////

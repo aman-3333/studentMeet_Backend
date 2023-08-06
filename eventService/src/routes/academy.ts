@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IAcademy } from "../models/academy";
 import AcademyController from "../controllers/AcademyController";
-router.post("/createAcademy", async (req, res) => {
+router.post("/createAcademy", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new AcademyController();
@@ -15,7 +16,7 @@ router.post("/createAcademy", async (req, res) => {
     }
 });
 
-router.patch("/academy/:id", async (req, res) => {
+router.patch("/academy/:id", checkAuth, async (req, res) => {
     try {
         const academyId = req.params.id;
         const body = req.body as IAcademy;
@@ -28,7 +29,7 @@ router.patch("/academy/:id", async (req, res) => {
     }
 });
 
-router.get("/academyList", async (req, res) => {
+router.get("/academyList", checkAuth, async (req, res) => {
     try {
         const controller = new AcademyController();
         const stateId = req.query.stateId;
@@ -41,7 +42,7 @@ router.get("/academyList", async (req, res) => {
     }
 });
 
-router.get("/academyinfobyid", async (req, res) => {
+router.get("/academyinfobyid", checkAuth, async (req, res) => {
     try {
         const academyId: any = req.query.academyId;
         const controller = new AcademyController();
@@ -52,7 +53,7 @@ router.get("/academyinfobyid", async (req, res) => {
     }
 });
 
-router.patch("/deleteacademy/:id", async (req, res) => {
+router.patch("/deleteacademy/:id", checkAuth, async (req, res) => {
     try {
         const academyId = req.params.id;
         const controller = new AcademyController();
@@ -66,7 +67,7 @@ router.patch("/deleteacademy/:id", async (req, res) => {
 }) 
 
 
-router.get("/searchAcademy", async (req, res) => {
+router.get("/searchAcademy", checkAuth, async (req, res) => {
     try {
         const controller = new AcademyController();
         const search = req.query.search;
@@ -80,7 +81,7 @@ router.get("/searchAcademy", async (req, res) => {
 });
 
 
-router.get("/filterAcademy", async (req, res) => {
+router.get("/filterAcademy", checkAuth, async (req, res) => {
     try {
         const controller = new AcademyController();
    

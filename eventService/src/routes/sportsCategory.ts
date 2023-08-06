@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { ISports } from "../models/sportsCategory";
 import SportsController from "../controllers/sportsCategoryController";
-router.post("/createSports", async (req, res) => {
+router.post("/createSports", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new SportsController();
@@ -15,7 +16,7 @@ router.post("/createSports", async (req, res) => {
     }
 });
 
-router.patch("/Sports/:id", async (req, res) => {
+router.patch("/Sports/:id", checkAuth, async (req, res) => {
     try {
         const SportsId = req.params.id;
         const body = req.body as ISports;
@@ -28,7 +29,7 @@ router.patch("/Sports/:id", async (req, res) => {
     }
 });
 
-router.get("/SportsList", async (req, res) => {
+router.get("/SportsList", checkAuth, async (req, res) => {
     try {
         const controller = new SportsController();
         const stateId = req.query.stateId;
@@ -41,7 +42,7 @@ router.get("/SportsList", async (req, res) => {
 });
 
 
-router.get("/Sportsinfobyid", async (req, res) => {
+router.get("/Sportsinfobyid", checkAuth, async (req, res) => {
     try {
         const SportsId: any = req.query.SportsId;
         const controller = new SportsController();
@@ -54,7 +55,7 @@ router.get("/Sportsinfobyid", async (req, res) => {
 });
 
 
-router.get("/deleteSports/:id", async (req, res) => {
+router.get("/deleteSports/:id", checkAuth, async (req, res) => {
     try {
         const SportsId = req.params.id;
         const controller = new SportsController();

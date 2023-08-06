@@ -1,9 +1,12 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import PostController from "../controllers/postController";
 
-router.post("/create", async (req, res) => {
+
+
+router.post("/create",checkAuth,  async (req, res) => {
     try {
         const body = req.body;
       
@@ -17,7 +20,7 @@ router.post("/create", async (req, res) => {
         res.status(500).json(errorResponse("error in create Post", res.statusCode));
     }
 });
-router.post("/edit", async (req, res) => {
+router.post("/edit", checkAuth, async (req, res) => {
     try {
         
         const body = req.body;
@@ -30,7 +33,7 @@ router.post("/edit", async (req, res) => {
     }
 });
 
-router.get("/list", async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
       
         const controller = new PostController();
@@ -43,7 +46,7 @@ router.get("/list", async (req, res) => {
 });
 
 
-router.get("/getlist/byuserid", async (req, res) => {
+router.get("/getlist/byuserid", checkAuth, async (req, res) => {
     try {
         const controller = new PostController();
         const userId = req.query.userId;
@@ -55,7 +58,7 @@ router.get("/getlist/byuserid", async (req, res) => {
     }
 });
 
-router.get("/infobyid", async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const PostId = req.query.id;
         const controller = new PostController();
@@ -66,7 +69,7 @@ router.get("/infobyid", async (req, res) => {
         res.status(500).json(errorResponse("error in get Post", res.statusCode));
     }
 });
-router.post("/activity", async (req, res) => {
+router.post("/activity", checkAuth, async (req, res) => {
     try {
         const userId = req.body.userId;
         const PostId = req.body.PostId; 
@@ -83,7 +86,7 @@ router.post("/activity", async (req, res) => {
         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
     }
 });
-router.get("/read/activity", async (req, res) => {
+router.get("/read/activity", checkAuth, async (req, res) => {
     try {
         
         const PostId = req.query.PostId; 
@@ -98,7 +101,7 @@ router.get("/read/activity", async (req, res) => {
     }
 });
 
-router.post("/delete", async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
         const postId = req.body.postId;
         const controller = new PostController();
@@ -111,7 +114,7 @@ router.post("/delete", async (req, res) => {
     }
 })
 
-router.get("/search", async (req, res) => {
+router.get("/search", checkAuth, async (req, res) => {
     try {
         const search = req.query.search;
         

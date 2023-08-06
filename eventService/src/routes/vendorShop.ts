@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IVendorShop } from "../models/VendorShop";
 import VendorShopController from "../controllers/VendorShopController";
-router.post("/create", async (req, res) => {
+router.post("/create", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new VendorShopController();
@@ -15,7 +16,7 @@ router.post("/create", async (req, res) => {
     }
 });
 
-router.patch("/edit/:id", async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const VendorShopId = req.params.id;
         const body = req.body as IVendorShop;
@@ -28,7 +29,7 @@ router.patch("/edit/:id", async (req, res) => {
     }
 });
 
-router.get("/list", async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new VendorShopController();
         const stateId = req.query.stateId;
@@ -41,7 +42,7 @@ router.get("/list", async (req, res) => {
 });
 
 
-router.get("/infobyid", async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const VendorShopId: any = req.query.VendorShopId;
         const controller = new VendorShopController();
@@ -54,7 +55,7 @@ router.get("/infobyid", async (req, res) => {
 });
 
 
-router.patch("/delete/:id", async (req, res) => {
+router.patch("/delete/:id", checkAuth, async (req, res) => {
     try {
         const VendorShopId = req.params.id;
         const controller = new VendorShopController();

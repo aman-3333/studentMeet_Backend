@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { ICity } from "../models/city";
 import authController from "../controllers/AuthController";
-router.post("/sendotp", async (req, res) => {
+router.post("/sendotp", checkAuth, async (req, res) => {
     try {
         const body = req.body;
         const controller = new authController();
@@ -15,7 +16,7 @@ router.post("/sendotp", async (req, res) => {
     }
 });
 
-router.post("/verifyotp", async (req, res) => {
+router.post("/verifyotp", checkAuth, async (req, res) => {
     try {
        
         const body = req.body 
@@ -28,7 +29,7 @@ router.post("/verifyotp", async (req, res) => {
     }
 });
 
-router.get("/editprofile", async (req, res) => {
+router.get("/editprofile", checkAuth, async (req, res) => {
     try {
         const controller = new authController();
         const body = req.body 
@@ -41,7 +42,7 @@ router.get("/editprofile", async (req, res) => {
 });
 
 
-router.get("/getprofile", async (req, res) => {
+router.get("/getprofile", checkAuth, async (req, res) => {
     try {
         const userId: any = req.query.userId;
         const controller = new authController();

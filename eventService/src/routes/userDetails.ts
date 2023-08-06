@@ -1,5 +1,6 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import AuthController from "../controllers/AuthController";
 
@@ -9,7 +10,7 @@ import AuthController from "../controllers/AuthController";
 
 
 
-router.post("/sendotp", async (req, res) => {
+router.post("/sendotp", checkAuth, async (req, res) => {
  
     try {
         const body = req.body
@@ -21,7 +22,7 @@ router.post("/sendotp", async (req, res) => {
         res.status(500).json(errorResponse("error in sendotp", res.statusCode));
     }
 })
-router.post("/sendotpbyapi", async (req, res) => {
+router.post("/sendotpbyapi", checkAuth, async (req, res) => {
  
     try {
         const body:any = req.body
@@ -35,7 +36,7 @@ router.post("/sendotpbyapi", async (req, res) => {
 })
 
 
-router.post("/verifyotpByApi", async (req, res) => {
+router.post("/verifyotpByApi", checkAuth, async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
@@ -46,7 +47,7 @@ router.post("/verifyotpByApi", async (req, res) => {
         res.status(500).json(errorResponse("error in verifyotpByApi", res.statusCode));
     }
 })
-router.post("/verifyotp", async (req, res) => {
+router.post("/verifyotp", checkAuth, async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
@@ -57,7 +58,7 @@ router.post("/verifyotp", async (req, res) => {
         res.status(500).json(errorResponse("error in verifyotp", res.statusCode));
     }
 })
-router.patch("/editprofile", async (req, res) => {
+router.patch("/editprofile", checkAuth, async (req, res) => {
     try {
         const body = req.body ;
         const controller = new AuthController();
@@ -70,7 +71,7 @@ router.patch("/editprofile", async (req, res) => {
 })
 
 
-router.get("/viewProfile", async (req, res) => {
+router.get("/viewProfile", checkAuth, async (req, res) => {
     try {
         const userId = req.query.userId ;
         const controller = new AuthController();

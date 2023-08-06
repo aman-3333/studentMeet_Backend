@@ -1,10 +1,11 @@
 import express from "express";
 const router = express.Router();
+const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import  { IUserrole} from "../models/userRole";
 import UserroleController from "../controllers/userRoleController";
 
-router.post("/createUserrole", async (req, res) => {
+router.post("/createUserrole", checkAuth, async (req, res) => {
     try {
         const body = req.body;
      console.log(req.body,"req.body");
@@ -18,7 +19,7 @@ router.post("/createUserrole", async (req, res) => {
     }
 });
 
-router.patch("/editUserrole/:id", async (req, res) => {
+router.patch("/editUserrole/:id", checkAuth, async (req, res) => {
     try {
         const UserroleId = req.params.id;
         
@@ -32,7 +33,7 @@ router.patch("/editUserrole/:id", async (req, res) => {
     }
 });
 
-router.get("/UserroleList", async (req, res) => {
+router.get("/UserroleList", checkAuth, async (req, res) => {
     try {
         const controller = new UserroleController();
   
@@ -45,7 +46,7 @@ router.get("/UserroleList", async (req, res) => {
 });
 
 
-router.get("/getUserroleInfoById", async (req, res) => {
+router.get("/getUserroleInfoById", checkAuth, async (req, res) => {
     try {
         const UserroleInfoById: any= req.query.UserroleInfoById;
         const userId=req.body.userId;
@@ -57,7 +58,7 @@ router.get("/getUserroleInfoById", async (req, res) => {
         res.status(500).json(errorResponse("error in get Userrole by Id", res.statusCode));
     }
 });
-router.patch("/deleteUserrole/:id", async (req, res) => {
+router.patch("/deleteUserrole/:id", checkAuth, async (req, res) => {
     try {
         const UserroleId = req.params.id;
         const controller = new UserroleController();
