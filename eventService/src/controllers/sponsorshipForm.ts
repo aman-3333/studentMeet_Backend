@@ -1,5 +1,5 @@
 import SponsorshipForm, { ISponsorshipApply } from "../models/sponsorshipApply";
-import { ICategory } from "../models/category";
+
 export default class SponsorshipFormController {
 
     public async createSponsorshipForm(body: any) {

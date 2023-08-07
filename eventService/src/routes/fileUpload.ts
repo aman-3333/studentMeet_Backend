@@ -2,7 +2,7 @@
 
 import {successResponse, errorResponse} from "../services/apiResponse"
 import Hashtag, { IHashtag } from "../models/Hashtag";
-import { ISubCategory } from "../models/subcategory";
+
 import { ISubSubCategory } from "../models/subSubCategory";
 import { IPartner } from "../models/sponsorPartner";
 
