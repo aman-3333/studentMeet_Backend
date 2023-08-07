@@ -1,5 +1,5 @@
 import sports, { ISports } from "../models/sportsCategory";
-import { ICategory } from "../models/category";
+
 export default class sportsController {
 
     public async createSports(body: any) {

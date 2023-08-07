@@ -6,7 +6,7 @@ import {successResponse, errorResponse} from "../services/apiResponse";
 import { ISubCategory } from "../models/subcategory";
 import { ISubSubCategory } from "../models/subSubCategory";
 
-import Category, { ICategory } from "../models/category";
+import  { ICategory } from "../models/category";
 import CategoryController from "../controllers/CategoryController";
 
 
