@@ -38,9 +38,9 @@ app.use(
 /////////////Api Routes/////////////////////
 import auth from "./routes/auth"
 import academy from "./routes/academy";
-import category from "./routes/category";
+// import category from "./routes/category";
 import chat from "./routes/chat";
-import city from "./routes/city";
+// import city from "./routes/city";
 import followers from "./routes/followers";
 import guidelines from "./routes/guidelines";
 import index from "./routes/fileUpload";
@@ -56,15 +56,15 @@ import sponsorshipForm from "./routes//sponsorshipForm";
 import state from "./routes/state";
 import user from "./routes/userDetails";
 import vendor from "./routes/vendorShop";
-import userRole from "./routes/userRole";
+// import userRole from "./routes/userRole";
 
 app.use("/api/auth", auth);
 app.use("/api/academy", academy);
-app.use("/api/category", category);
+// app.use("/api/category", category);
 app.use("/api/chat", chat);
-app.use("/api/city", city);
+// app.use("/api/city", city);
 app.use("/api/follower", followers);
-app.use("/api/category", category);
+
 app.use("/api/guidelines", guidelines);1
 app.use("/api/index", index);
 app.use("/api/fileUpload", fileUpload);
@@ -80,7 +80,7 @@ app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/state", state);
 app.use("/api/user", user);
 app.use("/api/vendorshop", vendor);
-app.use("/api/userRole", userRole);
+// app.use("/api/userRole", userRole);
 
 
 
