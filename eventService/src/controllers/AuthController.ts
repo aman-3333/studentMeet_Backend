@@ -104,18 +104,13 @@ export default class AuthController {
 
         contact: body.contact,
         country_code: body.country_code,
-        otp: otp,
+        otp: 1234,
         otpId: otp
       })
 
-      await Otp.findOneAndUpdate({ _id: otpInfo._id }, { $set: { otp: "1234" } })
+     
     }
-    else {
-      createUser = await Users.findOne({
-        contact
-          : body.contact
-      })
-    }
+  
     return {
       otpInfo, createUser
     }
