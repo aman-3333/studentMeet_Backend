@@ -71,7 +71,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in get Post", res.statusCode));
     }
 });
-router.post("/activity", checkAuth, async (req, res) => {
+router.post("/activity",  async (req, res) => {
     try {
         const userId = req.body.userId;
         const PostId = req.body.PostId; 
@@ -81,6 +81,7 @@ router.post("/activity", checkAuth, async (req, res) => {
          
 req.body.user=res.locals.user
 const body = req.body;
+
 
         const controller = new PostController();
         const response = await controller.PostActivity(userId, PostId, status, postComment, postCommentId, body);
@@ -129,7 +130,91 @@ router.get("/search", checkAuth, async (req, res) => {
         
         res.status(500).json(errorResponse("error in search", res.statusCode));
     }
-});
+});      
+
+// router.get("/suggestion/friend", checkAuth, async (req, res) => {
+//     try {
+//         const search = req.query.search;
+        
+//         const controller = new PostController();
+//         const response = await controller.suggestionFriend(search);
+//         res.status(200).json(successResponse("suggestion  friend", response, res.statusCode));
+//     } catch (error) {
+        
+//         res.status(500).json(errorResponse("error in suggestion friend", res.statusCode));
+//     }
+// });
+
+
+// router.get("/suggestion/brand", checkAuth, async (req, res) => {
+//     try {
+//         const search = req.query.search;
+        
+//         const controller = new PostController();
+//         const response = await controller.suggestionBrand(search);
+//         res.status(200).json(successResponse("suggestion  brand", response, res.statusCode));
+//     } catch (error) {
+        
+//         res.status(500).json(errorResponse("error in suggestion  brand", res.statusCode));
+//     }
+// });
+
+// router.get("/suggestion/academy", checkAuth, async (req, res) => {
+//     try {
+//         const search = req.query.search;
+        
+//         const controller = new PostController();
+//         const response = await controller.suggestionAcademy(search);
+//         res.status(200).json(successResponse("suggestion academy", response, res.statusCode));
+//     } catch (error) {
+        
+//         res.status(500).json(errorResponse("error in suggestion academy", res.statusCode));
+//     }
+// });
+
+
+// router.get("/suggestion/tournament", checkAuth, async (req, res) => {
+//     try {
+//         const search = req.query.search;
+        
+//         const controller = new PostController();
+//         const response = await controller.suggestionTournament(search);
+//         res.status(200).json(successResponse("suggestion tournament", response, res.statusCode));
+//     } catch (error) {
+        
+//         res.status(500).json(errorResponse("error in suggestion tournament", res.statusCode));
+//     }
+// });
+
+
+// router.get("/suggestion/coach", checkAuth, async (req, res) => {
+//     try {
+//         const search = req.query.search;
+        
+//         const controller = new PostController();
+//         const response = await controller.suggestionCoach(search);
+//         res.status(200).json(successResponse("suggestion coach", response, res.statusCode));
+//     } catch (error) {
+        
+//         res.status(500).json(errorResponse("error in suggestion coach", res.statusCode));
+//     }
+// });
+
+
+
+// router.get("/suggestion/schools", checkAuth, async (req, res) => {
+//     try {
+//         const search = req.query.search;
+        
+//         const controller = new PostController();
+//         const response = await controller.suggestionSchools(search);
+//         res.status(200).json(successResponse("suggestion schools", response, res.statusCode));
+//     } catch (error) {
+        
+//         res.status(500).json(errorResponse("error in suggestion schools", res.statusCode));
+//     }
+// });
+
 
 
 

@@ -90,6 +90,9 @@ export default class PostController {
     
                     }
                 },{ new: true })
+
+                console.log(PostInfo);
+                
                 await userActivity.findOneAndUpdate({ userId: PostInfo.userId },
                     { $inc: { postLikeCount: 1 } }, { new: true })
                 return PostInfo;
