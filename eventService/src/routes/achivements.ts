@@ -5,7 +5,7 @@ import {successResponse, errorResponse} from "../services/apiResponse";
 import { IAchivement } from "../models/achivement";
 
 import AchivementController from "../controllers/AchivementController";
-router.post("/createAchivement", checkAuth, async (req, res) => {
+router.post("/create",  async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -19,7 +19,7 @@ const body = req.body;
     }
 });
 
-router.patch("/Achivement/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const AchivementId = req.params.id;
         const body = req.body as IAchivement;
@@ -32,7 +32,7 @@ router.patch("/Achivement/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/AchivementList", checkAuth, async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new AchivementController();
         const stateId = req.query.stateId;
@@ -45,7 +45,7 @@ router.get("/AchivementList", checkAuth, async (req, res) => {
 });
 
 
-router.get("/Achivementinfobyid", checkAuth, async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const AchivementId: any = req.query.AchivementId;
         const controller = new AchivementController();
@@ -58,7 +58,7 @@ router.get("/Achivementinfobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/deleteAchivement/:id", checkAuth, async (req, res) => {
+router.get("/delete/:id", checkAuth, async (req, res) => {
     try {
         const AchivementId = req.params.id;
         const controller = new AchivementController();

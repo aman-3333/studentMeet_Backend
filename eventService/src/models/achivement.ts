@@ -11,6 +11,7 @@ const AchivementSchema = new Schema(
         description: { type: String },
         location:{ type: String },
         user_id: { type:Schema.Types.ObjectId, ref: "userdetails" },
+      tournament:{ type: String }
     }],
     isActive:{type:Boolean,default:true},
     isBlocked:{type:Boolean,default:false},
@@ -32,6 +33,7 @@ export interface IAchivement extends Document {
         description: String,
         location:String,
         user_id: ObjectId,
+        tournament:String
     }],
     isActive:Boolean,
     isBlocked:Boolean,
@@ -40,7 +42,7 @@ export interface IAchivement extends Document {
   
 }
 
-// const academy =model("academy", academySportsModel);
+
 export default model<IAchivement>("achivement", AchivementSchema);
 
-// module.exports = academy;
+

@@ -14,7 +14,8 @@ const userSchema = new Schema(
     achievement_id:{type:Schema.Types.ObjectId,ref:"achievement"},
     academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
     bank_details:{type:Schema.Types.ObjectId,ref:"achievement"},
-    
+    institute: { type: Schema.Types.ObjectId, ref: "institute" },
+    school: { type: Schema.Types.ObjectId, ref: "school" },
     contact: { type: Number, trim: true },
     country_code: { type: Number, trim: true },
     whatsapp_contact: { type: Number, trim: true },
@@ -30,7 +31,7 @@ const userSchema = new Schema(
     fulladdress: { type: String, trim: true },
     profile_picture: { type: String },
     signature: { type: String },
-    institute: { type: Schema.Types.ObjectId, ref: "institute" },
+   
     isSubscribed: { type: Boolean, default: true },
     password_change: { type: Boolean, default: true },
     usertype: { type: String, default: "normel" },
