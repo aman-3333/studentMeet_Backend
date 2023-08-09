@@ -22,7 +22,7 @@ const schoolSchema = new Schema(
     timestamps: true,
   }
 );
-export interface Ischool extends Document {
+export interface ISchool extends Document {
   schoolName: { type: String, required: true },
   schoolCategory: { type: String},
   schoolAddress: String,
@@ -45,4 +45,4 @@ export interface Ischool extends Document {
 
 
 
-export default model<Ischool>("school", schoolSchema);
+export default model<ISchool>("school", schoolSchema);

@@ -38,6 +38,8 @@ app.use(
 /////////////Api Routes/////////////////////
 import auth from "./routes/auth"
 import academy from "./routes/academy";
+import achivement from "./routes/achivements";
+import bankdetail from "./routes/bankDetails";
 // import category from "./routes/category";
 import chat from "./routes/chat";
 // import city from "./routes/city";
@@ -60,6 +62,9 @@ import vendor from "./routes/vendorShop";
 
 app.use("/api/auth", auth);
 app.use("/api/academy", academy);
+app.use("/api/achivement", achivement);
+app.use("/api/bankdetail", bankdetail);
+
 // app.use("/api/category", category);
 app.use("/api/chat", chat);
 // app.use("/api/city", city);
