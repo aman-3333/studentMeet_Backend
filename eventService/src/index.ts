@@ -58,7 +58,7 @@ import sponsorshipForm from "./routes//sponsorshipForm";
 import state from "./routes/state";
 import user from "./routes/userDetails";
 import vendor from "./routes/vendorShop";
-// import userRole from "./routes/userRole";
+ import role from "./routes/role";
 
 app.use("/api/auth", auth);
 app.use("/api/academy", academy);
@@ -85,7 +85,7 @@ app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/state", state);
 app.use("/api/user", user);
 app.use("/api/vendorshop", vendor);
-// app.use("/api/userRole", userRole);
+app.use("/api/role", role);
 
 
 
