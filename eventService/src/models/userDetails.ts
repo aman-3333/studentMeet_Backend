@@ -17,6 +17,7 @@ const userSchema = new Schema(
     academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     school: { type: Schema.Types.ObjectId, ref: "school" },
+    sports:{ type: Schema.Types.ObjectId, ref: "sport" },
     contact: { type: Number, trim: true },
     country_code: { type: Number, trim: true },
     whatsapp_contact: { type: Number, trim: true },
