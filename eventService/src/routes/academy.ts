@@ -4,7 +4,7 @@ const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IAcademy } from "../models/academy";
 import AcademyController from "../controllers/AcademyController";
-router.post("/createAcademy", checkAuth, async (req, res) => {
+router.post("/create",  async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -18,7 +18,7 @@ const body = req.body;
     }
 });
 
-router.patch("/academy/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const academyId = req.params.id;
         const body = req.body as IAcademy;
@@ -31,12 +31,12 @@ router.patch("/academy/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/academyList", checkAuth, async (req, res) => {
+router.get("/list",  async (req, res) => {
     try {
         const controller = new AcademyController();
-        const stateId = req.query.stateId;
+       
         const userId = req.query.userId;
-        const response: IAcademy[] = await controller.getAcademyList(stateId,userId);
+        const response: IAcademy[] = await controller.getAcademyList(userId);
         res.status(200).json(successResponse("academy list", response, res.statusCode));
     } catch (error) {
       
@@ -44,7 +44,7 @@ router.get("/academyList", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/academyinfobyid", checkAuth, async (req, res) => {
+router.get("/infobyid", checkAuth, async (req, res) => {
     try {
         const academyId: any = req.query.academyId;
         const controller = new AcademyController();
@@ -55,7 +55,7 @@ router.get("/academyinfobyid", checkAuth, async (req, res) => {
     }
 });
 
-router.patch("/deleteacademy/:id", checkAuth, async (req, res) => {
+router.patch("/delete/:id", checkAuth, async (req, res) => {
     try {
         const academyId = req.params.id;
         const controller = new AcademyController();
