@@ -5,7 +5,7 @@ import {successResponse, errorResponse} from "../services/apiResponse";
 
 import { IState } from "../models/State";
 import StateController from "../controllers/StateController";
-import { ICity } from "../models/city";
+import { ICity } from "../models/cityModel";
 import { ICountry } from "../models/country";
 
 
