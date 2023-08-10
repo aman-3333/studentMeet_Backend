@@ -16,8 +16,8 @@ export default class RoleController {
         return RoleInfo;
     }
 
-    public async getRoleList(stateId: any) {
-        const RoleList: IRole[] = await role.find({ stateId: stateId, isDeleted: false });
+    public async getRoleList() {
+        const RoleList: IRole[] = await role.find({  isDeleted: false });
         return RoleList;
     }
 

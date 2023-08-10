@@ -227,21 +227,51 @@ public async reCommentPost(userId:any,commentId:any){
         }
     }
     public async searchPost(search:any){
-                let PostInfo:any=await Post.aggregate(
-                [
-                    {
-                      $search: {
-                        index: "search-text",
-                        text: {
-                          query: search,
-                          path: {
-                            wildcard: "*"
-                          }
-                        }
-                      }
-                    }
-                  ])
-              return  PostInfo 
+               
+
+            //  let searchInfo=    await userDetails.aggregate([
+            //         { "$limit": 1 },
+            //         { "$facet": {
+            //           "c1": [
+            //             { "$lookup": {
+            //               "from": userDetails,
+            //               "pipeline": [
+            //                 { "$match": { "first_name": search } }
+            //               ],
+            //               "as": "collection1"
+            //             }}
+            //           ],
+            //           "c2": [
+            //             { "$lookup": {
+            //               "from": ,
+            //               "pipeline": [
+            //                 { "$match": { "name": "your_search_data" } }
+            //               ],
+            //               "as": "collection2"
+            //             }}
+            //           ],
+            //           "c3": [
+            //             { "$lookup": {
+            //               "from": ,
+            //               "pipeline": [
+            //                 { "$match": { "name": "your_search_data" } }
+            //               ],
+            //               "as": "collection3"
+            //             }}
+            //           ]
+            //         }},
+            //         { "$project": {
+            //           "data": {
+            //             "$concatArrays": [ "$c1", "$c2", "$c3" ]
+            //           }
+            //         }},
+            //         { "$unwind": "$data" },
+            //         { "$replaceRoot": { "newRoot": "$data" } }
+            //       ])
+
+
+
+              return  "searchInfo" 
             
             
 

@@ -78,8 +78,8 @@ export default class SchoolController {
     }
 
 
-    public async getSchool(stateId:any) {
-        const schoolList: any[] = await School.find({ SchoolStateId:stateId, isDeleted: false });
+    public async getSchool() {
+        const schoolList: any[] = await School.find({ isDeleted: false });
         return schoolList;
     }
     public async searchSchool(stateId:any,searchValue:any) {

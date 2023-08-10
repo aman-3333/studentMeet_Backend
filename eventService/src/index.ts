@@ -82,7 +82,7 @@ app.use("/api/sponsorship", sponsorship);
 app.use("/api/sportsbrand", sportsBrand);
 app.use("/api/sponsorsPartner", sponsorsPartner);
 app.use("/api/sponsorshipForm", sponsorshipForm);
-app.use("/api/state", state);
+app.use("/api/location", state);
 app.use("/api/user", user);
 app.use("/api/vendorshop", vendor);
 app.use("/api/role", role);

@@ -121,8 +121,8 @@ router.post("/delete", checkAuth, async (req, res) => {
 
 router.get("/search", checkAuth, async (req, res) => {
     try {
-        const search = req.query.search;
         
+        const search=req.query.search;
         const controller = new PostController();
         const response = await controller.searchPost(search);
         res.status(200).json(successResponse("search", response, res.statusCode));
@@ -134,7 +134,7 @@ router.get("/search", checkAuth, async (req, res) => {
 
 // router.get("/suggestion/friend", checkAuth, async (req, res) => {
 //     try {
-//         const search = req.query.search;
+        
         
 //         const controller = new PostController();
 //         const response = await controller.suggestionFriend(search);
@@ -148,7 +148,7 @@ router.get("/search", checkAuth, async (req, res) => {
 
 // router.get("/suggestion/brand", checkAuth, async (req, res) => {
 //     try {
-//         const search = req.query.search;
+        
         
 //         const controller = new PostController();
 //         const response = await controller.suggestionBrand(search);
@@ -161,7 +161,7 @@ router.get("/search", checkAuth, async (req, res) => {
 
 // router.get("/suggestion/academy", checkAuth, async (req, res) => {
 //     try {
-//         const search = req.query.search;
+        
         
 //         const controller = new PostController();
 //         const response = await controller.suggestionAcademy(search);
@@ -175,7 +175,7 @@ router.get("/search", checkAuth, async (req, res) => {
 
 // router.get("/suggestion/tournament", checkAuth, async (req, res) => {
 //     try {
-//         const search = req.query.search;
+        
         
 //         const controller = new PostController();
 //         const response = await controller.suggestionTournament(search);
@@ -189,7 +189,7 @@ router.get("/search", checkAuth, async (req, res) => {
 
 // router.get("/suggestion/coach", checkAuth, async (req, res) => {
 //     try {
-//         const search = req.query.search;
+        
         
 //         const controller = new PostController();
 //         const response = await controller.suggestionCoach(search);
@@ -204,7 +204,7 @@ router.get("/search", checkAuth, async (req, res) => {
 
 // router.get("/suggestion/schools", checkAuth, async (req, res) => {
 //     try {
-//         const search = req.query.search;
+        
         
 //         const controller = new PostController();
 //         const response = await controller.suggestionSchools(search);

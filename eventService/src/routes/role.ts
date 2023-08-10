@@ -35,8 +35,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
 router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new RoleController();
-        const stateId = req.query.stateId;
-        const response: IRole[] = await controller.getRoleList(stateId);
+        const response: IRole[] = await controller.getRoleList();
         res.status(200).json(successResponse("Role list", response, res.statusCode));
     } catch (error) {
       
