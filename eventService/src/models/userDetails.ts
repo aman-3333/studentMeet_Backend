@@ -9,19 +9,22 @@ let  sessionExpiration=  60 * 60 * 24 * 365;
 
 const userSchema = new Schema(
   {
-    fullname: { type: String,index:1 },
+    fullName: { type: String,index:1 },
     user_name:{type:String,unique:true},
     experienceMonth:{type:Number},
     experienceYear:{type:Number},
-    academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
+    academy_id:{type:Schema.Types.ObjectId,ref:"academy"},
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     school: { type: Schema.Types.ObjectId, ref: "school" },
+    sports:{ type: Schema.Types.ObjectId, ref: "sport" },
+    about:{ type: String },
     contact: { type: Number, trim: true },
     country_code: { type: Number, trim: true },
     whatsapp_contact: { type: Number, trim: true },
     whatsapp_country_code: { type: Number, trim: true },
     contact_verify: { type: Boolean, default: false },
     whatsapp_contact_verify: { type: Boolean, default: false },
+
     dob: { type: Date },
     gender: {
       type: String,
@@ -51,6 +54,7 @@ const userSchema = new Schema(
     resetToken: { type: String },
     resetShortToken: { type: String },
     resetExpires: { type: Date },
+    isProfilePublic:{ type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },
   },
   {
