@@ -2,9 +2,9 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     city: { type: String, required: true },
-    stateId: { type: Schema.Types.ObjectId, ref: "state" },
-    userId: { type: Schema.Types.ObjectId },
-    zipcode: { type: Number },
+    userId: { type: Schema.Types.ObjectId,ref:"userDetails" },
+    stateId: { type: Schema.Types.ObjectId,ref:"state" },
+
     Description: { type: String },
     picture: { type: String },
     isActive: { type: Boolean, default: false },

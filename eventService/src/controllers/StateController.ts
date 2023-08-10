@@ -1,6 +1,6 @@
 import State, { IState } from "../models/State";
 import Country, { ICountry } from "../models/country";
-import City, { ICity } from "../models/city";
+import city, { ICity } from "../models/cityModel";
 export default class StateController {
     public async createCountry(body: any) {
         let CountryInfo: any;
@@ -65,29 +65,29 @@ export default class StateController {
     public async createCity(body: any) {
         let CityInfo: any;
         if (body.length > 0) {
-            CityInfo = await City.create(body);
+            CityInfo = await city.create(body);
         }
         return CityInfo;
 
     }
 
     public async editCity(body: ICity, CityId: string) {
-        const CityInfo: ICity = await City.findOneAndUpdate({ _id: CityId, isDeleted: false }, body, { new: true }).lean();
+        const CityInfo: ICity = await city.findOneAndUpdate({ _id: CityId, isDeleted: false }, body, { new: true }).lean();
         return CityInfo;
     }
 
     public async getCityList(stateId:any) {
-        const CityList: ICity[] = await City.find({stateId:stateId, isDeleted: false });
+        const CityList: ICity[] = await city.find({stateId:stateId, isDeleted: false });
         return CityList;
     }
 
     public async getCityInfoById(CityId: any) {
-        const CityInfo: ICity = await City.findOne({ _id: CityId, isDeleted: false }).lean();
+        const CityInfo: ICity = await city.findOne({ _id: CityId, isDeleted: false }).lean();
         return CityInfo;
     }
 
     public async deleteCity(CityId: String) {
-        const CityInfo: ICity = await City.findOneAndUpdate({ _id: CityId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
+        const CityInfo: ICity = await city.findOneAndUpdate({ _id: CityId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
         return CityInfo;
     }
 }
