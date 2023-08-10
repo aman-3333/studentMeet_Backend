@@ -32,7 +32,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/list",  async (req, res) => {
     try {
         const controller = new RoleController();
         const response: IRole[] = await controller.getRoleList();

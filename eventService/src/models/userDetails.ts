@@ -9,9 +9,10 @@ let  sessionExpiration=  60 * 60 * 24 * 365;
 
 const userSchema = new Schema(
   {
-    fullname: { type: String,index:1 },
+    fullName: { type: String,index:1 },
     user_name:{type:String,unique:true},
     experienceMonth:{type:Number},
+
     experienceYear:{type:Number},
     academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
@@ -51,6 +52,7 @@ const userSchema = new Schema(
     resetToken: { type: String },
     resetShortToken: { type: String },
     resetExpires: { type: Date },
+    isProfilePublic:{ type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },
   },
   {

@@ -11,7 +11,7 @@ router.post("/following", checkAuth, async (req, res) => {
         const followingId = req.body.followingId;
         const roleId = req.body.roleId;
         const controller = new followersController();
-        const response: any = await controller.following(userId,followingId,roleId);
+        const response: any = await controller.following(userId,followingId,);
         res.status(200).json(successResponse("following ", response, res.statusCode));
     } catch (error) {
        
@@ -47,7 +47,19 @@ router.get("/getFollowers", checkAuth, async (req, res) => {
     }
 });
 
-
+router.get("/request",  async (req, res) => {
+    try {
+        
+        const userId = req.query.userId; 
+        
+        const controller = new followersController();
+        const response: any = await controller.getFollowingRequest(userId);
+        res.status(200).json(successResponse("getFollowers", response, res.statusCode));
+    } catch (error) {
+     
+        res.status(500).json(errorResponse("error in getFollowers", res.statusCode));
+    }
+});
 
 
 

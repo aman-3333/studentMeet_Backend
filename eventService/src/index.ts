@@ -69,10 +69,10 @@ app.use("/api/bankdetail", bankdetail);
 app.use("/api/chat", chat);
 // app.use("/api/city", city);
 app.use("/api/follower", followers);
-
+app.use("/api/fileUpload", fileUpload);
 app.use("/api/guidelines", guidelines);1
 app.use("/api/index", index);
-app.use("/api/fileUpload", fileUpload);
+
 
 app.use("/api/institute", institute);
 app.use("/api/post", post);
