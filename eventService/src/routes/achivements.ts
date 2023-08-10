@@ -19,6 +19,19 @@ const body = req.body;
     }
 });
 
+router.post("/delete",  async (req, res) => {
+    try {
+req.body.user=res.locals.user
+const body = req.body;
+        const controller = new AchivementController();
+        const response = await controller.createAchivement(body);
+        res.status(200).json(successResponse("delete Achivement", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in delete Achivement", res.statusCode));
+    }
+});
+
 router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
         const AchivementId = req.params.id;
@@ -58,7 +71,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.get("/all/delete/:id", checkAuth, async (req, res) => {
     try {
         const AchivementId = req.params.id;
         const controller = new AchivementController();

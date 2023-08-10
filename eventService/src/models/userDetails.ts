@@ -11,9 +11,9 @@ const userSchema = new Schema(
   {
     fullname: { type: String,index:1 },
     user_name:{type:String,unique:true},
-    achievement_id:{type:Schema.Types.ObjectId,ref:"achievement"},
+    experienceMonth:{type:Number},
+    experienceYear:{type:Number},
     academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
-    bank_details:{type:Schema.Types.ObjectId,ref:"achievement"},
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     school: { type: Schema.Types.ObjectId, ref: "school" },
     contact: { type: Number, trim: true },

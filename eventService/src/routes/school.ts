@@ -21,18 +21,7 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create School", res.statusCode));
     }
 });
-router.get("/search", checkAuth, async (req, res) => {
-    try {
-        const controller = new SchoolController();
-   const stateId =req.query.stateId
-  
-        const response: any = await controller.getSchool(stateId);
-        res.status(200).json(successResponse("get searchSchool", response, res.statusCode));
-    } catch (error) {
-       
-        res.status(500).json(errorResponse("error in get searchSchool", res.statusCode));
-    }
-});
+
 
 router.patch("/edit/:id", checkAuth, async (req, res) => {
     try {
@@ -53,8 +42,8 @@ const body = req.body;
 router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new SchoolController();
-        const stateId=req.query.stateId;
-        const response: any= await controller.getSchool(stateId);
+       
+        const response: any= await controller.getSchool();
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
        

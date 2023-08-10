@@ -1,10 +1,8 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    city: { type: String, required: true },
-    stateId: { type: Schema.Types.ObjectId, ref: "state" },
+    country: { type: String, required: true },
     userId: { type: Schema.Types.ObjectId },
-    zipcode: { type: Number },
     Description: { type: String },
     picture: { type: String },
     isActive: { type: Boolean, default: false },
@@ -13,8 +11,8 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface ICity extends Document {
-    city: String,
+export interface ICountry extends Document {
+    country: String,
     stateId: ObjectId,
     zipcode: Number,
     userId: ObjectId,
@@ -24,4 +22,4 @@ export interface ICity extends Document {
     isDeleted: Boolean
 }
 
-export default model<ICity>("city", schema);
+export default model<ICountry>("country", schema);
