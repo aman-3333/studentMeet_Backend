@@ -12,18 +12,19 @@ const userSchema = new Schema(
     fullName: { type: String,index:1 },
     user_name:{type:String,unique:true},
     experienceMonth:{type:Number},
-
     experienceYear:{type:Number},
-    academy_id:{type:Schema.Types.ObjectId,ref:"achievement"},
+    academy_id:{type:Schema.Types.ObjectId,ref:"academy"},
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     school: { type: Schema.Types.ObjectId, ref: "school" },
     sports:{ type: Schema.Types.ObjectId, ref: "sport" },
+    about:{ type: String },
     contact: { type: Number, trim: true },
     country_code: { type: Number, trim: true },
     whatsapp_contact: { type: Number, trim: true },
     whatsapp_country_code: { type: Number, trim: true },
     contact_verify: { type: Boolean, default: false },
     whatsapp_contact_verify: { type: Boolean, default: false },
+
     dob: { type: Date },
     gender: {
       type: String,
