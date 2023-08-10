@@ -17,8 +17,8 @@ export default class academyController {
         return academyInfo;
     }
 
-    public async getAcademyList(stateId: any,userId:any) {
-        const academyList: IAcademy[] = await academy.find({ stateId: stateId, isDeleted: false });
+    public async getAcademyList(userId:any) {
+        const academyList: IAcademy[] = await academy.find({  isDeleted: false });
         return academyList;
     }
 
