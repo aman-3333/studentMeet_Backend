@@ -69,13 +69,13 @@ router.patch("/delete/:id", checkAuth, async (req, res) => {
 }) 
 
 
-router.get("/searchAcademy", checkAuth, async (req, res) => {
+router.get("/search", checkAuth, async (req, res) => {
     try {
         const controller = new AcademyController();
         const search = req.query.search;
     
         const response:any = await controller.searchAcademy(search);
-        res.status(200).json(successResponse("academy list", response, res.statusCode));
+        res.status(200).json(successResponse("academy academy", response, res.statusCode));
     } catch (error) {
       
         res.status(500).json(errorResponse("error in academy list", res.statusCode));
@@ -83,16 +83,16 @@ router.get("/searchAcademy", checkAuth, async (req, res) => {
 });
 
 
-router.get("/filterAcademy", checkAuth, async (req, res) => {
+router.get("/filter", checkAuth, async (req, res) => {
     try {
         const controller = new AcademyController();
    
         const sports = req.query.sports;
         const response:any = await controller.filterAcademy(sports);
-        res.status(200).json(successResponse("academy list", response, res.statusCode));
+        res.status(200).json(successResponse("academy filter", response, res.statusCode));
     } catch (error) {
       
-        res.status(500).json(errorResponse("error in academy list", res.statusCode));
+        res.status(500).json(errorResponse("error in academy filter", res.statusCode));
     }
 });
 
