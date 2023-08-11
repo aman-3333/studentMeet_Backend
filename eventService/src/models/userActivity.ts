@@ -2,6 +2,8 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+    sponsorPartnerId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
+    name:{type:String,index:true},
     postCommentCount:{type:Number},
     postLikeCount:{type:Number},
     sharePost: [{

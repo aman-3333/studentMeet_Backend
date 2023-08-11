@@ -3,6 +3,8 @@ import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import FuzzySearch from "fuzzy-search";
 import event from "../models/sponsorshipDetails";
+import academy from "../models/academy";
+import sponsorPartner from "../models/sponsorPartner";
 
 export default class PostController {
     public async createPost(body: any) {
@@ -228,50 +230,51 @@ public async reCommentPost(userId:any,commentId:any){
     }
     public async searchPost(search:any){
                
+console.log(search,"search");
 
-            //  let searchInfo=    await userDetails.aggregate([
-            //         { "$limit": 1 },
-            //         { "$facet": {
-            //           "c1": [
-            //             { "$lookup": {
-            //               "from": userDetails,
-            //               "pipeline": [
-            //                 { "$match": { "first_name": search } }
-            //               ],
-            //               "as": "collection1"
-            //             }}
-            //           ],
-            //           "c2": [
-            //             { "$lookup": {
-            //               "from": ,
-            //               "pipeline": [
-            //                 { "$match": { "name": "your_search_data" } }
-            //               ],
-            //               "as": "collection2"
-            //             }}
-            //           ],
-            //           "c3": [
-            //             { "$lookup": {
-            //               "from": ,
-            //               "pipeline": [
-            //                 { "$match": { "name": "your_search_data" } }
-            //               ],
-            //               "as": "collection3"
-            //             }}
-            //           ]
-            //         }},
-            //         { "$project": {
-            //           "data": {
-            //             "$concatArrays": [ "$c1", "$c2", "$c3" ]
-            //           }
-            //         }},
-            //         { "$unwind": "$data" },
-            //         { "$replaceRoot": { "newRoot": "$data" } }
-            //       ])
+             let searchInfo=    await userDetails.aggregate([
+                    { "$limit": 100 },
+                    { "$facet": {
+                      "c1": [
+                        { "$lookup": {
+                          "from": userDetails,
+                          "pipeline": [
+                            { "$match": { "fullName": search } }
+                          ],
+                          "as": "userDetails"
+                        }}
+                      ],
+                      "c2": [
+                        { "$lookup": {
+                          "from": academy,
+                          "pipeline": [
+                            { "$match": { "academyName": search } }
+                          ],
+                          "as": "academy"
+                        }}
+                      ],
+                      "c3": [
+                        { "$lookup": {
+                          "from": sponsorPartner,
+                          "pipeline": [
+                            { "$match": { "sponsorPartnerName": "your_search_data" } }
+                          ],
+                          "as": "sponsorPartner"
+                        }}
+                      ]
+                    }},
+                    { "$project": {
+                      "data": {
+                        "$concatArrays": [ "$c1", "$c2", "$c3" ]
+                      }
+                    }},
+                    { "$unwind": "$data" },
+                    { "$replaceRoot": { "newRoot": "$data" } }
+                  ])
 
 
 
-              return  "searchInfo" 
+              return  searchInfo
             
             
 

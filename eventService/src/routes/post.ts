@@ -119,7 +119,7 @@ router.post("/delete", checkAuth, async (req, res) => {
     }
 })
 
-router.get("/search", checkAuth, async (req, res) => {
+router.get("/search",  async (req, res) => {
     try {
         
         const search=req.query.search;
