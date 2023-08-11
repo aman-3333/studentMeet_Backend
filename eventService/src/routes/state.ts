@@ -9,7 +9,7 @@ import { ICity } from "../models/cityModel";
 import { ICountry } from "../models/country";
 
 
-router.post("/create", checkAuth, async (req, res) => {
+router.post("/state/create", checkAuth, async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -22,7 +22,7 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create State", res.statusCode));
     }
 });
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.patch("/state/edit/:id", checkAuth, async (req, res) => {
     try {
         const StateId = req.params.id;
         req.body.user=res.locals.user
@@ -36,7 +36,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/state/list",  async (req, res) => {
     try {
         const countryId=req.query.countryId;
         const controller = new StateController();
@@ -49,7 +49,7 @@ router.get("/list", checkAuth, async (req, res) => {
 });
 
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/state/infobyid", checkAuth, async (req, res) => {
     try {
         const StateId = req.query.id;
         const controller = new StateController();
@@ -62,7 +62,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete", checkAuth, async (req, res) => {
+router.get("/state/delete", checkAuth, async (req, res) => {
     try {
         const StateId = req.body.stateId;
         const controller = new StateController();
@@ -77,7 +77,7 @@ router.get("/delete", checkAuth, async (req, res) => {
 
 
 
-router.post("/create", checkAuth, async (req, res) => {
+router.post("/city/create", checkAuth, async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -90,7 +90,7 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create City", res.statusCode));
     }
 });
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.patch("/city/edit/:id", checkAuth, async (req, res) => {
     try {
         const CityId = req.params.id;
         req.body.user=res.locals.user
@@ -104,7 +104,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/city/list", checkAuth, async (req, res) => {
     try {
         const stateId=req.query.stateId;
         const controller = new StateController();
@@ -117,7 +117,7 @@ router.get("/list", checkAuth, async (req, res) => {
 });
 
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/city/infobyid", checkAuth, async (req, res) => {
     try {
         const CityId = req.query.id;
         const controller = new StateController();
@@ -130,7 +130,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete", checkAuth, async (req, res) => {
+router.get("/city/delete", checkAuth, async (req, res) => {
     try {
         const CityId = req.body.CityId;
         const controller = new StateController();
@@ -147,7 +147,7 @@ router.get("/delete", checkAuth, async (req, res) => {
 
 
 
-router.post("/create",  async (req, res) => {
+router.post("/country/create",  async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -160,7 +160,7 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create Country", res.statusCode));
     }
 });
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.patch("/country/edit/:id", checkAuth, async (req, res) => {
     try {
         const CountryId = req.params.id;
         req.body.user=res.locals.user
@@ -174,7 +174,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list",  async (req, res) => {
+router.get("/country/list",  async (req, res) => {
     try {
         const controller = new StateController();
         const response: ICountry[] = await controller.getCountryList();
@@ -186,7 +186,7 @@ router.get("/list",  async (req, res) => {
 });
 
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/country/infobyid", checkAuth, async (req, res) => {
     try {
         const CountryId = req.query.id;
         const controller = new StateController();
@@ -199,7 +199,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete", checkAuth, async (req, res) => {
+router.get("/country/delete", checkAuth, async (req, res) => {
     try {
         const CountryId = req.body.CountryId;
         const controller = new StateController();

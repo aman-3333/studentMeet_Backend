@@ -31,7 +31,7 @@ router.post("/verifyotp",  async (req, res) => {
     }
 });
 
-router.get("/editprofile", checkAuth, async (req, res) => {
+router.post("/editprofile",  async (req, res) => {
     try {
         const controller = new authController();
         const body = req.body 
