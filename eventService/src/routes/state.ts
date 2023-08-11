@@ -36,7 +36,7 @@ router.patch("/state/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/state/list", checkAuth, async (req, res) => {
+router.get("/state/list",  async (req, res) => {
     try {
         const countryId=req.query.countryId;
         const controller = new StateController();
