@@ -31,12 +31,13 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list",  async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new AcademyController();
-       
-        const userId = req.query.userId;
-        const response: IAcademy[] = await controller.getAcademyList(userId);
+        let user=res.locals.user
+        console.log(user);
+        
+        const response: IAcademy[] = await controller.getAcademyList(user);
         res.status(200).json(successResponse("academy list", response, res.statusCode));
     } catch (error) {
       

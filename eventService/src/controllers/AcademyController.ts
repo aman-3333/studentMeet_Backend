@@ -18,9 +18,37 @@ export default class academyController {
         return academyInfo;
     }
 
-    public async getAcademyList(userId:any) {
-        const academyList: IAcademy[] = await academy.find({  isDeleted: false });
-        return academyList;
+    public async getAcademyList(user:any) {
+        console.log(user._id,"user._id");
+        
+        let academyLike = await academy.aggregate([
+            { $match: {isDeleted:false,academyLike:{$in:[user._id]}}},
+           
+              {
+                $addFields: {
+                isLikes: true, 
+              }}
+           
+          ]);
+          let academyList = await academy.aggregate([
+            { $match: {isDeleted:false,academyLike:{$ne:[user._id]}}},
+          
+              {
+                $addFields: {
+                isLikes: false, 
+              }}
+           
+          ]);
+
+
+  
+
+
+          const mergedArray = [...academyLike, ...academyList];
+
+
+mergedArray.sort((a, b) => a.createdAt - b.createdAt);
+return mergedArray
     }
 
     public async getAcademyInfoById(academyId: any) {
@@ -89,7 +117,7 @@ export default class academyController {
               return academyInfo;
           
       }
-      if (status == "removeacademyLike") {
+      if (status == "removAcademyLike") {
    
           await academy.findOneAndUpdate({ _id: body.academyId },
               { $inc: { academyLikeCount: -1 } }, { new: true })
@@ -138,7 +166,7 @@ export default class academyController {
               return  academyInfo ;
           }
       }
-      if (status == "removeacademyComment") {
+      if (status == "removeAcademyComment") {
           for (let i = 0; i < body.academyComment.length; i++) {
            
                   academyInfo =    await academy.findOneAndUpdate(
