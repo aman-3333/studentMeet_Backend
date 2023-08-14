@@ -3,9 +3,7 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 
 const sponsorshipSchema = new Schema(
   {  
-    organizerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
-    suborganizerId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
-  sponsorshipFormId: [ {type: Schema.Types.ObjectId, ref: "sponsorPartner" }],
+    
   sponsorshipPartnerId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
     participentId: [{ type: Schema.Types.ObjectId, ref: "userdeta " }],
   sponsorshipGuideLines: { type: Schema.Types.ObjectId },
@@ -13,8 +11,6 @@ const sponsorshipSchema = new Schema(
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
   sponsorshipName: { type: String,required:true  },
-    type: { type: String,required:true,default:"sponsor",enum:["sponsor","affilate"] },
-  sponsorshipPartnerName: { type: String },
   sponsorshipBannerImage: [{ type: String }],
   sponsorshipDesription: { type: String },
   sponsorshipTermsAndCondition: { type: String },

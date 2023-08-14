@@ -1,5 +1,6 @@
 
 import academy, { IAcademy } from "../models/academy";
+import userActivity from "../models/userActivity";
 
 export default class academyController {
 
@@ -57,6 +58,128 @@ export default class academyController {
       return  academyInfo 
     
     }
+    public async academyActivity(userId: any, academyId:any, status: any, academyComment: any, academyCommentId: any, body: any) {
+      let userInfo: any;
+      let data: any = [];
+      let a: any = [];
+      let info: any;
+     let academyInfo :any;
+    
+      if (status == "academyLike") {  
+    
+
+                  
+  
+              await academy.findOneAndUpdate({ _id: body.academyId },
+                  { $inc: { academyLikeCount: 1 } }, { new: true }).lean()
+                  academyInfo =   await academy.findOneAndUpdate({
+                  _id: body.academyId
+              }, {
+                  $push: {
+                      academyLike:
+                          userId
+  
+                  }
+              },{ new: true })
+
+              console.log(academyInfo);
+              
+              await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
+                  { $inc: { academyLikeCount: 1 } }, { new: true })
+              return academyInfo;
+          
+      }
+      if (status == "removeacademyLike") {
+   
+          await academy.findOneAndUpdate({ _id: body.academyId },
+              { $inc: { academyLikeCount: -1 } }, { new: true })
+              
+              academyInfo =   await academy.findOneAndUpdate({
+              _id: body.academyId
+          }, {
+              $pull: {
+                  academyLike:
+                      userId
+              }
+          },{ new: true })
+
+          await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
+              { $inc: { academyLikeCount: -1 } }, { new: true })
+          return academyInfo;
+      }
+ 
+      if (status == "academyComment") {
+     
+          
+          let currentTime: any = new Date();
+          for (let i = 0; i < body.academyComment.length; i++) {
+             
+           
+                  academyInfo =    await academy.findOneAndUpdate(
+                  {
+                      _id: body.academyId,
+                  },
+                  {
+                      $push: {
+                          academyComment: {
+                              userId: body.academyComment[i].userId,
+                              comment: body.academyComment[i].comment,
+                              dateTime: currentTime
+                          }
+                      }
+                  })
+                  
+                  academyInfo=   await academy.findOneAndUpdate({ _id: body.academyId },
+                  { $inc: { academyCommentCount: 1 } }, { new: true })
+  
+  
+                  await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
+                      { $inc: { academyCommentCount: 1 } }, { new: true })
+              return  academyInfo ;
+          }
+      }
+      if (status == "removeacademyComment") {
+          for (let i = 0; i < body.academyComment.length; i++) {
+           
+                  academyInfo =    await academy.findOneAndUpdate(
+                  {
+                      _id: body.academyComment[i].academyId,
+                  },
+                  {
+                      $pull: {
+                          academyComment: {
+                              _id: body.academyComment[i]._id,
+  
+                          }
+                      },
+                  })
+  
+         
+                  academyInfo =     await academy.findOneAndUpdate({ _id: body.academyComment[i].academyId },
+                  { $inc: { academyCommentCount: -1 } }, { new: true })
+  
+                  await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
+                      { $inc: { academyCommentCount: -1 } }, { new: true })
+              return  academyInfo ;
+          }
+  
+      } if (status == "readacademyComment") {
+          userInfo = await userActivity.findOne({ userId: body.userId }).lean();
+          userInfo = userInfo.academyComment;
+  
+  
+          for (let i = 0; i < userInfo.length; i++) {
+              let academyInfo: any = await academy.findOne({ _id: userInfo[i].academyId })
+  
+              let comment: any = userInfo[i].comment
+              let DateTime: any = userInfo[i].dateTime
+  
+              data.push({ academyInfo, comment, DateTime })
+          }
+          return data;
+      }
+  }
+
 
 public async filterAcademy(sports:any){
 

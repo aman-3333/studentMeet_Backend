@@ -125,4 +125,4 @@ export interface IPartner extends Document {
 }
 // user
 
-export default model<IPartner>("sponsorPartner", schema);
+export default model<IPartner>("sponsor_partner", schema);

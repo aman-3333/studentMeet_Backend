@@ -2,20 +2,25 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     userId: { type: Schema.Types.ObjectId,ref: "userdetails" },
+    userType:{type:String},
+    userDp:{type:String},
+    userShortDiscription:{type:String},
+    userName:{type:String},
     city: { type: Schema.Types.ObjectId,ref: "cities" },
     state: { type: Schema.Types.ObjectId,ref: "states" },
     country: { type: Schema.Types.ObjectId,ref: "countries" },
+    mediaType:{ type: String },
     Image: [{ type: String }],
     description:{ type: String },
     video: [{ type: String }],
     attechment: [{ type: String }],
-    userName:{ type: String,index:true },
     postType:{ type: String,enum:["General"]},
     seePost:{ type: String,enum:["anyone","friend","group"],default:"anyone"},
     commentOnPost:{ type: String,enum:["anyone","friend","group"],default:"anyone"},
+    isAnyAchievement: { type: Boolean, default: false },
     postLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
-    isAnyAchievement: { type: Boolean, default: false },
+    
     postCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
     postLike: [{
@@ -47,6 +52,11 @@ const schema = new Schema({
 export interface IPost extends Document {
 
     userId: ObjectId,
+    userType:String,
+    mediaType:String,
+    userDp:String,
+    userShortDiscription:String,
+    userName:String,
     Image: [String],
     description: String,
     video: [String],

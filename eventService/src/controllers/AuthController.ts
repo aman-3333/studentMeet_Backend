@@ -82,7 +82,8 @@ export default class AuthController {
       })
       await userActivity.create({
         userId
-          : createUser._id
+          : createUser._id,
+          name:createUser.fullName
       })
 
        await userDevice.create(
@@ -118,9 +119,12 @@ export default class AuthController {
   }
 
   public async editProfile(body: any) {
-    let userInfo: any = await Users.findOneAndUpdate({ _id: body.userId, isDeleted: false }, body, { new: true }).lean();
+    console.log(body,"body");
     
-    await post.findOneAndUpdate({ userId: body.userId }, { $set: { userName: userInfo.fullname } })
+    let userInfo: any = await Users.findOneAndUpdate({ _id: body.userId, isDeleted: false }, body, { new: true }).lean();
+    console.log(userInfo,"userInfo");
+    
+    await userActivity.findOneAndUpdate({ userId: body.userId }, { $set: { name: userInfo.fullName } })
     return userInfo;
   }
 
