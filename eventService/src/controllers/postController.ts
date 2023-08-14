@@ -10,7 +10,6 @@ export default class PostController {
     public async createPost(body: any) {
     body.userId= body.user._id
         let PostInfo: any;
-    
             PostInfo = await Post.create(body);
             let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
             await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname}})
@@ -23,9 +22,85 @@ export default class PostController {
         const PostInfo: any = await Post.findOneAndUpdate({ _id: body.PostId, isDeleted: false }, body, { new: true }).lean();
         return PostInfo;
     }
-  
-    public async getPostList() {
-        const PostList = await Post.aggregate([
+ 
+
+    public async getPostList(user:any) {
+      console.log(user._id,"user._id");
+      
+        let PostLike = await Post.aggregate([
+            { $match: {isDeleted:false,postLike:{$in:[user._id]}}},
+            {
+              $lookup: {
+                'localField': 'userId',
+                'from': 'userdetails',
+                'foreignField': '_id',
+                'as': 'user',
+              },
+            },
+            {
+              $lookup: {
+                'localField': 'state',
+                'from': 'state',
+                'foreignField': '_id',
+                'as': 'state',
+              },
+            },  {
+                $lookup: {
+                  'localField': 'city',
+                  'from': 'city',
+                  'foreignField': '_id',
+                  'as': 'city',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'country',
+                  'from': 'country',
+                  'foreignField': '_id',
+                  'as': 'country',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'instituteId',
+                  'from': 'institute',
+                  'foreignField': '_id',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'schoolId',
+                  'from': 'school',
+                  'foreignField': '_id',
+                  'as': 'school',
+                },
+              },  {
+                $lookup: {
+                  'localField': '_id',
+                  'from': 'states',
+                  'foreignField': 'state',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': '_id',
+                  'from': 'states',
+                  'foreignField': 'state',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'sponsorPartnerId',
+                  'from': 'sponsorPartner',
+                  'foreignField': '_id',
+                  'as': 'sponsorPartner',
+                },
+              },
+              {
+                $addFields: {
+                isLikes: true, 
+              }}
+           
+          ]);
+          let PostList = await Post.aggregate([
             { $match: {isDeleted:false}},
             {
               $lookup: {
@@ -35,22 +110,74 @@ export default class PostController {
                 'as': 'user',
               },
             },
-            // {
-            //   $lookup: {
-            //     'localField': '_id',
-            //     'from': 'states',
-            //     'foreignField': 'state',
-            //     'as': 'state',
-            //   },
-            // },
-            // {
-            
-            // },
+            {
+              $lookup: {
+                'localField': 'state',
+                'from': 'state',
+                'foreignField': '_id',
+                'as': 'state',
+              },
+            },  {
+                $lookup: {
+                  'localField': 'city',
+                  'from': 'city',
+                  'foreignField': '_id',
+                  'as': 'city',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'country',
+                  'from': 'country',
+                  'foreignField': '_id',
+                  'as': 'country',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'instituteId',
+                  'from': 'institute',
+                  'foreignField': '_id',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'schoolId',
+                  'from': 'school',
+                  'foreignField': '_id',
+                  'as': 'school',
+                },
+              },  {
+                $lookup: {
+                  'localField': '_id',
+                  'from': 'states',
+                  'foreignField': 'state',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': '_id',
+                  'from': 'states',
+                  'foreignField': 'state',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'sponsorPartnerId',
+                  'from': 'sponsorPartner',
+                  'foreignField': '_id',
+                  'as': 'sponsorPartner',
+                },
+              },
+              {
+                $addFields: {
+                isLikes: false, 
+              }}
            
           ]);
 
 
-        return PostList;
+          PostLike=PostLike.concat(PostLike)
+
+        return PostLike;
     }
 
     public async getPostListBYUserId(userId:any) {

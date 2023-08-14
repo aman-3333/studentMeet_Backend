@@ -8,7 +8,7 @@ import PostController from "../controllers/postController";
 
 router.post("/create",checkAuth,  async (req, res) => {
     try {
-        
+ 
 req.body.user=res.locals.user
 const body = req.body;
         const controller = new PostController();
@@ -22,8 +22,6 @@ const body = req.body;
 });
 router.post("/edit", checkAuth, async (req, res) => {
     try {
-        
-        
 req.body.user=res.locals.user
 const body = req.body;
         const controller = new PostController();
@@ -37,9 +35,10 @@ const body = req.body;
 
 router.get("/list", checkAuth, async (req, res) => {
     try {
-      
+        let user=res.locals.user
+    
         const controller = new PostController();
-        const response= await controller.getPostList();
+        const response= await controller.getPostList(user);
         res.status(200).json(successResponse("Post list", response, res.statusCode));
     } catch (error) {
        
