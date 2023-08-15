@@ -6,21 +6,129 @@ export default class academyController {
 
     public async createAcademy(body: any) {
 
+       console.log(body,"body");
        
      let academyInfo:any= await academy.create(body);
+        console.log(academyInfo,"academyInfo");
         
         return academyInfo;
 
     }
 
-    public async editAcademy(body: IAcademy, academyId: string) {
-        const academyInfo: IAcademy = await academy.findOneAndUpdate({ _id: academyId, isDeleted: false }, body, { new: true }).lean();
+    public async editAcademy(body: any) {
+console.log(body.academyId,"body.academyId");
+
+        const academyInfo: any = await academy.findOneAndUpdate({ _id: body.academyId, isDeleted: false }, body, { new: true }).lean();
         return academyInfo;
     }
 
-    public async getAcademyList(userId:any) {
-        const academyList: IAcademy[] = await academy.find({  isDeleted: false });
-        return academyList;
+    public async getAcademyList(user:any) {
+       
+        
+        let academyLike = await academy.aggregate([
+            { $match: {isDeleted:false,academyLike:{$in:[user._id]}}},
+            
+           
+            {
+              $lookup: {
+                'localField': '_id',
+                'from': 'State',
+                'foreignField': 'state',
+                'as': 'state',
+              },
+            },  {
+                $lookup: {
+                  'localField': '_id',
+                  'from': 'city',
+                  'foreignField': 'city',
+                  'as': 'city',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'country',
+                  'from': 'country',
+                  'foreignField': '_id',
+                  'as': 'country',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'instituteId',
+                  'from': 'institutes',
+                  'foreignField': '_id',
+                  'as': 'state',
+                },
+              },  {
+                $lookup: {
+                  'localField': 'schoolId',
+                  'from': 'schools',
+                  'foreignField': '_id',
+                  'as': 'school',
+                },
+              },     
+              {
+                $addFields: {
+                isLikes: true, 
+              }}
+           
+          ]);
+          let academyList = await academy.aggregate([
+            { $match: {isDeleted:false,academyLike:{$ne:[user._id]}}},
+            {
+                $lookup: {
+                  'localField': 'state',
+                  'from': 'states',
+                  'foreignField': '_id',
+                  'as': 'state',
+                },
+              },  {
+                  $lookup: {
+                    'localField': 'city',
+                    'from': 'cities',
+                    'foreignField': '_id',
+                    'as': 'city',
+                  },
+                },  {
+                  $lookup: {
+                    'localField': 'country',
+                    'from': 'countries',
+                    'foreignField': '_id',
+                    'as': 'country',
+                  },
+                },  {
+                  $lookup: {
+                    'localField': 'instituteId',
+                    'from': 'institutes',
+                    'foreignField': '_id',
+                    'as': 'state',
+                  },
+                },  {
+                  $lookup: {
+                    'localField': 'schoolId',
+                    'from': 'schools',
+                    'foreignField': '_id',
+                    'as': 'school',
+                  },
+                },     
+                {
+                  $addFields: {
+                  isLikes: true, 
+                }},
+              {
+                $addFields: {
+                isLikes: false, 
+              }}
+           
+          ]);
+
+
+  
+
+
+          const mergedArray = [...academyLike, ...academyList];
+
+
+mergedArray.sort((a, b) => a.createdAt - b.createdAt);
+return mergedArray
     }
 
     public async getAcademyInfoById(academyId: any) {
@@ -83,13 +191,11 @@ export default class academyController {
               },{ new: true })
 
               console.log(academyInfo);
-              
-              await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
-                  { $inc: { academyLikeCount: 1 } }, { new: true })
+      
               return academyInfo;
           
       }
-      if (status == "removeacademyLike") {
+      if (status == "removAcademyLike") {
    
           await academy.findOneAndUpdate({ _id: body.academyId },
               { $inc: { academyLikeCount: -1 } }, { new: true })
@@ -103,8 +209,7 @@ export default class academyController {
               }
           },{ new: true })
 
-          await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
-              { $inc: { academyLikeCount: -1 } }, { new: true })
+         
           return academyInfo;
       }
  
@@ -133,12 +238,10 @@ export default class academyController {
                   { $inc: { academyCommentCount: 1 } }, { new: true })
   
   
-                  await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
-                      { $inc: { academyCommentCount: 1 } }, { new: true })
               return  academyInfo ;
           }
       }
-      if (status == "removeacademyComment") {
+      if (status == "removeAcademyComment") {
           for (let i = 0; i < body.academyComment.length; i++) {
            
                   academyInfo =    await academy.findOneAndUpdate(
@@ -158,12 +261,11 @@ export default class academyController {
                   academyInfo =     await academy.findOneAndUpdate({ _id: body.academyComment[i].academyId },
                   { $inc: { academyCommentCount: -1 } }, { new: true })
   
-                  await userActivity.findOneAndUpdate({ userId: academyInfo.userId },
-                      { $inc: { academyCommentCount: -1 } }, { new: true })
+       
               return  academyInfo ;
           }
   
-      } if (status == "readacademyComment") {
+      } if (status == "readacAdemyComment") {
           userInfo = await userActivity.findOne({ userId: body.userId }).lean();
           userInfo = userInfo.academyComment;
   

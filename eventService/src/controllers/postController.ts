@@ -25,7 +25,7 @@ export default class PostController {
  
 
     public async getPostList(user:any) {
-      console.log(user._id,"user._id");
+   
       
         let PostLike = await Post.aggregate([
             { $match: {isDeleted:false,postLike:{$in:[user._id]}}},
@@ -79,14 +79,7 @@ export default class PostController {
                   'foreignField': 'state',
                   'as': 'state',
                 },
-              },  {
-                $lookup: {
-                  'localField': '_id',
-                  'from': 'states',
-                  'foreignField': 'state',
-                  'as': 'state',
-                },
-              },  {
+              },    {
                 $lookup: {
                   'localField': 'sponsorPartnerId',
                   'from': 'sponsorPartner',
@@ -101,7 +94,7 @@ export default class PostController {
            
           ]);
           let PostList = await Post.aggregate([
-            { $match: {isDeleted:false}},
+            { $match: {isDeleted:false,postLike:{$ne:[user._id]}}},
             {
               $lookup: {
                 'localField': 'userId',
@@ -175,9 +168,16 @@ export default class PostController {
           ]);
 
 
-          PostLike=PostLike.concat(PostLike)
+          PostLike=PostLike.concat(PostList)
 
-        return PostLike;
+
+          const mergedArray = [...PostLike, ...PostList];
+
+
+mergedArray.sort((a, b) => a.createdAt - b.createdAt);
+         
+            
+        return mergedArray;
     }
 
     public async getPostListBYUserId(userId:any) {
