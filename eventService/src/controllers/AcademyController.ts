@@ -1,6 +1,7 @@
 
 import academy, { IAcademy } from "../models/academy";
 import userActivity from "../models/userActivity";
+import userDetails from "../models/userDetails";
 
 export default class academyController {
 
@@ -148,21 +149,23 @@ return mergedArray
 
 
     public async searchAcademy(search:any){
+ console.log(search,"search");
  
         let academyInfo:any=await academy.aggregate(
-        [
-            {
-              $search: {
-                index: "search-text",
-                text: {
-                  query: search,
-                  path: {
-                    wildcard: "*"
+        
+            [
+                {
+                  $search: {
+                    index: "academies",
+                    text: {
+                      query:search,
+                      path: {
+                        wildcard: "*"
+                      }
+                    }
                   }
                 }
-              }
-            }
-          ])
+              ])
       return  academyInfo 
     
     }
@@ -215,11 +218,9 @@ return mergedArray
  
       if (status == "academyComment") {
      
-          
+    
           let currentTime: any = new Date();
-          for (let i = 0; i < body.academyComment.length; i++) {
-             
-           
+          for (let i = 0; i < body.academyComment.length; i++) {    
                   academyInfo =    await academy.findOneAndUpdate(
                   {
                       _id: body.academyId,
@@ -282,6 +283,43 @@ return mergedArray
       }
   }
 
+  public async readAcademyActivity(academyId: any, status: any) {
+       
+        
+    let academyInfo: any
+    if (status == "readAcademyLike") {
+        academyInfo = await academy.findOne({ _id: academyId }).populate("academyLike")
+        academyInfo=academyInfo.academyLike
+        return academyInfo
+    }
+    if (status == "readAcademyComment") {
+        
+        let a = []
+        academyInfo = await academy.findOne({ _id: academyId }).lean();
+        console.log(academyInfo);
+        academyInfo = academyInfo.academyComment;
+       
+        
+        for (let i = 0; i < academyInfo.length; i++) {
+            console.log(academyId);
+            let userInfo: any = await userDetails.findOne({ _id: academyInfo[i].userId }, { fullName: true,profile_picture:true })
+           
+            let comment = academyInfo[i].comment
+            let DateTime: any = academyInfo[i].dateTime
+
+            a.push({ userInfo, comment, DateTime })
+        }
+        var y = [...a].reverse();
+        return y
+
+
+
+    } if (status == "readacademyFavourite") {
+        academyInfo = await academy.findOne({ _id: academyId }).populate("academyFavourite");
+        academyInfo=academyInfo.academyFavourite
+        return academyInfo
+    }
+}
 
 public async filterAcademy(sports:any){
 

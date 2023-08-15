@@ -90,20 +90,37 @@ const body = req.body;
         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
     }
 });
-router.get("/read/activity", checkAuth, async (req, res) => {
+
+router.post("/read/activity",  async (req, res) => {
     try {
-        
-        const PostId = req.query.PostId; 
-        const status = req.query.status;
-        
+      
+        const postId = req.body.postId; 
+        const status = req.body.status;
+     
+
+
         const controller = new PostController();
-        const response = await controller.readPostActivity( PostId, status);
-        res.status(200).json(successResponse("postActivity", response, res.statusCode));
+        const response = await controller.readPostActivity(postId,status)
+        res.status(200).json(successResponse("read postActivity", response, res.statusCode));
     } catch (error) {
       
-        res.status(500).json(errorResponse("error in postActivity", res.statusCode));
+        res.status(500).json(errorResponse("error in read postActivity", res.statusCode));
     }
 });
+// router.get("/read/activity", checkAuth, async (req, res) => {
+//     try {
+        
+//         const PostId = req.query.PostId; 
+//         const status = req.query.status;
+        
+//         const controller = new PostController();
+//         const response = await controller.readPostActivity( PostId, status);
+//         res.status(200).json(successResponse("postActivity", response, res.statusCode));
+//     } catch (error) {
+      
+//         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
+//     }
+// });
 
 router.post("/delete", checkAuth, async (req, res) => {
     try {
