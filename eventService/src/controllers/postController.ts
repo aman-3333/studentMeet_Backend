@@ -79,14 +79,7 @@ export default class PostController {
                   'foreignField': 'state',
                   'as': 'state',
                 },
-              },  {
-                $lookup: {
-                  'localField': '_id',
-                  'from': 'states',
-                  'foreignField': 'state',
-                  'as': 'state',
-                },
-              },  {
+              },    {
                 $lookup: {
                   'localField': 'sponsorPartnerId',
                   'from': 'sponsorPartner',
