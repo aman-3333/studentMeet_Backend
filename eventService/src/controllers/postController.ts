@@ -328,12 +328,12 @@ public async reCommentPost(userId:any,commentId:any){
        
         
         let PostInfo: any
-        if (status == "readpostLike") {
+        if (status == "readPostLike") {
             PostInfo = await Post.findOne({ _id: PostId }).populate("postLike")
             PostInfo=PostInfo.postLike
             return PostInfo
         }
-        if (status == "readpostComment") {
+        if (status == "readPostComment") {
             let a = []
             PostInfo = await Post.findOne({ _id: PostId }).lean();
             PostInfo = PostInfo.postComment;
