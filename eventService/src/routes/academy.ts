@@ -70,10 +70,11 @@ router.patch("/delete/:id", checkAuth, async (req, res) => {
 }) 
 
 
-router.get("/search", checkAuth, async (req, res) => {
+router.get("/search",  async (req, res) => {
     try {
         const controller = new AcademyController();
         const search = req.query.search;
+   
     
         const response:any = await controller.searchAcademy(search);
         res.status(200).json(successResponse("academy academy", response, res.statusCode));
@@ -118,7 +119,24 @@ const body = req.body;
     }
 });
 
+router.post("/read/activity",  async (req, res) => {
+    try {
+        console.log(req.body);
+        
+   
+        const academyId = req.body.academyId; 
+        const status = req.body.status;
+       
 
+
+        const controller = new AcademyController();
+        const response = await controller.readAcademyActivity( academyId, status, );
+        res.status(200).json(successResponse("read Activity", response, res.statusCode));
+    } catch (error) {
+      
+        res.status(500).json(errorResponse("error in read Activity", res.statusCode));
+    }
+});
 
 
 export default router;

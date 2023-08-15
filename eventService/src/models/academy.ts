@@ -28,7 +28,7 @@ const academyModel = new Schema(
         type: Schema.Types.ObjectId, ref: "userdetails",
         
     }],
-   academyComment: [{
+    academyComment: [{
         userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
         comment: { type: String },
         dateTime: { type: Date },

@@ -338,7 +338,7 @@ public async reCommentPost(userId:any,commentId:any){
             PostInfo = await Post.findOne({ _id: PostId }).lean();
             PostInfo = PostInfo.postComment;
             for (let i = 0; i < PostInfo.length; i++) {
-                let userInfo: any = await userDetails.findOne({ _id: PostInfo[i].userId }, { fullname: true })
+                let userInfo: any = await userDetails.findOne({ _id: PostInfo[i].userId }, { fullName: true,profile_picture:true })
                 let comment = PostInfo[i].comment
                 let DateTime: any = PostInfo[i].dateTime
     
