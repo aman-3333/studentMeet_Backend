@@ -26,7 +26,6 @@ export default class AchivementController {
             });
 
          
-            console.log(AchivementInfo,"AchivementInfo");
             
 
             

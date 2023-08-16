@@ -1,24 +1,24 @@
 import {Document, model, Schema,} from "mongoose";
 import { ObjectId } from 'bson';
 
-const academySportsModel = new Schema(
+const AcademyEventModel = new Schema(
   {
     academyName:  { type: String },
-    sportsName:{ type:Schema.Types.ObjectId, ref: "sport" },
+    sportsName:{ type: String },
     academy_id:{ type:Schema.Types.ObjectId, ref: "sport" },
     sports_id:{ type:Schema.Types.ObjectId, ref: "sport" },
     coachId: { type:Schema.Types.ObjectId, ref: "userdetails" },
     secoudryCoachId: [{ type:Schema.Types.ObjectId, ref: "userdetails" }],
     achievements_id: [{ type:Schema.Types.ObjectId, ref: "userdetails" }],
-      feesPerMonth: { type: Number },
-      feesPerYear: { type: Number },
-      feesDiscount: { type: Number },
-      feesDiscountLastDate: { type: Number },
-      description: { type: String },
-      achievements: { type: String },
-      picture: [{ type: String }],
-      isActive:{type:Boolean,default:true},
-      isBlocked:{type:Boolean,default:false},
+    feesPerMonth: { type: Number },
+    feesPerYear: { type: Number },
+    feesDiscount: { type: Number },
+    feesDiscountLastDate: { type: Number },
+    description: { type: String },
+    achievements: { type: String },
+    picture: [{ type: String }],
+    isActive:{type:Boolean,default:true},
+    isBlocked:{type:Boolean,default:false},
     isDeleted:{type:Boolean,default:false},
 
   },
@@ -27,9 +27,9 @@ const academySportsModel = new Schema(
 
  
 
-export interface IAcademySports extends Document {
+export interface IAcademyEvent extends Document {
     academyName: String,
-    sportsName:ObjectId,
+    sportsName:String ,
     academy_id:ObjectId,
     sports_id:ObjectId,
     coachId: ObjectId,
@@ -47,7 +47,7 @@ export interface IAcademySports extends Document {
     isDeleted:Boolean,
 }
 
-// const academy =model("academy", academySportsModel);
-export default model<IAcademySports>("academy_sport", academySportsModel);
+// const academy =model("academy", AcademyEventModel);
+export default model<IAcademyEvent>("academy_event", AcademyEventModel);
 
 // module.exports = academy;
