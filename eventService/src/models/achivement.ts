@@ -4,7 +4,7 @@ import { ObjectId } from 'bson';
 const AchivementSchema = new Schema(
   {
     user_id: { type:Schema.Types.ObjectId, ref: "userdetails" },
-    academy_id: { type:Schema.Types.ObjectId, ref: "userdetails" },
+    academyEventId: { type:Schema.Types.ObjectId, ref: "academy_event" },
     achievements: [{
         achievements: { type: String },
         picture: [{ type: String }],
