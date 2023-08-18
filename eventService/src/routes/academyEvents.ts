@@ -47,8 +47,12 @@ router.get("/list",  async (req, res) => {
 router.get("/info/byid",  async (req, res) => {
     try {
         const academyEventId:any = req.query.academyEventId;
+        const academyId:any = req.query.academyId;
+        const status:any = req.query.status;
+
+        
         const controller = new AcademyEventController();
-        const response: any = await controller.getAcademyEventInfoById(academyEventId);
+        const response: any = await controller.getAcademyEventInfoById(academyEventId,status,academyId);
         res.status(200).json(successResponse("get AcademyEvent", response, res.statusCode));
     } catch (error) {
         
@@ -56,6 +60,21 @@ router.get("/info/byid",  async (req, res) => {
     }
 });
 
+
+router.get("/registration/details",  async (req, res) => {
+    try {
+        const academyEventId:any = req.query.academyEventId;
+        
+
+        
+        const controller = new AcademyEventController();
+        const response: any = await controller.getAcademyRegistrationDetail(academyEventId);
+        res.status(200).json(successResponse("get AcademyEvent", response, res.statusCode));
+    } catch (error) {
+        
+        res.status(500).json(errorResponse("error in get AcademyEvent", res.statusCode));
+    }
+});
 
 router.get("/delete/:id", checkAuth, async (req, res) => {
     try {

@@ -5,7 +5,8 @@ const sponsorshipSchema = new Schema(
   {  
     
   sponsorshipPartnerId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
-    participentId: [{ type: Schema.Types.ObjectId, ref: "userdeta " }],
+  sponsorshipRepresentativeId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
+    participentId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
   sponsorshipGuideLines: { type: Schema.Types.ObjectId },
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
@@ -59,56 +60,53 @@ sponsorshipComment: [{
 );
 
 export interface ISponsorship extends Document {
-  organizerId: ObjectId,
-  suborganizerId: [ObjectId],
-sponsorshipFormId: [ObjectId],
-sponsorshipPartnerId: ObjectId,
-  participentId: [ObjectId],
-sponsorshipGuideLines:ObjectId,
-  category:ObjectId,
-  SubCategory: ObjectId,
-  subSubCategory: ObjectId,
-sponsorshipName:String,
-  type: String,
-sponsorshipPartnerName: String,
-sponsorshipBannerImage: [String],
-sponsorshipDesription: String,
-sponsorshipTermsAndCondition: String,
-  seatreamining:Number,
-sponsorshipLikeCount: Number,
-sponsorshipFavoriteCount: Number,
-sponsorshipCommentCount:  Number,
-sponsorshipShareCount:Number,
-  likesponsor: [
-   ObjectId,
-],
+  sponsorshipPartnerId: ObjectId,
+  sponsorshipRepresentativeId: ObjectId,
+    participentId: [ObjectId],
+  sponsorshipGuideLines: ObjectId,
+    category: ObjectId,
+    SubCategory: ObjectId,
+    subSubCategory: ObjectId,
+  sponsorshipName: String,
+  sponsorshipBannerImage: [String],
+  sponsorshipDesription: String,
+  sponsorshipTermsAndCondition: String,
+    seatreamining:Number,
+  sponsorshipLikeCount: Number,
+  sponsorshipFavoriteCount: Number,
+  sponsorshipCommentCount:  Number,
+  sponsorshipShareCount: Number,
+    likesponsor: [
+      ObjectId,
+  ],
 sponsorshipFavorite: [
-    ObjectId,
-],
+       ObjectId,
+  ],
 sponsorshipComment: [{
-    userId:ObjectId,
-    comment:String,
-    dateTime:Date,
-}],
-sharesponsor: [{
-  sponsor: ObjectId,
-   userId:ObjectId,
-    friendId:ObjectId,
-}],
-
-  feadBacksponsor:[{
-    reting: Number,
-    userId:ObjectId,
-    feadBackComment: String
+      userId: ObjectId,
+      comment:String,
+      dateTime:Date,
+  }],
+  sharesponsor: [{
+    sponsorship: ObjectId,
+     userId: ObjectId,
+      friendId: ObjectId,
   }],
   
+    feadBacksponsor:[{
+      reting: Number,
+      userId: ObjectId,
+      feadBackComment: String
+    }],
+    
+   
+    isActive: Boolean,
+   
+    isDeleted: Boolean,
+   
+    registrationStartDateTime: Date,
+    registrationEndDate: Date
  
-  isActive: Boolean,
- 
-  isDeleted: Boolean,
- 
-  registrationStartDateTime: Date,
-  registrationEndDate: Date,
 
 }
 // user
