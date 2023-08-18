@@ -1,4 +1,5 @@
 import AcademyEvent, { IAcademyEvent } from "../models/academyEvent";
+import achivement from "../models/achivement";
 import userDetails from "../models/userDetails";
 
 export default class AcademyEventController {
@@ -26,8 +27,10 @@ export default class AcademyEventController {
     public async getAcademyEventInfoById(AcademyEventId: any,status:any,academyId:any) {
         var AcademyEventInfo:any
         let coachDetails:any;
+        let data:any=[];
         AcademyEventInfo= await AcademyEvent.findOne({_id: AcademyEventId, isDeleted: false })
         if(status=="coachInfo"){
+           
      
         
            coachDetails= await userDetails.aggregate([{
@@ -41,36 +44,51 @@ export default class AcademyEventController {
                 'foreignField': 'user_id',
                 'as': 'achivements',
               },
-          }])
+          },
+          { $unwind: { 'path': '$achivements', 'preserveNullAndEmptyArrays': true } },
+
+
+
+        ])
           
+          coachDetails.forEach((ele:any) => {
+            data.push({
+    profile_pucture:ele.profile_pucture,
+    experienceYear:ele.experienceYear,
+    experties:ele.experties,
+    profile_picture:ele.profile_picture,
+    fullName:ele.fullName,
+    playFor:ele.playFor,
+    experience:ele.experience,
+    achivements:ele.achivements,
+
+
+            })
+          });
+
+
+          return data;
           
         }
         if(status=="academyAchivment"){
      
         
-            coachDetails= await AcademyEvent.aggregate([{
-             $match:{
+        AcademyEventInfo= await achivement.findOne({
+            
                  isDeleted:false,
                  academyEventId:AcademyEventId
                 }       
-           },{
-             $lookup: {
-                 'localField': '_id',
-                 'from': 'achivements',
-                 'foreignField': 'academyEventId',
-                 'as': 'achivements',
-               },
-           }])
+          )
 
          
            
            
-           
+           return AcademyEventInfo
          }
 
        
 
-        return coachDetails;
+    
     }
 
     public async getAcademyRegistrationDetail(academyEventId: any) {
