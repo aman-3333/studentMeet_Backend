@@ -13,6 +13,7 @@ const body = req.body;
         const response = await controller.createAcademy(body);
         res.status(200).json(successResponse("create academy", response, res.statusCode));
     } catch (error) {
+   console.log(error,"hello");
    
         res.status(500).json(errorResponse("error in create academy", res.statusCode));
     }
@@ -135,6 +136,52 @@ router.post("/read/activity",  async (req, res) => {
     } catch (error) {
       
         res.status(500).json(errorResponse("error in read Activity", res.statusCode));
+    }
+});
+
+
+router.get("/details",  async (req, res) => {
+    try {
+        const controller = new AcademyController();
+        const academyId:any = req.query.academyId;
+        const response: IAcademy[] = await controller.getAcademyDetails(academyId);
+        res.status(200).json(successResponse("academy list", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("error in academy list", res.statusCode));
+    }
+});
+
+
+router.get("/info/byid",  async (req, res) => {
+    try {
+        const academyId:any = req.query.academyId;
+       
+        const status:any = req.query.status;
+
+        
+        const controller = new AcademyController();
+        const response: any = await controller.getacademyInfoById(academyId,status);
+        res.status(200).json(successResponse("get academy", response, res.statusCode));
+    } catch (error) {
+        
+        res.status(500).json(errorResponse("error in get academy", res.statusCode));
+    }
+});
+
+
+router.get("/registration/details",  async (req, res) => {
+    try {
+        const academyId:any = req.query.academyId;
+        
+
+        
+        const controller = new AcademyController();
+        const response: any = await controller.getAcademyRegistrationDetail(academyId);
+        res.status(200).json(successResponse("get academy", response, res.statusCode));
+    } catch (error) {
+        
+        res.status(500).json(errorResponse("error in get academy", res.statusCode));
     }
 });
 

@@ -1,16 +1,50 @@
 
 import academy, { IAcademy } from "../models/academy";
+import achivement from "../models/achivement";
 import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
-
+import Achivement from "../models/achivement";
 export default class academyController {
 
     public async createAcademy(body: any) {
 
-       console.log(body,"body");
+       const academyInfo =  await academy.create({
+        academyName: body.academyName,
+    fullAddress: body.fullAddress,
+    schoolId:body.schoolId,
+    lat:body.lat,
+    long:body.long,
+    academyTypeId:body.academyTypeId,
+    academySubTypeId:body.academySubTypeId,
+   country:body.country ,
+    city: body.city,
+    state:body.state ,
+    instituteId:body.instituteId ,
+    profile_picture:body.profile_picture,
+    banner_image:body.banner_image,
+    
+   
+      session:body.session,
+      Morning:body.Morning,
+      Evening:body.Evening,
+      workingDays:body.workingDays,
+         
+    contact_no: body.contact_no,
+  
+   
+    coachId:body.coachId,
+   
+    
+    feesPerMonth:body.feesPerMonth,
+    feesPerYear: body.feesPerYear,
+    feesDiscount:body.feesDiscount ,
+    feesDiscountLastDate:body.feesDiscountLastDate ,
+    description:body.description ,
+    achievements:body.achievements ,
+      });
+      
        
-     let academyInfo:any= await academy.create(body);
-        console.log(academyInfo,"academyInfo");
+    
         
         return academyInfo;
 
@@ -324,4 +358,95 @@ return mergedArray
 public async filterAcademy(sports:any){
 
 }
+
+
+public async getAcademyDetails(academyId:any) {
+  const academyList: any = await academy.find({_id: academyId, isDeleted: false });
+  return academyList;
+}
+
+
+
+public async getacademyInfoById(academyId: any,status:any) {
+  var academyInfo:any
+  let coachDetails:any;
+  let data:any=[];
+
+  academyInfo= await academy.findOne({_id: academyId, isDeleted: false })
+  console.log(academyInfo.coachId,"academyInfo");
+  
+  if(status=="coachInfo"){
+     
+    coachDetails= await userDetails.find({_id:{$in:academyInfo.coachId}, isDeleted:false})
+  
+
+    for (let i = 0; i < coachDetails.length; i++) {
+     
+    let achivement:any=await Achivement.findOne({user_id:coachDetails[i]._id})
+   
+   let profile_pucture=coachDetails[i].profile_pucture
+   let experienceYear=coachDetails[i].experienceYear
+   let experties=coachDetails[i].experties
+   let profile_picture=coachDetails[i].profile_picture
+   let fullName=coachDetails[i].fullName
+    let playFor=coachDetails[i].playFor
+   let experience=coachDetails[i].experience
+  
+
+      data.push({achivement,profile_pucture,experienceYear,experties,profile_picture,fullName,playFor,experience})
+    }
+   
+
+ 
+
+
+
+ 
+    return data;
+    
+  }
+  if(status=="academyAchivment"){
+console.log("academyAchivment","academyAchivment");
+
+  academyInfo= await achivement.findOne({
+      
+           isDeleted:false,
+           academyId:academyId
+          }       
+    )
+     return academyInfo
+   }
+
+ 
+
+
+}
+
+public async getAcademyRegistrationDetail(academyId: any) {
+ console.log(academyId,"academyId");
+ 
+ let   academyInfo= await academy.findOne({_id: academyId, isDeleted: false }).populate("academy_id")
+//  let   academyInfo= await academy.aggregate([{
+//         $match:{_id: academyId, isDeleted: false }
+      
+//       },{
+//         $lookup: {
+//             'localField': 'academy_id',
+//             'from': 'academies',
+//             'foreignField': '_id',
+//             'as': 'academies',
+//           },
+//       }])
+    
+    
+  
+
+
+ 
+
+  return academyInfo;
+}
+
+
+
 }

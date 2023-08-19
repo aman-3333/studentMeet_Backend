@@ -38,7 +38,9 @@ app.use(
 /////////////Api Routes/////////////////////
 import auth from "./routes/auth"
 import academy from "./routes/academy";
-import academyEvents from "./routes/academyEvents";
+import academytype from "./routes/academyType";
+import academysubtype from "./routes/academySubType";
+
 import achivement from "./routes/achivements";
 import bankdetail from "./routes/bankDetails";
 // import category from "./routes/category";
@@ -64,7 +66,9 @@ import vendor from "./routes/vendorShop";
 
 app.use("/api/auth", auth);
 app.use("/api/academy", academy);
-app.use("/api/academy/events", academyEvents);
+app.use("/api/academy/type", academytype);
+app.use("/api/academy/subtype", academysubtype);
+
 app.use("/api/achivement", achivement);
 app.use("/api/bankdetail", bankdetail);
 
