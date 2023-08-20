@@ -92,6 +92,19 @@ router.get("/search", async (req, res) => {
         res.status(500).json(errorResponse("error in  search Sponsorship", res.statusCode));
     }
 });
+
+router.get("/search", async (req, res) => {
+    try {
+        const search = req.query.search;
+    
+        const controller = new SponsorshipController();
+        const response: any = await controller.searchSponsorship(search);
+        res.status(200).json(successResponse("get search Sponsorship  ", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in  search Sponsorship", res.statusCode));
+    }
+});
 //hfbfhfjf l
 
 router.post("/activity", async (req, res) => {
