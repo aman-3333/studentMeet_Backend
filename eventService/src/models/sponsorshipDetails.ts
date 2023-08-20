@@ -21,7 +21,7 @@ const sponsorshipSchema = new Schema(
   sponsorshipFavoriteCount: { type: Number,default:0 },
   sponsorshipCommentCount:  { type: Number,default:0 },
   sponsorshipShareCount: { type: Number,default:0  },
-    likesponsor: [
+    sponsorshipLike: [
       { type: Schema.Types.ObjectId, ref: "userdetails" },
   ],
 sponsorshipFavorite: [
@@ -32,7 +32,7 @@ sponsorshipComment: [{
       comment:{ type: String },
       dateTime:{ type: Date },
   }],
-  sharesponsor: [{
+ sponsorShare: [{
     sponsor: { type: Schema.Types.ObjectId, ref: "sponsor" },
      userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
       friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
@@ -78,7 +78,7 @@ export interface ISponsorship extends Document {
   sponsorshipFavoriteCount: Number,
   sponsorshipCommentCount:  Number,
   sponsorshipShareCount: Number,
-    likesponsor: [
+    sponsorshipLike: [
       ObjectId,
   ],
 sponsorshipFavorite: [

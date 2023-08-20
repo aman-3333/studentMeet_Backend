@@ -104,7 +104,7 @@ router.post("/activity", async (req, res) => {
         const hashtagcommentId=req.body.sponsorshipCommentId;
         const body=req.body;
         const controller=new SponsorshipController();
-        const response:any =await controller.SponsorshipActivity(userId,sponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
+        const response:any =await controller.sponsorshipActivity(userId,sponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
         res.status(200).json(successResponse("SponsorshipActivity",response,res.statusCode));
     }catch(error) {
     
