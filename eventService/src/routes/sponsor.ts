@@ -6,7 +6,7 @@ import SponsorshipController from "../controllers/sponsorshipController";
 import { ISponsorship } from "../models/sponsorshipDetails"
 
 
-router.post("/create", checkAuth, async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -27,13 +27,13 @@ console.log(body,"body");
 
 
 
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id", async (req, res) => {
     try {
-        const SponsorshipId = req.params.id;
+        const sponsorshipId = req.params.id;
 
         const body = req.body as ISponsorship;
         const controller = new SponsorshipController();
-        const response: ISponsorship = await controller.editSponsorship(body, SponsorshipId);
+        const response: ISponsorship = await controller.editSponsorship(body, sponsorshipId);
         res.status(200).json(successResponse("Sponsorship update", response, res.statusCode));
     } catch (error) {
     
@@ -42,11 +42,11 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
 });
 
 
-router.get("/get/participants", checkAuth, async (req, res) => {
+router.get("/get/participants", async (req, res) => {
     try {
         const controller = new SponsorshipController();
-        const SponsorshipId = req.query.SponsorshipId;
-        const response:any= await controller.getParticipantsList(SponsorshipId);
+        const sponsorshipId = req.query.sponsorshipId;
+        const response:any= await controller.getParticipantsList(sponsorshipId);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {
        
@@ -54,7 +54,7 @@ router.get("/get/participants", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/getallsponsor", checkAuth, async (req, res) => {
+router.get("/list",  async (req, res) => {
     try {
         const controller = new SponsorshipController();
         
@@ -66,12 +66,12 @@ router.get("/getallsponsor", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/getbyid", checkAuth, async (req, res) => {
+router.get("/byid", async (req, res) => {
     try {
-        const SponsorshipId = req.query.SponsorshipId;
+        const sponsorshipId = req.query.sponsorshipId;
         const status = req.query.status;
         const controller = new SponsorshipController();
-        const response: any = await controller.getsponsorshipInfo(SponsorshipId,status);
+        const response: any = await controller.getsponsorshipInfo(sponsorshipId,status);
         res.status(200).json(successResponse("get Sponsorship by Id ", response, res.statusCode));
     } catch (error) {
    
@@ -80,7 +80,7 @@ router.get("/getbyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/search", checkAuth, async (req, res) => {
+router.get("/search", async (req, res) => {
     try {
         const search = req.query.search;
     
@@ -93,25 +93,25 @@ router.get("/search", checkAuth, async (req, res) => {
     }
 });
 
-router.post("/activity", checkAuth, async (req, res) => {
+router.post("/activity", async (req, res) => {
     try{
         
         const userId:any =req.body.userId;
-        const SponsorshipId=req.body.SponsorshipId;
+        const sponsorshipId=req.body.sponsorshipId;
        
          const status=req.body.status; 
          const hashtagcomment=req.body.sponsorshipComment;
         const hashtagcommentId=req.body.sponsorshipCommentId;
         const body=req.body;
         const controller=new SponsorshipController();
-        const response:any =await controller.SponsorshipActivity(userId,SponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
+        const response:any =await controller.SponsorshipActivity(userId,sponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
         res.status(200).json(successResponse("SponsorshipActivity",response,res.statusCode));
     }catch(error) {
     
         res.status(500).json(errorResponse("error in SponsorshipActivity", res.statusCode));
     }
 })
-router.get("/getActivity", checkAuth, async (req, res) => {
+router.get("/getActivity", async (req, res) => {
     try{
         
         const status:any =req.query.status;
@@ -124,7 +124,7 @@ router.get("/getActivity", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in getFollowing", res.statusCode));
     }
 })
-router.get("/removeActivity", checkAuth, async (req, res) => {
+router.get("/removeActivity", async (req, res) => {
     try{
         
         
@@ -140,13 +140,13 @@ router.get("/removeActivity", checkAuth, async (req, res) => {
     }
 })
 
-router.get("/readActivity", checkAuth, async (req, res) => {
+router.get("/readActivity", async (req, res) => {
     try{
         
         const status:any =req.query.status;
-        const SponsorshipId=req.query.SponsorshipId;
+        const sponsorshipId=req.query.sponsorshipId;
         const controller=new SponsorshipController();
-        const response:any =await controller.readActivity(SponsorshipId,status);
+        const response:any =await controller.readActivity(sponsorshipId,status);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
     }catch(error) {
       
@@ -154,16 +154,16 @@ router.get("/readActivity", checkAuth, async (req, res) => {
     }
 })
 
-router.post("/applySponsorship", checkAuth, async (req, res) => {
+router.post("/applySponsorship", async (req, res) => {
     try {
       
         
        const body=req.body
-        const SponsorshipId = req.body.SponsorshipId; 
+        const sponsorshipId = req.body.sponsorshipId; 
         const userId = req.body.userId;
          
         const controller = new SponsorshipController();
-        const response: any = await controller.applySponsorship(SponsorshipId, userId,body);
+        const response: any = await controller.applySponsorship(sponsorshipId, userId,body);
         res.status(200).json(successResponse("SponsorshipCreateBYOrganizer ", response, res.statusCode));
     } catch (error) {
         
@@ -174,20 +174,20 @@ router.post("/applySponsorship", checkAuth, async (req, res) => {
 
 
 
-router.post("/applySponsorship", checkAuth, async (req, res) => {
+router.post("/applySponsorship", async (req, res) => {
     try {
-        const SponsorshipId = req.body.SponsorshipId; 
+        const sponsorshipId = req.body.sponsorshipId; 
         const userId = req.body.userId; 
         const status = req.body.status; 
         const controller = new SponsorshipController();
-        const response: any = await controller.applySponsorship(SponsorshipId,userId,status);
+        const response: any = await controller.applySponsorship(sponsorshipId,userId,status);
         res.status(200).json(successResponse("applySponsorship ", response, res.statusCode));
     } catch (error) {
 
         res.status(500).json(errorResponse("error in applySponsorship", res.statusCode));
     }
 });
-router.get("/filterSponsorship", checkAuth, async (req, res) => {
+router.get("/filterSponsorship", async (req, res) => {
     try {
        
         const sort = req.query.sort;
@@ -206,16 +206,16 @@ router.get("/filterSponsorship", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error filterSponsorship", res.statusCode));
     }
 });
-router.patch("/feadBackSponsorship", checkAuth, async (req, res) => {
+router.patch("/feadBackSponsorship", async (req, res) => {
     try {
         
 req.body.user=res.locals.user
 const body = req.body;
-        const SponsorshipId = req.body.SponsorshipId;
+        const sponsorshipId = req.body.sponsorshipId;
         const reting = req.body.reting;
         const feadBackComment = req.body.userId;
         const controller = new SponsorshipController();
-        const response: ISponsorship = await controller.feadBackSponsorship(body,SponsorshipId, reting,feadBackComment);
+        const response: ISponsorship = await controller.feadBackSponsorship(body,sponsorshipId, reting,feadBackComment);
         res.status(200).json(successResponse("feadBackSponsorship Sponsorship", response, res.statusCode));
     } catch (error) {
         
@@ -225,12 +225,12 @@ const body = req.body;
 
 
 
-router.patch("/deleteSponsorship/:id", checkAuth, async (req, res) => {
+router.patch("/deleteSponsorship/:id", async (req, res) => {
     try {
-        const SponsorshipId = req.body.SponsorshipId;
+        const sponsorshipId = req.body.sponsorshipId;
         const userId = req.body.userId;
         const controller = new SponsorshipController();
-        const response: ISponsorship = await controller.deleteSponsorship(SponsorshipId, userId);
+        const response: ISponsorship = await controller.deleteSponsorship(sponsorshipId, userId);
         res.status(200).json(successResponse("delete Sponsorship", response, res.statusCode));
     } catch (error) {
       
@@ -238,12 +238,12 @@ router.patch("/deleteSponsorship/:id", checkAuth, async (req, res) => {
     }
 })
 
-router.patch("/deleteSponsorship/:id", checkAuth, async (req, res) => {
+router.patch("/deleteSponsorship/:id", async (req, res) => {
     try {
-        const SponsorshipId = req.body.SponsorshipId;
+        const sponsorshipId = req.body.sponsorshipId;
         const userId = req.body.userId;
         const controller = new SponsorshipController();
-        const response: ISponsorship = await controller.deleteSponsorship(SponsorshipId, userId);
+        const response: ISponsorship = await controller.deleteSponsorship(sponsorshipId, userId);
         res.status(200).json(successResponse("delete Sponsorship", response, res.statusCode));
     } catch (error) {
       
