@@ -1,4 +1,4 @@
-import bookSponsorship from "../models/sponsorshipApply"
+import academy from "../models/academy"
 import { CapturePayment, createVendorAccount } from "../services/razorpayServices"
 
 
@@ -13,7 +13,7 @@ const fs = require('fs');
 const Hogan = require('hogan.js');
 
 export default class PaymentController {
-  getRandomId = () => {
+  getRandomId:any = () => {
     var d = new Date();
     function f(n: any) {
 
@@ -23,30 +23,30 @@ export default class PaymentController {
     random_num = d.getFullYear() + f(d.getMonth() + 1) + f(d.getDate()) + random_num;
     return random_num
   };
-  public async createbookSponsorship(bookSponsorshipId: any) {
+  public async createRegistration(academyId: any) {
     let shopDetails: any
     let resp
-    const bookSponsorshipDetail: any = await bookSponsorship.findOne({ _id: bookSponsorshipId }).lean()
+    const registrationDetail: any = await academy.findOne({ _id: academyId }).lean()
     let receiptID = this.getRandomId()
-    const totalAmount = bookSponsorshipDetail.orderTotal * 100
-    // const options = {
-    //   amount: totalAmount,
-    //   currency: 'INR',
-    //   receipt: receiptID,
-    // };
-    // const razorpay = new Razorpay({
-    //   key_id: razorpayConfig.key_id,
-    //   key_secret: razorpayConfig.key_secret
-    // });
-    // const response = await razorpay.orders.create(options);
-    // if (response && response.id) {
-    //   resp = await bookSponsorship.findOneAndUpdate({ _id: bookSponsorshipId }, { $set: { order_id: response.id, receipt: receiptID, } }, { new: true });
-    // }
+    const totalAmount = registrationDetail.orderTotal * 100
+    let options = {
+      amount: totalAmount,
+      currency: 'INR',
+      receipt: receiptID,
+    };
+    const razorpay = new Razorpay({
+      key_id: razorpayConfig.key_id,
+      key_secret: razorpayConfig.key_secret
+    });
+    const response = await razorpay.orders.create(options);
+    if (response && response.id) {
+      resp = await academy.findOneAndUpdate({ _id: academyId }, { $set: { order_id: response.id, receipt: receiptID, } }, { new: true });
+    }
     return resp;
   }
 
   public async paymentCallback(data: any) {
-    const orderData: any = await bookSponsorship.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).lean()
+    const orderData: any = await academy.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).lean()
     let resp: any;
     let Paymentresp: any
     if (orderData && orderData._id) {
@@ -54,12 +54,12 @@ export default class PaymentController {
 
         Paymentresp = await CapturePayment(data.razorpayPaymentId, orderData.orderTotal * 100, "INR", razorpayConfig.key_id, razorpayConfig.key_secret)
         if (Paymentresp.status == 'captured') {
-          resp = await bookSponsorship.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
+          resp = await academy.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
           let SponsorshipInfo: any = await Sponsorship.findOneAndUpdate({ _id: resp.SponsorshipId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
           let friendInfo:any=   await userActivity.findOneAndUpdate({userId:resp.userId,isDeleted:false}).lean()
            
           if (resp.isSponsorshipOrganizer == true) {
-            await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id }, { $set: { isOrganized: true, isBookSponsorshipPaid: true,organizerId:resp.userId } },{new:true}).lean()
+            await Sponsorship.findOneAndUpdate({ _id: SponsorshipInfo._id }, { $set: { isOrganized: true, isregistrationPaid: true,organizerId:resp.userId } },{new:true}).lean()
         
           }
           let remainingSeat = SponsorshipInfo.totalParticipent - SponsorshipInfo.noOfParticipentBook

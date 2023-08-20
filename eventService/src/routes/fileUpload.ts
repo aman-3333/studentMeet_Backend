@@ -246,17 +246,17 @@ router.post('/upload', upload1.array('file', 50), function (req:any, res:any) {
 
 
 //////////////////////////////razorpay/////////////////////////////////
-router.post("/checkoutPayment", async (req, res) => {
-    try {
-      const bookSponsorshipId = req.body.bookSponsorshipId;
-      const controller = new PaymentController();
-      const response:any = await controller.createbookSponsorship(bookSponsorshipId);
-      res.status(200).json(successResponse("createorder", response, res.statusCode));
-    } catch (error) {
+// router.post("/checkoutPayment", async (req, res) => {
+//     try {
+//       const bookSponsorshipId = req.body.bookSponsorshipId;
+//       const controller = new PaymentController();
+//       const response:any = await controller.createbookSponsorship(bookSponsorshipId);
+//       res.status(200).json(successResponse("createorder", response, res.statusCode));
+//     } catch (error) {
        
-        res.status(500).json(errorResponse("error in createorder", res.statusCode));
-    }
-});
+//         res.status(500).json(errorResponse("error in createorder", res.statusCode));
+//     }
+// });
 router.post("/paymentCapture", async (req, res) => {
     try {
       const data = req.body;

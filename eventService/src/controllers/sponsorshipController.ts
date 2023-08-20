@@ -14,7 +14,7 @@ let currentTime: any = new Date();
 export default class SponsorshipController {
 //////////////////////////ADMIN SPONSORSHIP API/////////////////////////////////
     public async create(body: any) {
-        let createSponsorsPartnerInfo = new SponsorshipModel({
+        let createSponsorsPartnerInfo =await   SponsorshipModel.create({
             sponsorshipDesription:body.sponsorshipDesription,
             sponsorshipName:body.sponsorshipName,   
             sponsorshipFormId: body.sponsorshipFormId,
@@ -25,7 +25,7 @@ export default class SponsorshipController {
          registrationStartDateTime: body.registrationStartDateTime,
         registrationEndDateTime: body.registrationEndDate,
         });
-        createSponsorsPartnerInfo.save();
+        
         return createSponsorsPartnerInfo;
     }
 
@@ -61,7 +61,7 @@ export default class SponsorshipController {
 
 
 
-public async getsponsorshipList( ) {
+public async getsponsorshipList() {
     let sponsorshipInfo: any;
     sponsorshipInfo = await SponsorshipModel.find({isDeleted:false})
     return  sponsorshipInfo;
@@ -364,7 +364,7 @@ public async searchSponsorship(search:any){
     [
         {
           $search: {
-            index: "search-text",
+            index: search,
             text: {
               query: search,
               path: {
