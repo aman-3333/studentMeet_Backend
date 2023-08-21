@@ -171,7 +171,7 @@ public async sponsorshipActivity(userId: any, sponsorshipId:any, status: any, sp
                     $pull: {
                         sponsorshipComment: {
                             _id: body.sponsorshipComment[i]._id,
-
+userId:userId
                         }
                     },
                 })
@@ -246,20 +246,22 @@ public async filterSponsorship(type: any, sort: any, category: any, subCategory:
 
  
 public async searchSponsorship(search:any){
+
+    
     let sponsorshipInfo:any=await SponsorshipModel.aggregate(
-    [
-        {
-          $search: {
-            index: search,
-            text: {
-              query: search,
-              path: {
-                wildcard: "*"
+        [
+            {
+              $search: {
+                index: "search-text",
+                text: {
+                  query:search,
+                  path: {
+                    wildcard: "*"
+                  }
+                }
               }
             }
-          }
-        }
-      ])
+          ])
   return  sponsorshipInfo 
 
 }

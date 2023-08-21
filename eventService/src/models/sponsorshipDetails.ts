@@ -11,7 +11,7 @@ const sponsorshipSchema = new Schema(
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
-  sponsorshipName: { type: String,required:true  },
+  sponsorshipName: { type: String,required:true,index:true  },
   sponsorshipBannerImage: [{ type: String }],
   sponsorshipProfileImage: { type: String },
   sponsorshipDesription: { type: String },
