@@ -93,6 +93,20 @@ router.get("/search", async (req, res) => {
     }
 });
 
+router.get("/search", async (req, res) => {
+    try {
+        const search = req.query.search;
+    
+        const controller = new SponsorshipController();
+        const response: any = await controller.searchSponsorship(search);
+        res.status(200).json(successResponse("get search Sponsorship  ", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in  search Sponsorship", res.statusCode));
+    }
+});
+//hfbfhfjf l
+
 router.post("/activity", async (req, res) => {
     try{
         
@@ -103,8 +117,9 @@ router.post("/activity", async (req, res) => {
          const hashtagcomment=req.body.sponsorshipComment;
         const hashtagcommentId=req.body.sponsorshipCommentId;
         const body=req.body;
+        
         const controller=new SponsorshipController();
-        const response:any =await controller.SponsorshipActivity(userId,sponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
+        const response:any =await controller.sponsorshipActivity(userId,sponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
         res.status(200).json(successResponse("SponsorshipActivity",response,res.statusCode));
     }catch(error) {
     
