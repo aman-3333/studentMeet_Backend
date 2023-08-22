@@ -54,11 +54,11 @@ router.get("/get/participants", async (req, res) => {
     }
 });
 
-router.get("/list",  async (req, res) => {
+router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new SponsorshipController();
-        
-        const response: ISponsorship[] = await controller.getsponsorshipList();
+       const user=res.locals.user
+        const response: ISponsorship[] = await controller.getsponsorshipList(user);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {
        

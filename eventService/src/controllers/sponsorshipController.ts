@@ -61,11 +61,44 @@ export default class SponsorshipController {
 
 
 
-public async getsponsorshipList() {
-    let sponsorshipInfo: any;
-    sponsorshipInfo = await SponsorshipModel.find({isDeleted:false})
-    return  sponsorshipInfo;
+
+
+
+public async getsponsorshipList(user:any) {
+   
+      
+    let sponsorshipLike = await SponsorshipModel.aggregate([
+        { $match: {isDeleted:false,sponsorshipLike:{$in:[user._id]}}},
+       
+          {
+            $addFields: {
+            isLikes: true, 
+          }}
+       
+      ]);
+      let PostList = await SponsorshipModel.aggregate([
+        { $match: {isDeleted:false,sponsorshipLike:{$ne:[user._id]}}},
+        
+          {
+            $addFields: {
+            isLikes: false, 
+          }}
+       
+      ]);
+
+
+      sponsorshipLike=sponsorshipLike.concat(PostList)
+
+
+      const mergedArray = [...sponsorshipLike, ...PostList];
+
+
+mergedArray.sort((a, b) => a.createdAt - b.createdAt);
+     
+        
+    return mergedArray;
 }
+
 
 public async getsponsorshipInfo(SponsorshipId: any, status: any) {
     let sponsorshipInfo: any;
