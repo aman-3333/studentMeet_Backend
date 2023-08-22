@@ -5,7 +5,7 @@ import SponsorshipModel, { ISponsorship } from '../models/sponsorshipDetails'
 import userActivity from '../models/userActivity';
 
 import User from "../models/userDetails"
-import SponsorshipApplyModel from "../models/sponsorshipApply"
+
 import userDetails from '../models/userDetails';
 import { sendNotification } from '../services/notification';
 
@@ -29,17 +29,17 @@ export default class SponsorshipController {
         return createSponsorsPartnerInfo;
     }
 
-    public async editSponsorship(body: ISponsorship, SponsorshipId: string) {
-        const sponsorshipInfo: ISponsorship = await SponsorshipModel.findOneAndUpdate({ _id: SponsorshipId, isDeleted: false }, body, { new: true }).lean();
-        await SponsorshipModel.findOneAndUpdate({ _id: SponsorshipId }, { $set: { sponsorshipName: sponsorshipInfo.sponsorshipName } })
+    public async editSponsorship(body: ISponsorship, sponsorshipId: string) {
+        const sponsorshipInfo: ISponsorship = await SponsorshipModel.findOneAndUpdate({ _id: sponsorshipId, isDeleted: false }, body, { new: true }).lean();
+        await SponsorshipModel.findOneAndUpdate({ _id: sponsorshipId }, { $set: { sponsorshipName: sponsorshipInfo.sponsorshipName } })
         return sponsorshipInfo;
 
     }
 
 
 
-    public async deleteSponsorship(SponsorshipId: string, userId: String) {
-        const sponsorshipInfo: ISponsorship = await SponsorshipModel.findOneAndUpdate({ _id: SponsorshipId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
+    public async deleteSponsorship(sponsorshipId: string, userId: String) {
+        const sponsorshipInfo: ISponsorship = await SponsorshipModel.findOneAndUpdate({ _id: sponsorshipId, isDeleted: false }, { $set: { isDeleted: true } }).lean()
         return sponsorshipInfo;
     }
 
@@ -100,9 +100,9 @@ mergedArray.sort((a, b) => a.createdAt - b.createdAt);
 }
 
 
-public async getsponsorshipInfo(SponsorshipId: any, status: any) {
+public async getsponsorshipInfo(sponsorshipId: any, status: any) {
     let sponsorshipInfo: any;
-    sponsorshipInfo = await SponsorshipModel.find({ _id: SponsorshipId, isDeleted: false })
+    sponsorshipInfo = await SponsorshipModel.find({ _id: sponsorshipId, isDeleted: false })
     return  sponsorshipInfo;
 }
 
@@ -300,45 +300,53 @@ public async searchSponsorship(search:any){
 }
 
 
-public async SponsorshipApplyModel(SponsorshipId: any, userId: any, status: any) {
+public async SponsorshipModel(sponsorshipId: any, userId: any, status: any) {
     let sponsorshipInfo: any
-    let SponsorshipApplyModelData: any 
-    sponsorshipInfo = await SponsorshipModel.findOne({ _id: SponsorshipId,  isDeleted: false }).lean()
+    let SponsorshipModelData: any 
+    sponsorshipInfo = await SponsorshipModel.findOne({ _id: sponsorshipId,  isDeleted: false }).lean()
    
 
-    if (SponsorshipApplyModelData) return ({ message: "you already booked this Sponsorship" })
-    SponsorshipApplyModelData = await SponsorshipApplyModel.create({ SponsorshipId: SponsorshipId, userId: userId })
-   // SponsorshipApplyModelData = await SponsorshipApplyModelModel.findOneAndUpdate({ _id: SponsorshipApplyModelData._id, isDeleted: false }, { $set: { orderTotal: sponsorshipInfo.priceForParticipent } }, { new: true }).lean()
-    return SponsorshipApplyModelData
+    if (SponsorshipModelData) return ({ message: "you already booked this Sponsorship" })
+    SponsorshipModelData = await SponsorshipModel.create({ sponsorshipId: sponsorshipId, userId: userId })
+   // SponsorshipModelData = await SponsorshipModelModel.findOneAndUpdate({ _id: SponsorshipModelData._id, isDeleted: false }, { $set: { orderTotal: sponsorshipInfo.priceForParticipent } }, { new: true }).lean()
+    return SponsorshipModelData
 }
 
-public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
+public async applySponsorship(sponsorshipId: any, userId: any,body:any) {
  
    
-   let sponsorshipInfo: any = await SponsorshipApplyModel.findOne({SponsorshipId: SponsorshipId }).lean()
-   sponsorshipInfo=sponsorshipInfo.applyInfo.filter((e:any)=>{e.userId==userId})
-    if (sponsorshipInfo) {
+   let sponsorshipInfo: any = await SponsorshipModel.findOne({_id: sponsorshipId }).lean()
+   console.log(sponsorshipInfo,"sponsorshipInfo");
+   
+   sponsorshipInfo=sponsorshipInfo.applyInfo.filter((e:any)=>e.userId==userId)
+   console.log(sponsorshipInfo,"sponsorshipInfo");
+    if (sponsorshipInfo.lenght>0) {
         return ({ message: "already book" })
     }
     else {
 
        
+           console.log("hello");
            
-            sponsorshipInfo = await SponsorshipApplyModel.findOneAndUpdate(
+           
+            sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
                 {
-                    SponsorshipId: SponsorshipId,
+                    _id: sponsorshipId,
                 },
                 {
                     $push: {
                         applyInfo: {
-                            userId: body.applyInfo.userId,
-                            text: body.applyInfo.text,
+                            userId: userId,
+                            text: body.text,
                             dateTime: currentTime
                            
                         }
                     }
-                })
-               
+                },{new:true})
+                
+                
+                sponsorshipInfo=   await SponsorshipModel.findOneAndUpdate({ _id: sponsorshipId },
+                    { $inc: { applyCount: 1 } }, { new: true })
 
 
             return sponsorshipInfo;
@@ -364,9 +372,9 @@ public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
 
 
 
-    public async getParticipantsList(SponsorshipId: any) {
+    public async getParticipantsList(sponsorshipId: any) {
 
-        var ParticipantInfo: any = await SponsorshipModel.find({ SponsorshipId: SponsorshipId, isDeleted: false }).populate("userId")
+        var ParticipantInfo: any = await SponsorshipModel.find({ sponsorshipId: sponsorshipId, isDeleted: false }).populate("userId")
         ParticipantInfo=ParticipantInfo.map((e:any)=>e.userId)
         return ParticipantInfo;
 
@@ -375,17 +383,17 @@ public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
 
    
 
-    public async readActivity(SponsorshipId: any, status: any) {
+    public async readActivity(sponsorshipId: any, status: any) {
         let sponsorshipInfo: any
         if (status == "readsponsorshipLike") {
-            sponsorshipInfo = await SponsorshipModel.findOne({ _id: SponsorshipId }).populate("sponsorshipLikeship");
+            sponsorshipInfo = await SponsorshipModel.findOne({ _id: sponsorshipId }).populate("sponsorshipLikeship");
             sponsorshipInfo = sponsorshipInfo.sponsorshipLikeship;
 
             return sponsorshipInfo
         }
-        if (status == "readsponsorshipComment") {
+        if (status == "readsponSorshipComment") {
             let a = []
-            sponsorshipInfo = await SponsorshipModel.findOne({ _id: SponsorshipId }).lean();
+            sponsorshipInfo = await SponsorshipModel.findOne({ _id: sponsorshipId }).lean();
 
             sponsorshipInfo = sponsorshipInfo.sponsorshipComment;
 
@@ -394,7 +402,7 @@ public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
 
             for (let i = 0; i < sponsorshipInfo.length; i++) {
                 
-                let userInfo: any = await userDetails.findOne({ _id: sponsorshipInfo[i].userId }, { fullname: true })
+                let userInfo: any = await userDetails.findOne({ _id: sponsorshipInfo[i].userId }, { fullName: true,profile_picture:true })
 
 
                 let comment = sponsorshipInfo[i].comment
@@ -409,7 +417,7 @@ public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
             return y 
 
         } if (status == "readSponsorshipFavourite") {
-            sponsorshipInfo = await SponsorshipModel.findOne({ _id: SponsorshipId }).populate("sponsorshipFavorite");
+            sponsorshipInfo = await SponsorshipModel.findOne({ _id: sponsorshipId }).populate("sponsorshipFavorite");
             sponsorshipInfo = sponsorshipInfo.sponsorshipFavorite;
             return sponsorshipInfo
         }
@@ -425,13 +433,13 @@ public async applySponsorship(SponsorshipId: any, userId: any,body:any) {
     ///////////////////////////////////SponsorshipActivity/////////////////////////////////////////////////
   
 
-    public async feadBackSponsorship(body: any, SponsorshipId: any, reting: any, feadBackComment: any) {
+    public async feadBackSponsorship(body: any, sponsorshipId: any, reting: any, feadBackComment: any) {
         let sponsorshipInfo: any;
 
         for (let i = 0; i < body.feadBackSponsorshipModel.length; i++) {
             sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
                 {
-                    _id: body.SponsorshipId
+                    _id: body.sponsorshipId
                 },
                 {
                     $push: {
