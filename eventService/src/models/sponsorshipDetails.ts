@@ -21,6 +21,13 @@ const sponsorshipSchema = new Schema(
   sponsorshipFavoriteCount: { type: Number,default:0 },
   sponsorshipCommentCount:  { type: Number,default:0 },
   sponsorshipShareCount: { type: Number,default:0  },
+  applyCount: { type: Number,default:0  },
+  applyInfo: [{
+    userId: { type: String },
+    text: { type: String },
+    dateTime: { type: Date }
+   
+}],
     sponsorshipLike: [
       { type: Schema.Types.ObjectId, ref: "userdetails" },
   ],
@@ -81,6 +88,13 @@ export interface ISponsorship extends Document {
     sponsorshipLike: [
       ObjectId,
   ],
+  applyCount: Number,
+  applyInfo: [{
+    userId: String,
+    text: String,
+    dateTime: Date
+   
+}],
 sponsorshipFavorite: [
        ObjectId,
   ],

@@ -169,7 +169,7 @@ router.get("/readActivity", async (req, res) => {
     }
 })
 
-router.post("/applySponsorship", async (req, res) => {
+router.post("/apply", async (req, res) => {
     try {
       
         
@@ -179,10 +179,10 @@ router.post("/applySponsorship", async (req, res) => {
          
         const controller = new SponsorshipController();
         const response: any = await controller.applySponsorship(sponsorshipId, userId,body);
-        res.status(200).json(successResponse("SponsorshipCreateBYOrganizer ", response, res.statusCode));
+        res.status(200).json(successResponse("applySponsorship ", response, res.statusCode));
     } catch (error) {
         
-        res.status(500).json(errorResponse("error in SponsorshipCreateBYOrganizer", res.statusCode));
+        res.status(500).json(errorResponse("error in applySponsorship", res.statusCode));
     }
 });
 
