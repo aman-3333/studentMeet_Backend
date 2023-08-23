@@ -4,6 +4,7 @@ import achivement from "../models/achivement";
 import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import Achivement from "../models/achivement";
+import FuzzySearch from "fuzzy-search";
 export default class academyController {
 
     public async createAcademy(body: any) {
@@ -182,27 +183,26 @@ return mergedArray
     }
 
 
+   
+
+
     public async searchAcademy(search:any){
- console.log(search,"search");
- 
-        let academyInfo:any=await academy.aggregate(
-        
-            [
-                {
-                  $search: {
-                    index: "academies",
-                    text: {
-                      query:search,
-                      path: {
-                        wildcard: "*"
-                      }
-                    }
-                  }
-                }
-              ])
-      return  academyInfo 
+
     
-    }
+      let academyInfo:any=await academy.aggregate(
+          [
+             {$match:{isDeleted:false}}
+            ])
+  
+     academyInfo = new FuzzySearch(academyInfo, ["academyName"], {
+      caseSensitive: false,
+  });
+  academyInfo = academyInfo.search(search);
+    return  academyInfo 
+  
+  }
+
+
     public async academyActivity(userId: any, academyId:any, status: any, academyComment: any, academyCommentId: any, body: any) {
       let userInfo: any;
       let data: any = [];

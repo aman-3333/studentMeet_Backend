@@ -358,60 +358,29 @@ public async reCommentPost(userId:any,commentId:any){
             return PostInfo
         }
     }
+  
+
     public async searchPost(search:any){
-               
-console.log(search,"search");
-
-             let searchInfo=    await userDetails.aggregate([
-                    { "$limit": 100 },
-                    { "$facet": {
-                      "c1": [
-                        { "$lookup": {
-                          "from": userDetails,
-                          "pipeline": [
-                            { "$match": { "fullName": search } }
-                          ],
-                          "as": "userDetails"
-                        }}
-                      ],
-                      "c2": [
-                        { "$lookup": {
-                          "from": academy,
-                          "pipeline": [
-                            { "$match": { "academyName": search } }
-                          ],
-                          "as": "academy"
-                        }}
-                      ],
-                      "c3": [
-                        { "$lookup": {
-                          "from": sponsorPartner,
-                          "pipeline": [
-                            { "$match": { "sponsorPartnerName": "your_search_data" } }
-                          ],
-                          "as": "sponsorPartner"
-                        }}
-                      ]
-                    }},
-                    { "$project": {
-                      "data": {
-                        "$concatArrays": [ "$c1", "$c2", "$c3" ]
-                      }
-                    }},
-                    { "$unwind": "$data" },
-                    { "$replaceRoot": { "newRoot": "$data" } }
-                  ])
-
-
-
-              return  searchInfo
-            
-            
 
     
-        
-    
-    }
-
+      let PostInfo:any=await userActivity.aggregate(
+          [
+             {$match:{isDeleted:false}}, {
+              $lookup: {
+                'localField': 'userId',
+                'from': 'userdetails',
+                'foreignField': '_id',
+                'as': 'user',
+              },
+            },
+            ])
+  
+     PostInfo = new FuzzySearch(PostInfo, ["name"], {
+      caseSensitive: false,
+  });
+  PostInfo = PostInfo.search(search);
+    return  PostInfo 
+  
+  }
     
 }
