@@ -283,18 +283,13 @@ public async searchSponsorship(search:any){
     
     let sponsorshipInfo:any=await SponsorshipModel.aggregate(
         [
-            {
-              $search: {
-                index: "search-text",
-                text: {
-                  query:search,
-                  path: {
-                    wildcard: "*"
-                  }
-                }
-              }
-            }
+           {$match:{isDeleted:false}}
           ])
+
+   sponsorshipInfo = new FuzzySearch(sponsorshipInfo, ["sponsorshipName"], {
+    caseSensitive: false,
+});
+sponsorshipInfo = sponsorshipInfo.search(search);
   return  sponsorshipInfo 
 
 }
@@ -313,22 +308,12 @@ public async SponsorshipModel(sponsorshipId: any, userId: any, status: any) {
 }
 
 public async applySponsorship(sponsorshipId: any, userId: any,body:any) {
- 
-   
    let sponsorshipInfo: any = await SponsorshipModel.findOne({_id: sponsorshipId }).lean()
-   console.log(sponsorshipInfo,"sponsorshipInfo");
-   
    sponsorshipInfo=sponsorshipInfo.applyInfo.filter((e:any)=>e.userId==userId)
-   console.log(sponsorshipInfo,"sponsorshipInfo");
     if (sponsorshipInfo.lenght>0) {
         return ({ message: "already book" })
     }
     else {
-
-       
-           console.log("hello");
-           
-           
             sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
                 {
                     _id: sponsorshipId,

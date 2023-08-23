@@ -4,6 +4,12 @@ import { DATETIME_FORMAT } from "../utils/Constants";
 const sponsorshipSchema = new Schema(
   {  
     
+  
+  sponsorshipName: { type: String,required:true,index:true  },
+  sponsorshipBannerImage: [{ type: String }],
+  sponsorshipProfileImage: { type: String },
+  sponsorshipDesription: { type: String },
+  sponsorshipTermsAndCondition: { type: String },
   sponsorshipPartnerId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
   sponsorshipRepresentativeId: { type: Schema.Types.ObjectId, ref: "sponsorPartner" },
     participentId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
@@ -11,11 +17,6 @@ const sponsorshipSchema = new Schema(
     category: { type: Schema.Types.ObjectId, ref: 'category', },
     SubCategory: { type: Schema.Types.ObjectId, ref: 'SubCategory' },
     subSubCategory: { type: Schema.Types.ObjectId, ref: 'subSubCategory' },
-  sponsorshipName: { type: String,required:true,index:true  },
-  sponsorshipBannerImage: [{ type: String }],
-  sponsorshipProfileImage: { type: String },
-  sponsorshipDesription: { type: String },
-  sponsorshipTermsAndCondition: { type: String },
     seatreamining:{ type: Number,default:0 },
   sponsorshipLikeCount: { type: Number,default:0 },
   sponsorshipFavoriteCount: { type: Number,default:0 },
