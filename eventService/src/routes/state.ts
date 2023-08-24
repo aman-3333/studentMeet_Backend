@@ -104,7 +104,7 @@ router.patch("/city/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/city/list", checkAuth, async (req, res) => {
+router.get("/city/list", async (req, res) => {
     try {
         const stateId=req.query.stateId;
         const controller = new StateController();
