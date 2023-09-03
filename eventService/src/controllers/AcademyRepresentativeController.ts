@@ -36,7 +36,7 @@ export default class academyRepresentativeController {
     public async searchAcademyRepresentative(stateId:any,searchValue:any) {
         if(searchValue){
         let academyRepresentativeList: any = await academyRepresentative.find({academyRepresentativeStateId:stateId,isDeleted: false });
-        academyRepresentativeList = new FuzzySearch(academyRepresentativeList, ["academyRepresentativeName"], {
+        academyRepresentativeList = new FuzzySearch(academyRepresentativeList, ["fullName"], {
             caseSensitive: false,
         });
         academyRepresentativeList = academyRepresentativeList.search(searchValue);

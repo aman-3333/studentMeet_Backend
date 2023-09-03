@@ -26,9 +26,9 @@ const schema = new Schema({
     ],
     userFollowing: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     brandFollowers: [
-        { type: Schema.Types.ObjectId, ref: "userdetails" },
+        { type: Schema.Types.ObjectId, ref: "sponsorshipdetail" },
     ],
-    brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponsor" }],
+    brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponsorshipdetail" }],
     schoolFollowers: [
         { type: Schema.Types.ObjectId, ref: "school" },
     ],

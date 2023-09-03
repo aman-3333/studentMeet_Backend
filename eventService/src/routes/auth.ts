@@ -4,6 +4,7 @@ const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
 import authController from "../controllers/AuthController";
+const SECRET_KEY = "ffswvdxjhnxdlluuq";
 router.post("/sendotp",  async (req, res) => {
     try {
         
@@ -57,6 +58,50 @@ router.get("/getprofile", checkAuth, async (req, res) => {
 });
 
 
+router.post("/signup",  async (req, res) => {
+    try {
+        const SECRET_KEY="pasdfghjkl"
+
+const body = req.body;
+        const controller = new authController();
+        const response:any = await controller.signUpEmail(body,SECRET_KEY);
+        res.status(200).json(successResponse("signup", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in signup", res.statusCode));
+    }
+});
+
+
+router.post("/signin",  async (req, res) => {
+    try {
+        
+
+const body = req.body;
+const SECRET_KEY="pasdfghjkl"
+        const controller = new authController();
+        const response = await controller.signInEmail(body,SECRET_KEY);
+        res.status(200).json(successResponse("signin", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in signin", res.statusCode));
+    }
+});
+
+
+router.post("/verify/email",  async (req, res) => {
+    try {
+        
+        const SECRET_KEY="pasdfghjkl"
+const body = req.body;
+        const controller = new authController();
+        const response:any = await controller.verifyEmailotp(body);
+        res.status(200).json(successResponse("verify email", response, res.statusCode));
+    } catch (error) {
+   
+        res.status(500).json(errorResponse("error in verify email", res.statusCode));
+    }
+});
 
 
 
