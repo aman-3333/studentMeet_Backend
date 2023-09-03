@@ -32,12 +32,12 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create AcademyOwner", res.statusCode));
     }
 });
-router.patch("/AcademyOwner/:id", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
     try {
-        const AcademyOwnerId = req.params.id;
+      
         const body = req.body as IAcademyOwner;
         const controller = new AcademyOwnerController();
-        const response: IAcademyOwner = await controller.editAcademyOwner(body, AcademyOwnerId);
+        const response: IAcademyOwner = await controller.editAcademyOwner(body);
         res.status(200).json(successResponse("edit AcademyOwner", response, res.statusCode));
     } catch (error) {
       

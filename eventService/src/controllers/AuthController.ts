@@ -265,16 +265,12 @@ export default class AuthController {
     const { email, password, confirmPassword, type } = body;
 
     if (type == "academy" && confirmPassword == password) {
-      console.log("hello");
-      
       const existingUser: any = await academyOwner.findOne({ email: email });
       if (existingUser) {
         return { message: "User Already exists" };
       }
- console.log(existingUser,"existingUser");
- 
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log(hashedPassword,"hashedPassword");
+     
       
       let userData:any = await academyOwner.create({
         email: email,
