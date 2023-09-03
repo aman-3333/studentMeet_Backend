@@ -46,7 +46,7 @@ export default class PaymentController {
   }
 
   public async paymentCallback(data: any) {
-    const orderData: any = await academy.findOne({ order_id: data.razorpayOrderId, isDeleted: false }).lean()
+    const orderData: any = await academy.findOne({ order_id: data.razorpayOrderId }).lean()
     let resp: any;
     let Paymentresp: any
     if (orderData && orderData._id) {
@@ -54,7 +54,7 @@ export default class PaymentController {
 
         Paymentresp = await CapturePayment(data.razorpayPaymentId, orderData.orderTotal * 100, "INR", razorpayConfig.key_id, razorpayConfig.key_secret)
         if (Paymentresp.status == 'captured') {
-          resp = await academy.findOneAndUpdate({ order_id: data.razorpayOrderId, isDeleted: false }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
+          resp = await academy.findOneAndUpdate({ order_id: data.razorpayOrderId }, { payment_status: "Paid", payment_method: Paymentresp.method, payment_id: data.razorpayPaymentId },{new:true})
           let SponsorshipInfo: any = await Sponsorship.findOneAndUpdate({ _id: resp.SponsorshipId, isDeleted: false }, { $inc: { noOfParticipentBook: 1 } }, { new: true }).lean()
           let friendInfo:any=   await userActivity.findOneAndUpdate({userId:resp.userId,isDeleted:false}).lean()
            

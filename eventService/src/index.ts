@@ -40,7 +40,7 @@ import auth from "./routes/auth"
 import academy from "./routes/academy";
 import academytype from "./routes/academyType";
 import academysubtype from "./routes/academySubType";
-
+import academyOwner from "./routes/academyOwner";
 import achivement from "./routes/achivements";
 import bankdetail from "./routes/bankDetails";
 // import category from "./routes/category";
@@ -68,14 +68,14 @@ app.use("/api/auth", auth);
 app.use("/api/academy", academy);
 app.use("/api/academy/type", academytype);
 app.use("/api/academy/subtype", academysubtype);
-
+app.use("/api/academy/owner", academyOwner);
 app.use("/api/achivement", achivement);
 app.use("/api/bankdetail", bankdetail);
 
 // app.use("/api/category", category);
 app.use("/api/chat", chat);
-// app.use("/api/city", city);
-app.use("/api/follower", followers);
+
+app.use("/api/connection", followers);
 app.use("/api/fileUpload", fileUpload);
 app.use("/api/guidelines", guidelines);1
 app.use("/api/index", index);
