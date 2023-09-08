@@ -17,8 +17,8 @@ export default class AcademyTypeController {
         return AcademyTypeInfo;
     }
 
-    public async getAcademyTypeList(categoryId:any) {
-        const AcademyTypeList: any = await AcademyType.find({categoryId: categoryId, isDeleted: false });
+    public async getAcademyTypeList() {
+        const AcademyTypeList: any = await AcademyType.find({ isDeleted: false });
         return AcademyTypeList;
     }
 

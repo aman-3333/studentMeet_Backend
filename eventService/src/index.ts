@@ -41,6 +41,7 @@ import academy from "./routes/academy";
 import academytype from "./routes/academyType";
 import academysubtype from "./routes/academySubType";
 import academyOwner from "./routes/academyOwner";
+import academyRepresentative from "./routes/academyRepresentative";
 import achivement from "./routes/achivements";
 import bankdetail from "./routes/bankDetails";
 // import category from "./routes/category";
@@ -69,6 +70,7 @@ app.use("/api/academy", academy);
 app.use("/api/academy/type", academytype);
 app.use("/api/academy/subtype", academysubtype);
 app.use("/api/academy/owner", academyOwner);
+app.use("/api/academy/representative", academyRepresentative);
 app.use("/api/achivement", achivement);
 app.use("/api/bankdetail", bankdetail);
 
