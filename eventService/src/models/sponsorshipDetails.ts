@@ -84,7 +84,6 @@ export interface ISponsorship extends Document {
   sponsorshipProfileImage: String;
   sponsorshipDesription: String;
   sponsorshipTermsAndCondition: String;
-  seatreamining: Number;
   sponsorshipLikeCount: Number;
   sponsorshipFavoriteCount: Number;
   sponsorshipCommentCount: Number;
