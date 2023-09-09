@@ -1,9 +1,9 @@
 import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
-    sponsorId:{
+  sponsorOwnerId:{
         type:Schema.Types.ObjectId,
-        ref:"sponsor_partner"
+        ref:"Sponsor_partner"
       },
         fullName: {
           type: String,
@@ -15,30 +15,24 @@ const schema = new Schema({
         },
         email: {
           type: String,
-        
           unique: true,
           trim: true,
           lowercase: true,
          
-          
         },
         is_email_verified: {
           type: Boolean,
           default: false,
         },
-
       password:{
         type: String,
       },
         country_code: {
           type: String,
         },
-      
         contact: {
           type: Number,
         },
-        
-    
         designation: {
             type: String,
             trim: true,
@@ -58,25 +52,19 @@ const schema = new Schema({
     timestamps: true
 });
 
-export interface ISonsorRepresentative extends Document {
-  sponsorId:ObjectId,
+export interface ISponsorRepresentative extends Document {
+  sponsorOwnerId:ObjectId,
     fullName: String,
-    
     email: String,
     is_email_verified: Boolean,
     country_code: String,
     password: String,
     contact: Number,
-    
-
     designation:String,
-
     profile_image:String,
-   
     last_active_at: Date,
-
     isDeleted: Boolean
 }
 // user
 
-export default model<ISonsorRepresentative>("sponsor_Representative", schema);
+export default model<ISponsorRepresentative>("sponsor_representative", schema);

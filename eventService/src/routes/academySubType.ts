@@ -35,8 +35,8 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
 router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new AcademySubTypeController();
-        const CategoryId=req.query.CategoryId
-        const response: IAcademySubType[] = await controller.getAcademySubTypeList(CategoryId);
+        const academyId=req.query.academyId
+        const response: IAcademySubType[] = await controller.getAcademySubTypeList(academyId);
         res.status(200).json(successResponse("AcademySubType list", response, res.statusCode));
     } catch (error) {
        

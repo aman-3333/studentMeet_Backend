@@ -4,7 +4,6 @@ const schema = new Schema(
   {
     name: { type: String},
     email: { type: String,unique:true },
-
     password: { type: String },
     address: { type: String },
     token: { type: String },
@@ -55,7 +54,7 @@ export interface IAcademyOwner extends Document {
     password: String,
     address: String,
     token: String,
-   
+
     contact: String,
      profile_picture: String,
     signature: String,

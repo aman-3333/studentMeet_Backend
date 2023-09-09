@@ -34,8 +34,6 @@ const academyModel = new Schema(
     feesDiscount: { type: Number },
     feesDiscountLastDate: { type: Number },
     description: { type: String },
-    achievements: { type: String },
-    banner_picture: [{ type: String }],
     isActive: { type: Boolean, default: true },
     isBlocked: { type: Boolean, default: false },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
@@ -107,8 +105,6 @@ export interface IAcademy extends Document {
   feesDiscount: { type: Number },
   feesDiscountLastDate: { type: Number },
   description: String,
-  achievements: String,
-  banner_picture: [String],
   isActive: { type: Boolean, default: true },
   isBlocked: { type: Boolean, default: false },
   followers: [ObjectId],
@@ -146,3 +142,21 @@ export interface IAcademy extends Document {
 export default model<IAcademy>("academy", academyModel);
 
 // module.exports = academy;
+
+
+
+
+
+
+
+
+
+
+// schoolId: ObjectId,
+// academyOwnerId: ObjectId,
+// academyRepresentativeId: ObjectId,
+
+// instituteId: ObjectId,
+
+// achievementsId: [ObjectId],
+
