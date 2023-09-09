@@ -100,7 +100,7 @@ router.get("/infoById", checkAuth, async (req, res) => {
       .status(200)
       .json(
         successResponse(
-          "get sonsorRepresentative by Id ",
+          "get sonsorRepresentative by infoById ",
           response,
           res.statusCode
         )
