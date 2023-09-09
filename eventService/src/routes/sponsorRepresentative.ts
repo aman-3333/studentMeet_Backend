@@ -4,7 +4,7 @@ const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import sonsorRepresentativeController from "../controllers/sponsorRepresentativeController";
-import  { ISonsorRepresentative } from "../models/sponsorRepresentative";
+import  { ISponsorRepresentative } from "../models/sponsorRepresentative";
 
 
 router.post("/create", checkAuth, async (req, res) => {
@@ -14,7 +14,7 @@ req.body.user=res.locals.user
 const body = req.body;
      
         const controller = new sonsorRepresentativeController();
-        const response:ISonsorRepresentative = await controller.createsonsorRepresentative(body);
+        const response:ISponsorRepresentative = await controller.createsonsorRepresentative(body);
         res.status(200).json(successResponse("create sonsorRepresentative", response, res.statusCode));
     } catch(error) {
        
@@ -31,7 +31,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
 req.body.user=res.locals.user
 const body = req.body;
         const controller = new sonsorRepresentativeController();
-        const response: ISonsorRepresentative = await controller.editsonsorRepresentative(body, sonsorRepresentativeId);
+        const response: ISponsorRepresentative = await controller.editsonsorRepresentative(body, sonsorRepresentativeId);
         res.status(200).json(successResponse("sonsorRepresentative update", response, res.statusCode));
     } catch(error) {
     
