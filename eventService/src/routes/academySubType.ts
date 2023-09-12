@@ -32,11 +32,11 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/list",  async (req, res) => {
     try {
         const controller = new AcademySubTypeController();
-        const academyId=req.query.academyId
-        const response: IAcademySubType[] = await controller.getAcademySubTypeList(academyId);
+        const academyTypeId=req.query.academyTypeId
+        const response: IAcademySubType[] = await controller.getAcademySubTypeList(academyTypeId);
         res.status(200).json(successResponse("AcademySubType list", response, res.statusCode));
     } catch (error) {
        

@@ -31,7 +31,7 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/list",  async (req, res) => {
     try {
         const controller = new AcademyTypeController();
         const response: IAcademyType[] = await controller.getAcademyTypeList();

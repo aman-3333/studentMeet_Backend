@@ -7,7 +7,7 @@ import SchoolController from "../controllers/SchoolController";
 import  { ISchool } from "../models/school";
 
 
-router.post("/create", checkAuth, async (req, res) => {
+router.post("/create",  async (req, res) => {
     try {
         
 req.body.user=res.locals.user
@@ -53,10 +53,10 @@ router.get("/list", checkAuth, async (req, res) => {
 router.get("/search", checkAuth, async (req, res) => {
     try {
         const stateId=req.query.stateId;
-        const searchValue=req.query.searchValue;
+        const search=req.query.search;
         const controller = new SchoolController();
   
-        const response: any = await controller.searchSchool(stateId, searchValue);
+        const response: any = await controller.searchSchool(stateId, search);
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
        

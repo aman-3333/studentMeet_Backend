@@ -6,36 +6,56 @@ export default class AchivementController {
 
         let AchivementInfo: any;
         AchivementInfo = await Achivement.findOne({userId:body.userId,isDeleted:false});
-    
-        
+       let  academyInfo = await Achivement.findOne({academyId:body.academyId,isDeleted:false});
         if (AchivementInfo) {
            for (let i = 0; i < body.achievements.length; i++) {
 
             AchivementInfo = await Achivement.findOneAndUpdate({userId:body.userId},{
                 $push:{
                    achievements: {
-               
               picture: body.achievements[i].picture,
                 description: body.achievements[i].description,
                  state:body.achievements[i].state,
                  city:body.achievements[i].city,
                  country:body.achievements[i].country,
-              tournament:body.achievements[i].tournament
+              tournament:body.achievements[i].tournament,
+              achievements:body.achievements[i].achievements,
+              user_id:body.achievements[i].user_id
             }  
                 }
             });
-
-         
-            
-
-            
            }
 
 
         }
+        if (academyInfo) {
+            for (let i = 0; i < body.achievements.length; i++) {
+ 
+             AchivementInfo = await Achivement.findOneAndUpdate({userId:body.userId},{
+                 $push:{
+                    achievements: {
+               picture: body.achievements[i].picture,
+                 description: body.achievements[i].description,
+                  state:body.achievements[i].state,
+                  city:body.achievements[i].city,
+                  country:body.achievements[i].country,
+               tournament:body.achievements[i].tournament,
+               achievements:body.achievements[i].achievements,
+               user_id:body.achievements[i].user_id
+             }  
+                 }
+             });
+            }
+ 
+ 
+         }
  else{
 
+
     AchivementInfo = await Achivement.create(body);
+
+
+
  }
        
         
