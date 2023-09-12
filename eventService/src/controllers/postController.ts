@@ -240,19 +240,14 @@ mergedArray.sort((a, b) => a.createdAt - b.createdAt);
                         userId
                 }
             },{ new: true })
-
             await userActivity.findOneAndUpdate({ userId: PostInfo.userId },
                 { $inc: { postLikeCount: -1 } }, { new: true })
             return PostInfo;
         }
    
         if (status == "postComment") {
-       
-            
             let currentTime: any = new Date();
             for (let i = 0; i < body.postComment.length; i++) {
-               
-             
                     PostInfo =    await Post.findOneAndUpdate(
                     {
                         _id: body.postId,

@@ -82,13 +82,16 @@ export default class SchoolController {
         const schoolList: any[] = await School.find({ isDeleted: false });
         return schoolList;
     }
-    public async searchSchool(stateId:any,searchValue:any) {
-        if(searchValue){
-        let schoolList: any = await School.find({SchoolStateId:stateId,isDeleted: false });
+    public async searchSchool(stateId:any,search
+        :any) {
+        if(search
+            ){
+        let schoolList: any = await School.find({isDeleted: false });
         schoolList = new FuzzySearch(schoolList, ["SchoolName"], {
             caseSensitive: false,
         });
-        schoolList = schoolList.search(searchValue);
+        schoolList = schoolList.search(search
+            );
         return schoolList;
     }}
 

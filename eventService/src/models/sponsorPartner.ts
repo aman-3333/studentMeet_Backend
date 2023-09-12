@@ -47,7 +47,7 @@ const schema = new Schema(
   }
 );
 
-export interface ISponsorPartner extends Document {
+export interface IPartner extends Document {
     name: String,
     email: String,
     password: String,
@@ -89,4 +89,4 @@ export interface ISponsorPartner extends Document {
 }
 // userDetail
 
-export default model<ISponsorPartner>("sponsor_partner", schema);
+export default model<IPartner>("sponsor_partner", schema);

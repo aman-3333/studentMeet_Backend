@@ -54,9 +54,8 @@ export interface IAcademyOwner extends Document {
     password: String,
     address: String,
     token: String,
-
     contact: String,
-     profile_picture: String,
+    profile_picture: String,
     signature: String,
     country_code: String,
     landline: String,

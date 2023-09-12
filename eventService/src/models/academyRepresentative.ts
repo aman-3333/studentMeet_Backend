@@ -53,7 +53,7 @@ const schema = new Schema({
 });
 
 export interface IAcademyRepresentative extends Document {
-  academyOwnerId:ObjectId,
+    academyOwnerId:ObjectId,
     fullName: String,
     email: String,
     is_email_verified: Boolean,

@@ -6,15 +6,11 @@ import { IAcademy } from "../models/academy";
 import AcademyController from "../controllers/AcademyController";
 router.post("/create", async (req, res) => {
     try {
-        
-
-const body = req.body;
+        const body = req.body;
         const controller = new AcademyController();
         const response = await controller.createAcademy(body);
         res.status(200).json(successResponse("create academy", response, res.statusCode));
     } catch (error) {
-   console.log(error,"hello");
-   
         res.status(500).json(errorResponse("error in create academy", res.statusCode));
     }
 });

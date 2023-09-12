@@ -61,6 +61,7 @@ import sponsorsPartner from "./routes/sponsorsPartner";
 import sponsorshipForm from "./routes/sponsorshipForm";
 import sports from "./routes/sportsCategory";
 import state from "./routes/state";
+import school from "./routes/school";
 import user from "./routes/userDetails";
 import vendor from "./routes/vendorShop";
  import role from "./routes/role";
@@ -92,6 +93,7 @@ app.use("/api/sportsbrand", sportsBrand);
 app.use("/api/sponsorsPartner", sponsorsPartner);
 app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/sports", sports);
+app.use("/api/school", school);
 app.use("/api/location", state);
 app.use("/api/user", user);
 app.use("/api/vendorshop", vendor);
@@ -138,7 +140,7 @@ pingInterval: 25000,
 // !
 
 io.on("connection", (socket:any) => {
-
+  console.log('A user connected');
   socket.on("setup", (userData:any) => {
     
     let id=userData.token_data.userid;
