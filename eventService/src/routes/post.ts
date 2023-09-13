@@ -6,10 +6,10 @@ import PostController from "../controllers/postController";
 
 
 
-router.post("/create",checkAuth,  async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
  
-req.body.user=res.locals.user
+
 const body = req.body;
         const controller = new PostController();
         const response = await controller.createPost(body);

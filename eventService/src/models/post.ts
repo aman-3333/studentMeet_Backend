@@ -2,6 +2,8 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 
 const schema = new Schema({
     userId: { type: Schema.Types.ObjectId,ref: "userdetails" },
+    academyId: { type: Schema.Types.ObjectId,ref: "academy" },
+    sponsorId: { type: Schema.Types.ObjectId,ref: "sponsor" },
     userType:{type:String},
     userDp:{type:String},
     userShortDiscription:{type:String},
@@ -20,7 +22,6 @@ const schema = new Schema({
     isAnyAchievement: { type: Boolean, default: false },
     postLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
-    
     postCommentCount: { type: Number, default: 0 },
     postFavouriteCount: { type: Number, default: 0 },
     postLike: [{
@@ -52,6 +53,8 @@ const schema = new Schema({
 export interface IPost extends Document {
 
     userId: ObjectId,
+    academyId: ObjectId,
+    sponsorId: ObjectId,
     userType:String,
     mediaType:String,
     userDp:String,

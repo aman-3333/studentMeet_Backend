@@ -8,11 +8,11 @@ import sponsorPartner from "../models/sponsorPartner";
 
 export default class PostController {
     public async createPost(body: any) {
-    body.userId= body.user._id
+
         let PostInfo: any;
             PostInfo = await Post.create(body);
-            let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
-            await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname}})
+            // let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
+            // await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname}})
 
         return PostInfo;
 
