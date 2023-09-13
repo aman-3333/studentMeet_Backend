@@ -77,7 +77,6 @@ app.use("/api/bankdetail", bankdetail);
 
 // app.use("/api/category", category);
 app.use("/api/chat", chat);
-
 app.use("/api/connection", followers);
 app.use("/api/fileUpload", fileUpload);
 app.use("/api/guidelines", guidelines);1
