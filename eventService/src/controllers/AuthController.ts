@@ -23,6 +23,7 @@ import StarPerformer from "../models/StarPerformer";
 import post from "../models/post";
 import userConfig from "../models/userConfig";
 import academyOwner from "../models/academyOwner";
+import sponsorPartner from "../models/sponsorPartner";
 import { log } from "util";
 const { createJwtToken } = require("../utils/JwtToken");
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
@@ -295,8 +296,41 @@ export default class AuthController {
 
 return userData
       
-    } else {
     }
+
+    if (type == "sponsor" && confirmPassword == password) {
+      const existingUser: any = await sponsorPartner.findOne({ email: email });
+      if (existingUser) {
+        return { message: "User Already exists" };
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+     
+      
+      let userData:any = await sponsorPartner.create({
+        email: email,
+        password: hashedPassword,
+      });
+      console.log(userData,"userData");
+     
+      const token = jwt.sign(
+        { email: userData.email, id: userData._id },
+        "Stack",
+        {
+          expiresIn: "24h",
+        },
+        SECRET_KEY
+      );
+      console.log(token);
+      
+      userData=     await sponsorPartner.findOneAndUpdate(
+        { _id: userData._id },
+        { $set: { token: token,otp:"1234" } },{new:true}
+      );
+
+return userData
+      
+    }
+
   }
 
   public async signInEmail(body: any, SECRET_KEY: any) {
@@ -325,6 +359,35 @@ return userData
         SECRET_KEY
       );
       existingUser = await academyOwner.findOneAndUpdate(
+        { _id: existingUser._id },
+        { $set: { token: token } }
+      );
+      return existingUser;
+    }
+    if (type == "sponsor") {
+      let existingUser: any = await sponsorPartner.findOne({ email: email });
+      console.log(existingUser, "existingUser");
+      if (!existingUser) {
+        return { message: "User not exists" };
+      }
+    
+      const matchPassword = await bcrypt.compare(
+        password,
+        existingUser.password
+      );
+      if (!matchPassword) {
+        return { message: "Invalid Credentials" };
+      }
+
+      const token = jwt.sign(
+        { email: existingUser.email, id: existingUser._id },
+        "Stack",
+        {
+          expiresIn: "24h",
+        },
+        SECRET_KEY
+      );
+      existingUser = await sponsorPartner.findOneAndUpdate(
         { _id: existingUser._id },
         { $set: { token: token } }
       );
@@ -360,12 +423,47 @@ return userData
             },
             { $set: { email_verify: true } },{new:true}
           );
+          return { Status: "Sucess", Details: "OTP Match", userData };
+        }
+        else {
+          return { Status: "Error", Details: "OTP Mismatch", userInfo };
+        }
+        
+      } 
+   
+    }
+    if(type=="sponsor"){
+      userData = await sponsorPartner.findOne({
+        email:email,
+     
+        isDeleted: false,
+      }).lean();
+  
+      if (userData) {
+        let otpInfo = await sponsorPartner.findOne({
+          email: email,
+          otp:otp,
+        }).lean();
+        console.log(body);
+  
+       
+        if (otpInfo) {
+        
+  
+          await sponsorPartner.findOneAndUpdate(
+            {
+              _id: userData._id,
+            },
+            { $set: { email_verify: true } },{new:true}
+          );
+          return { Status: "Sucess", Details: "OTP Match", userData };
+        }   else {
+          return { Status: "Error", Details: "OTP Mismatch", userInfo };
         }
   
-        return { Status: "Sucess", Details: "OTP Match", userData };
-      } else {
-        return { Status: "Error", Details: "OTP Mismatch", userInfo };
+       
       }
+    
     }
     }
 

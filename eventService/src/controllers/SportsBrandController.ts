@@ -3,11 +3,8 @@ import SportsBrand, { ISportsBrand } from "../models/sportsBrand";
 export default class SportsBrandController {
 
     public async createSportsBrand(body: any) {
-
         let SportsBrandInfo: any;
-       
-            SportsBrandInfo = await SportsBrand.create(body);
-        
+        SportsBrandInfo = await SportsBrand.create(body);
         return SportsBrandInfo;
 
     }

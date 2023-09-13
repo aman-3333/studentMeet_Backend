@@ -19,14 +19,7 @@ function generateToken(length: Number) {
     return token;
 }
 export default class SponsorsPartnerController {
-
-
-
-
-
-
-
-
+ 
     public async createSponsorsPartner(body: any) {
         let createSponsorsPartnerInfo: IPartner;
         createSponsorsPartnerInfo = await SponsorsPartner.create({
