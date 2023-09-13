@@ -370,4 +370,11 @@ return userData
     }
 
 
+    public async searchUser(search:any){
+let userData=await Users.find( { fullName: { $regex: search, $options: "i" } })
+return userData
+    }
+
+
+
 }
