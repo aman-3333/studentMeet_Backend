@@ -102,8 +102,18 @@ export default class AchivementController {
         return AchivementInfo;
     }
 
-    public async getAchivementList(stateId: any) {
-        const AchivementList: IAchivement[] = await Achivement.find({ stateId: stateId, isDeleted: false });
+    public async getAchivementList() {
+        const AchivementList: IAchivement[] = await Achivement.find({  isDeleted: false });
+        return AchivementList;
+    }
+
+    public async getAcademyAchivement(academyId:any) {
+        const AchivementList: IAchivement[] = await Achivement.find({ academyId:academyId, isDeleted: false });
+        return AchivementList;
+    }
+
+    public async getUserAchivement(userId:any) {
+        const AchivementList: IAchivement[] = await Achivement.find({ userId:userId, isDeleted: false });
         return AchivementList;
     }
 

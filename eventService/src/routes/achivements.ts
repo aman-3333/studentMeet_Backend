@@ -48,8 +48,8 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
 router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new AchivementController();
-        const stateId = req.query.stateId;
-        const response: IAchivement[] = await controller.getAchivementList(stateId);
+        
+        const response: IAchivement[] = await controller.getAchivementList();
         res.status(200).json(successResponse("Achivement list", response, res.statusCode));
     } catch (error) {
       
@@ -57,6 +57,30 @@ router.get("/list", checkAuth, async (req, res) => {
     }
 });
 
+router.get("/academy/achivement/list", checkAuth, async (req, res) => {
+    try {
+        const controller = new AchivementController();
+        const academyId = req.query.academyId;
+        const response: IAchivement[] = await controller.getAcademyAchivement(academyId);
+        res.status(200).json(successResponse("getAcademyAchivement list", response, res.statusCode));
+    } catch (error) {
+      
+        res.status(500).json(errorResponse("error in getAcademyAchivement list", res.statusCode));
+    }
+});
+
+
+router.get("/user/achivement/list", checkAuth, async (req, res) => {
+    try {
+        const controller = new AchivementController();
+        const userId = req.query.userId;
+        const response: IAchivement[] = await controller.getUserAchivement(userId);
+        res.status(200).json(successResponse("getUserAchivement list", response, res.statusCode));
+    } catch (error) {
+      
+        res.status(500).json(errorResponse("error in getUserAchivement list", res.statusCode));
+    }
+});
 
 router.get("/infobyid", checkAuth, async (req, res) => {
     try {
