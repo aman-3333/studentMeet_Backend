@@ -75,6 +75,45 @@ const academyModel = new Schema(
   { timestamps: true }
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+   
+
+     
+   
+  
+ 
+  
+
+
+
+
+
+
+
+
+
 export interface IAcademy extends Document {
   academyName: String,
   fullAddress: String,
@@ -138,10 +177,9 @@ export interface IAcademy extends Document {
   isDeleted: { type: Boolean, default: false },
 }
 
-// const academy =model("academy", academyModel);
+
 export default model<IAcademy>("academy", academyModel);
 
-// module.exports = academy;
 
 
 
@@ -149,14 +187,4 @@ export default model<IAcademy>("academy", academyModel);
 
 
 
-
-
-
-// schoolId: ObjectId,
-// academyOwnerId: ObjectId,
-// academyRepresentativeId: ObjectId,
-
-// instituteId: ObjectId,
-
-// achievementsId: [ObjectId],
 

@@ -21,12 +21,12 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create Institute", res.statusCode));
     }
 });
-router.get("/searchInstitute", checkAuth, async (req, res) => {
+router.get("/search",  async (req, res) => {
     try {
         const controller = new InstituteController();
-   const stateId =req.query.stateId
-   const searchValue:any =req.query.searchValue
-        const response: any = await controller.searchInstitute(stateId, searchValue);
+  
+   const searchValue:any =req.query.search
+        const response: any = await controller.searchInstitute( searchValue);
         res.status(200).json(successResponse("get searchInstitute", response, res.statusCode));
     } catch (error) {
        
@@ -61,19 +61,7 @@ router.get("/InstituteList", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in get Institute", res.statusCode));
     }
 });
-router.get("/searchInstitute", checkAuth, async (req, res) => {
-    try {
-        const stateId=req.query.stateId;
-        const searchValue=req.query.searchValue;
-        const controller = new InstituteController();
-  
-        const response: any = await controller.searchInstitute(stateId, searchValue);
-        res.status(200).json(successResponse("get Institute", response, res.statusCode));
-    } catch(error) {
-       
-        res.status(500).json(errorResponse("error in get Institute", res.statusCode));
-    }
-});
+
 
 router.get("/getInstituteInfoById", checkAuth, async (req, res) => {
     try {
