@@ -6,38 +6,34 @@ import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
 export default class academyController {
   public async createAcademy(body: any) {
-    const academyInfo = await academy.create({
-      academyName: body.academyName,
+    const academyInfo = await academy.create({ 
       fullAddress: body.fullAddress,
-      schoolId: body.schoolId,
-      lat: body.lat,
-      long: body.long,
+      academyOwnerId: body.academyOwnerId,
       academyTypeId: body.academyTypeId,
       academySubTypeId: body.academySubTypeId,
-      country: body.country,
-      city: body.city,
-      state: body.state,
-      instituteId: body.instituteId,
-      profile_picture: body.profile_picture,
-      banner_image: body.banner_image,
       session: body.session,
-      Morning: body.Morning,
       Evening: body.Evening,
+      Morning: body.Morning,
       workingDays: body.workingDays,
       contact_no: body.contact_no,
-      achievementsId: body.achievementsId,
+      academyRepresentativeId: body.academyRepresentativeId,
+      country: body.country,
+      state: body.state,
+      city: body.city,
+      description: body.description,
+      banner_image: body.banner_image,
+      schoolId: body.schoolId,
+      instituteId: body.instituteId,
+      academyName: body.academyName,
       coachId: body.coachId,
-      secoudryCoachId: body.secoudryCoachId,
       feesPerMonth: body.feesPerMonth,
       feesPerYear: body.feesPerYear,
       feesDiscount: body.feesDiscount,
-      feesDiscountLastDate: body.feesDiscountLastDate,
-      description: body.description,
-      academyOwnerId: body.academyOwnerId,
-      academyRepresentativeId: body.academyRepresentativeId,
-    });
+      profile_picture: body.profile_picture});
+    
 
-    return academyInfo;
+    return academyInfo
+ 
   }
 
   public async editAcademy(body: any) {
@@ -162,9 +158,7 @@ export default class academyController {
   }
 
   public async getAcademyInfoById(academyId: any) {
-    const academyInfo: any = await academy
-      .findOne({ _id: academyId})
-      .lean();
+    const academyInfo: any = await academy.findOne({ _id: academyId }).lean();
     return academyInfo;
   }
 
@@ -361,7 +355,7 @@ export default class academyController {
   public async filterAcademy(sports: any) {}
 
   public async getAcademyDetails(academyId: any) {
-    const academyList: any = await academy.find({_id:academyId});
+    const academyList: any = await academy.find({ _id: academyId });
     return academyList;
   }
 

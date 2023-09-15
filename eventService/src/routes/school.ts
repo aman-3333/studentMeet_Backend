@@ -50,13 +50,12 @@ router.get("/list", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in get School", res.statusCode));
     }
 });
-router.get("/search", checkAuth, async (req, res) => {
+router.get("/search",  async (req, res) => {
     try {
-        const stateId=req.query.stateId;
+      
         const search=req.query.search;
         const controller = new SchoolController();
-  
-        const response: any = await controller.searchSchool(stateId, search);
+        const response: any = await controller.searchschool( search);
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
        

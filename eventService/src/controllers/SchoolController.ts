@@ -30,10 +30,10 @@ export default class SchoolController {
     });
     return schoolList;
   }
-  public async searchschool(stateId: any, searchValue: any) {
+  public async searchschool( searchValue: any) {
     if (searchValue) {
       let schoolList: any = await school.find({
-        schoolStateId: stateId,
+       
         isDeleted: false,
       });
       schoolList = new FuzzySearch(schoolList, ["schoolName"], {
@@ -43,6 +43,10 @@ export default class SchoolController {
       return schoolList;
     }
   }
+
+
+
+
 
   public async getSchoolInfoById(schoolId: any) {
     const schoolInfo: any = await school

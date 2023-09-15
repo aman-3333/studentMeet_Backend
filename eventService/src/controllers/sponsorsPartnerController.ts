@@ -22,9 +22,7 @@ export default class SponsorsPartnerController {
  
     public async createSponsorsPartner(body: any) {
         let createSponsorsPartnerInfo: IPartner;
-        createSponsorsPartnerInfo = await SponsorsPartner.create({
-            sponsorshipPartnerId:body.sponsorshipPartnerId
-        });
+        createSponsorsPartnerInfo = await SponsorsPartner.create(body);
 
         return createSponsorsPartnerInfo;
     }

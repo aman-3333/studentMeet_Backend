@@ -8,7 +8,6 @@ const AchivementSchema = new Schema(
     achievements: [{
         achievements: { type: String },
         picture: [{ type: String }],
-        description: { type: String },
         location:{ type: String },
         user_id: [{ type:Schema.Types.ObjectId, ref: "userdetails" }],
         city: { type:Schema.Types.ObjectId, ref: "city" },

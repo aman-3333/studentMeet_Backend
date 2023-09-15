@@ -276,6 +276,7 @@ export default class AuthController {
       let userData:any = await academyOwner.create({
         email: email,
         password: hashedPassword,
+        userType:type
       });
       console.log(userData,"userData");
      
@@ -309,6 +310,7 @@ return userData
       let userData:any = await sponsorPartner.create({
         email: email,
         password: hashedPassword,
+        userType:type
       });
       console.log(userData,"userData");
      
