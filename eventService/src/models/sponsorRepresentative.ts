@@ -20,6 +20,10 @@ const schema = new Schema({
           lowercase: true,
          
         },
+        userType: {
+          type: String,
+          
+        },
         is_email_verified: {
           type: Boolean,
           default: false,
@@ -55,6 +59,7 @@ const schema = new Schema({
 export interface ISponsorRepresentative extends Document {
   sponsorOwnerId:ObjectId,
     fullName: String,
+    userType:String,
     email: String,
     is_email_verified: Boolean,
     country_code: String,
