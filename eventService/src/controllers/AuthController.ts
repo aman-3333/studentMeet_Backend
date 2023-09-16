@@ -298,7 +298,6 @@ export default class AuthController {
 return userData
       
     }
-
     if (type == "sponsor" && confirmPassword == password) {
       const existingUser: any = await sponsorPartner.findOne({ email: email });
       if (existingUser) {

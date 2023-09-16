@@ -5,7 +5,7 @@ import { successResponse, errorResponse } from "../services/apiResponse";
 import sonsorRepresentativeController from "../controllers/sponsorRepresentativeController";
 import { ISponsorRepresentative } from "../models/sponsorRepresentative";
 
-router.post("/create", checkAuth, async (req, res) => {
+router.post("/create",  async (req, res) => {
   try {
     req.body.user = res.locals.user;
     const body = req.body;

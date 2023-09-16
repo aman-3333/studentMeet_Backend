@@ -31,7 +31,7 @@ router.post("/create/sponsorship", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in create shop", res.statusCode));
     }
 });
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id",  async (req, res) => {
     try {
         const SponsorsPartnerId:any= req.params.id;
         const body = req.body as IPartner;
@@ -44,9 +44,9 @@ router.patch("/edit/:id", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/getSponsorsPartnerShopByUser/:userId", checkAuth, async (req, res) => {
+router.get("/getInfo", checkAuth, async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.query.userId;
         const controller = new SponsorsPartnerController();
         const response: IPartner = await controller.getSponsorsPartnerByUserId(userId);
         res.status(200).json(successResponse("get SponsorsPartner shop", response, res.statusCode));
@@ -60,23 +60,6 @@ router.get("/getSponsorsPartnerShopByUser/:userId", checkAuth, async (req, res) 
 //Agent
 
 
-
-
-/////////////////////////////////////////STAR PERFORMER////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// router.post("/loginSponsorsPartner", checkAuth, async (req, res) => {
-//     try {
-//         const body = req.body as IPartner;
-//         const controller = new SponsorsPartnerController();
-//         const response: IPartner = await controller.loginSponsorsPartner(body);
-//         res.status(200).json(successResponse("loginSponsorsPartner", response, res.statusCode));
-//     } catch (error) {
-        
-//         res.status(500).json(errorResponse("error in loginSponsorsPartner", res.statusCode));
-//     }
-// });
 
 
 
@@ -124,7 +107,7 @@ router.get("/getSponsorsPartnerAdminPannel", checkAuth, async (req, res) => {
 
 
 
-router.get("/SponsorsPartnerInfoById", checkAuth, async (req, res) => {
+router.get("/InfoById", checkAuth, async (req, res) => {
     try {
         const partnerId: any = req.query.partnerId;
         const controller = new SponsorsPartnerController();
