@@ -55,9 +55,7 @@ router.get("/getInfo", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in fetching SponsorsPartner shop", res.statusCode));
     }
 });
-/////////////////////////////////////city///////////////////////////////////////////////////////////
 
-//Agent
 
 
 

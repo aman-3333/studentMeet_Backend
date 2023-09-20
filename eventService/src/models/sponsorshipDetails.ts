@@ -8,10 +8,13 @@ const sponsorshipSchema = new Schema(
     sponsorshipProfileImage: { type: String },
     sponsorshipDesription: { type: String },
     sponsorshipTermsAndCondition: { type: String },
+    academyTypeId: { type: Schema.Types.ObjectId, ref: "academyType" },
+    academySubTypeId: { type: Schema.Types.ObjectId, ref: "academySubType" },
     sponsorshipPartnerId: {
       type: Schema.Types.ObjectId,
       ref: "sponsorPartner",
     },
+    stageId: [{ type: Schema.Types.ObjectId, ref: "stages" }],
     sponsorshipRepresentativeId: {
       type: Schema.Types.ObjectId,
       ref: "sponsorPartner",
@@ -76,6 +79,8 @@ export interface ISponsorship extends Document {
   sponsorshipRepresentativeId: ObjectId;
   participentId: [ObjectId];
   sponsorshipGuideLines: ObjectId;
+  academyTypeId: ObjectId,
+  academySubTypeId: ObjectId,
   category: ObjectId;
   SubCategory: ObjectId;
   subSubCategory: ObjectId;

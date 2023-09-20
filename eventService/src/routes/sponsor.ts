@@ -42,17 +42,41 @@ router.patch("/edit/:id", async (req, res) => {
 });
 
 
-router.get("/get/participants", async (req, res) => {
+router.get("/applied/user", async (req, res) => {
     try {
         const controller = new SponsorshipController();
         const sponsorshipId = req.query.sponsorshipId;
-        const response:any= await controller.getParticipantsList(sponsorshipId);
+        const response:any= await controller.getAppliedUser(sponsorshipId);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {
        
         res.status(500).json(errorResponse("getParticipantsList", res.statusCode));
     }
 });
+
+
+
+
+
+router.get("/by/partner/id", async (req, res) => {
+    try {
+        const controller = new SponsorshipController();
+        const sponsorshipPartnerId = req.query.sponsorshipPartnerId;
+        const response:any= await controller.getsponsorshipByPartnerId(sponsorshipPartnerId);
+        res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("getParticipantsList", res.statusCode));
+    }
+});
+
+
+
+
+
+
+
+
 
 router.get("/list", checkAuth, async (req, res) => {
     try {
@@ -80,6 +104,7 @@ router.get("/byid", async (req, res) => {
 });
 
 
+
 router.get("/search", async (req, res) => {
     try {
         const search = req.query.search;
@@ -105,7 +130,7 @@ router.get("/search", async (req, res) => {
         res.status(500).json(errorResponse("error in  search Sponsorship", res.statusCode));
     }
 });
-//hfbfhfjf l
+
 
 router.post("/activity", async (req, res) => {
     try{
@@ -221,6 +246,9 @@ router.get("/filterSponsorship", async (req, res) => {
         res.status(500).json(errorResponse("error filterSponsorship", res.statusCode));
     }
 });
+
+
+
 router.patch("/feadBackSponsorship", async (req, res) => {
     try {
         
@@ -240,7 +268,9 @@ const body = req.body;
 
 
 
-router.patch("/deleteSponsorship/:id", async (req, res) => {
+
+
+router.patch("/delete", async (req, res) => {
     try {
         const sponsorshipId = req.body.sponsorshipId;
         const userId = req.body.userId;
@@ -253,24 +283,25 @@ router.patch("/deleteSponsorship/:id", async (req, res) => {
     }
 })
 
-router.patch("/deleteSponsorship/:id", async (req, res) => {
-    try {
-        const sponsorshipId = req.body.sponsorshipId;
-        const userId = req.body.userId;
-        const controller = new SponsorshipController();
-        const response: ISponsorship = await controller.deleteSponsorship(sponsorshipId, userId);
-        res.status(200).json(successResponse("delete Sponsorship", response, res.statusCode));
-    } catch (error) {
+
+
+
+
+
+
+router.get("/readActivity", async (req, res) => {
+    try{
+        
+        const status:any =req.query.status;
+        const sponsorshipId=req.query.sponsorshipId;
+        const controller=new SponsorshipController();
+        const response:any =await controller.readActivity(sponsorshipId,status);
+        res.status(200).json(successResponse("readActivity",response,res.statusCode));
+    }catch(error) {
       
-        res.status(500).json(errorResponse("error in delete Sponsorship", res.statusCode));
+        res.status(500).json(errorResponse("error in readActivity", res.statusCode));
     }
 })
-
-
-
-
-
-
 
 
 

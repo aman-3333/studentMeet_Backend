@@ -42,7 +42,7 @@ const body = req.body;
 router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new SchoolController();
-       
+     
         const response: any= await controller.getSchool();
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
