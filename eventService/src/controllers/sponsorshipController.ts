@@ -386,7 +386,7 @@ let data=[]
   }
 
   public async getsponsorshipByPartnerId(sponsorshipPartnerId: any) {
-    var sponsorshipInfo: any = await SponsorshipModel.findOne({
+    var sponsorshipInfo: any = await SponsorshipModel.find({
       sponsorshipPartnerId: sponsorshipPartnerId,
       isDeleted: false,
     })
