@@ -8,6 +8,7 @@ import User from "../models/userDetails";
 
 import userDetails from "../models/userDetails";
 import { sendNotification } from "../services/notification";
+import post from "../models/post";
 
 let currentTime: any = new Date();
 export default class SponsorshipController {
@@ -379,7 +380,11 @@ let data=[]
 
     appliedUserInfo=appliedUserInfo.applyInfo;
     for (let i = 0; i < appliedUserInfo.length; i++) {
+      console.log(appliedUserInfo);
+      
      let userInfo=await userDetails.findOne({_id:appliedUserInfo[i].userId}).lean()
+     
+    
      data.push(userInfo)
     }
     return data;
@@ -392,6 +397,31 @@ let data=[]
     })
 
     return sponsorshipInfo;
+  }
+
+
+
+  public async getsponsorshipPostPartnerId(sponsorshipPartnerId: any) {
+    let postInfo;
+    var sponsorshipInfo: any = await SponsorshipModel.find({
+      sponsorshipPartnerId: sponsorshipPartnerId,
+      isDeleted: false,
+    })
+for (let i = 0; i < sponsorshipInfo.length; i++) {
+ postInfo=await post.aggregate([{
+  $match:{
+    sponsorId:sponsorshipInfo[i]._id,isDeleted:false
+  }
+},
+{
+  $sort: {
+    createdAt: -1 
+  }
+}])
+
+  
+}
+    return postInfo;
   }
 
 
