@@ -6,7 +6,7 @@ import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
 export default class academyController {
   public async createAcademy(body: any) {
-    const academyInfo = await academy.create({ 
+    const academyInfo = await academy.create({
       fullAddress: body.fullAddress,
       academyOwnerId: body.academyOwnerId,
       academyTypeId: body.academyTypeId,
@@ -29,11 +29,10 @@ export default class academyController {
       feesPerMonth: body.feesPerMonth,
       feesPerYear: body.feesPerYear,
       feesDiscount: body.feesDiscount,
-      profile_picture: body.profile_picture});
-    
+      profile_picture: body.profile_picture,
+    });
 
-    return academyInfo
- 
+    return academyInfo;
   }
 
   public async editAcademy(body: any) {
@@ -190,128 +189,130 @@ export default class academyController {
     return academyInfo;
   }
 
-  // public async academyActivity(
-  //   userId: any,
-  //   academyId: any,
-  //   status: any,
-  //   academyComment: any,
-  //   academyCommentId: any,
-  //   body: any
-  // ) {
-  //   let userInfo: any;
-  //   let data: any = [];
-  //   let a: any = [];
-  //   let info: any;
-  //   let academyInfo: any;
+  public async academyActivity(
+    userId: any,
+    academyId: any,
+    status: any,
+    academyComment: any,
+    academyCommentId: any,
+    body: any
+  ) {
+    let userInfo: any;
+    let data: any = [];
+    let a: any = [];
+    let info: any;
+    let academyInfo: any;
 
-  //   if (status == "academyLike") {
-  //     await academy.findOneAndUpdate({ _id: body.academyId },{ $inc: { academyLikeCount: 1 },{ new: true } ).lean();
-  //     academyInfo = await academy.findOneAndUpdate(
-  //       {
-  //         _id: body.academyId,
-  //       },
-  //       {
-  //         $push: {
-  //           academyLike: userId,
-  //         },
-  //       },
-  //       { new: true }
-  //     );
+    if (status == "academyLike") {
+      // await academy.findOneAndUpdate({ _id: body.academyId },{ $inc: { academyLikeCount: 1 },{ new: true } }).lean();
+      academyInfo = await academy.findOneAndUpdate(
+        {
+          _id: body.academyId,
+        },
+        {
+          $push: {
+            academyLike: userId,
+          },
+        },
+        { new: true }
+      );
 
-  //     console.log(academyInfo);
+      console.log(academyInfo);
 
-  //     return academyInfo;
-  //   }
-  //   if (status == "removAcademyLike") {
-  //     await academy.findOneAndUpdate(
-  //       { _id: body.academyId },
-  //       { $inc: { academyLikeCount: -1 } },
-  //       { new: true }
-  //     );
+      return academyInfo;
+    }
+    if (status == "removAcademyLike") {
+      // await academy.findOneAndUpdate(
+      //   { _id: body.academyId },
+      //   { $inc: { academyLikeCount: -1 } },
+      //   { new: true }
+      // );
 
-  //     academyInfo = await academy.findOneAndUpdate(
-  //       {
-  //         _id: body.academyId,
-  //       },
-  //       {
-  //         $pull: {
-  //           academyLike: userId,
-  //         },
-  //       },
-  //       { new: true }
-  //     );
+      academyInfo = await academy.findOneAndUpdate(
+        {
+          _id: body.academyId,
+        },
+        {
+          $pull: {
+            academyLike: userId,
+          }
+        },
+        { new: true }
+      );
 
-  //     return academyInfo;
-  //   }
+      return academyInfo;
+    }
 
-  //   if (status == "academyComment") {
-  //     let currentTime: any = new Date();
-  //     for (let i = 0; i < body.academyComment.length; i++) {
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         {
-  //           _id: body.academyId,
-  //         },
-  //         {
-  //           $push: {
-  //             academyComment: {
-  //               userId: body.academyComment[i].userId,
-  //               comment: body.academyComment[i].comment,
-  //               dateTime: currentTime,
-  //             },
-  //           },
-  //         }
-  //       );
+    if (status == "academyComment") {
+      let currentTime: any = new Date();
+      for (let i = 0; i < body.academyComment.length; i++) {
+        academyInfo = await academy.findOneAndUpdate(
+          {
+            _id: body.academyId,
+          },
+          {
+            $push: {
+              academyComment: {
+                userId: body.academyComment[i].userId,
+                comment: body.academyComment[i].comment,
+                dateTime: currentTime,
+              },
+            },
+          }
+        );
 
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         { _id: body.academyId },
-  //         { $inc: { academyCommentCount: 1 } },
-  //         { new: true }
-  //       );
+        // academyInfo = await academy.findOneAndUpdate(
+        //   { _id: body.academyId },
+        //   { $inc: { academyCommentCount: 1 } },
+        //   { new: true }
+        // );
 
-  //       return academyInfo;
-  //     }
-  //   }
-  //   if (status == "removeAcademyComment") {
-  //     for (let i = 0; i < body.academyComment.length; i++) {
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         {
-  //           _id: body.academyComment[i].academyId,
-  //         },
-  //         {
-  //           $pull: {
-  //             academyComment: {
-  //               _id: body.academyComment[i]._id,
-  //             },
-  //           },
-  //         }
-  //       );
+        return academyInfo;
+      }
+    }
+    if (status == "removeAcademyComment") {
+      for (let i = 0; i < body.academyComment.length; i++) {
+        academyInfo = await academy.findOneAndUpdate(
+          {
+            _id: body.academyComment[i].academyId,
+          },
+          {
+            $pull: {
+              academyComment: {
+                _id: body.academyComment[i]._id,
+              },
+            },
+          }
+        );
 
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         { _id: body.academyComment[i].academyId },
-  //         { $inc: { academyCommentCount: -1 } },
-  //         { new: true }
-  //       );
+        // academyInfo = await academy.findOneAndUpdate(
+        //   { _id: body.academyComment[i].academyId },
+        //   { $inc: { academyCommentCount: -1 } },
+        //   { new: true }
+        // );
 
-  //       return academyInfo;
-  //     }
-  //   }
-  //   if (status == "readacAdemyComment") {
-  //     userInfo = await userActivity.findOne({ userId: body.userId }).lean();
-  //     userInfo = userInfo.academyComment;
+        return academyInfo;
+      }
+    }
+    if (status == "readacAdemyComment") {
+      userInfo = await userActivity.findOne({ userId: body.userId }).lean();
+      userInfo = userInfo.academyComment;
 
-  //     for (let i = 0; i < userInfo.length; i++) {
-  //       let academyInfo: any = await academy.findOne({
-  //         _id: userInfo[i].academyId,
-  //       });
+      for (let i = 0; i < userInfo.length; i++) {
+        let academyInfo: any = await academy.findOne({
+          _id: userInfo[i].academyId,
+        });
 
-  //       let comment: any = userInfo[i].comment;
-  //       let DateTime: any = userInfo[i].dateTime;
+        let comment: any = userInfo[i].comment;
+        let DateTime: any = userInfo[i].dateTime;
 
-  //       data.push({ academyInfo, comment, DateTime });
-  //     }
-  //     return data;
-  //   }
-  // }
+        data.push({ academyInfo, comment, DateTime });
+      }
+      return data;
+    }
+  }
+
+
 
   public async readAcademyActivity(academyId: any, status: any) {
     let academyInfo: any;

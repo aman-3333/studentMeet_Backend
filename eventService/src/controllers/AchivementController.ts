@@ -5,18 +5,18 @@ export default class AchivementController {
   public async createAchivement(body: any) {
     const currentTime = new Date();
     let achivementInfo: any;
-    achivementInfo = await Achivement.findOne({
-      userId: body.userId,
+   let userInfo = await Achivement.findOne({
+      user_id: body.userId,
       isDeleted: false,
     });
     let academyInfo = await Achivement.findOne({
       academyId: body.academyId,
       isDeleted: false,
     });
-    if (achivementInfo) {
+    if (userInfo) {
       for (let i = 0; i < body.achievements.length; i++) {
         achivementInfo = await Achivement.findOneAndUpdate(
-          { userId: body.userId },
+          { user_id: body.userId },
           {
             $push: {
               achievements: {
@@ -39,7 +39,7 @@ export default class AchivementController {
     if (academyInfo) {
       for (let i = 0; i < body.achievements.length; i++) {
         achivementInfo = await Achivement.findOneAndUpdate(
-          { userId: body.userId },
+          { userInfo: body.userId },
           {
             $push: {
               achievements: {
@@ -59,7 +59,6 @@ export default class AchivementController {
         );
       }
     } else {
-        body.dateTime= currentTime,
       achivementInfo = await Achivement.create(body);
     }
 

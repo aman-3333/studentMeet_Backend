@@ -193,6 +193,8 @@ export default class SponsorshipController {
                 dateTime: currentTime,
               },
             },
+          },{
+            new:true
           }
         );
         console.log(sponsorshipInfo, "sponsorshipInfo");
@@ -224,6 +226,8 @@ export default class SponsorshipController {
                 userId: userId,
               },
             },
+          },{
+            new: true
           }
         );
 

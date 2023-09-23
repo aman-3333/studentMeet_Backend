@@ -97,27 +97,26 @@ router.get("/filter", checkAuth, async (req, res) => {
     }
 });
 
-// router.post("/activity",  async (req, res) => {
-//     try {
-//         const userId = req.body.userId;
-//         const acdemyId = req.body.acdemyId; 
-//         const status = req.body.status;
-//          const acdemyComment = req.body.acdemyComment;
-//          const acdemyCommentId = req.body.acdemyCommentId;
+router.post("/activity",  async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const acdemyId = req.body.acdemyId; 
+        const status = req.body.status;
+         const acdemyComment = req.body.acdemyComment;
+         const acdemyCommentId = req.body.acdemyCommentId;
          
-// req.body.user=res.locals.user
-// const body = req.body;
+req.body.user=res.locals.user
+const body = req.body;
 
 
-//         const controller = new AcademyController();
-//         const response = await controller.academyActivity(userId, acdemyId, status, acdemyComment, acdemyCommentId, body);
-//         res.status(200).json(successResponse("postActivity", response, res.statusCode));
-//     } catch (error) {
+        const controller = new AcademyController();
+        const response = await controller.academyActivity(userId, acdemyId, status, acdemyComment, acdemyCommentId, body);
+        res.status(200).json(successResponse("postActivity", response, res.statusCode));
+    } catch (error) {
       
-//         res.status(500).json(errorResponse("error in postActivity", res.statusCode));
-//     }
-// });
-
+        res.status(500).json(errorResponse("error in postActivity", res.statusCode));
+    }
+});
 router.post("/read/activity",  async (req, res) => {
     try {
         console.log(req.body);

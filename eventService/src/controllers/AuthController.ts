@@ -265,21 +265,25 @@ export default class AuthController {
   public async signUpEmail(body: any, SECRET_KEY: any) {
     const { email, password, confirmPassword, type } = body;
 
+
     if (type == "academy" && confirmPassword == password) {
+      
+      
       const existingUser: any = await academyOwner.findOne({ email: email });
       if (existingUser) {
         return { message: "User Already exists" };
       }
+ 
       const hashedPassword = await bcrypt.hash(password, 10);
-     
       
-      let userData:any = await academyOwner.create({
+      
+      let userData:any = new academyOwner({
         email: email,
         password: hashedPassword,
         userType:type
       });
-      console.log(userData,"userData");
-     
+     await userData.save()
+     console.log(userData);
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
         "Stack",
@@ -306,11 +310,12 @@ return userData
       const hashedPassword = await bcrypt.hash(password, 10);
      
       
-      let userData:any = await sponsorPartner.create({
+      let userData:any = new sponsorPartner({
         email: email,
         password: hashedPassword,
         userType:type
       });
+     await userData.save()
       console.log(userData,"userData");
      
       const token = jwt.sign(
