@@ -380,8 +380,6 @@ let data=[]
 
     appliedUserInfo=appliedUserInfo.applyInfo;
     for (let i = 0; i < appliedUserInfo.length; i++) {
-      console.log(appliedUserInfo);
-      
      let userInfo=await userDetails.findOne({_id:appliedUserInfo[i].userId}).lean()
      
     

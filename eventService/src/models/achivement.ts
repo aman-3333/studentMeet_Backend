@@ -10,10 +10,12 @@ const AchivementSchema = new Schema(
         picture: [{ type: String }],
         location:{ type: String },
         user_id: [{ type:Schema.Types.ObjectId, ref: "userdetails" }],
-        city: { type:Schema.Types.ObjectId, ref: "city" },
-        state: { type:Schema.Types.ObjectId, ref: "state" },
-        country: { type:Schema.Types.ObjectId, ref: "country" },
-       tournament:{ type: String }
+        city: { type:Schema.Types.ObjectId, ref: "cities" },
+        state: { type:Schema.Types.ObjectId, ref: "states" },
+        country: { type:Schema.Types.ObjectId, ref: "countries" },
+       tournament:{ type: String },
+       tournament_match:{ type: String },
+       dateTime:{type:Date}
     }],
     isActive:{type:Boolean,default:true},
     isBlocked:{type:Boolean,default:false},
@@ -38,7 +40,9 @@ export interface IAchivement extends Document {
       city: ObjectId,
       state: ObjectId,
       country: ObjectId,
-     tournament:String
+     tournament:String,
+     dateTime:Date
+     tournament_match:String,
     }],
     isActive:Boolean,
     isBlocked:Boolean,

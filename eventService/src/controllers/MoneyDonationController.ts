@@ -6,8 +6,7 @@ export default class moneyDonationController {
     public async createmoneyDonation(body: any) {
 
         const { amount, donorId, email,userId,postId,status,note } = body;
-    
-        // Create a Razorpay order
+
         const order = await razorpay.orders.create({
           amount: amount * 100, // Amount in paise
           currency: 'INR',

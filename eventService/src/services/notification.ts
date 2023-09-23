@@ -13,7 +13,11 @@ var message={
         body:body,
         sound:true,
         vibrate:true
-    }
+    },
+      data: {
+    screen: screen // Screen name to redirect to
+  }
+    
 };
 console.log("message",message);
 
