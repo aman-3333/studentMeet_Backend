@@ -202,9 +202,19 @@ export default class academyController {
     let a: any = [];
     let info: any;
     let academyInfo: any;
-
+    let count:any=1
+    let minuscount:any=-1
     if (status == "academyLike") {
-      // await academy.findOneAndUpdate({ _id: body.academyId },{ $inc: { academyLikeCount: 1 },{ new: true } }).lean();
+      
+       await academy.updateOne(
+        {
+          _id: body.academyId
+        },
+        {
+          $inc: { academyLikeCount: count },
+        }
+      );
+
       academyInfo = await academy.findOneAndUpdate(
         {
           _id: body.academyId,
@@ -213,6 +223,7 @@ export default class academyController {
           $push: {
             academyLike: userId,
           },
+         
         },
         { new: true }
       );
@@ -227,6 +238,14 @@ export default class academyController {
       //   { $inc: { academyLikeCount: -1 } },
       //   { new: true }
       // );
+      await academy.updateOne(
+        {
+          _id: body.academyId
+        },
+        {
+          $inc: { academyLikeCount: minuscount },
+        }
+      );
 
       academyInfo = await academy.findOneAndUpdate(
         {
@@ -267,6 +286,15 @@ export default class academyController {
         //   { new: true }
         // );
 
+        await academy.updateOne(
+          {
+            _id: body.academyId
+          },
+          {
+            $inc: { academyCommentCount: count },
+          }
+        );
+
         return academyInfo;
       }
     }
@@ -285,11 +313,15 @@ export default class academyController {
           }
         );
 
-        // academyInfo = await academy.findOneAndUpdate(
-        //   { _id: body.academyComment[i].academyId },
-        //   { $inc: { academyCommentCount: -1 } },
-        //   { new: true }
-        // );
+       
+        await academy.updateOne(
+          {
+            _id: body.academyId
+          },
+          {
+            $inc: { academyCommentCount:minuscount },
+          }
+        );
 
         return academyInfo;
       }

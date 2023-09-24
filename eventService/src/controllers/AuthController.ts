@@ -67,7 +67,6 @@ export default class AuthController {
     function couponGenerator() {
       let text = "";
       let possible = "0123456789";
-
       for (let i = 0; i < 4; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
@@ -93,7 +92,6 @@ export default class AuthController {
 
       await userDevice.create({
         userId: createUser._id,
-
         fcmtoken: body.fcmtoken,
         ipAddress: body.ipAddress,
         modelName: body.modelName,
@@ -119,14 +117,11 @@ export default class AuthController {
   }
 
   public async editProfile(body: any) {
-    console.log(body, "body");
-
     let userInfo: any = await Users.findOneAndUpdate(
       { _id: body.userId, isDeleted: false },
       body,
       { new: true }
     ).lean();
-    console.log(userInfo, "userInfo");
 
     await userActivity.findOneAndUpdate(
       { userId: body.userId },
@@ -277,12 +272,13 @@ export default class AuthController {
       const hashedPassword = await bcrypt.hash(password, 10);
       
       
-      let userData:any = new academyOwner({
+      let userData:any =await academyOwner.create({
         email: email,
         password: hashedPassword,
         userType:type
       });
-     await userData.save()
+    
+     
      console.log(userData);
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
@@ -294,12 +290,12 @@ export default class AuthController {
       );
       console.log(token);
       
-      userData=     await academyOwner.findOneAndUpdate(
-        { _id: userData._id },
+   let userInfo=    await academyOwner.findOneAndUpdate(
+        { email: email },
         { $set: { token: token,otp:"1234" } },{new:true}
       );
 
-return userData
+return userInfo
       
     }
     if (type == "sponsor" && confirmPassword == password) {

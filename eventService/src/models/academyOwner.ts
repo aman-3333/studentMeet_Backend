@@ -3,7 +3,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema(
   {
     name: { type: String},
-    email: { type: String,unique:true },
+    email: { type: String},
     password: { type: String },
     address: { type: String },
     token: { type: String },
