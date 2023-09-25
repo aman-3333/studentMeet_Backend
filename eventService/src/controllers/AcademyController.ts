@@ -385,7 +385,7 @@ export default class academyController {
     }
   }
 
-  public async filterAcademy(sports: any) {}
+ 
 
   public async getAcademyDetails(academyId: any) {
     const academyList: any = await academy.find({ _id: academyId });
@@ -464,4 +464,33 @@ export default class academyController {
 
     return academyInfo;
   }
+
+
+
+
+
+  public async filterAcademy(query:any){
+const academyTypeId = query.academyTypeId ||{};
+const academySubTypeId = query.academySubTypeId || {};
+const city = query.city || {};
+const state = query.state || {};
+const academyData = await academy.find({
+    state:state,
+    city:city,
+    academyTypeId: academyTypeId,
+    academySubTypeId:academySubTypeId
+
+})  
+
+ return academyData;
+
+}
+
+
+
+
+
+
+
+
 }

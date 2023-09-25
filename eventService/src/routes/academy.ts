@@ -84,18 +84,7 @@ router.get("/search",  async (req, res) => {
 });
 
 
-router.get("/filter", checkAuth, async (req, res) => {
-    try {
-        const controller = new AcademyController();
-   
-        const sports = req.query.sports;
-        const response:any = await controller.filterAcademy(sports);
-        res.status(200).json(successResponse("academy filter", response, res.statusCode));
-    } catch (error) {
-      
-        res.status(500).json(errorResponse("error in academy filter", res.statusCode));
-    }
-});
+
 
 router.post("/activity",  async (req, res) => {
     try {
@@ -137,6 +126,18 @@ router.post("/read/activity",  async (req, res) => {
 });
 
 
+router.get("/filter",  async (req, res) => {
+    try {
+        const controller = new AcademyController();
+        const query:any = req.query;
+        const response:any = await controller.filterAcademy(query);
+        res.status(200).json(successResponse("academy list", response, res.statusCode));
+    } catch (error) {
+       console.log(error);
+       
+        res.status(500).json(errorResponse("error in academy list", res.statusCode));
+    }
+});
 router.get("/details",  async (req, res) => {
     try {
         const controller = new AcademyController();

@@ -263,49 +263,7 @@ export default class SponsorshipController {
     }
   }
 
-  public async filterSponsorship(
-    type: any,
-    sort: any,
-    category: any,
-    subCategory: any,
-    subSubCategory: any,
-    limit: any,
-    skip: any,
-    search: any
-  ) {
-    let sponsorshipInfo: any;
-
-    if (category) {
-    } else if (sort == "lessEarning") {
-      sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-
-      sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) {
-        return a.organizerTotalIncome - b.organizerTotalIncome;
-      });
-      return sponsorshipInfo;
-    } else if (sort == "mostEarning") {
-      sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-      sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) {
-        return b.organizerTotalIncome - a.organizerTotalIncome;
-      });
-      return sponsorshipInfo;
-    } else if (sort == "oldtonew") {
-      sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-      sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) {
-        return a.createdAt - b.createdAt;
-      });
-      return sponsorshipInfo;
-    } else if (sort == "newtoold") {
-      sponsorshipInfo = await SponsorshipModel.find({ isDeleted: false });
-      sponsorshipInfo = sponsorshipInfo.sort(function (a: any, b: any) {
-        return b.createdAt - a.createdAt;
-      });
-      return sponsorshipInfo;
-    }
-    if (limit && skip) {
-      sponsorshipInfo = sponsorshipInfo.slice(skip).slice(0, limit);
-    }
-  }
+ 
 
   public async searchSponsorship(search: any) {
     let sponsorshipInfo: any = await SponsorshipModel.aggregate([
@@ -590,4 +548,35 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
 
     return userInfo;
   }
+
+
+ 
+
+
+    public async filterSponsorship(query:any){
+      const academyTypeId = query.academyTypeId ;
+      const academySubTypeId = query.academySubTypeId;
+      let academyData;
+      if(academyTypeId){
+        console.log(academyTypeId,"academyTypeId");
+        
+         academyData = await SponsorshipModel.find({
+          academyTypeId: academyTypeId,
+      })  
+      }
+      if(academySubTypeId&&academyTypeId){
+        console.log(academyTypeId,"academyTypeId");
+        academyData = await SponsorshipModel.find({
+          academyTypeId: academyTypeId,
+          academySubTypeId:academySubTypeId
+      })  
+      }
+     
+      
+       return academyData;
+      
+      }
+
+
+
 }

@@ -204,6 +204,23 @@ router.get("/readActivity", async (req, res) => {
     }
 })
 
+router.get("/filter", async (req, res) => {
+    try{
+        
+   
+        const query=req.query;
+        const controller=new SponsorshipController();
+        const response:any =await controller.filterSponsorship(query);
+        res.status(200).json(successResponse("readActivity",response,res.statusCode));
+    }catch(error) {
+      console.log(error);
+      
+        res.status(500).json(errorResponse("error in readActivity", res.statusCode));
+    }
+})
+
+
+
 router.post("/apply", async (req, res) => {
     try {
       
@@ -237,25 +254,7 @@ router.post("/applySponsorship", async (req, res) => {
         res.status(500).json(errorResponse("error in applySponsorship", res.statusCode));
     }
 });
-router.get("/filterSponsorship", async (req, res) => {
-    try {
-       
-        const sort = req.query.sort;
-        const type = req.query.type;
-        const category = req.query.category;
-        const subCategory = req.query.subCategory; 
-         const subSubCategory = req.query.subSubCategory; 
-         const limit = req.query.limit;
-           const skip = req.query.skip;
-           const search = req.query.search;
-        const controller = new SponsorshipController();
-        const response: any = await controller.filterSponsorship(type,sort, category, subCategory, subSubCategory, limit, skip, search);
-        res.status(200).json(successResponse("filterSponsorship ", response, res.statusCode));
-    } catch (error) {
-       
-        res.status(500).json(errorResponse("error filterSponsorship", res.statusCode));
-    }
-});
+
 
 
 

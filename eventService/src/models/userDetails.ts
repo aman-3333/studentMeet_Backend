@@ -17,6 +17,8 @@ const userSchema = new Schema(
     experience:{ type: String ,default:""},
     playFor:[{ type: String ,default:""}],
     stages:[{ type: String ,default:""}],
+    profectionDomain:{type:Schema.Types.ObjectId,ref:"academyType"},
+    profection:{type:Schema.Types.ObjectId,ref:"academySubType"},
     academy_id:{type:Schema.Types.ObjectId,ref:"academy"},
     institute: { type: Schema.Types.ObjectId, ref: "institute" },
     school: { type: Schema.Types.ObjectId, ref: "school" },

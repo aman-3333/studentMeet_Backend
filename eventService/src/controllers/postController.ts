@@ -39,6 +39,22 @@ export default class PostController {
             },
             {
               $lookup: {
+                'localField': 'academyId',
+                'from': 'academies',
+                'foreignField': '_id',
+                'as': 'academyObj',
+              },
+            },
+            {
+              $lookup: {
+                'localField': 'sponsorId',
+                'from': 'sponsorshipdetails',
+                'foreignField': '_id',
+                'as': 'sponsorshipObj',
+              },
+            },
+            {
+              $lookup: {
                 'localField': 'state',
                 'from': 'state',
                 'foreignField': '_id',
@@ -101,6 +117,22 @@ export default class PostController {
                 'from': 'userdetails',
                 'foreignField': '_id',
                 'as': 'user',
+              },
+            },
+            {
+              $lookup: {
+                'localField': 'academyId',
+                'from': 'academies',
+                'foreignField': '_id',
+                'as': 'academyObj',
+              },
+            },
+            {
+              $lookup: {
+                'localField': 'sponsorId',
+                'from': 'sponsorshipdetails',
+                'foreignField': '_id',
+                'as': 'sponsorshipObj',
               },
             },
             {
