@@ -34,11 +34,11 @@ router.get("/search",  async (req, res) => {
     }
 });
 
+
+
 router.patch("/Institute/:id", checkAuth, async (req, res) => {
     try {
-        const InstituteId = req.params.id;
-        
-        
+        const InstituteId = req.params.id;  
 req.body.user=res.locals.user
 const body = req.body;
         const controller = new InstituteController();

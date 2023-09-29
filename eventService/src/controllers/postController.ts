@@ -5,6 +5,7 @@ import FuzzySearch from "fuzzy-search";
 import event from "../models/sponsorshipDetails";
 import academy from "../models/academy";
 import sponsorPartner from "../models/sponsorPartner";
+const mongoose = require("mongoose");
 
 export default class PostController {
     public async createPost(body: any) {
@@ -212,13 +213,56 @@ mergedArray.sort((a, b) => a.createdAt - b.createdAt);
         return mergedArray;
     }
 
-    public async getPostListBYUserId(userId:any) {
-        const PostList: IPost[] = await Post.find({userId:userId, isDeleted: false }).lean();
-        return PostList;
-    }
+    // public async getPostListBYUserId(userId:any) {
+    //     const PostList: IPost[] = await Post.find({userId:userId, isDeleted: false }).lean();
+    //     return PostList;
+    // }
 
-    public async getPostInfoById(PostId: any) {
-        const PostInfo: IPost = await Post.findOne({ _id: PostId, isDeleted: false }).lean();
+    public async getPostListBYUserId(userId: any) {
+        let PostInfo: any = await Post.aggregate([
+          {
+          $match: {
+            userId : new mongoose.Types.ObjectId(userId),
+          }
+        },{
+          $sort:{
+            createdAt: -1,
+          }
+        },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "user",
+          },
+        }
+      ])
+       
         return PostInfo;
     }
 

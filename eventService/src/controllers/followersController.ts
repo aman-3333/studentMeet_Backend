@@ -47,7 +47,7 @@ public async following(userId: any, followingId: any,userType:any) {
     let userInfo: any;
     userInfo = await userDetails.findOne({_id:followingId,isDeleted:false }).lean()
 
-    if(userType=="normal"){
+    if(userType=="normal" ||  userType=="coach" ){
     if(userInfo.isProfilePublic == true){
         userInfo = await userActivity.findOneAndUpdate({
             userId: userId,
@@ -98,7 +98,7 @@ if(userInfo.isProfilePublic == false){
 }
     }
     if(userType=="academy"){
-        if(userInfo.isProfilePublic == true){
+     
             userInfo = await userActivity.findOneAndUpdate({
                 userId: userId,
             }, {
@@ -125,27 +125,9 @@ if(userInfo.isProfilePublic == false){
                 },
                     { $inc: { followersCount: 1 } },{new:true}).lean()
     
-        }
         
-    if(userInfo.isProfilePublic == false){
-    
-        userInfo = await userActivity.findOneAndUpdate({
-            userId: userId,
-        }, {
-            $push: {
-                sendFollowingRequest: followingId
-            }
-        },{new:true}).lean()
-        await userActivity.findOneAndUpdate({
-            userId: followingId,
-        }, {
-            $push: {
-                sendFollowingRequestBYOther: userId
-            }
-        },{new:true}).lean()
-    
-    
-    }
+        
+   
         }
         if(userType=="sponsorship"){
             if(userInfo.isProfilePublic == true){
@@ -177,25 +159,7 @@ if(userInfo.isProfilePublic == false){
         
             }
             
-        if(userInfo.isProfilePublic == false){
-        
-            userInfo = await userActivity.findOneAndUpdate({
-                userId: userId,
-            }, {
-                $push: {
-                    sendFollowingRequest: followingId
-                }
-            },{new:true}).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            }, {
-                $push: {
-                    sendFollowingRequestBYOther: userId
-                }
-            },{new:true}).lean()
-        
-        
-        }
+       
             }
 
     

@@ -13,17 +13,14 @@ var message={
         body:body,
         sound:true,
         vibrate:true
-    },
-      data: {
-    screen: screen // Screen name to redirect to
-  }
+    }
     
 };
 console.log("message",message);
 
 fcm.send(message,(err:any,response:any)=>{
 if(err){
-    console.log("something has gon wrong");
+    console.log("something has gon wrong",err);
 }
 else{
     console.log("successful send ",response);

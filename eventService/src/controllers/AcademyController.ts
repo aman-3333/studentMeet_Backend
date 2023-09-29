@@ -228,7 +228,7 @@ export default class academyController {
         { new: true }
       );
 
-      console.log(academyInfo);
+      console.log(academyInfo,body.academyId,userId);
 
       return academyInfo;
     }
@@ -280,11 +280,7 @@ export default class academyController {
           }
         );
 
-        // academyInfo = await academy.findOneAndUpdate(
-        //   { _id: body.academyId },
-        //   { $inc: { academyCommentCount: 1 } },
-        //   { new: true }
-        // );
+
 
         await academy.updateOne(
           {

@@ -24,6 +24,10 @@ import post from "../models/post";
 import userConfig from "../models/userConfig";
 import academyOwner from "../models/academyOwner";
 import sponsorPartner from "../models/sponsorPartner";
+import schoolOwner from "../models/schoolsOwner.model";
+
+
+
 import { log } from "util";
 const { createJwtToken } = require("../utils/JwtToken");
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
@@ -390,6 +394,35 @@ return userData
         SECRET_KEY
       );
       existingUser = await sponsorPartner.findOneAndUpdate(
+        { _id: existingUser._id },
+        { $set: { token: token } }
+      );
+      return existingUser;
+    }
+    if (type == "school") {
+      let existingUser: any = await schoolOwner.findOne({ email: email });
+      console.log(existingUser, "existingUser");
+      if (!existingUser) {
+        return { message: "User not exists" };
+      }
+    
+      const matchPassword = await bcrypt.compare(
+        password,
+        existingUser.password
+      );
+      if (!matchPassword) {
+        return { message: "Invalid Credentials" };
+      }
+
+      const token = jwt.sign(
+        { email: existingUser.email, id: existingUser._id },
+        "Stack",
+        {
+          expiresIn: "24h",
+        },
+        SECRET_KEY
+      );
+      existingUser = await schoolOwner.findOneAndUpdate(
         { _id: existingUser._id },
         { $set: { token: token } }
       );

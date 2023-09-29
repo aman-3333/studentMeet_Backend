@@ -2,6 +2,7 @@ import {Document, model, ObjectId, Schema } from "mongoose";
 
 const schoolSchema = new Schema(
   {
+    schoolOwnerId:{ type: Schema.Types.ObjectId },
     schoolName: { type: String, required: true },
     schoolAddress: { type: String},
     schoolEmail: { type: String },

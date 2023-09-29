@@ -23,6 +23,11 @@ export default class PaymentController {
     random_num = d.getFullYear() + f(d.getMonth() + 1) + f(d.getDate()) + random_num;
     return random_num
   };
+
+
+
+
+  
   public async createRegistration(academyId: any) {
     let shopDetails: any
     let resp
@@ -44,6 +49,11 @@ export default class PaymentController {
     }
     return resp;
   }
+
+
+
+
+
 
   public async paymentCallback(data: any) {
     const orderData: any = await academy.findOne({ order_id: data.razorpayOrderId }).lean()

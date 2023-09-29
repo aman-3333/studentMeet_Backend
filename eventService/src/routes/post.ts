@@ -44,7 +44,7 @@ router.get("/list", checkAuth, async (req, res) => {
   }
 });
 
-router.get("/getlist/byuserid", checkAuth, async (req, res) => {
+router.get("/getlist/byuser/id", async (req, res) => {
   try {
     const controller = new PostController();
     const userId = req.query.userId;
@@ -59,16 +59,16 @@ router.get("/getlist/byuserid", checkAuth, async (req, res) => {
   }
 });
 
-router.get("/infobyid", checkAuth, async (req, res) => {
-  try {
-    const PostId = req.query.id;
-    const controller = new PostController();
-    const response = await controller.getPostInfoById(PostId);
-    res.status(200).json(successResponse("get Post", response, res.statusCode));
-  } catch (error) {
-    res.status(500).json(errorResponse("error in get Post", res.statusCode));
-  }
-});
+// router.get("/infobyid", checkAuth, async (req, res) => {
+//   try {
+//     const PostId = req.query.PostId;
+//     const controller = new PostController();
+//     const response = await controller.getPostInfoById(PostId);
+//     res.status(200).json(successResponse("get Post", response, res.statusCode));
+//   } catch (error) {
+//     res.status(500).json(errorResponse("error in get Post", res.statusCode));
+//   }
+// });
 router.post("/activity", async (req, res) => {
   try {
     const userId = req.body.userId;

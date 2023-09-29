@@ -70,7 +70,7 @@ router.get("/academy/achivement/list", checkAuth, async (req, res) => {
 });
 
 
-router.get("/user/achivement/list",  async (req, res) => {
+router.get("/byuserid",  async (req, res) => {
     try {
         const controller = new AchivementController();
         const userId = req.query.userId;

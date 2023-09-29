@@ -7,7 +7,7 @@ import userActivity from "../models/userActivity";
 import User from "../models/userDetails";
 
 import userDetails from "../models/userDetails";
-import { sendNotification } from "../services/notification";
+
 import post from "../models/post";
 
 let currentTime: any = new Date();
