@@ -4,6 +4,7 @@ import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
+import { sendNotification } from "../services/notification";
 export default class academyController {
   public async createAcademy(body: any) {
     const academyInfo = await academy.create({
