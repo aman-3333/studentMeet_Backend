@@ -173,21 +173,24 @@ export default class AuthController {
   public async verifyotpByApi(body: any) {
     let userData: any;
     let userInfo: any;
+    console.log(body,"userData");
     userData = await Users.findOne({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
     }).lean();
-
+   
     if (userData) {
+
       let otpInfo = await Otp.findOne({
         contact: body.contact,
         country_code: body.country_code,
         otp: body.otp,
       }).lean();
-      console.log(body);
-
+      console.log(otpInfo,"otpInfo");
       const token = createJwtToken({ userId: userData._id });
+      console.log(token,"token");
+      
       if (otpInfo) {
         await userDevice.findOneAndUpdate(
           {

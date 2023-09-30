@@ -100,7 +100,7 @@ router.get("/search", async (req, res) => {
 
 router.post("/activity", checkAuth, async (req, res) => {
   try {
-    const userId = res.locals.user;
+    const userId = req.body.userId;
     const acdemyId = req.body.acdemyId;
     const status = req.body.status;
     const acdemyComment = req.body.acdemyComment;
