@@ -278,9 +278,6 @@ export default class academyController {
             },
           }
         );
-
-
-
         await academy.updateOne(
           {
             _id: body.academyId

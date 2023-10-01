@@ -103,8 +103,9 @@ router.post("/read/activity", async (req, res) => {
   try {
     const postId = req.body.postId;
     const status = req.body.status;
+    const userId = req.body.userId;
     const controller = new PostController();
-    const response = await controller.readPostActivity(postId, status);
+    const response = await controller.readPostActivity(postId, status,userId);
     res
       .status(200)
       .json(successResponse("read postActivity", response, res.statusCode));
