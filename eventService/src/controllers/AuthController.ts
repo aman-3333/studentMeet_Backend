@@ -78,13 +78,9 @@ export default class AuthController {
     }
 
     otp = couponGenerator();
-    otpInfo = await Otp.findOneAndUpdate(
-      { contact: body.contact },
-      { $set: { otp: "1234" } },
-      { new: true }
-    );
+  
 
-    if (!otpInfo) {
+   
       createUser = await Users.create({
         contact: body.contact,
         country_code: body.country_code,
@@ -112,7 +108,7 @@ export default class AuthController {
         otp: 1234,
         otpId: otp,
       });
-    }
+    
 
     return {
       otpInfo,

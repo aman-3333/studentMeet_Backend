@@ -257,6 +257,8 @@ export default class SponsorshipController {
         let comment: any = userInfo[i].comment;
         let DateTime: any = userInfo[i].dateTime;
 
+        
+
         data.push({ sponsorshipInfo, comment, DateTime });
       }
       return data;
@@ -386,8 +388,9 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
 
 
 
-  public async readActivity(sponsorshipId: any, status: any) {
+  public async readActivity(sponsorshipId: any, status: any,userId:any) {
     let sponsorshipInfo: any;
+    let isDeleteable:any;
     if (status == "readsponsorshipLike") {
       sponsorshipInfo = await SponsorshipModel.findOne({
         _id: sponsorshipId,
@@ -413,7 +416,13 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
         let comment = sponsorshipInfo[i].comment;
         let DateTime: any = sponsorshipInfo[i].dateTime;
 
-        a.push({ userInfo, comment, DateTime });
+        if(userId==sponsorshipInfo[i].userId) {
+          isDeleteable=true
+        }else{
+          isDeleteable=false
+        }
+
+        a.push({ userInfo, comment, DateTime,isDeleteable });
       }
       var y = [...a].reverse();
 

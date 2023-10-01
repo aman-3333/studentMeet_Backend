@@ -195,8 +195,9 @@ router.get("/readActivity", async (req, res) => {
         
         const status:any =req.query.status;
         const sponsorshipId=req.query.sponsorshipId;
+        const userId=req.query.userId;
         const controller=new SponsorshipController();
-        const response:any =await controller.readActivity(sponsorshipId,status);
+        const response:any =await controller.readActivity(sponsorshipId,status,userId);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
     }catch(error) {
       
@@ -303,8 +304,9 @@ router.get("/readActivity", async (req, res) => {
         
         const status:any =req.query.status;
         const sponsorshipId=req.query.sponsorshipId;
+        const userId=req.query.userId;
         const controller=new SponsorshipController();
-        const response:any =await controller.readActivity(sponsorshipId,status);
+        const response:any =await controller.readActivity(sponsorshipId,status,userId);
         res.status(200).json(successResponse("readActivity",response,res.statusCode));
     }catch(error) {
       

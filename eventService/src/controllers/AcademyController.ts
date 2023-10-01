@@ -5,6 +5,7 @@ import userDetails from "../models/userDetails";
 import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
 import { sendNotification } from "../services/notification";
+const mongoose = require("mongoose");
 export default class academyController {
   public async createAcademy(body: any) {
     const academyInfo = await academy.create({
@@ -157,10 +158,7 @@ export default class academyController {
     return mergedArray;
   }
 
-  public async getAcademyInfoById(academyId: any) {
-    const academyInfo: any = await academy.findOne({ _id: academyId }).lean();
-    return academyInfo;
-  }
+
 
   public async deleteAcademy(academyId: String) {
     const academyInfo: IAcademy = await academy
@@ -343,8 +341,9 @@ export default class academyController {
 
 
 
-  public async readAcademyActivity(academyId: any, status: any) {
+  public async readAcademyActivity(academyId: any, status: any,userId:any) {
     let academyInfo: any;
+    let isDeleteable:any;
     if (status == "readAcademyLike") {
       academyInfo = await academy
         .findOne({ _id: academyId })
@@ -359,7 +358,7 @@ export default class academyController {
       academyInfo = academyInfo.academyComment;
 
       for (let i = 0; i < academyInfo.length; i++) {
-        console.log(academyId);
+
         let userInfo: any = await userDetails.findOne(
           { _id: academyInfo[i].userId },
           { fullName: true, profile_picture: true }
@@ -367,11 +366,15 @@ export default class academyController {
 
         let comment = academyInfo[i].comment;
         let DateTime: any = academyInfo[i].dateTime;
-
-        a.push({ userInfo, comment, DateTime });
+if(userId==academyInfo[i].userId) {
+  isDeleteable=true
+}else{
+  isDeleteable=false
+}
+        a.push({ userInfo, comment, DateTime,isDeleteable });
       }
-      var y = [...a].reverse();
-      return y;
+      var data = [...a].reverse();
+      return data;
     }
     if (status == "readacademyFavourite") {
       academyInfo = await academy
@@ -385,7 +388,45 @@ export default class academyController {
  
 
   public async getAcademyDetails(academyId: any) {
-    const academyList: any = await academy.find({ _id: academyId });
+
+
+    const academyList= await academy.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(academyId),
+        },
+      },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+    ]);
+
+
+
     return academyList;
   }
 
@@ -431,13 +472,59 @@ export default class academyController {
       return data;
     }
     if (status == "academyAchivment") {
-      console.log("academyAchivment", "academyAchivment");
+      const achivementList= await Achivement.aggregate([
+        {
+          $match: {
+            academyId: new mongoose.Types.ObjectId(academyId),
+          }
+        },
+        {
+          $lookup: {
+            from: "userdetails",
+            localField: "academyUserId",
+            foreignField: "_id",
+            as: "academyUser"
+          }
+        },
+        {
+          $lookup: {
+            from: "cities",
+            localField: "city",
+            foreignField: "_id",
+            as: "city"
+          }
+        },
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "states",
+            localField: "state",
+            foreignField: "_id",
+            as: "state"
+          }
+        },
+        
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "countries",
+            localField: "country",
+            foreignField: "_id",
+            as: "country"
+          }
+        },
+        
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+        
+      ]);
+ 
 
-      academyInfo = await achivement.findOne({
-        isDeleted: false,
-        academyId: academyId,
-      });
-      return academyInfo;
+
+      return achivementList;
+
+
+
+
     }
   }
 

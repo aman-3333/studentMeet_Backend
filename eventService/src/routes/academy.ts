@@ -54,18 +54,7 @@ router.get("/list", checkAuth, async (req, res) => {
   }
 });
 
-router.get("/infobyid", checkAuth, async (req, res) => {
-  try {
-    const academyId: any = req.query.academyId;
-    const controller = new AcademyController();
-    const response: any = await controller.getAcademyInfoById(academyId);
-    res
-      .status(200)
-      .json(successResponse("getacademy", response, res.statusCode));
-  } catch (error) {
-    res.status(500).json(errorResponse("error in getacademy", res.statusCode));
-  }
-});
+
 
 router.patch("/delete/:id", checkAuth, async (req, res) => {
   try {
@@ -98,7 +87,7 @@ router.get("/search", async (req, res) => {
   }
 });
 
-router.post("/activity", checkAuth, async (req, res) => {
+router.post("/activity",  async (req, res) => {
   try {
     const userId = req.body.userId;
     const acdemyId = req.body.acdemyId;
@@ -132,9 +121,10 @@ router.post("/read/activity", async (req, res) => {
 
     const academyId = req.body.academyId;
     const status = req.body.status;
+    const userId=req.body.userId;
 
     const controller = new AcademyController();
-    const response = await controller.readAcademyActivity(academyId, status);
+    const response = await controller.readAcademyActivity(academyId, status,userId);
     res
       .status(200)
       .json(successResponse("read Activity", response, res.statusCode));
@@ -191,6 +181,7 @@ router.get("/info/byid", async (req, res) => {
       .status(200)
       .json(successResponse("get academy", response, res.statusCode));
   } catch (error) {
+    console.log(error)
     res.status(500).json(errorResponse("error in get academy", res.statusCode));
   }
 });

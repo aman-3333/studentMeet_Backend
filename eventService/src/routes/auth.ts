@@ -7,7 +7,8 @@ import authController from "../controllers/AuthController";
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
 router.post("/sendotp", async (req, res) => {
   try {
-    req.body.user = res.locals.user;
+console.log(req.body);
+
     const body = req.body;
     const controller = new authController();
     const response = await controller.sendotp(body);

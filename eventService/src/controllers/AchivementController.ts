@@ -3,92 +3,21 @@ import { sendNotification } from "../services/notification";
 const mongoose = require("mongoose");
 export default class AchivementController {
   public async createAchivement(body: any) {
-    const currentTime = new Date();
-    let achivementInfo: any;
-   let userInfo = await Achivement.findOne({
-      user_id: body.userId,
-      isDeleted: false,
-    });
-    let academyInfo = await Achivement.findOne({
-      academyId: body.academyId,
-      isDeleted: false,
-    });
-    if (userInfo) {
-      for (let i = 0; i < body.achievements.length; i++) {
-        achivementInfo = await Achivement.findOneAndUpdate(
-          { user_id: body.userId },
-          {
-            $push: {
-              achievements: {
-                picture: body.achievements[i].picture,
-                description: body.achievements[i].description,
-                state: body.achievements[i].state,
-                city: body.achievements[i].city,
-                country: body.achievements[i].country,
-                tournament: body.achievements[i].tournament,
-                achievements: body.achievements[i].achievements,
-                user_id: body.achievements[i].user_id,
-                dateTime: body.dateTime,
-                tournament_match: body.achievements[i].tournament_match,
-              },
-            },
-          }
-        );
-      }
-    }
-    if (academyInfo) {
-      for (let i = 0; i < body.achievements.length; i++) {
-        achivementInfo = await Achivement.findOneAndUpdate(
-          { userInfo: body.userId },
-          {
-            $push: {
-              achievements: {
-                picture: body.achievements[i].picture,
-                description: body.achievements[i].description,
-                state: body.achievements[i].state,
-                city: body.achievements[i].city,
-                country: body.achievements[i].country,
-                tournament: body.achievements[i].tournament,
-                achievements: body.achievements[i].achievements,
-                user_id: body.achievements[i].user_id,
-                dateTime: body.dateTime,
-                tournament_match: body.achievements[i].tournament_match,
-              },
-            },
-          }
-        );
-      }
-    } else {
-      achivementInfo = await Achivement.create(body);
-    }
+  let  achivementInfo = await Achivement.create(body);
 
     return achivementInfo;
   }
 
-  public async deletePerticulerAchivement(body: any) {
-    let achivementInfo: any;
-    achivementInfo = await Achivement.findOne({
-      userId: body.userId,
-      isDeleted: false,
-    });
+ 
 
-    if (achivementInfo) {
-      for (let i = 0; i < body.achievements.length; i++) {
-        achivementInfo = await Achivement.findOneAndUpdate(
-          { userId: body.userId },
-          {
-            $pull: {
-              achievements: {
-                _id: body.achievements[i]._id,
-              },
-            },
-          }
-        );
-
-        console.log(achivementInfo, "achivementInfo");
-      }
-    }
-
+  public async deletAchivement(achivementId: String) {
+    const achivementInfo = await Achivement
+      .findOneAndUpdate(
+        { _id: achivementId },
+        { $set: { isDeleted: true } },
+        { new: true }
+      )
+      .lean();
     return achivementInfo;
   }
 
@@ -109,20 +38,18 @@ export default class AchivementController {
   }
 
   public async getAcademyAchivement(academyId: any) {
-    const achivementList: IAchivement[] = await Achivement.find({
-      academyId: academyId,
-      isDeleted: false,
-    });
-    return achivementList;
-  }
-
-  public async getUserAchivement(userId: any) {
-    // const achivementList: IAchivement[] = await Achivement.find(
-    //    {user_id:userId}).populate("achievements.$.city")
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $match: {
-          user_id: new mongoose.Types.ObjectId(userId),
+          academyId: new mongoose.Types.ObjectId(academyId),
+        },
+      },
+      {
+        $lookup: {
+          localField: "achievements.user_id",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "users",
         },
       },
       {
@@ -150,6 +77,52 @@ export default class AchivementController {
         },
       },
     ]);
+    return achivementList;
+  }
+
+  public async getUserAchivement(userId: any) {
+    const achivementList= await Achivement.aggregate([
+      {
+        $match: {
+          user_id: new mongoose.Types.ObjectId(userId),
+        },
+      },
+     
+      {
+        $lookup: {
+          from: "cities",
+          localField: "city",
+          foreignField: "_id",
+          as: "city"
+        }
+      },
+      
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "states",
+          localField: "state",
+          foreignField: "_id",
+          as: "state"
+        }
+      },
+      
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "countries",
+          localField: "country",
+          foreignField: "_id",
+          as: "country"
+        }
+      },
+      
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      
+    ]);
+
+
+
 
     return achivementList;
   }
