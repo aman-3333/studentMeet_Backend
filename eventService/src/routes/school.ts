@@ -39,13 +39,13 @@ const body = req.body;
     }
 });
 
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/list", async (req, res) => {
     try {
         const controller = new SchoolController();
-     
         const response: any= await controller.getSchool();
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
+       console.log(error,"error");
        
         res.status(500).json(errorResponse("error in get School", res.statusCode));
     }

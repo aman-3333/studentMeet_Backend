@@ -547,9 +547,6 @@ if(userId==academyInfo[i].userId) {
   }
 
 
-
-
-
   public async filterAcademy(query:any){
 const academyTypeId = query.academyTypeId ||{};
 const academySubTypeId = query.academySubTypeId || {};
@@ -566,11 +563,6 @@ const academyData = await academy.find({
  return academyData;
 
 }
-
-
-
-
-
 
 
 

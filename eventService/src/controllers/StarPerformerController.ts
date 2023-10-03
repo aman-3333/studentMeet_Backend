@@ -5,20 +5,15 @@ import userDetails from "../models/userDetails";
 export default class StarPerformerController {
 
     public async createStarPerformer(body: any) {
-        let StarPerformerInfo: any;
+        let starPerformerInfo: any;
     
-            StarPerformerInfo = await StarPerformer.create(body);
-      
-       let StarPerformername=await userDetails.findOne({_id:body.StarPerformerId,isDeleted:false}).lean();
-       StarPerformername=StarPerformername.fullname
-       await StarPerformer.findOneAndUpdate({starPerformerId:body.StarPerformerId,isDeleted:false},{$set:{starPerformerName:StarPerformername}}).lean();
-     
-       return StarPerformerInfo;
+            starPerformerInfo = await StarPerformer.create(body);
+       return starPerformerInfo;
     }
 
-    public async editStarPerformer(body: any, StarPerformerId: string) {
-        const StarPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: StarPerformerId, isDeleted: false }, body, { new: true }).lean();
-        return StarPerformerInfo;
+    public async editStarPerformer(body: any) {
+        const starPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: body.starPerformerId, isDeleted: false }, body, { new: true }).lean();
+        return starPerformerInfo;
     }
 
     public async getStarPerformerList() {
@@ -28,9 +23,7 @@ export default class StarPerformerController {
 
     public async searchStarPerformer(searchValue:any) {
         if(searchValue){
-        let StarPerformerList: any = await StarPerformer.find({isDeleted: false})
-        
-        
+        let StarPerformerList: any = await StarPerformer.find({isDeleted: false})   
         StarPerformerList = new FuzzySearch(StarPerformerList, ["starPerformerName"], {
             caseSensitive: false,
         });
@@ -38,61 +31,61 @@ export default class StarPerformerController {
         return StarPerformerList;
     }}
 
-    public async getStarPerformerInfoById(StarPerformerId: any) {
-        const StarPerformerInfo: any = await StarPerformer.findOne({ _id: StarPerformerId, isDeleted: false }).lean();
-        return StarPerformerInfo;
+    public async getStarPerformerInfoById(starPerformerId: any) {
+        const starPerformerInfo: any = await StarPerformer.findOne({ _id: starPerformerId, isDeleted: false }).lean();
+        return starPerformerInfo;
     }
 
     
     public async filterStarPerformer(type: any, sort: any, earningCoin: any, subCategory: any, subSubCategory: any, limit: any, skip: any, search: any) {
-        let StarPerformerInfo: any;
+        let starPerformerInfo: any;
             if (earningCoin =="silver") {
-                StarPerformerInfo = await StarPerformer.find({ earningCoin: "silver", isDeleted: false });
+                starPerformerInfo = await StarPerformer.find({ earningCoin: "silver", isDeleted: false });
     
             } else if (earningCoin=="gold") {
-                StarPerformerInfo = await StarPerformer.find({ subCategory: "gold", isDeleted: false });
+                starPerformerInfo = await StarPerformer.find({ subCategory: "gold", isDeleted: false });
             } else if (earningCoin == "diamond") {
-                StarPerformerInfo = await StarPerformer.find({ earningCoin: "diamond", isDeleted: false });
+                starPerformerInfo = await StarPerformer.find({ earningCoin: "diamond", isDeleted: false });
             }
             else if (sort == "lessEvent") {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                starPerformerInfo = await StarPerformer.find({ isDeleted: false });
     
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.noOfEventOriginze - b.noOfEventOriginze });
+                starPerformerInfo = starPerformerInfo.sort(function (a: any, b: any) { return a.noOfEventOriginze - b.noOfEventOriginze });
                 
             }
             else if (sort == "mostEvent") {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.noOfEventOriginze - a.noOfEventOriginze });
+                starPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                starPerformerInfo = starPerformerInfo.sort(function (a: any, b: any) { return b.noOfEventOriginze - a.noOfEventOriginze });
                
             }
             else if (sort == "lessRating") {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return a.rating - b.rating });
+                starPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                starPerformerInfo = starPerformerInfo.sort(function (a: any, b: any) { return a.rating - b.rating });
              
     
             } else if (sort == "mostRating") {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                StarPerformerInfo = StarPerformerInfo.sort(function (a: any, b: any) { return b.rating - a.rating });
+                starPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                starPerformerInfo = starPerformerInfo.sort(function (a: any, b: any) { return b.rating - a.rating });
                
             }
             if (search) {
-                StarPerformerInfo = await StarPerformer.find({ isDeleted: false });
-                console.log("StarPerformerInfo",StarPerformerInfo);
+                starPerformerInfo = await StarPerformer.find({ isDeleted: false });
+                console.log("starPerformerInfo",starPerformerInfo);
     
-                const searcher = new FuzzySearch(StarPerformerInfo, ["starPerformerName"], {
+                const searcher = new FuzzySearch(starPerformerInfo, ["starPerformerName"], {
                     caseSensitive: false,
                 });
-                StarPerformerInfo = searcher.search(search);
-               console.log("StarPerformerInfo",StarPerformerInfo);
+                starPerformerInfo = searcher.search(search);
+               console.log("starPerformerInfo",starPerformerInfo);
                
             }
             if (limit && skip) {
     
-                StarPerformerInfo = StarPerformerInfo.slice(skip).slice(0, limit);
+                starPerformerInfo = starPerformerInfo.slice(skip).slice(0, limit);
     
             }
     
-        return StarPerformerInfo
+        return starPerformerInfo
     
     
     }
@@ -100,44 +93,10 @@ export default class StarPerformerController {
   
 
     public async deleteStarPerformer(StarPerformerId: String) {
-        const StarPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: StarPerformerId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
-        return StarPerformerInfo;
+        const starPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: StarPerformerId, isDeleted: false }, { $set: { isDeleted: true } }, { new: true }).lean();
+        return starPerformerInfo;
     }
 
     
-    public async createStarPerformerThought(body: any) {
-        let StarPerformerInfo: any;
-        StarPerformerInfo=await StarPerformer.findOneAndUpdate({starPerformerId:body.starPerformerId,isDeleted:false,isActive:true},{$set:{starPerformerThought:body.starPerformerThought}})
-       
-       
-        return StarPerformerInfo;
-    }
-
-    public async editStarPerformerThought(body: any) {
-     
-        let StarPerformerInfo: any;
-        StarPerformerInfo=await StarPerformer.findOneAndUpdate({starPerformerId:body.starPerformerId,isDeleted:false,isActive:true},{$set:{starPerformerThought:body.starPerformerThought}})
-       
-       
-        return StarPerformerInfo;
-      
-    }
-
-    public async getStarPerformerListThought() {
-        const StarPerformerList: any[] = await StarPerformer.find({  isDeleted: false,isActive:true });
-        return StarPerformerList;
-    }
-
-    public async getStarPerformerThoughtById(StarPerformerId: string) {
-        const StarPerformerInfo: any = await StarPerformer.findOne({ _id: StarPerformerId, isDeleted: false }).lean();
-        return StarPerformerInfo;
-    }
-
-    public async deleteStarPerformerThought(StarPerformerId: String,) {
-        const StarPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: StarPerformerId, isDeleted: false }, { $set: { starPerformerThought: "" } }, { new: true }).lean();
-        return StarPerformerInfo;
-    }
-
-
    
 }
