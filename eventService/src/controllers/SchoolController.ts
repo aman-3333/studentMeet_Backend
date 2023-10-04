@@ -3,18 +3,20 @@ import FuzzySearch from "fuzzy-search";
 import { ObjectId } from "mongoose";
 
 import School from "../models/school";
+import userDetails from "../models/userDetails";
+import userActivity from "../models/userActivity";
 
 export default class SchoolController {
   //////////////////////////////school///////////////////////////////////////////////////////////
 
-  public async createschool(body: any) {
+  public async createSchool(body: any) {
     let schoolInfo: any;
     schoolInfo = await school.create(body);
 
     return schoolInfo;
   }
 
-  public async editschool(body: any, schoolId: string) {
+  public async editSchool(body: any, schoolId: string) {
     const schoolInfo: any = await school
       .findOneAndUpdate({ _id: schoolId, isDeleted: false }, body, {
         new: true,
@@ -24,8 +26,6 @@ export default class SchoolController {
   }
 
   public async getSchool() {
-   
-
     const schoolList= await school.aggregate([
       {
         $match: {
@@ -80,7 +80,7 @@ export default class SchoolController {
 
     return schoolList;
   }
-  public async searchschool( searchValue: any) {
+  public async searchSchool( searchValue: any) {
     if (searchValue) {
       let schoolList: any = await school.find({
        
@@ -106,7 +106,7 @@ export default class SchoolController {
     return schoolInfo;
   }
 
-  public async deleteschool(schoolId: any) {
+  public async deleteSchool(schoolId: any) {
     const schoolInfo: any = await school
       .findOneAndUpdate(
         { _id: schoolId, isDeleted: false },
@@ -116,39 +116,200 @@ export default class SchoolController {
     return schoolInfo;
   }
 
-  public async createSchool(body: any) {
+  public async schoolActivity(
+    userId: any,
+    schoolId: any,
+    status: any,
+    schoolComment: any,
+    schoolCommentId: any,
+    body: any
+  ) {
+    let userInfo: any;
+    let data: any = [];
+    let a: any = [];
+    let info: any;
     let schoolInfo: any;
-    schoolInfo = await School.create(body);
+console.log(body,"body");
 
-    return schoolInfo;
-  }
+    if (status == "schoolLike") {
+      await school.findOneAndUpdate(
+        { _id: body.schoolId },
+        { $inc: { schoolLikeCount: 1 } },
+        { new: true }
+      ).lean();
+      schoolInfo = await school.findOneAndUpdate(
+        {
+          _id: body.schoolId,isDeleted:false
+        },
+        {
+          $push: {
+            schoolLike: userId,
+          },
+        },
+        { new: true }
+      );
 
-  public async editSchool(body: any, SchoolId: string) {
-    const schoolInfo: any = await School.findOneAndUpdate(
-      { _id: SchoolId, isDeleted: false },
-      body,
-      { new: true }
-    ).lean();
-    return schoolInfo;
-  }
+      console.log(schoolInfo);
 
+      await userActivity.findOneAndUpdate(
+        { userId: schoolInfo.userId },
+        { $inc: { schoolLikeCount: 1 } },
+        { new: true }
+      );
+      return schoolInfo;
+    }
+    if (status == "removeSchoolLike") {
+      await school.findOneAndUpdate(
+        { _id: body.schoolId ,isDeleted:false},
+        { $inc: { schoolLikeCount: -1 } },
+        { new: true }
+      );
 
-  public async searchSchool(stateId: any, search: any) {
-    if (search) {
-      let schoolList: any = await School.find({ isDeleted: false });
-      schoolList = new FuzzySearch(schoolList, ["SchoolName"], {
-        caseSensitive: false,
-      });
-      schoolList = schoolList.search(search);
-      return schoolList;
+      schoolInfo = await school.findOneAndUpdate(
+        {
+          _id: body.schoolId,
+        },
+        {
+          $pull: {
+            schoolLike: userId,
+          },
+        },
+        { new: true }
+      );
+      await userActivity.findOneAndUpdate(
+        { userId: schoolInfo.userId },
+        { $inc: { schoolLikeCount: -1 } },
+        { new: true }
+      );
+      return schoolInfo;
+    }
+
+    if (status == "schoolComment") {
+      let currentTime: any = new Date();
+      for (let i = 0; i < body.schoolComment.length; i++) {
+        schoolInfo = await school.findOneAndUpdate(
+          {
+            _id: body.schoolId,
+            isDeleted:false
+          },
+          {
+            $push: {
+              schoolComment: {
+                userId: body.schoolComment[i].userId,
+                comment: body.schoolComment[i].comment,
+                dateTime: currentTime,
+              },
+            },
+          }
+        );
+        console.log(schoolInfo, "schoolInfo");
+
+        schoolInfo = await school.findOneAndUpdate(
+          { _id: body.schoolId,isDeleted:false },
+          { $inc: { schoolCommentCount: 1 } },
+          { new: true }
+        );
+
+        await userActivity.findOneAndUpdate(
+          { userId: schoolInfo.userId,isDeleted:false },
+          { $inc: { schoolCommentCount: 1 } },
+          { new: true }
+        );
+        return schoolInfo;
+      }
+    }
+    if (status == "removeSchoolComment") {
+      for (let i = 0; i < body.schoolComment.length; i++) {
+        schoolInfo = await school.findOneAndUpdate(
+          {
+            _id: body.schoolComment[i].schoolId,
+          },
+          {
+            $pull: {
+              schoolComment: {
+                _id: body.schoolComment[i]._id,
+              },
+            },
+          }
+        );
+
+        schoolInfo = await school.findOneAndUpdate(
+          { _id: body.schoolComment[i].schoolId },
+          { $inc: { schoolCommentCount: -1 } },
+          { new: true }
+        );
+
+        await userActivity.findOneAndUpdate(
+          { userId: schoolInfo.userId },
+          { $inc: { schoolCommentCount: -1 } },
+          { new: true }
+        );
+        return schoolInfo;
+      }
+    }
+    if (status == "readschoolComment") {
+      userInfo = await userActivity.findOne({ userId: body.userId }).lean();
+      userInfo = userInfo.schoolComment;
+
+      for (let i = 0; i < userInfo.length; i++) {
+        let schoolInfo: any = await school.findOne({ _id: userInfo[i].schoolId });
+
+        let comment: any = userInfo[i].comment;
+        let DateTime: any = userInfo[i].dateTime;
+
+        data.push({ schoolInfo, comment, DateTime });
+      }
+      return data;
     }
   }
 
-  public async deleteSchool(SchoolId: any) {
-    const schoolInfo: any = await School.findOneAndUpdate(
-      { _id: SchoolId, isDeleted: false },
-      { $set: { isDeleted: true } }
-    ).lean();
-    return schoolInfo;
+
+
+
+
+ 
+
+  public async readschoolActivity(schoolId: any, status: any, userId: any) {
+    console.log(schoolId, status);
+    let isDeleteable: any;
+    let schoolInfo: any;
+    if (status == "readSchoolLike") {
+      schoolInfo = await school.findOne({ _id: schoolId }).populate("schoolLike");
+      schoolInfo = schoolInfo.schoolLike;
+      return schoolInfo;
+    }
+    if (status == "readSchoolComment") {
+      let a = [];
+      schoolInfo = await school.findOne({ _id: schoolId }).lean();
+      schoolInfo = schoolInfo.schoolComment;
+
+      for (let i = 0; i < schoolInfo.length; i++) {
+        let userInfo: any = await userDetails.findOne(
+          { _id: schoolInfo[i].userId },
+          { fullName: true, profile_picture: true }
+        );
+        let comment = schoolInfo[i].comment;
+        let DateTime: any = schoolInfo[i].dateTime;
+
+        if (userId == schoolInfo[i].userId) {
+          isDeleteable = true;
+        } else {
+          isDeleteable = false;
+        }
+        a.push({ userInfo, comment, DateTime });
+      }
+      var y = [...a].reverse();
+      return y;
+    }
+    if (status == "readSchoolFavourite") {
+      schoolInfo = await school.findOne({ _id: schoolId }).populate("schoolFavourite");
+      schoolInfo = schoolInfo.schoolFavourite;
+      return schoolInfo;
+    }
   }
+
+
+
+
+
 }

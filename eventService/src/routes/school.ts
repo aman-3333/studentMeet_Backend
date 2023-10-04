@@ -55,7 +55,7 @@ router.get("/search",  async (req, res) => {
       
         const search=req.query.search;
         const controller = new SchoolController();
-        const response: any = await controller.searchschool( search);
+        const response: any = await controller.searchSchool( search);
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
        
@@ -87,5 +87,51 @@ router.patch("/delete/:id", checkAuth, async (req, res) => {
     }
 });
 
+router.post("/activity", async (req, res) => {
+    try {
+      const userId = req.body.userId;
+      const schoolId = req.body.schoolId;
+      const status = req.body.status;
+      const schoolComment = req.body.schoolComment;
+      const schoolCommentId = req.body.schoolCommentId;
+  
+      req.body.user = res.locals.user;
+      const body = req.body;
+  
+      const controller = new SchoolController();
+      const response = await controller.schoolActivity(
+        userId,
+        schoolId,
+        status,
+        schoolComment,
+        schoolCommentId,
+        body
+      );
+      res
+        .status(200)
+        .json(successResponse("schoolActivity", response, res.statusCode));
+    } catch (error) {
+      res
+        .status(500)
+        .json(errorResponse("error in schoolActivity", res.statusCode));
+    }
+  });
+  
+  router.post("/read/activity", async (req, res) => {
+    try {
+      const schoolId = req.body.schoolId;
+      const status = req.body.status;
+      const userId = req.body.userId;
+      const controller = new SchoolController();
+      const response = await controller.readschoolActivity(schoolId, status,userId);
+      res
+        .status(200)
+        .json(successResponse("read schoolActivity", response, res.statusCode));
+    } catch (error) {
+      res
+        .status(500)
+        .json(errorResponse("error in read schoolActivity", res.statusCode));
+    }
+  });
 
 export default router;

@@ -4,7 +4,8 @@ import { ObjectId } from "bson";
 const AchivementSchema = new Schema(
   {
     user_id: { type: Schema.Types.ObjectId, ref: "userdetails" },
-    academyId: { type: Schema.Types.ObjectId, ref: "academy" },
+    academyId: { type: Schema.Types.ObjectId, ref: "academies" },
+    schoolId: { type: Schema.Types.ObjectId, ref: "schools" },
     achievements: { type: String },
     picture: [{ type: String }],
     location: { type: String },
@@ -26,6 +27,7 @@ const AchivementSchema = new Schema(
 export interface IAchivement extends Document {
   user_id: ObjectId;
   academyId: ObjectId;
+  schoolId: ObjectId;
   achievements: String;
   picture: [String];
   description: String;

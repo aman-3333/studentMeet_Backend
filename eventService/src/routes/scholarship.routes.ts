@@ -8,7 +8,7 @@ import ScholarshipController from "../controllers/ScholarshipController";
 router.post("/create",  async (req, res) => {
     try {
         
-req.body.user=res.locals.user
+
 const body = req.body;
         const controller = new ScholarshipController();
         const response = await controller.createScholarship(body);

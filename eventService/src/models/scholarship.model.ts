@@ -2,7 +2,7 @@ import {Document, model, ObjectId, Schema } from "mongoose";
 
 const schoolSchema = new Schema(
   {
-    schoolOwnerId:{ type: Schema.Types.ObjectId,ref:"school_owner" },
+    schoolId:{ type: Schema.Types.ObjectId,ref:"schools" },
     name: { type: String, required: true },
     description: { type: String},
     deadline: { type: Date },
@@ -18,7 +18,7 @@ const schoolSchema = new Schema(
 
 
 export interface IScholarship extends Document {
-    schoolOwnerId:ObjectId,
+    schoolId:ObjectId,
     name: String,
     description: String,
     deadline: Date,
