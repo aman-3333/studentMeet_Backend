@@ -206,7 +206,7 @@ export default class PostController {
 
     const mergedArray = [...PostLike, ...PostList];
 
-    mergedArray.sort((a, b) => a.createdAt - b.createdAt);
+    mergedArray.sort((a, b) => b.createdAt - a.createdAt);
 
     return mergedArray;
   }
@@ -377,33 +377,18 @@ console.log(body,"body");
       }
     }
     if (status == "removePostComment") {
-      for (let i = 0; i < body.postComment.length; i++) {
-        PostInfo = await Post.findOneAndUpdate(
-          {
-            _id: body.postComment[i].postId,
-          },
-          {
-            $pull: {
-              postComment: {
-                _id: body.postComment[i]._id,
-              },
-            },
+      PostInfo = await Post.updateOne(
+        { _id: body.postId},
+        {
+          $pull: {
+            postComment: { _id: body._id }
           }
-        );
-
-        PostInfo = await Post.findOneAndUpdate(
-          { _id: body.postComment[i].postId },
-          { $inc: { postCommentCount: -1 } },
-          { new: true }
-        );
-
-        await userActivity.findOneAndUpdate(
-          { userId: PostInfo.userId },
-          { $inc: { postCommentCount: -1 } },
-          { new: true }
-        );
-        return PostInfo;
-      }
+        },
+        {
+          multi: true
+        }
+      )
+return PostInfo;
     }
     if (status == "readpostComment") {
       userInfo = await userActivity.findOne({ userId: body.userId }).lean();
@@ -456,7 +441,7 @@ console.log(body,"body");
         } else {
           isDeleteable = false;
         }
-        a.push({ userInfo, comment, DateTime });
+        a.push({ userInfo, comment, DateTime,isDeleteable });
       }
       var y = [...a].reverse();
       return y;

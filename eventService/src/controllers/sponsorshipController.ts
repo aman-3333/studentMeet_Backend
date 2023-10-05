@@ -214,36 +214,32 @@ export default class SponsorshipController {
       }
     }
     if (status == "removeSponsorshipComment") {
-      for (let i = 0; i < body.sponsorshipComment.length; i++) {
-        sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-          {
-            _id: body.sponsorshipComment[i].sponsorshipId,
-          },
-          {
-            $pull: {
-              sponsorshipComment: {
-                _id: body.sponsorshipComment[i]._id,
-                userId: userId,
-              },
-            },
-          },{
-            new: true
+
+      sponsorshipInfo = await SponsorshipModel.updateOne(
+        { _id: body.sponsorshipId},
+        {
+          $pull: {
+            sponsorshipComment: { _id: body._id }
           }
-        );
+        },
+        {
+          multi: true
+        }
+      )
 
-        sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-          { _id: body.sponsorshipComment[i].sponsorshipId },
-          { $inc: { sponsorshipCommentCount: -1 } },
-          { new: true }
-        );
+sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
+  { _id: body.sponsorshipId },
+  { $inc: { sponsorshipCommentCount: -1 } },
+  { new: true }
+);
 
-        await userActivity.findOneAndUpdate(
-          { userId: sponsorshipInfo.userId },
-          { $inc: { sponsorshipCommentCount: -1 } },
-          { new: true }
-        );
-        return sponsorshipInfo;
-      }
+await userActivity.findOneAndUpdate(
+  { userId: sponsorshipInfo.userId },
+  { $inc: { sponsorshipCommentCount: -1 } },
+  { new: true }
+);
+
+return sponsorshipInfo;
     }
     if (status == "readSponsorshipComment") {
       userInfo = await userActivity.findOne({ userId: body.userId }).lean();

@@ -39,10 +39,11 @@ const body = req.body;
     }
 });
 
-router.get("/list", async (req, res) => {
+router.get("/list", checkAuth,async (req, res) => {
     try {
+  const user=req.body.userId;
         const controller = new SchoolController();
-        const response: any= await controller.getSchool();
+        const response: any= await controller.getSchool(user);
         res.status(200).json(successResponse("get School", response, res.statusCode));
     } catch(error) {
        console.log(error,"error");
@@ -63,7 +64,7 @@ router.get("/search",  async (req, res) => {
     }
 });
 
-router.get("/infoById", checkAuth, async (req, res) => {
+router.get("/info/byId",  async (req, res) => {
     try {
         const SchoolId: any= req.query.SchoolId;
         const userId=req.body.userId;

@@ -1,6 +1,6 @@
 import school from "../models/school";
 import FuzzySearch from "fuzzy-search";
-import { ObjectId } from "mongoose";
+const mongoose = require("mongoose");
 
 import School from "../models/school";
 import userDetails from "../models/userDetails";
@@ -25,13 +25,56 @@ export default class SchoolController {
     return schoolInfo;
   }
 
-  public async getSchool() {
-    const schoolList= await school.aggregate([
+  public async getSchool(user:any) {
+    let schoolListlike= await school.aggregate([
+      { $match: { isDeleted: false, postLike: { $in: [user._id] } } },
       {
-        $match: {
-          isDeleted: false,
+        $lookup: {
+          localField: "faculty",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "faculty",
         },
       },
+      {
+        $lookup: {
+          localField: "schoolOwnerId",
+          from: "school_owners",
+          foreignField: "_id",
+          as: "schoolOwner",
+        },
+      },
+      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+    ]);
+    const schoolListUnLike= await school.aggregate([
+      { $match: { isDeleted: false, postLike: { $ne: [user._id] } } },
       {
         $lookup: {
           localField: "faculty",
@@ -78,7 +121,14 @@ export default class SchoolController {
       { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
     ]);
 
-    return schoolList;
+    
+    schoolListlike = schoolListlike.concat(schoolListUnLike);
+
+    const mergedArray = [...schoolListlike, ...schoolListUnLike];
+
+    mergedArray.sort((a, b) => b.createdAt - a.createdAt);
+
+    return mergedArray;
   }
   public async searchSchool( searchValue: any) {
     if (searchValue) {
@@ -99,9 +149,60 @@ export default class SchoolController {
 
 
   public async getSchoolInfoById(schoolId: any) {
-    const schoolInfo: any = await school
-      .findOne({ _id: schoolId, isDeleted: false })
-      .lean();
+  
+
+
+      const schoolInfo= await school.aggregate([
+        {
+          $match: {
+            _id:new mongoose.Types.ObjectId(schoolId), isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "faculty",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "faculty",
+          },
+        },
+        {
+          $lookup: {
+            localField: "schoolOwnerId",
+            from: "school_owners",
+            foreignField: "_id",
+            as: "schoolOwner",
+          },
+        },
+        { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      ]);
 
     return schoolInfo;
   }
@@ -219,33 +320,28 @@ console.log(body,"body");
       }
     }
     if (status == "removeSchoolComment") {
-      for (let i = 0; i < body.schoolComment.length; i++) {
-        schoolInfo = await school.findOneAndUpdate(
-          {
-            _id: body.schoolComment[i].schoolId,
-          },
-          {
-            $pull: {
-              schoolComment: {
-                _id: body.schoolComment[i]._id,
-              },
-            },
-          }
-        );
 
-        schoolInfo = await school.findOneAndUpdate(
-          { _id: body.schoolComment[i].schoolId },
-          { $inc: { schoolCommentCount: -1 } },
-          { new: true }
-        );
+      schoolInfo = await school.updateOne(
+  { _id: body.schoolId},
+  {
+    $pull: {
+      schoolComment: { _id: body._id }
+    }
+  },
+  {
+    multi: true
+  }
+)
 
-        await userActivity.findOneAndUpdate(
-          { userId: schoolInfo.userId },
-          { $inc: { schoolCommentCount: -1 } },
-          { new: true }
-        );
-        return schoolInfo;
-      }
+
+
+
+
+
+return schoolInfo
+
+
+    
     }
     if (status == "readschoolComment") {
       userInfo = await userActivity.findOne({ userId: body.userId }).lean();
@@ -296,7 +392,7 @@ console.log(body,"body");
         } else {
           isDeleteable = false;
         }
-        a.push({ userInfo, comment, DateTime });
+        a.push({ userInfo, comment, DateTime,isDeleteable });
       }
       var y = [...a].reverse();
       return y;
