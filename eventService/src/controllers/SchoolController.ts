@@ -27,7 +27,7 @@ export default class SchoolController {
 
   public async getSchool(user:any) {
     let schoolListlike= await school.aggregate([
-      { $match: { isDeleted: false, postLike: { $in: [user._id] } } },
+      { $match: { isDeleted: false, schoolLike: { $in: [user._id] } } },
       {
         $lookup: {
           localField: "faculty",
@@ -72,9 +72,14 @@ export default class SchoolController {
         },
       },
       { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          isLikes: true,
+        },
+      },
     ]);
     const schoolListUnLike= await school.aggregate([
-      { $match: { isDeleted: false, postLike: { $ne: [user._id] } } },
+      { $match: { isDeleted: false, schoolLike: { $ne: [user._id] } } },
       {
         $lookup: {
           localField: "faculty",
@@ -119,6 +124,11 @@ export default class SchoolController {
         },
       },
       { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          isLikes: false,
+        },
+      },
     ]);
 
     
