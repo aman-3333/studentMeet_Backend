@@ -131,7 +131,21 @@ router.post("/read/activity", async (req, res) => {
 // });
 
 
-
+router.post("/share", async (req, res) => {
+  try {
+    const body=req.body;
+   
+    const controller = new PostController();
+    const response:any = await controller.sharePost(body);
+    res
+      .status(200)
+      .json(successResponse("share post", response, res.statusCode));
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in share postActivity", res.statusCode));
+  }
+});
 
 
 

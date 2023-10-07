@@ -6,6 +6,7 @@ import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
 import { sendNotification } from "../services/notification";
 const mongoose = require("mongoose");
+const currentTime: any = new Date();
 export default class academyController {
   public async createAcademy(body: any) {
     const academyInfo = await academy.create({
@@ -262,7 +263,6 @@ export default class academyController {
     }
 
     if (status == "academyComment") {
-      let currentTime: any = new Date();
       for (let i = 0; i < body.academyComment.length; i++) {
         academyInfo = await academy.findOneAndUpdate(
           {
@@ -563,6 +563,30 @@ const academyData = await academy.find({
  return academyData;
 
 }
+
+
+
+public async shareAcademy( body:any ) {
+  for (let i = 0; i < body.academySharedByOther.length; i++) {
+    let  academyInfo = await userActivity.findOneAndUpdate(
+      {
+        userId: body.academySharedByOther[i].friendId,
+        isDeleted:false
+      },
+      {
+        $push: {
+          academySharedByOther: {
+            friendId: body.userId,
+            academyId: body.academySharedByOther[i].academyId,
+            dateTime: currentTime,
+          },
+        },
+      },{new:true}
+    );
+   
+    return academyInfo;
+  }
+    }
 
 
 

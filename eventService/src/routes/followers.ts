@@ -35,40 +35,34 @@ router.post("/unfollowing",  async (req, res) => {
 
 router.get("/getFollowers",  async (req, res) => {
     try {
-        
         const userId = req.query.userId; 
-        const status = req.query.status; 
- 
+        const userType = req.query.userType; 
         const controller = new followersController();
-        const response: any = await controller.getFollowers(userId,status);
+        const response: any = await controller.getFollowers(userId,userType);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
     } catch (error) {
-     
         res.status(500).json(errorResponse("error in getFollowers", res.statusCode));
     }
 });
 
 router.get("/getFollowing",  async (req, res) => {
     try {
-        
         const userId = req.query.userId; 
-        const status = req.query.status; 
- 
+        const userType = req.query.userType; 
         const controller = new followersController();
-        const response: any = await controller.getFollowers(userId,status);
+        const response: any = await controller.getFollowing(userId,userType);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
     } catch (error) {
-     
         res.status(500).json(errorResponse("error in getFollowers", res.statusCode));
     }
 });
+
+
 
 router.get("/getFollowingRequest",  async (req, res) => {
     try {
         
         const userId = req.query.userId;
-       
- 
         const controller = new followersController();
         const response: any = await controller.getFollowingRequestByOther(userId);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
@@ -83,8 +77,6 @@ router.get("/acceptOrRejectFollowingRequest",  async (req, res) => {
     try {
         
         const userId = req.query.userId;
-       
- 
         const controller = new followersController();
         const response: any = await controller.getFollowingRequestByOther(userId);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
@@ -98,9 +90,7 @@ router.get("/acceptOrRejectFollowingRequest",  async (req, res) => {
 
 router.get("/request",  async (req, res) => {
     try {
-        
         const userId = req.query.userId; 
-        
         const controller = new followersController();
         const response: any = await controller.getFollowingRequestByOther(userId);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));

@@ -1,5 +1,5 @@
 import StarPerformer from "../models/StarPerformer";
-
+const mongoose = require("mongoose");
 import FuzzySearch from "fuzzy-search";
 import userDetails from "../models/userDetails";
 export default class StarPerformerController {
@@ -16,8 +16,22 @@ export default class StarPerformerController {
         return starPerformerInfo;
     }
 
-    public async getStarPerformerList() {
-        const StarPerformerList: any[] = await StarPerformer.find({  isDeleted: false,isActive:true }).populate("starPerformerId","profile_picture");
+    public async getStarPerformerList(schoolId:any) {
+       
+        const StarPerformerList: any[] = await StarPerformer.aggregate([
+            {
+              $match: {
+                schoolId: new mongoose.Types.ObjectId(schoolId), isDeleted: false
+              },
+            },
+            {
+              $lookup: {
+                localField: "starPerformerId",
+                from: "userdetails",
+                foreignField: "_id",
+                as: "users",
+              }
+            }])
         return StarPerformerList;
     }
 

@@ -186,6 +186,22 @@ router.get("/info/byid", async (req, res) => {
   }
 });
 
+
+router.post("/share", async (req, res) => {
+  try {
+    const body=req.body;
+   
+    const controller = new AcademyController();
+    const response:any = await controller.shareAcademy(body);
+    res
+      .status(200)
+      .json(successResponse("share acdemy", response, res.statusCode));
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in share acdemy", res.statusCode));
+  }
+});
 router.get("/registration/details", async (req, res) => {
   try {
     const academyId: any = req.query.academyId;

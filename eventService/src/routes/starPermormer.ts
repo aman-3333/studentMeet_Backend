@@ -5,10 +5,10 @@ import {successResponse, errorResponse} from "../services/apiResponse";
 
 import StarPerformerController from "../controllers/StarPerformerController"
 
-router.post("/create", checkAuth, async (req, res) => {
+router.post("/create",  async (req, res) => {
     try {
         
-req.body.user=res.locals.user
+
 const body = req.body;
      
         
@@ -53,10 +53,11 @@ router.get("/filter", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error filterEvent", res.statusCode));
     }
 });
-router.get("/list", checkAuth, async (req, res) => {
+router.get("/list",  async (req, res) => {
     try {
+        const schoolId=req.query.schoolId;
         const controller = new StarPerformerController();
-        const response: any[] = await controller.getStarPerformerList();
+        const response: any[] = await controller.getStarPerformerList(schoolId);
         res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
     } catch (error) {
 

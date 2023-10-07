@@ -49,31 +49,22 @@ public async following(userId: any, followingId: any,userType:any) {
 
     if(userType=="normal" ||  userType=="coach" ){
     if(userInfo.isProfilePublic == true){
-        userInfo = await userActivity.findOneAndUpdate({
-            userId: userId,
-        }, {
-            $push: {
-                userFollowing: followingId
-            }
-        },{new:true}).lean()
-        await userActivity.findOneAndUpdate({
-            userId: followingId,
-        }, {
-            $push: {
-                userFollowers: userId
-            }
-        },{new:true}).lean()
-        await userActivity.findOneAndUpdate({
-            userId: userId,
-        },
-            { $inc: { followingCount: 1 } },{new:true}).lean()
+        userInfo = await userActivity.updateOne({ userId: userId},
+            
+            {
+              $push: { userFollowing: followingId }, 
+              $inc: { followingCount: 1 } 
+            }),
+       
+            userInfo = await userActivity.updateOne({ userId: followingId},
+            
+                {
+                  $push: { userFollowers: userId }, 
+                  $inc: { followersCount: 1 } 
+                })
+            
 
-
-              
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            },
-                { $inc: { followersCount: 1 } },{new:true}).lean()
+ 
 
     }
     
@@ -243,22 +234,11 @@ return data
 
 
 
-public async  getFollowers(userId:any,status:any){
+public async  getFollowers(userId:any,userType:any){
     let data:any =[]
     let userInfo:any=await userActivity.findOne({ userId:userId }).lean()
 
-    
-    if(status=="people"){
-       for (let i = 0; i < userInfo.userFollowers.length; i++) {
-        console.log(userInfo.userFollowers,"nh;joojno");
-        let userFollowers=await userDetails.findOne({_id:userInfo.userFollowers[i],isDeleted:false})
-        console.log(userFollowers,"userFollowers");
-        data.push(userFollowers)
-        
-       }
-       
-    }
-    if(status=="academy"){
+    if(userType=="academy"){
        
         for (let i = 0; i < userInfo.academyFollowers.length; i++) {
             let academyFollowers=await academy.findOne({_id:userInfo.academyFollowers[i]}).lean()
@@ -267,7 +247,7 @@ public async  getFollowers(userId:any,status:any){
            }
     
     }
-    if(status=="sponsorship"){
+    if(userType=="sponsorship"){
         for (let i = 0; i < userInfo.brandFollowers.length; i++) {
             let brandFollowers=await sponsorshipDetails.findOne({_id:userInfo.brandFollowers[i],isDeleted:false}).lean()
             data.push(brandFollowers)
@@ -276,17 +256,25 @@ public async  getFollowers(userId:any,status:any){
 
     
     }
+    else{
+        for (let i = 0; i < userInfo.userFollowers.length; i++) {
+         let userFollowers=await userDetails.findOne({_id:userInfo.userFollowers[i],isDeleted:false})
+         data.push(userFollowers)
+        }
+        
+     }
    
     return data
 }
 
 
-public async  getFollowing(userId:any,status:any){
+public async  getFollowing(userId:any,userType:any){
     let data:any =[]
     let userInfo:any=await userActivity.findOne({ userId:userId })
  
 
-    if(status=="people"){
+  
+    if(userType=="academy"){
         for (let i = 0; i < userInfo.academyFollowing.length; i++) {
             let academyFollowing=await academy.findOne({_id:userInfo.academyFollowing[i]}).lean()
             data.push(academyFollowing)
@@ -294,21 +282,21 @@ public async  getFollowing(userId:any,status:any){
            }
       
     }
-    if(status=="academy"){
-        for (let i = 0; i < userInfo.academyFollowing.length; i++) {
-            let academyFollowing=await academy.findOne({_id:userInfo.academyFollowing[i]}).lean()
-            data.push(academyFollowing)
-            
-           }
-      
-    }
-    if(status=="sponsorship"){
+    if(userType=="sponsorship"){
         for (let i = 0; i < userInfo.brandFollowing.length; i++) {
             let brandFollowing=await sponsorshipDetails.findOne({_id:userInfo.brandFollowing[i],isDeleted:false}).lean()
             data.push(brandFollowing)
             
            }
     
+    }
+    else{
+        for (let i = 0; i < userInfo.academyFollowing.length; i++) {
+            let academyFollowing=await academy.findOne({_id:userInfo.academyFollowing[i]}).lean()
+            data.push(academyFollowing)
+            
+           }
+      
     }
    
     return data

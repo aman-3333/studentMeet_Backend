@@ -5,8 +5,9 @@ import FuzzySearch from "fuzzy-search";
 import event from "../models/sponsorshipDetails";
 import academy from "../models/academy";
 import sponsorPartner from "../models/sponsorPartner";
+import { createLessThan } from "typescript";
 const mongoose = require("mongoose");
-
+const currentTime: any = new Date();
 export default class PostController {
   public async createPost(body: any) {
     let PostInfo: any;
@@ -344,7 +345,7 @@ console.log(body,"body");
     }
 
     if (status == "postComment") {
-      let currentTime: any = new Date();
+     
       for (let i = 0; i < body.postComment.length; i++) {
         PostInfo = await Post.findOneAndUpdate(
           {
@@ -410,9 +411,34 @@ return PostInfo;
 
 
 
-  public async reCommentPost(userId: any, commentId: any) {
-    let PostInfo: any;
+  public async sharePost( body:any ) {
+for (let i = 0; i < body.sharePostByOther.length; i++) {
+  let  PostInfo = await userActivity.findOneAndUpdate(
+    {
+      userId: body.sharePostByOther[i].friendId,
+      isDeleted:false
+    },
+    {
+      $push: {
+        sharePostByOther: {
+          friendId: body.userId,
+          post: body.sharePostByOther[i].postId,
+          dateTime: currentTime,
+        },
+      },
+    },{new:true}
+  );
+ 
+  return PostInfo;
+}
   }
+   
+
+ 
+
+
+    
+  
 
   public async readPostActivity(PostId: any, status: any, userId: any) {
     console.log(PostId, status);

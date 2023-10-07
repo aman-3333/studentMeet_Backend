@@ -64,6 +64,21 @@ router.get("/search",  async (req, res) => {
     }
 });
 
+router.post("/share", async (req, res) => {
+    try {
+      const body=req.body;
+     
+      const controller = new SchoolController();
+      const response:any = await controller.shareSchool(body);
+      res
+        .status(200)
+        .json(successResponse("share school", response, res.statusCode));
+    } catch (error) {
+      res
+        .status(500)
+        .json(errorResponse("error in share school", res.statusCode));
+    }
+  });
 router.get("/info/byId",  async (req, res) => {
     try {
         const SchoolId: any= req.query.SchoolId;

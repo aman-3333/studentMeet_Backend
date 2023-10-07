@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 import School from "../models/school";
 import userDetails from "../models/userDetails";
 import userActivity from "../models/userActivity";
-
+const currentTime: any = new Date();
 export default class SchoolController {
   //////////////////////////////school///////////////////////////////////////////////////////////
 
@@ -153,7 +153,27 @@ export default class SchoolController {
       return schoolList;
     }
   }
-
+  public async shareSchool( body:any ) {
+    for (let i = 0; i < body.schoolSharedByOther.length; i++) {
+      let  schoolInfo = await userActivity.findOneAndUpdate(
+        {
+          userId: body.schoolSharedByOther[i].friendId,
+          isDeleted:false
+        },
+        {
+          $push: {
+            schoolSharedByOther: {
+              friendId: body.userId,
+              schoolId: body.schoolSharedByOther[i].schoolId,
+              dateTime: currentTime,
+            },
+          },
+        },{new:true}
+      );
+     
+      return schoolInfo;
+    }
+      }
 
 
 
@@ -296,7 +316,6 @@ console.log(body,"body");
     }
 
     if (status == "schoolComment") {
-      let currentTime: any = new Date();
       for (let i = 0; i < body.schoolComment.length; i++) {
         schoolInfo = await school.findOneAndUpdate(
           {

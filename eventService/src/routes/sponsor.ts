@@ -85,7 +85,21 @@ router.get("/post/partner/id", async (req, res) => {
     }
 });
 
-
+router.post("/share", async (req, res) => {
+    try {
+      const body=req.body;
+     
+      const controller = new SponsorshipController();
+      const response:any = await controller.shareSponsorship(body);
+      res
+        .status(200)
+        .json(successResponse("share Sponsorship", response, res.statusCode));
+    } catch (error) {
+      res
+        .status(500)
+        .json(errorResponse("error in share Sponsorship", res.statusCode));
+    }
+  });
 
 
 router.get("/list", checkAuth, async (req, res) => {

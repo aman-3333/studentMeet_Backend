@@ -34,7 +34,8 @@ router.patch("/edit", checkAuth, async (req, res) => {
 router.get("/list",  async (req, res) => {
     try {
         const controller = new ScholarshipController();
-        const response: IScholarship[] = await controller.getScholarshipList();
+        const schoolId=req.query.schoolId;
+        const response: IScholarship[] = await controller.getScholarshipList(schoolId);
         res.status(200).json(successResponse("Scholarship list", response, res.statusCode));
     } catch (error) {
       
@@ -54,6 +55,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in getScholarship", res.statusCode));
     }
 });
+
 
 
 router.get("/delete/:id", checkAuth, async (req, res) => {

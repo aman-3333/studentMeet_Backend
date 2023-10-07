@@ -39,7 +39,6 @@ export interface IAchivement extends Document {
   tournament: String;
   dateTime: Date;
   tournament_match: String;
-
   isActive: Boolean;
   isBlocked: Boolean;
   isDeleted: Boolean;

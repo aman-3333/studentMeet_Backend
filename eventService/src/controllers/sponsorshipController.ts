@@ -179,7 +179,6 @@ export default class SponsorshipController {
     }
 
     if (status == "sponsorshipComment") {
-      let currentTime: any = new Date();
       for (let i = 0; i < body.sponsorshipComment.length; i++) {
         sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
           {
@@ -382,7 +381,27 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
   }
 
 
-
+  public async shareSponsorship( body:any ) {
+    for (let i = 0; i < body.sponsorshipSharedByOther.length; i++) {
+      let  sponsorshipInfo = await userActivity.findOneAndUpdate(
+        {
+          userId: body.sponsorshipSharedByOther[i].friendId,
+          isDeleted:false
+        },
+        {
+          $push: {
+            sponsorshipSharedByOther: {
+              friendId: body.userId,
+              sponsorshipId: body.sponsorshipSharedByOther[i].sponsorshipId,
+              dateTime: currentTime,
+            },
+          },
+        },{new:true}
+      );
+     
+      return sponsorshipInfo;
+    }
+      }
 
   public async readActivity(sponsorshipId: any, status: any,userId:any) {
     let sponsorshipInfo: any;

@@ -4,7 +4,7 @@ const schema = new Schema(
   {
     starPerformerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
     schoolId: { type: Schema.Types.ObjectId, ref: "schools" },
-    performance_type: [{ type: String }],
+    performance_type: { type: String },
     description: { type: String },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },

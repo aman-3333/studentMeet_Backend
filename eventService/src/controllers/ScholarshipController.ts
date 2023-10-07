@@ -16,8 +16,10 @@ export default class ScholarshipController {
     return scholarshipInfo;
   }
 
-  public async getScholarshipList() {
+  
+  public async getScholarshipList(schoolId:any) {
     const scholarshipList: IScholarship[] = await Scholarship.find({
+      schoolId:schoolId,
       isDeleted: false,
     });
     return scholarshipList;
