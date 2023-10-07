@@ -21,6 +21,11 @@ export default class TournamentController {
         return TournamentList;
     }
 
+    public async getSchoolTournamentList(schoolId:any) {
+        const TournamentList: ITournament[] = await Tournament.find({ schoolId:schoolId, isDeleted: false });
+        return TournamentList;
+    }
+
     public async getTournamentInfoById(TournamentId: any) {
         const tournamentInfo: any = await Tournament.findOne({ _id: TournamentId, isDeleted: false }).lean();
         return tournamentInfo;

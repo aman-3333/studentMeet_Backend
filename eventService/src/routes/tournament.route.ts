@@ -43,14 +43,25 @@ router.get("/list",  async (req, res) => {
 });
 
 
+router.get("/school/list",  async (req, res) => {
+    try {
+        const controller = new TournamentController();
+         const schoolId = req.query.schoolId
+        const response: ITournament[] = await controller.getSchoolTournamentList(schoolId);
+        res.status(200).json(successResponse("Tournament list", response, res.statusCode));
+    } catch (error) {
+      
+        res.status(500).json(errorResponse("error in Tournament list", res.statusCode));
+    }
+});
+
 router.get("/info/byid",  async (req, res) => {
     try {
         const tournamentId: any = req.query.tournamentId;
         const controller = new TournamentController();
         const response: any = await controller.getTournamentInfoById(tournamentId);
         res.status(200).json(successResponse("getTournament", response, res.statusCode));
-    } catch (error) {
-      
+    } catch (error) {  
         res.status(500).json(errorResponse("error in getTournament", res.statusCode));
     }
 });
