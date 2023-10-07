@@ -198,6 +198,14 @@ export default class SchoolController {
         },
         {
           $lookup: {
+            localField: "_id",
+            from: "school_scholarships",
+            foreignField: "schoolId",
+            as: "scholarships",
+          },
+        },
+        {
+          $lookup: {
             localField: "schoolOwnerId",
             from: "school_owners",
             foreignField: "_id",
