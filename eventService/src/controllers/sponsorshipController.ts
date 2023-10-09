@@ -97,7 +97,7 @@ export default class SponsorshipController {
     const mergedArray = [...sponsorshipLike, ...PostList];
 
     mergedArray.sort((a, b) => a.createdAt - b.createdAt);
-
+    
     return mergedArray;
   }
 

@@ -38,6 +38,8 @@ const academyModel = new Schema(
     isBlocked: { type: Boolean, default: false },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     followersCount: { type: Number, default: 0 },
+    following: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
+    followingCount: { type: Number, default: 0 },
     academyLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
     academyCommentCount: { type: Number, default: 0 },

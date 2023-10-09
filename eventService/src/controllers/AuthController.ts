@@ -335,6 +335,40 @@ return userInfo
 return userData
       
     }
+    if (type == "school" && confirmPassword == password) {
+      const existingUser: any = await schoolOwner.findOne({ email: email });
+      if (existingUser) {
+        return { message: "User Already exists" };
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+     
+      
+      let userData:any = new schoolOwner({
+        email: email,
+        password: hashedPassword,
+        userType:type
+      });
+     await userData.save()
+      console.log(userData,"userData");
+     
+      const token = jwt.sign(
+        { email: userData.email, id: userData._id },
+        "Stack",
+        {
+          expiresIn: "24h",
+        },
+        SECRET_KEY
+      );
+      console.log(token);
+      
+      userData=     await schoolOwner.findOneAndUpdate(
+        { _id: userData._id },
+        { $set: { token: token,otp:"1234" } },{new:true}
+      );
+
+return userData
+      
+    }
 
   }
 
@@ -399,6 +433,7 @@ return userData
       return existingUser;
     }
     if (type == "school") {
+      console.log("hello")
       let existingUser: any = await schoolOwner.findOne({ email: email });
       console.log(existingUser, "existingUser");
       if (!existingUser) {

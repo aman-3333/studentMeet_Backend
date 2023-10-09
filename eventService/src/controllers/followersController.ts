@@ -2,48 +2,16 @@
 import userActivity from "../models/userActivity"
 import mongoose from 'mongoose';
 import userDetails from "../models/userDetails";
-import academy from "../models/academy";
+import academyModel from "../models/academy";
 import sponsorshipDetails from "../models/sponsorshipDetails";
 
 var currentdate = new Date(); 
 export default class followersController {
-public async unfollowing(userId: any, followingId: any,roleId:any) {
-    let userInfo: any;
-    switch (roleId) {
-        case 1:
-            userInfo = await userActivity.findOne({ userFollowing: { $in: followingId } }).lean()
-            if (userInfo) {
-                userInfo = await userActivity.findOneAndUpdate({
-                    userId: userId,
-                }, {
-                    $pull: {
-                        userFollowing: followingId
-                    }
-                }).lean()
-                await userActivity.findOneAndUpdate({
-                    userId: followingId,
-                }, {
-                    $pull: {
-                        userFollowers: userId
-                    }
-                }).lean()
-        
-                await userActivity.findOneAndUpdate({
-                    userId: userId,
-                },
-                    { $inc: { followingCount: -1 } }).lean()
-                await userActivity.findOneAndUpdate({
-                    userId: followingId,
-                },
-                    { $inc: { followersCount: -1 } }).lean()
-        
-            }
-          break;    
-      }
-    return userInfo
-}
+
+
 
 public async following(userId: any, followingId: any,userType:any) {
+    let plusOne=1;
     let userInfo: any;
     userInfo = await userDetails.findOne({_id:followingId,isDeleted:false }).lean()
 
@@ -89,32 +57,118 @@ if(userInfo.isProfilePublic == false){
 }
     }
     if(userType=="academy"){
-     
+     console.log("hello")
+
+     userInfo = await userActivity.updateOne({ userId: userId},
+            
+        {
+          $push: { academyFollowing: followingId }, 
+          $inc: { academyFollowingCount: 1 } 
+        }),
+           
+  
+
+            await academyModel.findOneAndUpdate({
+                _id: followingId,
+            }, {
+                $push: {
+                    followers: userId
+                }
+            },{new:true}).lean()
+
+  
+    }
+
+
+    
+        if(userType=="sponsorship"){
+            userInfo = await userActivity.updateOne({ userId: userId},
+            
+                {
+                  $push: { sponsorshipFollowing: followingId }, 
+                  $inc: { sponsorshipFollowingCount: 1 } 
+                }),
+                   
+          
+        
+                    await academyModel.findOneAndUpdate({
+                        _id: followingId,
+                    }, {
+                        $push: {
+                            followers: userId
+                        }
+                    },{new:true}).lean()
+            
+       
+            }
+
+    
+            
+          
+      
+        
+            
+            
+      
+    return userInfo
+
+        }
+
+
+public async unfollowing(userId: any, followingId: any,userType:any) {
+    let userInfo: any;
+    userInfo = await userDetails.findOne({_id:followingId,isDeleted:false }).lean()
+
+    if(userType=="normal" ||  userType=="coach" ){
+ 
+        userInfo = await userActivity.updateOne({ userId: userId},
+            
+            {
+              $pull: { userFollowing: followingId }, 
+              $inc: { followingCount: -1 } 
+            }),
+       
+            userInfo = await userActivity.updateOne({ userId: followingId},
+            
+                {
+                  $pull: { userFollowers: userId }, 
+                  $inc: { followersCount: -1 } 
+                })
+            
+
+ 
+
+    
+    
+
+    }
+    if(userType=="academy"){
+     console.log("hello")
             userInfo = await userActivity.findOneAndUpdate({
                 userId: userId,
             }, {
-                $push: {
+                $pull: {
                     academyFollowing: followingId
                 }
             },{new:true}).lean()
             await userActivity.findOneAndUpdate({
                 userId: followingId,
             }, {
-                $push: {
+                $pull: {
                     userFollowers: userId
                 }
             },{new:true}).lean()
             await userActivity.findOneAndUpdate({
                 userId: userId,
             },
-                { $inc: { followingCount: 1 } },{new:true}).lean()
+                { $inc: { followingCount: -1 } },{new:true}).lean()
     
     
                   
                 await userActivity.findOneAndUpdate({
                     userId: followingId,
                 },
-                    { $inc: { followersCount: 1 } },{new:true}).lean()
+                    { $inc: { followersCount: -1 } },{new:true}).lean()
     
         
         
@@ -125,28 +179,28 @@ if(userInfo.isProfilePublic == false){
                 userInfo = await userActivity.findOneAndUpdate({
                     userId: userId,
                 }, {
-                    $push: {
+                    $pull: {
                         userFollowing: followingId
                     }
                 },{new:true}).lean()
                 await userActivity.findOneAndUpdate({
                     userId: followingId,
                 }, {
-                    $push: {
+                    $pull: {
                         userFollowers: userId
                     }
                 },{new:true}).lean()
                 await userActivity.findOneAndUpdate({
                     userId: userId,
                 },
-                    { $inc: { followingCount: 1 } },{new:true}).lean()
+                    { $inc: { followingCount: -1 } },{new:true}).lean()
         
         
                       
                     await userActivity.findOneAndUpdate({
                         userId: followingId,
                     },
-                        { $inc: { followersCount: 1 } },{new:true}).lean()
+                        { $inc: { followersCount: -1 } },{new:true}).lean()
         
             }
             
@@ -241,7 +295,7 @@ public async  getFollowers(userId:any,userType:any){
     if(userType=="academy"){
        
         for (let i = 0; i < userInfo.academyFollowers.length; i++) {
-            let academyFollowers=await academy.findOne({_id:userInfo.academyFollowers[i]}).lean()
+            let academyFollowers=await academyModel.findOne({_id:userInfo.academyFollowers[i]}).lean()
             data.push(academyFollowers)
             
            }
@@ -276,7 +330,7 @@ public async  getFollowing(userId:any,userType:any){
   
     if(userType=="academy"){
         for (let i = 0; i < userInfo.academyFollowing.length; i++) {
-            let academyFollowing=await academy.findOne({_id:userInfo.academyFollowing[i]}).lean()
+            let academyFollowing=await academyModel.findOne({_id:userInfo.academyFollowing[i]}).lean()
             data.push(academyFollowing)
             
            }
@@ -292,7 +346,7 @@ public async  getFollowing(userId:any,userType:any){
     }
     else{
         for (let i = 0; i < userInfo.academyFollowing.length; i++) {
-            let academyFollowing=await academy.findOne({_id:userInfo.academyFollowing[i]}).lean()
+            let academyFollowing=await academyModel.findOne({_id:userInfo.academyFollowing[i]}).lean()
             data.push(academyFollowing)
             
            }

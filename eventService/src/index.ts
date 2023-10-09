@@ -154,7 +154,8 @@ pingInterval: 25000,
 // !
 
 io.on("connection", (socket:any) => {
-  console.log('A user connected');
+console.log("heelo");
+
   socket.on("setup", (userData:any) => {
     
     let id=userData.token_data.userid;
@@ -163,10 +164,7 @@ io.on("connection", (socket:any) => {
 
 
     // socket.join(userData._id);
-    socket.join(id)
-
-;
-
+    socket.join(id);
 
 
     // console.log(userData,"userData")
@@ -219,6 +217,7 @@ io.on("connection", (socket:any) => {
   
 });
 setEnvironment();
+
 
 mongoose.connect(nconf.get('mongodb'),
   {

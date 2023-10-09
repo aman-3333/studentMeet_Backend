@@ -180,6 +180,36 @@ export default class academyController {
   public async searchAcademy(search: any) {
     let academyInfo: any = await academy.aggregate([
       { $match: { isDeleted: false } },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "State",
+          foreignField: "state",
+          as: "state",
+        },
+      },
+      
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "city",
+          foreignField: "city",
+          as: "city",
+        },
+      },
+      
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "country",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
     ]);
 
     academyInfo = new FuzzySearch(academyInfo, ["academyName"], {

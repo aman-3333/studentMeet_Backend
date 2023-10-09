@@ -24,6 +24,10 @@ const sponsorshipSchema = new Schema(
     category: { type: Schema.Types.ObjectId, ref: "category" },
     SubCategory: { type: Schema.Types.ObjectId, ref: "SubCategory" },
     subSubCategory: { type: Schema.Types.ObjectId, ref: "subSubCategory" },
+    followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
+    followersCount: { type: Number, default: 0 },
+    following: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
+    followingCount: { type: Number, default: 0 },
     seatreamining: { type: Number, default: 0 },
     sponsorshipLikeCount: { type: Number, default: 0 },
     sponsorshipFavoriteCount: { type: Number, default: 0 },
@@ -94,6 +98,10 @@ export interface ISponsorship extends Document {
   sponsorshipCommentCount: Number;
   sponsorshipShareCount: Number;
   sponsorshipLike: [ObjectId];
+  followers: [ObjectId],
+  followersCount: Number,
+  following: [ObjectId],
+  followingCount: Number,
   applyCount: Number;
   applyInfo: [
     {

@@ -18,14 +18,15 @@ router.post("/following",  async (req, res) => {
         res.status(500).json(errorResponse("error in following", res.statusCode));
     }
 });
+
 router.post("/unfollowing",  async (req, res) => {
     try {
         
         const userId = req.body.userId; 
         const followingId = req.body.followingId;
-        const roleId = req.body.roleId;
+        const userType = req.body.userType;
         const controller = new followersController();
-        const response: any = await controller.unfollowing(userId,followingId,roleId);
+        const response: any = await controller.unfollowing(userId,followingId,userType);
         res.status(200).json(successResponse("unfollowing", response, res.statusCode));
     } catch (error) {
      

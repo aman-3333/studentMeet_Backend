@@ -179,9 +179,6 @@ export default class SchoolController {
 
 
   public async getSchoolInfoById(schoolId: any) {
-  
-
-
       const schoolInfo= await school.aggregate([
         {
           $match: {
