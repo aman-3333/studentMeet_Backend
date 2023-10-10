@@ -142,14 +142,44 @@ export default class SchoolController {
   }
   public async searchSchool( searchValue: any) {
     if (searchValue) {
-      let schoolList: any = await school.find({
-       
-        isDeleted: false,
-      });
-      schoolList = new FuzzySearch(schoolList, ["schoolName"], {
-        caseSensitive: false,
-      });
-      schoolList = schoolList.search(searchValue);
+      let schoolList= await school.aggregate([
+        { $match: { isDeleted: false ,schoolName: {
+          $regex: searchValue,
+          $options: "i" 
+      }} },
+      
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+     
+      ]);
+
+
+   
       return schoolList;
     }
   }

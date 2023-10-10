@@ -179,7 +179,10 @@ export default class academyController {
 
   public async searchAcademy(search: any) {
     let academyInfo: any = await academy.aggregate([
-      { $match: { isDeleted: false } },
+      { $match: { isDeleted: false, academyName: {
+        $regex: search,
+        $options: "i" 
+    } } },
       {
         $lookup: {
           localField: "_id",
@@ -212,10 +215,7 @@ export default class academyController {
       { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
     ]);
 
-    academyInfo = new FuzzySearch(academyInfo, ["academyName"], {
-      caseSensitive: false,
-    });
-    academyInfo = academyInfo.search(search);
+  
     return academyInfo;
   }
 

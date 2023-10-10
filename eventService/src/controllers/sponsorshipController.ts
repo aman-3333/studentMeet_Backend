@@ -75,7 +75,6 @@ export default class SponsorshipController {
   public async getsponsorshipList(user: any) {
     let sponsorshipLike = await SponsorshipModel.aggregate([
       { $match: { isDeleted: false, sponsorshipLike: { $in: [user._id] } } },
-
       {
         $addFields: {
           isLikes: true,
@@ -93,11 +92,14 @@ export default class SponsorshipController {
     ]);
 
     sponsorshipLike = sponsorshipLike.concat(PostList);
-
-    const mergedArray = [...sponsorshipLike, ...PostList];
-
-    mergedArray.sort((a, b) => a.createdAt - b.createdAt);
-    
+    let mergedArray = [...sponsorshipLike, ...PostList];
+    mergedArray.forEach((val)=>{
+      if(user._id.includes(val.followers)){
+        val.isFollowed=true;
+      }else{
+        val.isFollowed=false;
+      }
+    })
     return mergedArray;
   }
 
@@ -264,13 +266,11 @@ return sponsorshipInfo;
 
   public async searchSponsorship(search: any) {
     let sponsorshipInfo: any = await SponsorshipModel.aggregate([
-      { $match: { isDeleted: false } },
+      { $match: { isDeleted: false,sponsorshipName: {
+        $regex: search,
+        $options: "i" 
+    }  } },
     ]);
-
-    sponsorshipInfo = new FuzzySearch(sponsorshipInfo, ["sponsorshipName"], {
-      caseSensitive: false,
-    });
-    sponsorshipInfo = sponsorshipInfo.search(search);
     return sponsorshipInfo;
   }
 

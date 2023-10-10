@@ -4,8 +4,9 @@ import { ObjectId } from "bson";
 const BankDetailsSchema = new Schema(
   {
     user_id: { type: Schema.Types.ObjectId, ref: "userdetails" },
-    academyOwner: { type: Schema.Types.ObjectId, ref: "academy_owner" },
-    sponsorshipPartner: { type: Schema.Types.ObjectId, ref: "sponsor_partner" },
+    academyOwner: { type: Schema.Types.ObjectId, ref: "academy_owners" },
+    sponsorshipPartner: { type: Schema.Types.ObjectId, ref: "sponsor_partners" },
+    schoolOwner: { type: Schema.Types.ObjectId, ref: "school_owners" },
     account_number: { type: Number },
     ifsc_code: { type: String },
     Bank_name: { type: String },

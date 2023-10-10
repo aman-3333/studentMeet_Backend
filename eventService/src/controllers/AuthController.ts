@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
 import Users from "../models/userDetails";
-
+import { sendNotification } from "../services/notification";
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
@@ -433,9 +433,8 @@ return userData
       return existingUser;
     }
     if (type == "school") {
-      console.log("hello")
+      sendNotification("dN3xyqsvSzydE_5UnyVXrV:APA91bH5OZep654WazMQ6oRd7V-Eh_xdUYq7F8XgaQ2G6XaDPoKSIqCQ99NMyvlUV0_TKa6TULlYaj3BngQhS_PWmciRNIFGCA7QiZgHuAlAr6DwY9B-ZRU2JTU8B21aIH-ToRGQZ1NT",body,"data")
       let existingUser: any = await schoolOwner.findOne({ email: email });
-      console.log(existingUser, "existingUser");
       if (!existingUser) {
         return { message: "User not exists" };
       }
@@ -520,6 +519,39 @@ return userData
         
   
           await sponsorPartner.findOneAndUpdate(
+            {
+              _id: userData._id,
+            },
+            { $set: { email_verify: true } },{new:true}
+          );
+          return { Status: "Sucess", Details: "OTP Match", userData };
+        }   else {
+          return { Status: "Error", Details: "OTP Mismatch", userInfo };
+        }
+  
+       
+      }
+    
+    }
+    if(type=="school"){
+      userData = await schoolOwner.findOne({
+        email:email,
+     
+        isDeleted: false,
+      }).lean();
+  
+      if (userData) {
+        let otpInfo = await schoolOwner.findOne({
+          email: email,
+          otp:otp,
+        }).lean();
+        console.log(body);
+  
+       
+        if (otpInfo) {
+        
+  
+          await schoolOwner.findOneAndUpdate(
             {
               _id: userData._id,
             },

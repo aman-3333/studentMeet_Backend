@@ -13,7 +13,10 @@ var message={
         body:body,
         sound:true,
         vibrate:true
-    }
+    },
+    data: {
+            screen: "sponsor" // Screen name to redirect to
+          }
     
 };
 console.log("message",message);
