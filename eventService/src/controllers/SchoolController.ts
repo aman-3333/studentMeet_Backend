@@ -77,6 +77,7 @@ export default class SchoolController {
    
 
     
+  console.log(user);
   
 
     schoolListlike.forEach((val:any)=>{
