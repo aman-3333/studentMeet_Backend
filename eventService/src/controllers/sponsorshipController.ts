@@ -5,10 +5,12 @@ import SponsorshipModel, { ISponsorship } from "../models/sponsorshipDetails";
 import userActivity from "../models/userActivity";
 
 import User from "../models/userDetails";
-
+const ObjectId = require('mongodb').ObjectId;
 import userDetails from "../models/userDetails";
 
 import post from "../models/post";
+import { Logger } from "mongodb";
+import { log } from "util";
 
 let currentTime: any = new Date();
 export default class SponsorshipController {
@@ -73,34 +75,22 @@ export default class SponsorshipController {
   /////////////////////////////////USER SCREEN SPONSORSHIP API/////////////////////////
 
   public async getsponsorshipList(user: any) {
-    let sponsorshipLike = await SponsorshipModel.aggregate([
-      { $match: { isDeleted: false, sponsorshipLike: { $in: [user._id] } } },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
+    let sponsorshipLike:any = await SponsorshipModel.aggregate([
+      { $match: { isDeleted: false } },
     ]);
-    let PostList = await SponsorshipModel.aggregate([
-      { $match: { isDeleted: false, sponsorshipLike: { $ne: [user._id] } } },
-
-      {
-        $addFields: {
-          isLikes: false,
-        },
-      },
-    ]);
-
-    sponsorshipLike = sponsorshipLike.concat(PostList);
-    let mergedArray = [...sponsorshipLike, ...PostList];
-    mergedArray.forEach((val)=>{
-      if(user._id.includes(val.followers)){
-        val.isFollowed=true;
-      }else{
-        val.isFollowed=false;
-      }
+    sponsorshipLike.forEach((val:any)=>{
+     if( val.followers.toString().includes(user._id.toString())){ 
+      val.isFollow=true
+     }
+     if( val.sponsorshipLike.toString().includes(user._id.toString())){ 
+      val.isLikes=true
+     }
+     else{
+      val.isFollow=false
+      val.isLikes=false
+     }
     })
-    return mergedArray;
+    return sponsorshipLike;
   }
 
   public async getsponsorshipInfo(sponsorshipId: any, status: any) {

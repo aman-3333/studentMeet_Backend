@@ -120,7 +120,7 @@ export default class PostController {
       },
     ]);
     let PostList = await Post.aggregate([
-      { $match: { isDeleted: false, postLike: { $ne: [user._id] } } },
+      { $match: { isDeleted: false, postLike: { $nin: [user._id] } } },
       {
         $lookup: {
           localField: "userId",

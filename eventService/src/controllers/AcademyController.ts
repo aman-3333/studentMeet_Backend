@@ -51,7 +51,7 @@ export default class academyController {
 
   public async getAcademyList(user: any) {
     let academyLike = await academy.aggregate([
-      { $match: { isDeleted: false, academyLike: { $in: [user._id] } } },
+      { $match: { isDeleted: false} },
 
       {
         $lookup: {
@@ -93,70 +93,25 @@ export default class academyController {
           as: "school",
         },
       },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
+    
     ]);
-    let academyList = await academy.aggregate([
-      { $match: { isDeleted: false, academyLike: { $ne: [user._id] } } },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      {
-        $lookup: {
-          localField: "instituteId",
-          from: "institutes",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      {
-        $lookup: {
-          localField: "schoolId",
-          from: "schools",
-          foreignField: "_id",
-          as: "school",
-        },
-      },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
-      {
-        $addFields: {
-          isLikes: false,
-        },
-      },
-    ]);
+  
 
-    const mergedArray = [...academyLike, ...academyList];
+    academyLike.forEach((val:any)=>{
+      if( val.followers.toString().includes(user._id.toString())){ 
+       val.isFollow=true
+      }
+      if( val.academyLike.toString().includes(user._id.toString())){ 
+        val.isLikes=true
+       }
+      else{
+       val.isFollow=false;
+       val.isLikes=false;
+       
+      }
+     })
 
-    mergedArray.sort((a, b) => a.createdAt - b.createdAt);
-    return mergedArray;
+    return academyLike;
   }
 
 

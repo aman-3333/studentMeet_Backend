@@ -106,6 +106,8 @@ router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new SponsorshipController();
        const user=res.locals.user
+       console.log(user,"user");
+       
         const response: ISponsorship[] = await controller.getsponsorshipList(user);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {

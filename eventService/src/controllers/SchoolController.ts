@@ -27,7 +27,7 @@ export default class SchoolController {
 
   public async getSchool(user:any) {
     let schoolListlike= await school.aggregate([
-      { $match: { isDeleted: false, schoolLike: { $in: [user._id] } } },
+      { $match: { isDeleted: false,  } },
       {
         $lookup: {
           localField: "faculty",
@@ -72,73 +72,29 @@ export default class SchoolController {
         },
       },
       { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
+      
     ]);
-    const schoolListUnLike= await school.aggregate([
-      { $match: { isDeleted: false, schoolLike: { $ne: [user._id] } } },
-      {
-        $lookup: {
-          localField: "faculty",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "faculty",
-        },
-      },
-      {
-        $lookup: {
-          localField: "schoolOwnerId",
-          from: "school_owners",
-          foreignField: "_id",
-          as: "schoolOwner",
-        },
-      },
-      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          isLikes: false,
-        },
-      },
-    ]);
+   
 
     
-    schoolListlike = schoolListlike.concat(schoolListUnLike);
+  
 
-    const mergedArray = [...schoolListlike, ...schoolListUnLike];
+    schoolListlike.forEach((val:any)=>{
+      if( val.followers.toString().includes(user._id.toString())){ 
+       val.isFollow=true
+      }
+      if( val.schoolLike.toString().includes(user._id.toString())){ 
+        val.isLikes=true
+       }
+      else{
+       val.isFollow=false;
+       val.isLikes=false;
+       
+      }
+     })
 
-    mergedArray.sort((a, b) => b.createdAt - a.createdAt);
 
-    return mergedArray;
+    return schoolListlike;
   }
   public async searchSchool( searchValue: any) {
     if (searchValue) {
