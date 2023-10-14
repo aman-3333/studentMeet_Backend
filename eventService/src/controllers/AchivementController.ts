@@ -154,7 +154,7 @@ export default class AchivementController {
 
     achivementList.forEach((val:any)=>{
       if( val. achivementLike.toString().includes(user._id.toString())){ 
-        val.isLikes=true
+        val.isLikes=true;
        }
       else{    
        val.isLikes=false;
@@ -401,6 +401,6 @@ export default class AchivementController {
    
   }
 
-  
+
 
 }
