@@ -19,7 +19,7 @@ const body = req.body;
     }
 });
 
-router.patch("/edit", checkAuth, async (req, res) => {
+router.post("/edit", checkAuth, async (req, res) => {
     try {
         const body = req.body as IScholarship;
         const controller = new ScholarshipController();

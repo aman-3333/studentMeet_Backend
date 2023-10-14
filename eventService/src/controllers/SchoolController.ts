@@ -252,11 +252,9 @@ export default class SchoolController {
     let a: any = [];
     let info: any;
     let schoolInfo: any;
-console.log(body,"body");
-
     if (status == "schoolLike") {
       await school.findOneAndUpdate(
-        { _id: body.schoolId },
+        { _id: body.schoolId ,isDeleted:false},
         { $inc: { schoolLikeCount: 1 } },
         { new: true }
       ).lean();
