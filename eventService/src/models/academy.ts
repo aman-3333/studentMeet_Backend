@@ -64,7 +64,7 @@ const academyModel = new Schema(
         dateTime: { type: Date },
       },
     ],
-    sharePost: [
+    shareAchivemnt: [
       {
         academy: { type: Schema.Types.ObjectId, ref: "posts" },
         userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
@@ -168,7 +168,7 @@ export interface IAcademy extends Document {
       dateTime: Date,
     },
   ],
-  sharePost: [
+  shareAchivemnt: [
     {
       academy: ObjectId,
       userId: ObjectId,

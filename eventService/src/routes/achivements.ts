@@ -7,9 +7,8 @@ import { IAchivement } from "../models/achivement";
 import AchivementController from "../controllers/AchivementController";
 router.post("/create",  async (req, res) => {
     try {
-        
-req.body.user=res.locals.user
-const body = req.body;
+        req.body.user = res.locals.user;
+        const body = req.body;
         const controller = new AchivementController();
         const response = await controller.createAchivement(body);
         res.status(200).json(successResponse("create Achivement", response, res.statusCode));
@@ -21,10 +20,10 @@ const body = req.body;
 
 router.post("/delete",  async (req, res) => {
     try {
-req.body.user=res.locals.user
-const body = req.body;
-        const controller = new AchivementController();
-        const response = await controller.createAchivement(body);
+         req.body.user=res.locals.user;
+         const body = req.body;
+         const controller = new AchivementController();
+         const response = await controller.createAchivement(body);
         res.status(200).json(successResponse("delete Achivement", response, res.statusCode));
     } catch (error) {
    
@@ -61,7 +60,8 @@ router.get("/academy/achivement/list", checkAuth, async (req, res) => {
     try {
         const controller = new AchivementController();
         const academyId = req.query.academyId;
-        const response: IAchivement[] = await controller.getAcademyAchivement(academyId);
+        const user= res.locals.user;
+        const response: IAchivement[] = await controller.getAcademyAchivement(academyId,user);
         res.status(200).json(successResponse("getAcademyAchivement list", response, res.statusCode));
     } catch (error) {
       
@@ -70,11 +70,12 @@ router.get("/academy/achivement/list", checkAuth, async (req, res) => {
 });
 
 
-router.get("/byuserid",  async (req, res) => {
+router.get("/byuserid", checkAuth, async (req, res) => {
     try {
         const controller = new AchivementController();
         const userId = req.query.userId;
-        const response: IAchivement[] = await controller.getUserAchivement(userId);
+        const loginUser= res.locals.user;
+        const response: IAchivement[] = await controller.getUserAchivement(userId,loginUser);
         res.status(200).json(successResponse("getUserAchivement list", response, res.statusCode));
     } catch (error) {
       
