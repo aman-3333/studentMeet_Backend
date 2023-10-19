@@ -58,7 +58,7 @@ router.get("/SchoolOwnerList", checkAuth, async (req, res) => {
 });
 
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/infobyid",  async (req, res) => {
     try {
         const schoolOwnerId: any = req.query.schoolOwnerId;
         const controller = new SchoolOwnerController();

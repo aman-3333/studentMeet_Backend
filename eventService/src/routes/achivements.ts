@@ -10,11 +10,12 @@ router.post("/create", async (req, res) => {
     req.body.user = res.locals.user;
     const body = req.body;
     const controller = new AchivementController();
-    const response = await controller.createAchivement(body);
+    const response:any = await controller.createAchivement(body);
     res
       .status(200)
       .json(successResponse("create Achivement", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res
       .status(500)
       .json(errorResponse("error in create Achivement", res.statusCode));
@@ -26,7 +27,7 @@ router.post("/delete", async (req, res) => {
     req.body.user = res.locals.user;
     const body = req.body;
     const controller = new AchivementController();
-    const response = await controller.createAchivement(body);
+    const response:any = await controller.createAchivement(body);
     res
       .status(200)
       .json(successResponse("delete Achivement", response, res.statusCode));
@@ -190,6 +191,7 @@ router.post("/activity", async (req, res) => {
       .status(200)
       .json(successResponse("achivementActivity", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res
       .status(500)
       .json(errorResponse("error in achivementActivity", res.statusCode));

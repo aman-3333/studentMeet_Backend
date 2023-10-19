@@ -229,6 +229,72 @@ export default class SchoolController {
     return schoolInfo;
   }
 
+  public async getSchoolByOwnerId(schoolOwnerId: any) {
+    const schoolInfo= await school.aggregate([
+      {
+        $match: {
+          schoolOwnerId:new mongoose.Types.ObjectId(schoolOwnerId),
+           isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "faculty",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "faculty",
+        },
+      },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "school_scholarships",
+          foreignField: "schoolId",
+          as: "scholarships",
+        },
+      },
+      {
+        $lookup: {
+          localField: "schoolOwnerId",
+          from: "school_owners",
+          foreignField: "_id",
+          as: "schoolOwner",
+        },
+      },
+      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+    ]);
+
+  return schoolInfo;
+}
+
+
   public async deleteSchool(schoolId: any) {
     const schoolInfo: any = await school
       .findOneAndUpdate(

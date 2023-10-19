@@ -43,7 +43,7 @@ const AchivementSchema = new Schema(
         dateTime: { type: Date },
       },
     ],
-    sharePost: [
+    shareAchivement: [
       {
         achivement: { type: Schema.Types.ObjectId, ref: "posts" },
         userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
@@ -90,7 +90,7 @@ export interface IAchivement extends Document {
       dateTime: { type: Date },
     },
   ],
-  sharePost: [
+  shareAchivement: [
     {
       achivement: ObjectId,
       userId: ObjectId,

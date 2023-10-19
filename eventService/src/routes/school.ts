@@ -22,9 +22,9 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
   try {
-    const SchoolId = req.params.id;
+    const SchoolId = req.body.schoolId;
     req.body.user = res.locals.user;
     const body = req.body;
     const controller = new SchoolController();
@@ -87,6 +87,22 @@ router.get("/info/byId", async (req, res) => {
     const userId = req.body.userId;
     const controller = new SchoolController();
     const response: any = await controller.getSchoolInfoById(SchoolId);
+    res
+      .status(200)
+      .json(successResponse("get School by Id ", response, res.statusCode));
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in get School by Id", res.statusCode));
+  }
+});
+
+router.get("/by/owner", async (req, res) => {
+  try {
+    const schoolOwnerId: any = req.query.schoolOwnerId;
+    const userId = req.body.userId;
+    const controller = new SchoolController();
+    const response: any = await controller.getSchoolByOwnerId(schoolOwnerId);
     res
       .status(200)
       .json(successResponse("get School by Id ", response, res.statusCode));

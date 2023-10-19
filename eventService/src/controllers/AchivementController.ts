@@ -1,15 +1,92 @@
+import academy from "../models/academy";
 import Achivement, { IAchivement } from "../models/achivement";
+import school from "../models/school";
 import userActivity from "../models/userActivity";
+
 import userDetails from "../models/userDetails";
+import userDevice from "../models/userDevice";
 import { sendNotification } from "../services/notification";
 const mongoose = require("mongoose");
 const currentTime: any = new Date();
 export default class AchivementController {
   public async createAchivement(body: any) {
+    const {userId,academyId,schoolId} = body;
+    let data: any;
+    let user: any;
     let achivementInfo = await Achivement.create(body);
+    if (body.userId) {
+      let userInfo = await userActivity.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          
+            isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userData",
+          },
+        },
+        { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+      ]);
+      let userName=  userInfo[0].userData.fullName;
+      userInfo=userInfo[0].userFollowers;
+      for (let i = 0; i < userInfo.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+   if(userFcmToken){
+   const body=`${userName} Create a new acchivement please check and react`
+    sendNotification(userFcmToken.fcmtoken,body,"abc");
+   }  
+      }
+    }
 
-    return achivementInfo;
+    if (body.academyId) {
+    
+      let academyInfo = await academy.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(academyId),
+            isDeleted: false,
+          },
+        },
+      ]);
+      let academyName =  academyInfo[0].academyName;
+      academyInfo = academyInfo[0].followers;
+      for (let i = 0; i < academyInfo.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : academyInfo[i] });
+   if(userFcmToken){
+   const body=`${academyName} Create a new acchivement please check and react`
+    sendNotification(userFcmToken.fcmtoken,body,"abc");
+   }  
+      }
+    }
+
+    if (schoolId) {
+      let schoolInfo = await school.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(schoolId),
+            isDeleted: false,
+          },
+        },
+      ]);
+      let schoolName =  schoolInfo[0].schoolName;
+      schoolInfo = schoolInfo[0].followers;
+      for (let i = 0; i < schoolInfo.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : schoolInfo[i] });
+   if(userFcmToken){
+   const body=`${schoolName} Create a new acchivement please check and react`
+    sendNotification(userFcmToken.fcmtoken,body,"abc");
+   }
   }
+  }
+  return achivementInfo;
+  }
+  
 
   public async deletAchivement(achivementId: String) {
     const achivementInfo = await Achivement.findOneAndUpdate(
@@ -36,10 +113,12 @@ export default class AchivementController {
     return achivementList;
   }
 
-  public async getAcademyAchivement(academyId: any,user:any) {
+  public async getAcademyAchivement(academyId: any, user: any) {
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
-        $match: {academyId: new mongoose.Types.ObjectId(academyId),isDeleted:false
+        $match: {
+          academyId: new mongoose.Types.ObjectId(academyId),
+          isDeleted: false,
         },
       },
       {
@@ -58,7 +137,7 @@ export default class AchivementController {
           as: "school",
         },
       },
-      { $unwind: { path: '$school', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "city",
@@ -67,7 +146,7 @@ export default class AchivementController {
           as: "city",
         },
       },
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "state",
@@ -76,7 +155,7 @@ export default class AchivementController {
           as: "state",
         },
       },
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "country",
@@ -85,21 +164,19 @@ export default class AchivementController {
           as: "country",
         },
       },
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
-    achivementList.forEach((val:any)=>{
-      if( val. achivementLike.toString().includes(user._id.toString())){ 
-        val.isLikes=true
-       }
-      else{    
-       val.isLikes=false;
-       
+    achivementList.forEach((val: any) => {
+      if (val.achivementLike.toString().includes(user._id.toString())) {
+        val.isLikes = true;
+      } else {
+        val.isLikes = false;
       }
-     })
+    });
     return achivementList;
   }
 
-  public async getSchoolAchivement(schoolId: any,user:any) {
+  public async getSchoolAchivement(schoolId: any, user: any) {
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $match: {
@@ -122,7 +199,7 @@ export default class AchivementController {
           as: "school",
         },
       },
-      { $unwind: { path: '$school', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "city",
@@ -131,7 +208,7 @@ export default class AchivementController {
           as: "city",
         },
       },
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "state",
@@ -140,7 +217,7 @@ export default class AchivementController {
           as: "state",
         },
       },
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "country",
@@ -149,22 +226,20 @@ export default class AchivementController {
           as: "country",
         },
       },
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
 
-    achivementList.forEach((val:any)=>{
-      if( val. achivementLike.toString().includes(user._id.toString())){ 
-        val.isLikes=true;
-       }
-      else{    
-       val.isLikes=false;
-       
+    achivementList.forEach((val: any) => {
+      if (val.achivementLike.toString().includes(user._id.toString())) {
+        val.isLikes = true;
+      } else {
+        val.isLikes = false;
       }
-     })
+    });
     return achivementList;
   }
 
-  public async getUserAchivement(userId: any,loginUser:any) {
+  public async getUserAchivement(userId: any, loginUser: any) {
     const achivementList = await Achivement.aggregate([
       {
         $match: {
@@ -179,7 +254,7 @@ export default class AchivementController {
           as: "userDetail",
         },
       },
-      { $unwind: { path: '$userDetail', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$userDetail", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "schoolId",
@@ -188,7 +263,7 @@ export default class AchivementController {
           as: "school",
         },
       },
-      { $unwind: { path: '$school', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "city",
@@ -197,7 +272,7 @@ export default class AchivementController {
           as: "city",
         },
       },
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "state",
@@ -206,7 +281,7 @@ export default class AchivementController {
           as: "state",
         },
       },
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "country",
@@ -215,20 +290,16 @@ export default class AchivementController {
           as: "country",
         },
       },
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
-
-      
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
 
-    achivementList.forEach((val:any)=>{
-      if( val. achivementLike.toString().includes(loginUser._id.toString())){ 
-        val.isLikes=true
-       }
-      else{    
-       val.isLikes=false;
-       
+    achivementList.forEach((val: any) => {
+      if (val.achivementLike.toString().includes(loginUser._id.toString())) {
+        val.isLikes = true;
+      } else {
+        val.isLikes = false;
       }
-     })
+    });
 
     return achivementList;
   }
@@ -250,11 +321,7 @@ export default class AchivementController {
     return achivementInfo;
   }
 
-  public async achivementActivity(
-    userId: any,
-    status: any,
-    body: any
-  ) {
+  public async achivementActivity(userId: any, status: any, body: any) {
     let achivementInfo: any;
     let count: any = 1;
     let minuscount: any = -1;
@@ -263,6 +330,7 @@ export default class AchivementController {
         {
           _id: body.achivementId,
         },
+
         {
           $inc: { achivementLikeCount: count },
         }
@@ -279,10 +347,47 @@ export default class AchivementController {
         },
         { new: true }
       );
+
+      let userInfo = await userActivity.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          
+            isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userData",
+          },
+        },
+        { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+      ]);
+
+
+      let userName =  userInfo[0].userData.fullName;
+      if(achivementInfo.user_id) {
+        const achivementUser= await  userDevice.findOne({ userId : achivementInfo.user_id });
+        const body =`${userName} like Your Achivemnt check and react `;
+        sendNotification(achivementUser.fcmtoken,body,"abc");
+      }
+      userInfo = userInfo[0].userFollowers;
+      
+      for (let i = 0; i < userInfo.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+   if(userFcmToken){
+   const body =`${userName} like Achivemnt check and react  `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc");
+   }  
+
+   
+      }
       return achivementInfo;
     }
     if (status == "removAchivementLike") {
-  
       await Achivement.updateOne(
         {
           _id: body.achivementId,
@@ -308,6 +413,7 @@ export default class AchivementController {
     }
 
     if (status == "achivementComment") {
+      let userInfo:any ;
       for (let i = 0; i < body.achivementComment.length; i++) {
         achivementInfo = await Achivement.findOneAndUpdate(
           {
@@ -330,10 +436,46 @@ export default class AchivementController {
           {
             $inc: { achivementCommentCount: count },
           }
+          
         );
+        userInfo = await userActivity.aggregate([
+          {
+            $match: {
+              userId: new mongoose.Types.ObjectId(body.achivementComment[i].userId),
+            
+              isDeleted: false,
+            },
+          },
+          {
+            $lookup: {
+              localField: "userId",
+              from: "userdetails",
+              foreignField: "_id",
+              as: "userData",
+            },
+          },
+          { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+        ]);
+        }
+        let userName =  userInfo[0].userData.fullName;
+        if(achivementInfo.user_id) {
+          const achivementUser= await  userDevice.findOne({ userId : achivementInfo.user_id });
+          const body =`${userName} Comment On  Your Achivemnt check and react.`;
+          sendNotification(achivementUser.fcmtoken,body,"abc");
+        }
+        userInfo = userInfo[0].userFollowers;
+        for (let i = 0; i < userInfo.length; i++) {
+          let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+     if(userFcmToken){
+     const body =`${userName} Comment on  Achivemnt check and react.`;
+      sendNotification(userFcmToken.fcmtoken,body,"abc");
+     }  
+  
+     
+        }
 
         return achivementInfo;
-      }
+      
     }
     if (status == "removeAchivementComment") {
       for (let i = 0; i < body.achivementComment.length; i++) {
@@ -364,13 +506,17 @@ export default class AchivementController {
     }
   }
 
-  public async readAchivementActivity(achivementId: any, status: any, userId: any) {
+  public async readAchivementActivity(
+    achivementId: any,
+    status: any,
+    userId: any
+  ) {
     let achivementInfo: any;
     let isDeleteable: any;
     if (status == "readAchivementLike") {
-      achivementInfo = await Achivement
-        .findOne({ _id: achivementId })
-        .populate("achivementLike");
+      achivementInfo = await Achivement.findOne({ _id: achivementId }).populate(
+        "achivementLike"
+      );
       achivementInfo = achivementInfo.achivementLike;
       return achivementInfo;
     }
@@ -398,9 +544,5 @@ export default class AchivementController {
       var data = [...a].reverse();
       return data;
     }
-   
   }
-
-
-
 }
