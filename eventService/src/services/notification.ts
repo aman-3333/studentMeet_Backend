@@ -7,7 +7,7 @@ var serverKey =
 var fcm = new FCM(serverKey);
 const admin = require("firebase-admin");
 
-export async function sendNotification(fcmToken: any, title: any, body: any) {
+export async function sendNotification(fcmToken: any, title: any, body: any,screen:any) {
   
 
   var message = {
@@ -17,9 +17,10 @@ export async function sendNotification(fcmToken: any, title: any, body: any) {
       body: body,
       sound: "default", // Sound settings
       vibrate: [200, 100, 200],
+      screen: screen,
     },
     data: {
-      screen: "sponsor", // Screen name to redirect to
+      screen: screen,
     },
   };
   console.log("message", message);

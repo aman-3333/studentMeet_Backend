@@ -1,3 +1,4 @@
+import bankDetails from "../models/bankDetails";
 import SchoolOwner, { ISchoolOwner } from "../models/schoolsOwner.model";
 
 export default class SchoolOwnerController {
@@ -24,17 +25,28 @@ export default class SchoolOwnerController {
     return schoolOwnerList;
   }
 
-  public async getSchoolOwnerInfoById(SchoolOwnerId: any) {
+  public async getSchoolOwnerInfoById(schoolOwnerId: any) {
     const schoolOwnerInfo: any = await SchoolOwner.findOne({
-      _id: SchoolOwnerId,
+      _id: schoolOwnerId,
       isDeleted: false,
     }).lean();
     return schoolOwnerInfo;
   }
 
-  public async deleteSchoolOwner(SchoolOwnerId: String) {
+
+
+  
+  public async getBankdetailInfoById(schoolOwnerId: any) {
+    const schoolOwnerInfo: any = await bankDetails.findOne({
+      schoolOwner: schoolOwnerId,
+      isDeleted: false,
+    }).lean();
+    return schoolOwnerInfo;
+  }
+
+  public async deleteSchoolOwner(schoolOwnerId: String) {
     const schoolOwnerInfo: ISchoolOwner = await SchoolOwner.findOneAndUpdate(
-      { _id: SchoolOwnerId, isDeleted: false },
+      { _id: schoolOwnerId, isDeleted: false },
       { $set: { isDeleted: true } },
       { new: true }
     ).lean();

@@ -1,17 +1,11 @@
-import FuzzySearch from "fuzzy-search";
-import moment from "moment";
 
 import SponsorshipModel, { ISponsorship } from "../models/sponsorshipDetails";
 import userActivity from "../models/userActivity";
-
-import User from "../models/userDetails";
-const ObjectId = require('mongodb').ObjectId;
 import userDetails from "../models/userDetails";
-
 import post from "../models/post";
-import { Logger } from "mongodb";
-import { log } from "util";
-
+import userDevice from "../models/userDevice";
+import { sendNotification } from "../services/notification";
+const mongoose = require("mongoose");
 let currentTime: any = new Date();
 export default class SponsorshipController {
   //////////////////////////ADMIN SPONSORSHIP API/////////////////////////////////
@@ -115,6 +109,23 @@ export default class SponsorshipController {
     let a: any = [];
     let info: any;
     let sponsorshipInfo: any;
+    let userData= await userActivity.aggregate([
+      {
+        $match: {
+          userId:new mongoose.Types.ObjectId(userId), isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userdetails",
+        },
+      },
+      { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+    ]);
+    const followersData = userData[0].userFollowers;
 
     if (status == "sponsorshipLike") {
       await SponsorshipModel.findOneAndUpdate(
@@ -134,13 +145,21 @@ export default class SponsorshipController {
         { new: true }
       );
 
-      console.log(sponsorshipInfo);
+
 
       await userActivity.findOneAndUpdate(
         { userId: sponsorshipInfo.userId },
         { $inc: { sponsorshipLikeCount: 1 } },
         { new: true }
-      );
+      );  
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} like 😄 sponsorship check and react.`;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home");
+   }  
+  }
       return sponsorshipInfo;
     }
     if (status == "removeSponsorshipLike") {
@@ -201,8 +220,20 @@ export default class SponsorshipController {
           { $inc: { sponsorshipCommentCount: 1 } },
           { new: true }
         );
-        return sponsorshipInfo;
+
+   
       }
+
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} comment on sponsorship check and react  `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home");
+   }  
+  }
+
+      return sponsorshipInfo;
     }
     if (status == "removeSponsorshipComment") {
 
@@ -235,19 +266,17 @@ return sponsorshipInfo;
     if (status == "readSponsorshipComment") {
       userInfo = await userActivity.findOne({ userId: body.userId }).lean();
       userInfo = userInfo.sponsorshipComment;
-
       for (let i = 0; i < userInfo.length; i++) {
         let sponsorshipInfo: any = await SponsorshipModel.findOne({
           _id: userInfo[i].sponsorshipId,
         });
-
         let comment: any = userInfo[i].comment;
         let DateTime: any = userInfo[i].dateTime;
-
-        
-
         data.push({ sponsorshipInfo, comment, DateTime });
       }
+
+      
+  
       return data;
     }
   }
@@ -397,10 +426,38 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     let sponsorshipInfo: any;
     let isDeleteable:any;
     if (status == "readsponsorshipLike") {
-      sponsorshipInfo = await SponsorshipModel.findOne({
-        _id: sponsorshipId,
-      }).populate("sponsorshipLikeship");
-      sponsorshipInfo = sponsorshipInfo.sponsorshipLikeship;
+      
+   
+
+      let sponsorshipInfo:any= await SponsorshipModel.aggregate([
+        {
+          $match: {
+            _id:new mongoose.Types.ObjectId(sponsorshipId),
+             isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "sponsorshipLike",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+      
+      ]);
+      sponsorshipInfo= sponsorshipInfo[0].userdetails;
+
+      let userData:any = await userActivity.findOne({userId:userId})
+      userData=userData.userFollowing;
+      sponsorshipInfo.forEach((val:any)=>{
+        if(userData.toString().includes(val._id.toString())){
+          val.isFollow=true
+        }else{
+          val.isFollow=false
+        }
+      })
+
 
       return sponsorshipInfo;
     }

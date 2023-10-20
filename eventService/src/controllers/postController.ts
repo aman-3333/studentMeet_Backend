@@ -445,7 +445,7 @@ for (let i = 0; i < body.sharePostByOther.length; i++) {
     let isDeleteable: any;
     let PostInfo: any;
     if (status == "readPostLike") {
-      PostInfo = await Post.findOne({ _id: PostId }).populate("postLike");
+      PostInfo = await Post.find({ _id: PostId }).populate("postLike");
       PostInfo = PostInfo.postLike;
       return PostInfo;
     }

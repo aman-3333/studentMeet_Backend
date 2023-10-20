@@ -32,12 +32,12 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create BankDetails", res.statusCode));
     }
 });
-router.patch("/BankDetails/:id", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
     try {
-        const BankDetailsId = req.params.id;
+        const bankDetailsId = req.body.bankDetailsId;
         const body = req.body as IBankDetails;
         const controller = new BankDetailsController();
-        const response: IBankDetails = await controller.editBankDetails(body, BankDetailsId);
+        const response: IBankDetails = await controller.editBankDetails(body, bankDetailsId);
         res.status(200).json(successResponse("edit BankDetails", response, res.statusCode));
     } catch (error) {
       
@@ -58,11 +58,11 @@ router.get("/BankDetailsList", checkAuth, async (req, res) => {
 });
 
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/infobyid",  async (req, res) => {
     try {
-        const BankDetailsId: any = req.query.BankDetailsId;
+        const bankDetailsId: any = req.query.bankDetailsId;
         const controller = new BankDetailsController();
-        const response: any = await controller.getBankDetailsInfoById(BankDetailsId);
+        const response: any = await controller.getBankDetailsInfoById(bankDetailsId);
         res.status(200).json(successResponse("getBankDetails", response, res.statusCode));
     } catch (error) {
       
@@ -77,12 +77,9 @@ router.get("/delete/:id", checkAuth, async (req, res) => {
         const controller = new BankDetailsController();
         const response: IBankDetails = await controller.deleteBankDetails(BankDetailsId);
         res.status(200).json(successResponse("deleteBankDetails", response, res.statusCode));
-
-    } catch (error) {
-       
+    } catch (error) { 
         res.status(500).json(errorResponse("error in deleteBankDetails", res.statusCode));
     }
-})
-
+});
 
 export default router;

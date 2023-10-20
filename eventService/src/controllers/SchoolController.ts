@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 import School from "../models/school";
 import userDetails from "../models/userDetails";
 import userActivity from "../models/userActivity";
+import userDevice from "../models/userDevice";
+import { sendNotification } from "../services/notification";
+
 const currentTime: any = new Date();
 export default class SchoolController {
   //////////////////////////////school///////////////////////////////////////////////////////////
@@ -318,6 +321,25 @@ export default class SchoolController {
     let a: any = [];
     let info: any;
     let schoolInfo: any;
+
+    let userData= await userActivity.aggregate([
+      {
+        $match: {
+          userId:new mongoose.Types.ObjectId(userId), isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userdetails",
+        },
+      },
+      { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+    ]);
+  
+   const followersData = userData[0].userFollowers;
     if (status == "schoolLike") {
       await school.findOneAndUpdate(
         { _id: body.schoolId ,isDeleted:false},
@@ -343,6 +365,20 @@ export default class SchoolController {
         { $inc: { schoolLikeCount: 1 } },
         { new: true }
       );
+
+ 
+
+     
+     
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} like school check and react  `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement");
+   }  
+  }
+
       return schoolInfo;
     }
     if (status == "removeSchoolLike") {
@@ -388,21 +424,25 @@ export default class SchoolController {
             },
           }
         );
-        console.log(schoolInfo, "schoolInfo");
-
         schoolInfo = await school.findOneAndUpdate(
           { _id: body.schoolId,isDeleted:false },
           { $inc: { schoolCommentCount: 1 } },
           { new: true }
         );
-
         await userActivity.findOneAndUpdate(
           { userId: schoolInfo.userId,isDeleted:false },
           { $inc: { schoolCommentCount: 1 } },
           { new: true }
         );
-        return schoolInfo;
       }
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} comment on school check and react.`;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","school_home");
+   }  
+  }
+  return schoolInfo;
     }
     if (status == "removeSchoolComment") {
 
@@ -444,7 +484,7 @@ return schoolInfo
     }
   }
 
-
+  
 
 
 
@@ -455,8 +495,35 @@ return schoolInfo
     let isDeleteable: any;
     let schoolInfo: any;
     if (status == "readSchoolLike") {
-      schoolInfo = await school.findOne({ _id: schoolId }).populate("schoolLike");
-      schoolInfo = schoolInfo.schoolLike;
+    
+      let schoolInfo:any= await school.aggregate([
+        {
+          $match: {
+            _id:new mongoose.Types.ObjectId(schoolId),
+             isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "schoolLike",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+      
+      ]);
+      schoolInfo= schoolInfo[0].userdetails;
+
+      let userData:any = await userActivity.findOne({userId:userId})
+      userData=userData.userFollowing;
+      schoolInfo.forEach((val:any)=>{
+        if(userData.toString().includes(val._id.toString())){
+          val.isFollow=true
+        }else{
+          val.isFollow=false
+        }
+      })
       return schoolInfo;
     }
     if (status == "readSchoolComment") {

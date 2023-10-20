@@ -5,6 +5,7 @@ import userDetails from "../models/userDetails";
 import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
 import { sendNotification } from "../services/notification";
+import userDevice from "../models/userDevice";
 const mongoose = require("mongoose");
 const currentTime: any = new Date();
 export default class academyController {
@@ -188,6 +189,25 @@ export default class academyController {
     let academyInfo: any;
     let count:any=1
     let minuscount:any=-1
+
+    let userData= await userActivity.aggregate([
+      {
+        $match: {
+          userId:new mongoose.Types.ObjectId(userId), isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userdetails",
+        },
+      },
+      { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+    ]);
+   
+    const followersData = userData[0].userFollowers;
     if (status == "academyLike") {
       
        await academy.updateOne(
@@ -213,7 +233,16 @@ export default class academyController {
       );
 
       console.log(academyInfo,body.academyId,userId);
-
+      
+      
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} like academy check and react  `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home");
+   }  
+  }
       return academyInfo;
     }
     if (status == "removAcademyLike") {
@@ -270,10 +299,18 @@ export default class academyController {
             $inc: { academyCommentCount: count },
           }
         );
-
-        return academyInfo;
       }
+            
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} comment on academy check and react.`;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home");
+   }  
+  }
+  return academyInfo;
     }
+    
     if (status == "removeAcademyComment") {
       for (let i = 0; i < body.academyComment.length; i++) {
         academyInfo = await academy.findOneAndUpdate(
@@ -319,18 +356,45 @@ export default class academyController {
       return data;
     }
   }
-
+  
 
 
   public async readAcademyActivity(academyId: any, status: any,userId:any) {
     let academyInfo: any;
     let isDeleteable:any;
     if (status == "readAcademyLike") {
-      academyInfo = await academy
-        .findOne({ _id: academyId })
-        .populate("academyLike");
-      academyInfo = academyInfo.academyLike;
+    
+
+      let academyInfo:any= await academy.aggregate([
+        {
+          $match: {
+            _id:new mongoose.Types.ObjectId(academyId),
+             isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "academyLike",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+      
+      ]);
+      academyInfo= academyInfo[0].userdetails;
+
+      let userData:any = await userActivity.findOne({userId:userId})
+      userData=userData.userFollowing;
+      academyInfo.forEach((val:any)=>{
+        if(userData.toString().includes(val._id.toString())){
+          val.isFollow=true
+        }else{
+          val.isFollow=false
+        }
+      })
       return academyInfo;
+   
     }
     if (status == "readAcademyComment") {
       let a = [];

@@ -57,7 +57,7 @@ router.get("/SchoolOwnerList", checkAuth, async (req, res) => {
     }
 });
 
-
+// getBankdetailInfoById
 router.get("/infobyid",  async (req, res) => {
     try {
         const schoolOwnerId: any = req.query.schoolOwnerId;
@@ -70,6 +70,18 @@ router.get("/infobyid",  async (req, res) => {
     }
 });
 
+
+router.get("/bankdetail",  async (req, res) => {
+    try {
+        const schoolOwnerId: any = req.query.schoolOwnerId;
+        const controller = new SchoolOwnerController();
+        const response: any = await controller.getBankdetailInfoById(schoolOwnerId);
+        res.status(200).json(successResponse("getSchoolOwner", response, res.statusCode));
+    } catch (error) {
+      
+        res.status(500).json(errorResponse("error in getSchoolOwner", res.statusCode));
+    }
+});
 
 router.get("/delete/:id", checkAuth, async (req, res) => {
     try {

@@ -433,7 +433,7 @@ return userData
       return existingUser;
     }
     if (type == "school") {
-      sendNotification("dN3xyqsvSzydE_5UnyVXrV:APA91bH5OZep654WazMQ6oRd7V-Eh_xdUYq7F8XgaQ2G6XaDPoKSIqCQ99NMyvlUV0_TKa6TULlYaj3BngQhS_PWmciRNIFGCA7QiZgHuAlAr6DwY9B-ZRU2JTU8B21aIH-ToRGQZ1NT",body,"data")
+    
       let existingUser: any = await schoolOwner.findOne({ email: email });
       if (!existingUser) {
         return { message: "User not exists" };
