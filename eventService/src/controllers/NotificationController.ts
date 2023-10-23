@@ -9,12 +9,12 @@ export default class NotificationController {
     }   
 
     public async editNotification(body: any) {
-        const notificationInfo : any = await Notification.findOneAndUpdate({ _id: body.notificationId, isDeleted: false }, body, { new: true }).lean();
+        const notificationInfo : any =   await Notification.findOneAndUpdate({ userId: body.user_id,  content : body.title, isDeleted : false }, body, { new : true }).lean();
         return notificationInfo;
     }
 
-    public async getNotificationList() {
-        const notificationList : any = await Notification.find({  isDeleted: false });
+    public async getNotificationList(userId:any) {
+        const notificationList : any = await Notification.find({userId : userId,  isDeleted : false }).sort({createdAt:-1});
         return notificationList;
     }
 

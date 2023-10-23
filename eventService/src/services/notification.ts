@@ -7,9 +7,8 @@ var serverKey =
 var fcm = new FCM(serverKey);
 const admin = require("firebase-admin");
 
-export async function sendNotification(fcmToken: any, title: any, body: any,screen:any) {
-  
 
+export async function sendNotification(fcmToken: any, title: any, body: any,screen:any,user_id:any,screen_id:any) {
   var message = {
     to: fcmToken,
     notification: {
@@ -18,26 +17,26 @@ export async function sendNotification(fcmToken: any, title: any, body: any,scre
       sound: "default", // Sound settings
       vibrate: [200, 100, 200],
       screen: screen,
+      user_id:user_id,
+      screen_id:screen_id
     },
     data: {
       screen: screen,
     },
   };
-  console.log("message", message);
-
   fcm.send(message, (err: any, response: any) => {
     if (err) {
       console.log("something has gon wrong", err);
     } else {
       console.log("successful send ", response);
-     
-       
     }
   });
   const userInfo = await userDevice.findOne({fcmtoken:fcmToken})
 await notificationModel.create({
 userId:userInfo.userId,
 content: title,
+screen: screen,
+screen_id: screen_id,
 })
 
 }

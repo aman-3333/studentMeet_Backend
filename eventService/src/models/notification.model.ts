@@ -7,6 +7,8 @@ const schema = new Schema(
     content: { type: String },
     read: { type: Boolean, default: false },
     redirectionScreen: { type: String },
+    screen: { type: String },
+    screen_id: { type: Schema.Types.ObjectId },
     is_publish: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
   },
@@ -24,6 +26,8 @@ export interface INotification extends Document {
     content: String,
     redirectionScreen: String,
     read: Boolean,
+    screen: String,
+    screen_id: ObjectId,
     is_publish:Boolean,
     isDeleted: Boolean,
 }

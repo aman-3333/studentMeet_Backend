@@ -17,7 +17,7 @@ const body = req.body;
 });
 
 
-router.patch("/edit", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
     try {
         const body = req.body as any;
         const controller = new NotificationController();
@@ -29,16 +29,18 @@ router.patch("/edit", checkAuth, async (req, res) => {
 });
 
 
-router.get("/list",  async (req, res) => {
+router.get("/list",   async (req, res) => {
     try {
         const controller = new NotificationController();
-        const response: any = await controller.getNotificationList();
+const userId = req.query.userId;
+        const response: any = await controller.getNotificationList(userId);
         res.status(200).json(successResponse("Notification list", response, res.statusCode));
     } catch (error) {
       
         res.status(500).json(errorResponse("error in Notification list", res.statusCode));
     }
 });
+
 
 
 

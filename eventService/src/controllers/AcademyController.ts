@@ -189,7 +189,7 @@ export default class academyController {
     let academyInfo: any;
     let count:any=1
     let minuscount:any=-1
-
+    const academy_id:any = body.academyId;
     let userData= await userActivity.aggregate([
       {
         $match: {
@@ -232,15 +232,13 @@ export default class academyController {
         { new: true }
       );
 
-      console.log(academyInfo,body.academyId,userId);
-      
-      
+     
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
-        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
+        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName");
    if(userFcmToken){
-   const body =`${userData[0].userdetails.fullName} like academy check and react  `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home");
+   const body =`${userData[0].userdetails.fullName} like academy check and react.`;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home",followersData[i], academy_id);
    }  
   }
       return academyInfo;
@@ -304,8 +302,9 @@ export default class academyController {
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
    if(userFcmToken){
+
    const body =`${userData[0].userdetails.fullName} comment on academy check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home");
+    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home",followersData[i], academy_id);
    }  
   }
   return academyInfo;

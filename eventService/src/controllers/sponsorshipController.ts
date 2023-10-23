@@ -126,7 +126,7 @@ export default class SponsorshipController {
       { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
     ]);
     const followersData = userData[0].userFollowers;
-
+const sponsorship_id= body.sponsorshipId
     if (status == "sponsorshipLike") {
       await SponsorshipModel.findOneAndUpdate(
         { _id: body.sponsorshipId },
@@ -157,7 +157,7 @@ export default class SponsorshipController {
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} like 😄 sponsorship check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home");
+    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id);
    }  
   }
       return sponsorshipInfo;
@@ -229,7 +229,7 @@ export default class SponsorshipController {
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} comment on sponsorship check and react  `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home");
+    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id);
    }  
   }
 
@@ -399,6 +399,7 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     return postInfo;
   }
 
+  
 
   public async shareSponsorship( body:any ) {
     for (let i = 0; i < body.sponsorshipSharedByOther.length; i++) {
@@ -422,13 +423,12 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     }
       }
 
+
+
   public async readActivity(sponsorshipId: any, status: any,userId:any) {
     let sponsorshipInfo: any;
     let isDeleteable:any;
     if (status == "readsponsorshipLike") {
-      
-   
-
       let sponsorshipInfo:any= await SponsorshipModel.aggregate([
         {
           $match: {
@@ -501,6 +501,7 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
 
   ///////////////////////////////////SponsorshipActivity/////////////////////////////////////////////////
 
+
   public async feadBackSponsorship(
     body: any,
     sponsorshipId: any,
@@ -528,6 +529,9 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
 
     return sponsorshipInfo;
   }
+
+
+
   public async getActivity(userId: any, status: any) {
     let userInfo: any;
     if (status == "following") {
@@ -562,6 +566,10 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     }
     return userInfo;
   }
+
+
+
+
   public async RemoveActivity(userId: any, status: any, removeUserId: any) {
     let userInfo: any;
     if (status == "removeFollowing") {
@@ -620,8 +628,6 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     return userInfo;
   }
 
-
- 
 
 
     public async filterSponsorship(query:any){

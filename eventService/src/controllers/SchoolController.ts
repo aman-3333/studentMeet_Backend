@@ -321,7 +321,7 @@ export default class SchoolController {
     let a: any = [];
     let info: any;
     let schoolInfo: any;
-
+const school_id=body.schoolId
     let userData= await userActivity.aggregate([
       {
         $match: {
@@ -375,7 +375,7 @@ export default class SchoolController {
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} like school check and react  `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement");
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",followersData[i],school_id);
    }  
   }
 
@@ -439,7 +439,7 @@ export default class SchoolController {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} comment on school check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","school_home");
+    sendNotification(userFcmToken.fcmtoken,body,"abc","school_home",followersData[i],school_id);
    }  
   }
   return schoolInfo;
