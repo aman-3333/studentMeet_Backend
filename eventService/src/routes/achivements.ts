@@ -38,7 +38,7 @@ router.post("/delete", async (req, res) => {
   }
 });
 
-router.patch("/edit/:id", checkAuth, async (req, res) => {
+router.patch("/edit/:id",  async (req, res) => {
   try {
     const AchivementId = req.params.id;
     const body = req.body as IAchivement;
@@ -176,7 +176,6 @@ router.post("/activity", async (req, res) => {
     const status = req.body.status;
     const achivementComment = req.body.achivementComment;
     const achivementCommentId = req.body.achivementCommentId;
-
     req.body.user = res.locals.user;
     const body = req.body;
 

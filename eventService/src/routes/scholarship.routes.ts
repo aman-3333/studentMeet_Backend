@@ -19,7 +19,7 @@ const body = req.body;
     }
 });
 
-router.post("/edit", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
     try {
         const body = req.body as IScholarship;
         const controller = new ScholarshipController();
@@ -44,7 +44,7 @@ router.get("/list",  async (req, res) => {
 });
 
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/infobyid",  async (req, res) => {
     try {
         const scholarshipId: any = req.query.scholarshipId;
         const controller = new ScholarshipController();
