@@ -322,24 +322,7 @@ export default class SchoolController {
     let info: any;
     let schoolInfo: any;
 const school_id=body.schoolId
-    let userData= await userActivity.aggregate([
-      {
-        $match: {
-          userId:new mongoose.Types.ObjectId(body.schoolComment[0].userId), isDeleted: false,
-        },
-      },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "userdetails",
-        },
-      },
-      { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
-    ]);
   
-   const followersData = userData[0].userFollowers;
     if (status == "schoolLike") {
       await school.findOneAndUpdate(
         { _id: body.schoolId ,isDeleted:false},
@@ -367,7 +350,24 @@ const school_id=body.schoolId
       );
 
  
-
+      let userData= await userActivity.aggregate([
+        {
+          $match: {
+            userId:new mongoose.Types.ObjectId(body.schoolComment[0].userId), isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+      ]);
+    
+     const followersData = userData[0].userFollowers;
      
      
       for (let i = 0; i < followersData.length; i++) {
@@ -435,6 +435,24 @@ const school_id=body.schoolId
           { new: true }
         );
       }
+      let userData= await userActivity.aggregate([
+        {
+          $match: {
+            userId:new mongoose.Types.ObjectId(body.schoolComment[0].userId), isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+      ]);
+    
+     const followersData = userData[0].userFollowers;
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
    if(userFcmToken){

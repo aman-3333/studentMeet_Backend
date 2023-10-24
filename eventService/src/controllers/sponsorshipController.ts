@@ -111,28 +111,36 @@ export default class SponsorshipController {
     let sponsorshipInfo: any;
     let followersData:any;
     let sponsorship_id:any;
-    let userData= await userActivity.aggregate([
-      {
-        $match: {
-          userId:new mongoose.Types.ObjectId(body.sponsorshipComment[0].userId),
-           isDeleted: false,
-        },
-      },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "userdetails",
-        },
-      },
-      { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
-    ]);
+    if (status == "removeSponsorshipComment") {
+
+      
+            sponsorshipInfo = await SponsorshipModel.updateOne(
+              { _id: body.sponsorshipId},
+              {
+                $pull: {
+                  sponsorshipComment: { _id: body._id }
+                }
+              },
+              {
+                multi: true
+              }
+            )
+      
+      sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
+        { _id: body.sponsorshipId },
+        { $inc: { sponsorshipCommentCount: -1 } },
+        { new: true }
+      );
+      
+      await userActivity.findOneAndUpdate(
+        { userId: sponsorshipInfo.userId },
+        { $inc: { sponsorshipCommentCount: -1 } },
+        { new: true }
+      );
+      
+      return sponsorshipInfo;
+          }
    
-    if(userData[0].userFollowers.length>0){
-       followersData = userData[0].userFollowers;
-       sponsorship_id = body.sponsorshipId;
-    }
 
     if (status == "sponsorshipLike") {
       await SponsorshipModel.findOneAndUpdate(
@@ -152,13 +160,33 @@ export default class SponsorshipController {
         { new: true }
       );
 
-
-
       await userActivity.findOneAndUpdate(
         { userId: sponsorshipInfo.userId },
         { $inc: { sponsorshipLikeCount: 1 } },
         { new: true }
       );  
+      let userData= await userActivity.aggregate([
+        {
+          $match: {
+            userId:new mongoose.Types.ObjectId(body.sponsorshipComment[0].userId),
+             isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+      ]);
+     
+      if(userData[0].userFollowers.length>0){
+         followersData = userData[0].userFollowers;
+         sponsorship_id = body.sponsorshipId;
+      }
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
@@ -232,6 +260,29 @@ export default class SponsorshipController {
    
       }
 
+      let userData= await userActivity.aggregate([
+        {
+          $match: {
+            userId:new mongoose.Types.ObjectId(body.sponsorshipComment[0].userId),
+             isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+      ]);
+     
+      if(userData[0].userFollowers.length>0){
+         followersData = userData[0].userFollowers;
+         sponsorship_id = body.sponsorshipId;
+      }
+
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
@@ -243,34 +294,7 @@ export default class SponsorshipController {
 
       return sponsorshipInfo;
     }
-    if (status == "removeSponsorshipComment") {
-
-      sponsorshipInfo = await SponsorshipModel.updateOne(
-        { _id: body.sponsorshipId},
-        {
-          $pull: {
-            sponsorshipComment: { _id: body._id }
-          }
-        },
-        {
-          multi: true
-        }
-      )
-
-sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-  { _id: body.sponsorshipId },
-  { $inc: { sponsorshipCommentCount: -1 } },
-  { new: true }
-);
-
-await userActivity.findOneAndUpdate(
-  { userId: sponsorshipInfo.userId },
-  { $inc: { sponsorshipCommentCount: -1 } },
-  { new: true }
-);
-
-return sponsorshipInfo;
-    }
+   
     if (status == "readSponsorshipComment") {
       userInfo = await userActivity.findOne({ userId: body.userId }).lean();
       userInfo = userInfo.sponsorshipComment;
