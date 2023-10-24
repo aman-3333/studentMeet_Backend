@@ -109,10 +109,13 @@ export default class SponsorshipController {
     let a: any = [];
     let info: any;
     let sponsorshipInfo: any;
+    let followersData:any;
+    let sponsorship_id:any;
     let userData= await userActivity.aggregate([
       {
         $match: {
-          userId:new mongoose.Types.ObjectId(userId), isDeleted: false,
+          userId:new mongoose.Types.ObjectId(body.sponsorshipComment[0].userId),
+           isDeleted: false,
         },
       },
       {
@@ -125,8 +128,12 @@ export default class SponsorshipController {
       },
       { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
     ]);
-    const followersData = userData[0].userFollowers;
-const sponsorship_id= body.sponsorshipId
+   
+    if(userData[0].userFollowers.length>0){
+       followersData = userData[0].userFollowers;
+       sponsorship_id = body.sponsorshipId;
+    }
+
     if (status == "sponsorshipLike") {
       await SponsorshipModel.findOneAndUpdate(
         { _id: body.sponsorshipId },
@@ -188,8 +195,9 @@ const sponsorship_id= body.sponsorshipId
       );
       return sponsorshipInfo;
     }
-
+ 
     if (status == "sponsorshipComment") {
+
       for (let i = 0; i < body.sponsorshipComment.length; i++) {
         sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
           {

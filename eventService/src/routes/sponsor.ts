@@ -173,7 +173,7 @@ router.post("/activity", async (req, res) => {
         const response:any =await controller.sponsorshipActivity(userId,sponsorshipId,  status,hashtagcomment,hashtagcommentId, body);
         res.status(200).json(successResponse("SponsorshipActivity",response,res.statusCode));
     }catch(error) {
-    
+    console.log(error,"error")
         res.status(500).json(errorResponse("error in SponsorshipActivity", res.statusCode));
     }
 })

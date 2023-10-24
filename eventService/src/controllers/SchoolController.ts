@@ -325,7 +325,7 @@ const school_id=body.schoolId
     let userData= await userActivity.aggregate([
       {
         $match: {
-          userId:new mongoose.Types.ObjectId(userId), isDeleted: false,
+          userId:new mongoose.Types.ObjectId(body.schoolComment[0].userId), isDeleted: false,
         },
       },
       {
