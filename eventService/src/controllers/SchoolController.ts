@@ -15,9 +15,10 @@ export default class SchoolController {
   public async createSchool(body: any) {
     let schoolInfo: any;
     schoolInfo = await school.create(body);
-
     return schoolInfo;
   }
+
+  
 
   public async editSchool(body: any, schoolId: string) {
     const schoolInfo: any = await school
@@ -27,6 +28,8 @@ export default class SchoolController {
       .lean();
     return schoolInfo;
   }
+
+
 
   public async getSchool(user:any) {
     let schoolListlike= await school.aggregate([
@@ -100,6 +103,9 @@ export default class SchoolController {
 
     return schoolListlike;
   }
+
+
+
   public async searchSchool( searchValue: any) {
     if (searchValue) {
       let schoolList= await school.aggregate([
@@ -143,6 +149,10 @@ export default class SchoolController {
       return schoolList;
     }
   }
+
+
+
+
   public async shareSchool( body:any ) {
     for (let i = 0; i < body.schoolSharedByOther.length; i++) {
       let  schoolInfo = await userActivity.findOneAndUpdate(
@@ -232,6 +242,8 @@ export default class SchoolController {
     return schoolInfo;
   }
 
+
+
   public async getSchoolByOwnerId(schoolOwnerId: any) {
     const schoolInfo= await school.aggregate([
       {
@@ -298,6 +310,7 @@ export default class SchoolController {
 }
 
 
+
   public async deleteSchool(schoolId: any) {
     const schoolInfo: any = await school
       .findOneAndUpdate(
@@ -307,6 +320,9 @@ export default class SchoolController {
       .lean();
     return schoolInfo;
   }
+
+
+
 
   public async schoolActivity(
     userId: any,
@@ -503,8 +519,6 @@ return schoolInfo
   }
 
   
-
-
 
  
 

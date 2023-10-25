@@ -15,26 +15,16 @@ export default class sonsorRepresentativeController {
 
 //////////////////////////////sonsorRepresentative///////////////////////////////////////////////////////////
 
-
-  
-
-
- 
-
-
     public async createsonsorRepresentative(body: any) {
         let sonsorRepresentativeInfo: any;
         sonsorRepresentativeInfo = await sonsorRepresentative.create(body);
-
         return sonsorRepresentativeInfo;
     }
 
 
     public async editsonsorRepresentative(body: any, sonsorRepresentativeId: string) {
-       
         const sonsorRepresentativeInfo: any = await sonsorRepresentative.findOneAndUpdate({ _id: sonsorRepresentativeId, isDeleted: false }, body, { new: true }).lean();
         return sonsorRepresentativeInfo;
-
     }
 
 
@@ -42,10 +32,12 @@ export default class sonsorRepresentativeController {
         const sonsorRepresentativeList: any[] = await sonsorRepresentative.find({ isDeleted: false });
         return sonsorRepresentativeList;
     }
+
     public async getsonsorRepresentativeInfobyId(representativeId:any) {
         const sonsorRepresentativeList: any[] = await sonsorRepresentative.find({ _id:representativeId,isDeleted: false });
         return sonsorRepresentativeList;
     }
+
     public async searchsonsorRepresentative(stateId:any,searchValue:any) {
         if(searchValue){
         let sonsorRepresentativeList: any = await sonsorRepresentative.find({sonsorRepresentativeStateId:stateId,isDeleted: false });

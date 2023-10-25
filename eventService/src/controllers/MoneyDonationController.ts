@@ -8,12 +8,12 @@ export default class moneyDonationController {
         const { amount, donorId, email,userId,postId,status,note } = body;
 
         const order = await razorpay.orders.create({
-          amount: amount * 100, // Amount in paise
+          amount: amount * 100, 
           currency: 'INR',
           receipt: 'donation_receipt',
         });
     
-        // Save donation details to the database
+
         const donation = new moneyDonation({
           amount,
           donorId,
@@ -29,14 +29,11 @@ export default class moneyDonationController {
 
     }
 
-    public async transferMoneyDonation(body: any) {
 
-       
-            // Retrieve bank account details from the request
+    
+    public async transferMoneyDonation(body: any) {
             const { userId } = body;
-        
             let bankDetail=await bankDetails.findOne({userId:userId,isDeleted:false}).lean()
-            // Find the total donation amount to transfer
             const totalDonationAmount = await moneyDonation.aggregate([
               {
                 $group: {

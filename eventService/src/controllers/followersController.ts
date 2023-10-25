@@ -18,24 +18,16 @@ public async following(userId: any, followingId: any,userType:any) {
     if(userType=="normal" ||  userType=="coach" ){
     if(userInfo.isProfilePublic == true){
         userInfo = await userActivity.updateOne({ userId: userId},
-            
             {
               $push: { userFollowing: followingId }, 
               $inc: { followingCount: 1 } 
             }),
-       
             userInfo = await userActivity.updateOne({ userId: followingId},
-            
                 {
                   $push: { userFollowers: userId }, 
                   $inc: { followersCount: 1 } 
                 })
-            
-
- 
-
     }
-    
 if(userInfo.isProfilePublic == false){
 
     userInfo = await userActivity.findOneAndUpdate({
@@ -57,7 +49,7 @@ if(userInfo.isProfilePublic == false){
 }
     }
     if(userType=="academy"){
-     console.log("hello")
+
 
      userInfo = await userActivity.updateOne({ userId: userId},
             
@@ -78,12 +70,8 @@ if(userInfo.isProfilePublic == false){
 
   
     }
-
-
-    
         if(userType=="sponsorship"){
             userInfo = await userActivity.updateOne({ userId: userId},
-            
                 {
                   $push: { sponsorshipFollowing: followingId }, 
                   $inc: { sponsorshipFollowingCount: 1 } 
@@ -100,16 +88,7 @@ if(userInfo.isProfilePublic == false){
                     },{new:true}).lean()
             
        
-            }
-
-    
-            
-          
-      
-        
-            
-            
-      
+            }   
     return userInfo
 
         }

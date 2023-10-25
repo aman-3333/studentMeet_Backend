@@ -287,7 +287,7 @@ export default class AuthController {
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: 365 * 24 * 60 * 60
         },
         SECRET_KEY
       );
@@ -321,7 +321,7 @@ return userInfo
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: 365 * 24 * 60 * 60,
         },
         SECRET_KEY
       );
@@ -355,7 +355,7 @@ return userData
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: 365 * 24 * 60 * 60,
         },
         SECRET_KEY
       );
@@ -393,7 +393,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: 365 * 24 * 60 * 60,
         },
         SECRET_KEY
       );
@@ -422,7 +422,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: 365 * 24 * 60 * 60,
         },
         SECRET_KEY
       );
@@ -451,7 +451,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: 365 * 24 * 60 * 60,
         },
         SECRET_KEY
       );

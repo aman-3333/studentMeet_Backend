@@ -49,8 +49,6 @@ console.log("token",token);
 
         const user = await userDetails.findOne({_id:userId.userId})
 
-console.log(user,"user");
-
         if (!user) {
             next({status: 404, message: "USER_NOT_FOUND_ERR" })
             return
