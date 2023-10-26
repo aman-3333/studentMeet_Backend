@@ -40,8 +40,6 @@ export default class academyController {
   }
 
   public async editAcademy(body: any) {
-    console.log(body.academyId, "body.academyId");
-
     const academyInfo: any = await academy
       .findOneAndUpdate({ _id: body.academyId }, body, {
         new: true,

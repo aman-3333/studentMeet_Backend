@@ -8,10 +8,8 @@ export async function emailExistance(email: any,api_key_email:any) {
       };
       
      const resp = await axios(config).then(function (response: any) {
-        console.log(JSON.stringify(response.data));
         return response.data
       }).catch(function (error: any) {
-        console.log(error);
         return error.response.data
       });
 

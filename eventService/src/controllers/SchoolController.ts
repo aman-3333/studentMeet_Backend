@@ -11,7 +11,7 @@ import { sendNotification } from "../services/notification";
 const currentTime: any = new Date();
 export default class SchoolController {
   //////////////////////////////school///////////////////////////////////////////////////////////
-
+  
   public async createSchool(body: any) {
     let schoolInfo: any;
     schoolInfo = await school.create(body);

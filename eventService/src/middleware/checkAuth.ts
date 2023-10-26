@@ -33,8 +33,6 @@ console.log(header);
 
         // verify  auth token
         const token = header.split("Bearer ")[1]
-console.log("token",token);
-
         if (!token) {
             next({ status: 403, message: "AUTH_TOKEN_MISSING_ERR" })
             return
