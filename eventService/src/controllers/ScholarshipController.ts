@@ -22,7 +22,6 @@ export default class ScholarshipController {
       schoolId:schoolId,
       isDeleted: false,
     });
-    console.log(scholarshipList,"scholarshipList")
     return scholarshipList;
   }
 

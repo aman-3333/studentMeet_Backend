@@ -25,7 +25,6 @@ router.post("/create",  async (req, res) => {
         const response = await controller.createSchoolInfrastructure(body);
         res.status(200).json(successResponse("create SchoolInfrastructure", response, res.statusCode));
     } catch (error) {
-   
         res.status(500).json(errorResponse("error in create SchoolInfrastructure", res.statusCode));
     }
 });
@@ -33,7 +32,6 @@ router.post("/create",  async (req, res) => {
 
 router.post("/edit",  async (req, res) => {
     try {
-      
         const body = req.body as ISchoolInfrastructure;
         const controller = new SchoolInfrastructureController();
         const response: ISchoolInfrastructure = await controller.editSchoolInfrastructure(body);

@@ -7,14 +7,12 @@ import { IScholarship } from "../models/scholarship.model";
 import ScholarshipController from "../controllers/ScholarshipController";
 router.post("/create",  async (req, res) => {
     try {
-        
-
-const body = req.body;
+        const body = req.body;
         const controller = new ScholarshipController();
         const response = await controller.createScholarship(body);
         res.status(200).json(successResponse("create Scholarship", response, res.statusCode));
     } catch (error) {
-   
+   console.log(error,"error")
         res.status(500).json(errorResponse("error in create Scholarship", res.statusCode));
     }
 });

@@ -25,7 +25,7 @@ import userConfig from "../models/userConfig";
 import academyOwner from "../models/academyOwner";
 import sponsorPartner from "../models/sponsorPartner";
 import schoolOwner from "../models/schoolsOwner.model";
-
+const expiration = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);
 
 
 import { log } from "util";
@@ -64,6 +64,7 @@ function makeid(length = 5) {
   return text;
 }
 export default class AuthController {
+
   public async sendotp(body: any) {
     let otp: any;
     let createUser: any;
@@ -287,7 +288,7 @@ export default class AuthController {
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "1y"
+          expiresIn: expiration
         },
         SECRET_KEY
       );
@@ -321,7 +322,7 @@ return userInfo
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "1y",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
@@ -355,7 +356,7 @@ return userData
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "1y",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
@@ -393,7 +394,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "1y",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
@@ -422,7 +423,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "1y",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
@@ -451,7 +452,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "1y",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
