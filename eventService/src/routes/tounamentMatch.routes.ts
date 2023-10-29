@@ -58,9 +58,9 @@ router.get("/info/byid",  async (req, res) => {
 
 
 
-router.get("/delete/:id",  async (req, res) => {
+router.post("/delete",  async (req, res) => {
     try {
-        const tournamentMatch = req.params.id;
+        const tournamentMatch =req.body._id;;
         const controller = new TournamentMatchController();
         const response: ITournamentMatch = await controller.deleteTournamentMatch(tournamentMatch);
         res.status(200).json(successResponse("deleteTournamentMatch", response, res.statusCode));

@@ -20,7 +20,7 @@ const body = req.body;
         res.status(500).json(errorResponse("error in create StarPerformer", res.statusCode));
     }
 });
-router.patch("/edit", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
     try {
       
         const body = req.body as any;
@@ -28,7 +28,7 @@ router.patch("/edit", checkAuth, async (req, res) => {
         const response: any = await controller.editStarPerformer(body);
         res.status(200).json(successResponse("edit StarPerformer", response, res.statusCode));
     } catch (error) {
-     
+     console.log(error,"error")
         res.status(500).json(errorResponse("error in edit StarPerformer", res.statusCode));
     }
 });
@@ -60,7 +60,7 @@ router.get("/list",  async (req, res) => {
         const response: any[] = await controller.getStarPerformerList(schoolId);
         res.status(200).json(successResponse("StarPerformer list", response, res.statusCode));
     } catch (error) {
-
+        console.log(error,"error")
         res.status(500).json(errorResponse("error in StarPerformer list", res.statusCode));
     }
 });
@@ -89,9 +89,9 @@ router.get("/info/byid", checkAuth, async (req, res) => {
 });
 
 
-router.patch("/delete", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const starPerformerId:any = req.body.starPerformerId;
+        const starPerformerId:any = req.body._id;
         const controller = new StarPerformerController();
         const response: any = await controller.deleteStarPerformer(starPerformerId);
         res.status(200).json(successResponse("delete StarPerformer", response, res.statusCode));

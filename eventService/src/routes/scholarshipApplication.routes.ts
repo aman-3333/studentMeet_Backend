@@ -56,9 +56,9 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const scholarshipApplicationId = req.params.id;
+        const scholarshipApplicationId = req.body._id;;
         const controller = new ScholarshipApplicationController();
         const response: IScholarshipApplication = await controller.deleteScholarshipApplication(scholarshipApplicationId);
         res.status(200).json(successResponse("deleteScholarshipApplication", response, res.statusCode));

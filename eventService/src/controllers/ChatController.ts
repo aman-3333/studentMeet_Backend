@@ -5,7 +5,8 @@ import FuzzySearch from 'fuzzy-search';
 // var ObjectId = require('mongodb').ObjectId;
 import Chat from "../models/chat";
 import Message from "../models/messageModel";
-
+import userDetails from "../models/userDetails";
+const mongoose = require("mongoose");
 
 
 export default class ChatController {
@@ -170,7 +171,6 @@ export default class ChatController {
 
 
             public async createGroupChat(senderId:any,users:any,name:any){
-                console.log("senderId",senderId,"users",users,"name",name);
                 try{
                 if (!users || !name) {
                     return  "Please Fill all the feilds";
@@ -266,10 +266,22 @@ return userInfo
 
 }
 
-public async getFriend(user:any){
-    console.log("hello");
-    
-    let friendListInfo:any=await userActivity.findOne({userId:user,isDeleted:false}).populate("friendList")
+public async getFriend(user:any,search:any){
+    let friendListInfo:any= await userActivity.findOne({ userId:user, isDeleted: false,})
+
+     friendListInfo= await userDetails.find({ _id:{$in:friendListInfo.userFollowers}, isDeleted: false,});
+     console.log(friendListInfo,"friendListInfo");
+     
+   if(search){
+    const searcher = new FuzzySearch(
+        friendListInfo,
+        ["fullName"],
+        {
+            caseSensitive: false,
+        }
+    );
+    friendListInfo = searcher.search(search);
+   }
     return friendListInfo
 }
 
@@ -314,16 +326,11 @@ public async cancelSendFriendRequest(senderId:any,userId:any){
     }
 
 public async acceptFriendRequest(friendId:any,userId:any){
-
-
-    console.log("userInfo",userId);
     let userInfo:any =   await userActivity.findOneAndUpdate({userId:userId},{
         $push:{
             friendList:friendId
         }
     })
-    console.log("userInfo",userInfo);
-    
     await userActivity.findOneAndUpdate({userId:friendId},{
         $push:{
             friendList:userId

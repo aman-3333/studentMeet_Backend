@@ -67,9 +67,9 @@ router.get("/info/byid",  async (req, res) => {
 });
 
 
-router.get("/delete/:id",  async (req, res) => {
+router.post("/delete",  async (req, res) => {
     try {
-        const tournamentId = req.params.id;
+        const tournamentId = req.body._id;;
         const controller = new TournamentController();
         const response: ITournament = await controller.deleteTournament(tournamentId);
         res.status(200).json(successResponse("deleteTournament", response, res.statusCode));

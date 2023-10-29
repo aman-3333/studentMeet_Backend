@@ -296,9 +296,9 @@ const body = req.body;
 
 
 
-router.patch("/delete", async (req, res) => {
+router.post("/delete", async (req, res) => {
     try {
-        const sponsorshipId = req.body.sponsorshipId;
+        const sponsorshipId = req.body._id;;
         const userId = req.body.userId;
         const controller = new SponsorshipController();
         const response: ISponsorship = await controller.deleteSponsorship(sponsorshipId, userId);

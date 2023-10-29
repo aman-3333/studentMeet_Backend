@@ -113,9 +113,9 @@ router.get("/infoById", checkAuth, async (req, res) => {
       );
   }
 });
-router.patch("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
   try {
-    const sonsorRepresentativeId = req.params.id;
+    const sonsorRepresentativeId =req.body._id;;
     const controller = new sonsorRepresentativeController();
     const response: any = await controller.deletesonsorRepresentative(
       sonsorRepresentativeId

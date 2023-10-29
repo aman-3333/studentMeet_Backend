@@ -128,9 +128,9 @@ router.get("/infoById", checkAuth, async (req, res) => {
       );
   }
 });
-router.patch("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
   try {
-    const AcademyRepresentativeId = req.params.id;
+    const AcademyRepresentativeId = req.body._id;
     const controller = new AcademyRepresentativeController();
     const response: any = await controller.deleteAcademyRepresentative(
       AcademyRepresentativeId

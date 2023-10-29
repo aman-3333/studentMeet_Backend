@@ -83,9 +83,9 @@ router.get("/bankdetail",  async (req, res) => {
     }
 });
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const schoolOwnerId = req.params.id;
+        const schoolOwnerId = req.body._id;;
         const controller = new SchoolOwnerController();
         const response: ISchoolOwner = await controller.deleteSchoolOwner(schoolOwnerId);
         res.status(200).json(successResponse("deleteSchoolOwner", response, res.statusCode));

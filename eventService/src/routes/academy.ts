@@ -56,9 +56,9 @@ router.get("/list", checkAuth, async (req, res) => {
 
 
 
-router.patch("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
   try {
-    const academyId = req.params.id;
+    const academyId = req.body._id;
     const controller = new AcademyController();
     const response: IAcademy = await controller.deleteAcademy(academyId);
     res

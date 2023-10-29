@@ -57,9 +57,9 @@ router.get("/info/byid",  async (req, res) => {
 });
 
 
-router.get("/delete/:id",  async (req, res) => {
+router.post("/delete",  async (req, res) => {
     try {
-        const StageId = req.params.id;
+        const StageId = req.body._id;
         const controller = new StageController();
         const response: IStage = await controller.deleteStage(StageId);
         res.status(200).json(successResponse("deleteStage", response, res.statusCode));

@@ -112,9 +112,9 @@ router.get("/by/owner", async (req, res) => {
       .json(errorResponse("error in get School by Id", res.statusCode));
   }
 });
-router.patch("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
   try {
-    const SchoolId = req.params.id;
+    const SchoolId = req.body._id;;
     const controller = new SchoolController();
     const response: any = await controller.deleteSchool(SchoolId);
     res

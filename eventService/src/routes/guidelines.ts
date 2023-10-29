@@ -57,9 +57,9 @@ router.get("/ById", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const GuideLinesId = req.params.id;
+        const GuideLinesId = req.body._id;
         const controller = new GuideLinesController();
         const response: IGuideLines = await controller.deleteGuideLines(GuideLinesId);
         res.status(200).json(successResponse("delete GuideLines", response, res.statusCode));

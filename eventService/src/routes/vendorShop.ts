@@ -57,9 +57,9 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.patch("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const VendorShopId = req.params.id;
+        const VendorShopId = req.body._id;
         const controller = new VendorShopController();
         const response: IVendorShop = await controller.deleteVendorShop(VendorShopId);
         res.status(200).json(successResponse("deleteVendorShop", response, res.statusCode));

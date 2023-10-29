@@ -75,9 +75,9 @@ router.get("/getInstituteInfoById", checkAuth, async (req, res) => {
         res.status(500).json(errorResponse("error in get Institute by Id", res.statusCode));
     }
 });
-router.patch("/deleteInstitute/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const InstituteId = req.params.id;
+        const InstituteId = req.body._id;
         const controller = new InstituteController();
         const response: any = await controller.deleteInstitute(InstituteId);
         res.status(200).json(successResponse("Institute update", response, res.statusCode));

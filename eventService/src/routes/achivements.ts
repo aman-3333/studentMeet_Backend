@@ -24,10 +24,10 @@ router.post("/create", async (req, res) => {
 
 router.post("/delete", async (req, res) => {
   try {
-    req.body.user = res.locals.user;
-    const body = req.body;
+  
+    const body = req.body._id;
     const controller = new AchivementController();
-    const response:any = await controller.createAchivement(body);
+    const response:any = await controller.deleteAchivement(body);
     res
       .status(200)
       .json(successResponse("delete Achivement", response, res.statusCode));
@@ -152,22 +152,7 @@ router.get("/infobyid", checkAuth, async (req, res) => {
   }
 });
 
-router.get("/all/delete/:id", checkAuth, async (req, res) => {
-  try {
-    const AchivementId = req.params.id;
-    const controller = new AchivementController();
-    const response: IAchivement = await controller.deleteAchivement(
-      AchivementId
-    );
-    res
-      .status(200)
-      .json(successResponse("deleteAchivement", response, res.statusCode));
-  } catch (error) {
-    res
-      .status(500)
-      .json(errorResponse("error in deleteAchivement", res.statusCode));
-  }
-});
+
 
 router.post("/activity", async (req, res) => {
   try {

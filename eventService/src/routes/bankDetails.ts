@@ -71,9 +71,9 @@ router.get("/infobyid",  async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const BankDetailsId = req.params.id;
+        const BankDetailsId = req.body.id;
         const controller = new BankDetailsController();
         const response: IBankDetails = await controller.deleteBankDetails(BankDetailsId);
         res.status(200).json(successResponse("deleteBankDetails", response, res.statusCode));

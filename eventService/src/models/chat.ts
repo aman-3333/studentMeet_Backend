@@ -5,16 +5,16 @@ const chatModel = new Schema(
   {
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
-    users: [{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
+    users: [{ type:Schema.Types.ObjectId, ref: 'userdetails' }],
     latestMessage: {
       type:Schema.Types.ObjectId,
       ref: "Message",
     },
     groupAdmin: { type:Schema.Types.ObjectId, ref: "userdetails" },
     isAlreadyFriend:{type:Boolean,default:false},
-    friendList:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
-    rejectFriendRequest:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
-    blockList:[{ type:Schema.Types.ObjectId, ref: 'userdetail' }],
+    friendList:[{ type:Schema.Types.ObjectId, ref: 'userdetails' }],
+    rejectFriendRequest:[{ type:Schema.Types.ObjectId, ref: 'userdetails' }],
+    blockList:[{ type:Schema.Types.ObjectId, ref: 'userdetails' }],
     isBlocked:{type:Boolean,default:false},
   },
   { timestamps: true }

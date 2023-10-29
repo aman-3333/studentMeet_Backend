@@ -118,9 +118,9 @@ router.get("/InfoById", checkAuth, async (req, res) => {
 });
 
 
-router.get("/deleteShop/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const shopId = req.params.id;
+        const shopId = req.body._id;;
         const controller = new SponsorsPartnerController();
         const response: IPartner = await controller.deleteSponsorsPartner(shopId);
         res.status(200).json(successResponse("delete shop", response, res.statusCode));

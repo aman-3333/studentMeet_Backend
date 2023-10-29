@@ -307,9 +307,9 @@ export default class AchivementController {
     return achivementInfo;
   }
 
-  public async deleteAchivement(AchivementId: String) {
+  public async deleteAchivement(_id: any) {
     const achivementInfo: IAchivement = await Achivement.findOneAndUpdate(
-      { _id: AchivementId, isDeleted: false },
+      { _id: _id, isDeleted: false },
       { $set: { isDeleted: true } },
       { new: true }
     ).lean();

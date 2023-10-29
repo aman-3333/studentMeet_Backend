@@ -152,7 +152,7 @@ router.post("/share", async (req, res) => {
 
 router.post("/delete", checkAuth, async (req, res) => {
   try {
-    const postId = req.body.postId;
+    const postId = req.body._id;
     const controller = new PostController();
     const response = await controller.deletePost(postId);
     res

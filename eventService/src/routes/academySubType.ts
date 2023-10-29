@@ -58,9 +58,9 @@ router.get("/ById", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const AcademySubTypeId = req.params.id;
+        const AcademySubTypeId = req.body._id;
         const controller = new AcademySubTypeController();
         const response: IAcademySubType = await controller.deleteAcademySubType(AcademySubTypeId);
         res.status(200).json(successResponse("delete AcademySubType", response, res.statusCode));

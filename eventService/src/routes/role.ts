@@ -57,9 +57,9 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const RoleId = req.params.id;
+        const RoleId =req.body._id;;
         const controller = new RoleController();
         const response: IRole = await controller.deleteRole(RoleId);
         res.status(200).json(successResponse("deleteRole", response, res.statusCode));

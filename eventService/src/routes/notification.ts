@@ -58,9 +58,9 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const notificationId = req.params.id;
+        const notificationId = req.body._id;
         const controller = new NotificationController();
         const response: any = await controller.deleteNotification(notificationId);
         res.status(200).json(successResponse("deleteNotification", response, res.statusCode));

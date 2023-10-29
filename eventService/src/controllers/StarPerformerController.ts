@@ -12,7 +12,7 @@ export default class StarPerformerController {
     }
 
     public async editStarPerformer(body: any) {
-        const starPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: body.starPerformerId, isDeleted: false }, body, { new: true }).lean();
+        const starPerformerInfo: any = await StarPerformer.findOneAndUpdate({ _id: body._id, isDeleted: false }, body, { new: true }).lean();
         return starPerformerInfo;
     }
 
