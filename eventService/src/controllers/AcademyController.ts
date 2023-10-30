@@ -41,7 +41,7 @@ export default class academyController {
 
   public async editAcademy(body: any) {
     const academyInfo: any = await academy
-      .findOneAndUpdate({ _id: body.academyId }, body, {
+      .findOneAndUpdate({ _id: body.academyId}, body, {
         new: true,
       })
       .lean();

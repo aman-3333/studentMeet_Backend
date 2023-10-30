@@ -3,11 +3,8 @@ import AcademySubType, { IAcademySubType } from "../models/academySubType";
 export default class AcademySubTypeController {
 
     public async createAcademySubType(body: any) {
-
         let AcademySubTypeInfo: any;
-       
             AcademySubTypeInfo = await AcademySubType.create(body);
-        
         return AcademySubTypeInfo;
 
     }
@@ -19,6 +16,11 @@ export default class AcademySubTypeController {
 
     public async getAcademySubTypeList(academyTypeId:any) {
         const AcademySubTypeList: any = await AcademySubType.find({academyTypeId: academyTypeId, isDeleted: false });
+        return AcademySubTypeList;
+    }
+
+    public async getList() {
+        const AcademySubTypeList: any = await AcademySubType.find({ isDeleted: false });
         return AcademySubTypeList;
     }
 

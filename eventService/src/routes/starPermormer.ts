@@ -76,7 +76,7 @@ const searchValue=req.query.searchValue;
     }
 });
 
-router.get("/info/byid", checkAuth, async (req, res) => {
+router.get("/info/byid",  async (req, res) => {
     try {
         const starPerformerId:any = req.query.id;
         const controller = new StarPerformerController();
@@ -89,13 +89,12 @@ router.get("/info/byid", checkAuth, async (req, res) => {
 });
 
 
-router.post("/delete", checkAuth, async (req, res) => {
+router.post("/delete",  async (req, res) => {
     try {
         const starPerformerId:any = req.body._id;
         const controller = new StarPerformerController();
         const response: any = await controller.deleteStarPerformer(starPerformerId);
         res.status(200).json(successResponse("delete StarPerformer", response, res.statusCode));
-
     } catch (error) {
        
         res.status(500).json(errorResponse("error in delete StarPerformer", res.statusCode));

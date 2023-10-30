@@ -17,9 +17,9 @@ const body = req.body;
     }
 });
 
-router.patch("/edit/:id",  async (req, res) => {
+router.post("/edit",  async (req, res) => {
     try {
-        const tournamentId = req.params.id;
+        const tournamentId = req.body._id;
         const body = req.body as ITournament;
         const controller = new TournamentController();
         const response: ITournament = await controller.editTournament(body, tournamentId);
@@ -43,11 +43,23 @@ router.get("/list",  async (req, res) => {
 });
 
 
-router.get("/school/list",  async (req, res) => {
+router.get("/school",  async (req, res) => {
     try {
         const controller = new TournamentController();
          const schoolId = req.query.schoolId
         const response: ITournament[] = await controller.getSchoolTournamentList(schoolId);
+        res.status(200).json(successResponse("Tournament list", response, res.statusCode));
+    } catch (error) {
+      
+        res.status(500).json(errorResponse("error in Tournament list", res.statusCode));
+    }
+});
+
+router.get("/academy",  async (req, res) => {
+    try {
+        const controller = new TournamentController();
+         const academyId = req.query.academyId
+        const response: ITournament[] = await controller.getAcademyTournamentList(academyId);
         res.status(200).json(successResponse("Tournament list", response, res.statusCode));
     } catch (error) {
       

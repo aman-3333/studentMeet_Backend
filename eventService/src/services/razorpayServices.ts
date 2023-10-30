@@ -1,18 +1,20 @@
 export async function createVendorAccount(data: any, key_id: any, key_secret: any) {
+  console.log(data, key_id, key_secret,"key_secret config");
   var axios = require('axios');
   var headers = {
     'Content-type': 'application/json'
   };
   var config = {
     method: 'post',
-    url: 'https://api.razorpay.com/v1/beta/accounts',
+    url: 'https://api.razorpay.com/v1/accounts',
     headers: headers,
     data: JSON.stringify(data),
     auth: {
-      'username': key_id,
-      'password': key_secret
+      Username: "rzp_test_jVa5iExtyQCEk1",
+      Password: "2VFDN8OChr2iFNndPY6906rQ"
     }
   };
+console.log(config,"config");
 
   const resp = await axios(config)
     .then(function (response: any) {
@@ -44,14 +46,15 @@ export async function CapturePayment(paymentID: any, amount: any, currency: any,
     },
 
   };
-
   const resp = await axios(config)
-    .then(function (response: any) {
-      console.log(response, "response")
-      return response.data
-    })
-    .catch(function (error: any) {
-      return error
-    });
-  return resp
+  .then(function (response: any) {
+    console.log(response, "response")
+    return response.data
+  })
+  .catch(function (error: any) {
+    console.log(error, "error")
+
+    return error
+  });
+return resp
 }
