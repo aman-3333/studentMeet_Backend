@@ -92,9 +92,9 @@ export default class AchivementController {
     return achivementInfo;
   }
 
-  public async editAchivement(body: IAchivement, AchivementId: string) {
-    const achivementInfo: IAchivement = await Achivement.findOneAndUpdate(
-      { _id: AchivementId, isDeleted: false },
+  public async editAchivement(body: any) {
+    const achivementInfo: any = await Achivement.findOneAndUpdate(
+      { _id: body._id, isDeleted: false },
       body,
       { new: true }
     ).lean();
@@ -109,6 +109,7 @@ export default class AchivementController {
   }
 
   public async getAcademyAchivement(academyId: any, user: any) {
+    console.log(user,"useruser")
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $match: {
@@ -161,12 +162,17 @@ export default class AchivementController {
       },
       { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
+  
     achivementList.forEach((val: any) => {
-      if (val.achivementLike.toString().includes(user._id.toString())) {
-        val.isLikes = true;
-      } else {
-        val.isLikes = false;
+      console.log(val.achivementLike);
+      if(val.achivementLike.length>0){
+        if ( val.achivementLike.toString().includes(user._id.toString())) {
+          val.isLikes = true;
+        } else {
+          val.isLikes = false;
+        }
       }
+     
     });
     return achivementList;
   }

@@ -38,14 +38,14 @@ router.post("/delete", async (req, res) => {
   }
 });
 
-router.patch("/edit/:id",  async (req, res) => {
+router.post("/edit",  async (req, res) => {
   try {
-    const AchivementId = req.params.id;
-    const body = req.body as IAchivement;
+
+    const body = req.body ;
     const controller = new AchivementController();
-    const response: IAchivement = await controller.editAchivement(
-      body,
-      AchivementId
+    const response = await controller.editAchivement(
+      body
+      
     );
     res
       .status(200)
@@ -87,6 +87,7 @@ router.get("/academy", checkAuth, async (req, res) => {
         successResponse("getAcademyAchivement list", response, res.statusCode)
       );
   } catch (error) {
+    console.log(error,"error");
     res
       .status(500)
       .json(

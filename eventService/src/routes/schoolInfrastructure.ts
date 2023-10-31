@@ -69,7 +69,7 @@ router.get("/infobyid",  async (req, res) => {
 
 
 
-router.post("/delete", checkAuth, async (req, res) => {
+router.post("/delete",  async (req, res) => {
     try {
         const schoolInfrastructureId = req.body._id;
         const controller = new SchoolInfrastructureController();
