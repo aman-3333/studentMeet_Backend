@@ -421,7 +421,7 @@ export default class AchivementController {
 
     return achivementList;
   }
-
+//aman
   public async getAchivementInfoById(AchivementId: any) {
     const achivementInfo: any = await Achivement.findOne({
       _id: AchivementId,
