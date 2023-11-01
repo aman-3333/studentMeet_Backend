@@ -119,6 +119,29 @@ router.get("/academy/admin",  async (req, res) => {
   }
 });
 
+router.get("/academy/admin",  async (req, res) => {
+  try {
+    const controller = new AchivementController();
+    const academyId = req.query.academyId;
+   
+    const response: IAchivement[] = await controller.getAcademyAchivementForAdmin(
+      academyId
+    );
+    res
+      .status(200)
+      .json(
+        successResponse("getAcademyAchivement list", response, res.statusCode)
+      );
+  } catch (error) {
+    console.log(error,"error");
+    res
+      .status(500)
+      .json(
+        errorResponse("error in getAcademyAchivement list", res.statusCode)
+      );
+  }
+});
+
 router.get("/school", checkAuth, async (req, res) => {
   try {
     const controller = new AchivementController();
