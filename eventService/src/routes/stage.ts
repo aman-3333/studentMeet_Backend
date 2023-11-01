@@ -38,7 +38,7 @@ router.get("/list",  async (req, res) => {
         const response: IStage[] = await controller.getStageList(academySubTypeId);
         res.status(200).json(successResponse("Stage list", response, res.statusCode));
     } catch (error) {
-      
+      console.log(error,"error");
         res.status(500).json(errorResponse("error in Stage list", res.statusCode));
     }
 });

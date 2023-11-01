@@ -3,35 +3,20 @@ const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 import { IBankDetails } from "../models/bankDetails";
-
 import BankDetailsController from "../controllers/BankDetailsController";
 router.post("/create",  async (req, res) => {
     try {
-        
-req.body.user=res.locals.user
 const body = req.body;
         const controller = new BankDetailsController();
         const response = await controller.createBankDetails(body);
         res.status(200).json(successResponse("create BankDetails", response, res.statusCode));
     } catch (error) {
-   
+   console.log(error)
         res.status(500).json(errorResponse("error in create BankDetails", res.statusCode));
     }
 });
 
-router.post("/create",  async (req, res) => {
-    try {
-        
 
-const body = req.body;
-        const controller = new BankDetailsController();
-        const response = await controller.createBankDetails(body);
-        res.status(200).json(successResponse("create BankDetails", response, res.statusCode));
-    } catch (error) {
-   console.log(error,"error")
-        res.status(500).json(errorResponse("error in create BankDetails", res.statusCode));
-    }
-});
 router.post("/edit",  async (req, res) => {
     try {
         const bankDetailsId = req.body.bankDetailsId;

@@ -177,6 +177,66 @@ export default class AchivementController {
     return achivementList;
   }
 
+  public async getAcademyAchivementForAdmin(academyId: any) {
+
+    const achivementList: IAchivement[] = await Achivement.aggregate([
+      {
+        $match: {
+          academyId: new mongoose.Types.ObjectId(academyId),
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "academyUserId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userParticipient",
+        },
+      },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    ]);
+  
+    
+    return achivementList;
+  }
+
+
   public async getSchoolAchivement(schoolId: any, user: any) {
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
@@ -237,6 +297,63 @@ export default class AchivementController {
         val.isLikes = false;
       }
     });
+    return achivementList;
+  }
+
+  public async getSchoolAchivementForAdmin(schoolId: any) {
+    const achivementList: IAchivement[] = await Achivement.aggregate([
+      {
+        $match: {
+          schoolId: new mongoose.Types.ObjectId(schoolId),
+        },
+      },
+      {
+        $lookup: {
+          localField: "academyUserId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userParticipient",
+        },
+      },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    ]);
+
+ 
     return achivementList;
   }
 

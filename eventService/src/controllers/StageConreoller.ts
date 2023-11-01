@@ -3,19 +3,14 @@ import Stage, { IStage } from "../models/stages";
 export default class StageController {
 
     public async createStage(body: any) {
-
-
         const {academySUbTypeId,name,Description}=body;
         let stageInfo: any;
-       
             stageInfo = new Stage({
                 academySUbTypeId:academySUbTypeId,
                 name:name,
                 Description:Description
             });
-           
-            await stageInfo.save()
-            console.log(stageInfo);
+            await stageInfo.save();
         return stageInfo
      }
 
@@ -25,8 +20,6 @@ export default class StageController {
     }
 
     public async getStageList(academySubTypeId: any) {
-        console.log(academySubTypeId,"academySubTypeId");
-        
         const stageList = await Stage.find({ academySUbTypeId: academySubTypeId, isDeleted: false });
         return stageList;
     }

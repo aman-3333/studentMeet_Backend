@@ -96,6 +96,29 @@ router.get("/academy", checkAuth, async (req, res) => {
   }
 });
 
+router.get("/academy/admin",  async (req, res) => {
+  try {
+    const controller = new AchivementController();
+    const academyId = req.query.academyId;
+   
+    const response: IAchivement[] = await controller.getAcademyAchivementForAdmin(
+      academyId
+    );
+    res
+      .status(200)
+      .json(
+        successResponse("getAcademyAchivement list", response, res.statusCode)
+      );
+  } catch (error) {
+    console.log(error,"error");
+    res
+      .status(500)
+      .json(
+        errorResponse("error in getAcademyAchivement list", res.statusCode)
+      );
+  }
+});
+
 router.get("/school", checkAuth, async (req, res) => {
   try {
     const controller = new AchivementController();
@@ -104,6 +127,28 @@ router.get("/school", checkAuth, async (req, res) => {
     const response: IAchivement[] = await controller.getSchoolAchivement(
       schoolId,
       user
+    );
+    res
+      .status(200)
+      .json(
+        successResponse("getSchoolAchivement list", response, res.statusCode)
+      );
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in getSchoolAchivement list", res.statusCode));
+  }
+});
+
+
+router.get("/school/admin",  async (req, res) => {
+  try {
+    const controller = new AchivementController();
+    const schoolId = req.query.schoolId;
+   
+    const response: IAchivement[] = await controller.getSchoolAchivementForAdmin(
+      schoolId
+      
     );
     res
       .status(200)

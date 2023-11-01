@@ -1,18 +1,20 @@
 export async function createVendorAccount(data: any, key_id: any, key_secret: any) {
   console.log(data, key_id, key_secret,"key_secret config");
   var axios = require('axios');
+ const auth= {
+    Username: "rzp_test_jVa5iExtyQCEk1",
+    Password: "2VFDN8OChr2iFNndPY6906rQ"
+  }
   var headers = {
-    'Content-type': 'application/json'
+    'Content-type': 'application/json',
+    'Authorization': `Basic Auth ${auth.Username,auth.Password}`,
   };
   var config = {
     method: 'post',
     url: 'https://api.razorpay.com/v1/accounts',
     headers: headers,
     data: JSON.stringify(data),
-    auth: {
-      Username: "rzp_test_jVa5iExtyQCEk1",
-      Password: "2VFDN8OChr2iFNndPY6906rQ"
-    }
+   
   };
 console.log(config,"config");
 

@@ -6,7 +6,9 @@ import { CapturePayment, createVendorAccount } from "../services/razorpayService
 var razorpayConfig = require("../../config/razorpay/betaProperties").RAZORPAY
 export default class BankDetailsController {
 
-    public async createBankDetails(body: any) {
+    public async createBankDetails(body: any,) {
+      
+        
 let userInfo;
 let data;
         let BankDetailsInfo: any;
@@ -19,13 +21,33 @@ let data;
             if(body.user_id){
                 userInfo = await userDetails.findOne({_id:body.user_id,isDeleted:false}).lean();
                 
-                 data = {   
-                    type:"route",
-                    contact_name:"Gaurav Kumar",
-                    email:"gaurav.kumar@example.com",
-                    phone:"9000090000",
-                    
-                };
+                 data = {
+                    "email":"gaurav.kumar@example.com",
+                    "phone":"9000090000",
+                    "type":"route",
+                    "reference_id":"124124",
+                    "legal_business_name":"Acme Corp",
+                    "business_type":"partnership",
+                    "contact_name":"Gaurav Kumar",
+                    "profile":{
+                       "category":"healthcare",
+                       "subcategory":"clinic",
+                       "addresses":{
+                          "registered":{
+                             "street1":"507, Koramangala 1st block",
+                             "street2":"MG Road",
+                             "city":"Bengaluru",
+                             "state":"KARNATAKA",
+                             "postal_code":"560034",
+                             "country":"IN"
+                          }
+                       }
+                    },
+                    "legal_info":{
+                       "pan":"AAACL1234C",
+                       "gst":"18AABCU9603R1ZM"
+                    }
+                 };
             }
             if(body.academyOwner){
                 userInfo = await academyOwner.findOne({_id:body.academyOwner,isDeleted:false}).lean()
