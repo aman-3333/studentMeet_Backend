@@ -207,7 +207,7 @@ router.get("/byuserid", checkAuth, async (req, res) => {
   }
 });
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/infobyid", async (req, res) => {
   try {
     const AchivementId: any = req.query.AchivementId;
     const controller = new AchivementController();
