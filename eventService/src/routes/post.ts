@@ -44,6 +44,48 @@ router.get("/list", checkAuth, async (req, res) => {
   }
 });
 
+
+router.get("/list/school",  async (req, res) => {
+  try {
+    let schoolId = req.query.schoolId;
+    const controller = new PostController();
+    const response = await controller.getPostListSchool(schoolId);
+    res
+      .status(200)
+      .json(successResponse("Post list", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in Post list", res.statusCode));
+  }
+});
+
+
+router.get("/list/academy",  async (req, res) => {
+  try {
+    let academyId = req.query.academyId;
+    const controller = new PostController();
+    const response = await controller.getPostListAcademy(academyId);
+    res
+      .status(200)
+      .json(successResponse("Academy Post list", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in Academy Post list", res.statusCode));
+  }
+});
+
+router.get("/list/sponsor",  async (req, res) => {
+  try {
+    let sponsorId = req.query.sponsorId;
+    const controller = new PostController();
+    const response = await controller.getPostListSponsor(sponsorId);
+    res
+      .status(200)
+      .json(successResponse("sponsor Post list", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in sponsor Post list", res.statusCode));
+  }
+});
+
+
 router.get("/getlist/byuser/id", async (req, res) => {
   try {
     const controller = new PostController();
@@ -59,16 +101,16 @@ router.get("/getlist/byuser/id", async (req, res) => {
   }
 });
 
-// router.get("/infobyid", checkAuth, async (req, res) => {
-//   try {
-//     const PostId = req.query.PostId;
-//     const controller = new PostController();
-//     const response = await controller.getPostInfoById(PostId);
-//     res.status(200).json(successResponse("get Post", response, res.statusCode));
-//   } catch (error) {
-//     res.status(500).json(errorResponse("error in get Post", res.statusCode));
-//   }
-// });
+router.get("/infobyid", checkAuth, async (req, res) => {
+  try {
+    const postId = req.query.postId;
+    const controller = new PostController();
+    const response = await controller.getPostInfoById(postId);
+    res.status(200).json(successResponse("get Post", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in get Post", res.statusCode));
+  }
+});
 router.post("/activity", async (req, res) => {
   try {
     const userId = req.body.userId;

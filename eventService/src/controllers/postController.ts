@@ -20,7 +20,7 @@ export default class PostController {
 
   public async editPost(body: any) {
     const PostInfo: any = await Post.findOneAndUpdate(
-      { _id: body.PostId, isDeleted: false },
+      { _id: body._id, isDeleted: false },
       body,
       { new: true }
     ).lean();
@@ -212,10 +212,10 @@ export default class PostController {
     return mergedArray;
   }
 
-  // public async getPostListBYUserId(userId:any) {
-  //     const PostList: IPost[] = await Post.find({userId:userId, isDeleted: false }).lean();
-  //     return PostList;
-  // }
+  public async getPostInfoById(postId:any) {
+      const PostList: IPost[] = await Post.findOne({_id:postId, isDeleted: false }).lean();
+      return PostList;
+  }
 
   public async getPostListBYUserId(userId: any) {
     let PostInfo: any = await Post.aggregate([
@@ -498,4 +498,233 @@ for (let i = 0; i < body.sharePostByOther.length; i++) {
     PostInfo = PostInfo.search(search);
     return PostInfo;
   }
+
+  public async getPostListSchool(schoolId: any) {
+    let PostLike = await Post.aggregate([
+      { $match: { isDeleted: false, schoolId:new mongoose.Types.ObjectId(schoolId)  } },
+      
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+     
+   
+     
+    ]);
+ 
+
+   
+
+    return PostLike;
+  }
+  public async getPostListAcademy(academyId: any) {
+    let PostLike = await Post.aggregate([
+      { $match: { isDeleted: false, academyId: academyId } },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "academyId",
+          from: "academies",
+          foreignField: "_id",
+          as: "academyObj",
+        },
+      },
+      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "sponsorId",
+          from: "sponsorshipdetails",
+          foreignField: "_id",
+          as: "sponsorshipObj",
+        },
+      },
+      {
+        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "instituteId",
+          from: "institutes",
+          foreignField: "_id",
+          as: "institutes",
+        },
+      },
+      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "states",
+          foreignField: "state",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+     
+    ]);
+ 
+
+   
+
+    return PostLike;
+  }
+  
+  public async getPostListSponsor(sponsorId: any) {
+    let PostLike = await Post.aggregate([
+      { $match: { isDeleted: false, sponsorId: sponsorId } },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "academyId",
+          from: "academies",
+          foreignField: "_id",
+          as: "academyObj",
+        },
+      },
+      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "sponsorId",
+          from: "sponsorshipdetails",
+          foreignField: "_id",
+          as: "sponsorshipObj",
+        },
+      },
+      {
+        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "instituteId",
+          from: "institutes",
+          foreignField: "_id",
+          as: "institutes",
+        },
+      },
+      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "states",
+          foreignField: "state",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+     
+    ]);
+    return PostLike;
+  }
+
+
 }
