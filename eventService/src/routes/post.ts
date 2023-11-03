@@ -16,7 +16,7 @@ router.post("/create", async (req, res) => {
     res.status(500).json(errorResponse("error in create Post", res.statusCode));
   }
 });
-router.post("/edit", checkAuth, async (req, res) => {
+router.post("/edit",  async (req, res) => {
   try {
     req.body.user = res.locals.user;
     const body = req.body;
