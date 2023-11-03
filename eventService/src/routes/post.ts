@@ -101,7 +101,7 @@ router.get("/getlist/byuser/id", async (req, res) => {
   }
 });
 
-router.get("/infobyid", checkAuth, async (req, res) => {
+router.get("/infobyid",  async (req, res) => {
   try {
     const postId = req.query.postId;
     const controller = new PostController();
