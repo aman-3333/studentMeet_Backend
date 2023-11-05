@@ -41,7 +41,7 @@ export default class academyController {
 
   public async editAcademy(body: any) {
     const academyInfo: any = await academy
-      .findOneAndUpdate({ _id: body.academyId}, body, {
+      .findOneAndUpdate({ _id: body.academyId }, body, {
         new: true,
       })
       .lean();
@@ -50,7 +50,7 @@ export default class academyController {
 
   public async getAcademyList(user: any) {
     let academyLike = await academy.aggregate([
-      { $match: { isDeleted: false} },
+      { $match: { isDeleted: false } },
 
       {
         $lookup: {
@@ -93,26 +93,21 @@ export default class academyController {
         },
       },
     ]);
-  
 
-    academyLike.forEach((val:any)=>{
-      if( val.followers.toString().includes(user._id.toString())){ 
-       val.isFollow=true
+    academyLike.forEach((val: any) => {
+      if (val.followers.toString().includes(user._id.toString())) {
+        val.isFollow = true;
       }
-      if( val.academyLike.toString().includes(user._id.toString())){ 
-        val.isLikes=true
-       }
-      else{
-       val.isFollow=false;
-       val.isLikes=false;
-       
+      if (val.academyLike.toString().includes(user._id.toString())) {
+        val.isLikes = true;
+      } else {
+        val.isFollow = false;
+        val.isLikes = false;
       }
-     })
+    });
 
     return academyLike;
   }
-
-
 
   public async deleteAcademy(academyId: String) {
     const academyInfo: IAcademy = await academy
@@ -132,10 +127,15 @@ export default class academyController {
 
   public async searchAcademy(search: any) {
     let academyInfo: any = await academy.aggregate([
-      { $match: { isDeleted: false, academyName: {
-        $regex: search,
-        $options: "i" 
-    } } },
+      {
+        $match: {
+          isDeleted: false,
+          academyName: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      },
       {
         $lookup: {
           localField: "_id",
@@ -144,8 +144,7 @@ export default class academyController {
           as: "state",
         },
       },
-      
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "_id",
@@ -154,8 +153,8 @@ export default class academyController {
           as: "city",
         },
       },
-      
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "country",
@@ -164,11 +163,10 @@ export default class academyController {
           as: "country",
         },
       },
-      
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
 
-  
     return academyInfo;
   }
 
@@ -185,15 +183,14 @@ export default class academyController {
     let a: any = [];
     let info: any;
     let academyInfo: any;
-    let count:any=1
-    let minuscount:any=-1
-    const academy_id:any = body.academyId;
-  
+    let count: any = 1;
+    let minuscount: any = -1;
+    const academy_id: any = body.academyId;
+
     if (status == "academyLike") {
-      
-       await academy.updateOne(
+      await academy.updateOne(
         {
-          _id: body.academyId
+          _id: body.academyId,
         },
         {
           $inc: { academyLikeCount: count },
@@ -208,14 +205,14 @@ export default class academyController {
           $push: {
             academyLike: userId,
           },
-         
         },
         { new: true }
       );
-      let userData= await userActivity.aggregate([
+      let userData = await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.academyComment[0].userId,), isDeleted: false,
+            userId: new mongoose.Types.ObjectId(body.academyComment[0].userId),
+            isDeleted: false,
           },
         },
         {
@@ -226,19 +223,31 @@ export default class academyController {
             as: "userdetails",
           },
         },
-        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: "$userdetails", preserveNullAndEmptyArrays: true } },
       ]);
-     
+
       const followersData = userData[0].userFollowers;
-     
+
       for (let i = 0; i < followersData.length; i++) {
-        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
-        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName");
-   if(userFcmToken){
-   const body =`${userData[0].userdetails.fullName} like academy check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home",followersData[i], academy_id);
-   }  
-  }
+        let userFcmToken = await userDevice.findOne({
+          userId: followersData[i],
+        });
+        console.log(
+          userData[0].userdetails.fullName,
+          "userData[0].userdetails.fullName"
+        );
+        if (userFcmToken) {
+          const body = `${userData[0].userdetails.fullName} like academy check and react.`;
+          sendNotification(
+            userFcmToken.fcmtoken,
+            body,
+            "abc",
+            "academy_home",
+            followersData[i],
+            academy_id
+          );
+        }
+      }
       return academyInfo;
     }
     if (status == "removAcademyLike") {
@@ -249,7 +258,7 @@ export default class academyController {
       // );
       await academy.updateOne(
         {
-          _id: body.academyId
+          _id: body.academyId,
         },
         {
           $inc: { academyLikeCount: minuscount },
@@ -263,7 +272,7 @@ export default class academyController {
         {
           $pull: {
             academyLike: userId,
-          }
+          },
         },
         { new: true }
       );
@@ -289,17 +298,18 @@ export default class academyController {
         );
         await academy.updateOne(
           {
-            _id: body.academyId
+            _id: body.academyId,
           },
           {
             $inc: { academyCommentCount: count },
           }
         );
       }
-      let userData= await userActivity.aggregate([
+      let userData = await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.academyComment[0].userId,), isDeleted: false,
+            userId: new mongoose.Types.ObjectId(body.academyComment[0].userId),
+            isDeleted: false,
           },
         },
         {
@@ -310,22 +320,30 @@ export default class academyController {
             as: "userdetails",
           },
         },
-        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: "$userdetails", preserveNullAndEmptyArrays: true } },
       ]);
-     
-      const followersData = userData[0].userFollowers;
-            
-      for (let i = 0; i < followersData.length; i++) {
-        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
-   if(userFcmToken){
 
-   const body =`${userData[0].userdetails.fullName} comment on academy check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_home",followersData[i], academy_id);
-   }  
-  }
-  return academyInfo;
+      const followersData = userData[0].userFollowers;
+
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({
+          userId: followersData[i],
+        });
+        if (userFcmToken) {
+          const body = `${userData[0].userdetails.fullName} comment on academy check and react.`;
+          sendNotification(
+            userFcmToken.fcmtoken,
+            body,
+            "abc",
+            "academy_home",
+            followersData[i],
+            academy_id
+          );
+        }
+      }
+      return academyInfo;
     }
-    
+
     if (status == "removeAcademyComment") {
       for (let i = 0; i < body.academyComment.length; i++) {
         academyInfo = await academy.findOneAndUpdate(
@@ -341,13 +359,12 @@ export default class academyController {
           }
         );
 
-       
         await academy.updateOne(
           {
-            _id: body.academyId
+            _id: body.academyId,
           },
           {
-            $inc: { academyCommentCount:minuscount },
+            $inc: { academyCommentCount: minuscount },
           }
         );
 
@@ -371,20 +388,16 @@ export default class academyController {
       return data;
     }
   }
-  
 
-
-  public async readAcademyActivity(academyId: any, status: any,userId:any) {
+  public async readAcademyActivity(academyId: any, status: any, userId: any) {
     let academyInfo: any;
-    let isDeleteable:any;
+    let isDeleteable: any;
     if (status == "readAcademyLike") {
-    
-
-      let academyInfo:any= await academy.aggregate([
+      let academyInfo: any = await academy.aggregate([
         {
           $match: {
-            _id:new mongoose.Types.ObjectId(academyId),
-             isDeleted: false,
+            _id: new mongoose.Types.ObjectId(academyId),
+            isDeleted: false,
           },
         },
         {
@@ -395,21 +408,19 @@ export default class academyController {
             as: "userdetails",
           },
         },
-      
       ]);
-      academyInfo= academyInfo[0].userdetails;
+      academyInfo = academyInfo[0].userdetails;
 
-      let userData:any = await userActivity.findOne({userId:userId})
-      userData=userData.userFollowing;
-      academyInfo.forEach((val:any)=>{
-        if(userData.toString().includes(val._id.toString())){
-          val.isFollow=true
-        }else{
-          val.isFollow=false
+      let userData: any = await userActivity.findOne({ userId: userId });
+      userData = userData.userFollowing;
+      academyInfo.forEach((val: any) => {
+        if (userData.toString().includes(val._id.toString())) {
+          val.isFollow = true;
+        } else {
+          val.isFollow = false;
         }
-      })
+      });
       return academyInfo;
-   
     }
     if (status == "readAcademyComment") {
       let a = [];
@@ -418,7 +429,6 @@ export default class academyController {
       academyInfo = academyInfo.academyComment;
 
       for (let i = 0; i < academyInfo.length; i++) {
-
         let userInfo: any = await userDetails.findOne(
           { _id: academyInfo[i].userId },
           { fullName: true, profile_picture: true }
@@ -426,12 +436,12 @@ export default class academyController {
 
         let comment = academyInfo[i].comment;
         let DateTime: any = academyInfo[i].dateTime;
-if(userId==academyInfo[i].userId) {
-  isDeleteable=true
-}else{
-  isDeleteable=false
-}
-        a.push({ userInfo, comment, DateTime,isDeleteable });
+        if (userId == academyInfo[i].userId) {
+          isDeleteable = true;
+        } else {
+          isDeleteable = false;
+        }
+        a.push({ userInfo, comment, DateTime, isDeleteable });
       }
       var data = [...a].reverse();
       return data;
@@ -445,12 +455,8 @@ if(userId==academyInfo[i].userId) {
     }
   }
 
- 
-
   public async getAcademyDetails(academyId: any) {
-
-
-    const academyList= await academy.aggregate([
+    const academyList = await academy.aggregate([
       {
         $match: {
           _id: new mongoose.Types.ObjectId(academyId),
@@ -464,7 +470,7 @@ if(userId==academyInfo[i].userId) {
           as: "city",
         },
       },
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "state",
@@ -473,7 +479,7 @@ if(userId==academyInfo[i].userId) {
           as: "state",
         },
       },
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "country",
@@ -482,10 +488,8 @@ if(userId==academyInfo[i].userId) {
           as: "country",
         },
       },
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
-
-
 
     return academyList;
   }
@@ -532,59 +536,52 @@ if(userId==academyInfo[i].userId) {
       return data;
     }
     if (status == "academyAchivment") {
-      const achivementList= await Achivement.aggregate([
+      const achivementList = await Achivement.aggregate([
         {
           $match: {
             academyId: new mongoose.Types.ObjectId(academyId),
-          }
+          },
         },
         {
           $lookup: {
             from: "userdetails",
             localField: "academyUserId",
             foreignField: "_id",
-            as: "academyUser"
-          }
+            as: "academyUser",
+          },
         },
         {
           $lookup: {
             from: "cities",
             localField: "city",
             foreignField: "_id",
-            as: "city"
-          }
+            as: "city",
+          },
         },
-        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
         {
           $lookup: {
             from: "states",
             localField: "state",
             foreignField: "_id",
-            as: "state"
-          }
+            as: "state",
+          },
         },
-        
-        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+
+        { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
         {
           $lookup: {
             from: "countries",
             localField: "country",
             foreignField: "_id",
-            as: "country"
-          }
+            as: "country",
+          },
         },
-        
-        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
-        
-      ]);
- 
 
+        { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      ]);
 
       return achivementList;
-
-
-
-
     }
   }
 
@@ -609,48 +606,61 @@ if(userId==academyInfo[i].userId) {
     return academyInfo;
   }
 
+  public async filterAcademy(city: any, state: any, academySubTypeId: any) {
+ 
 
-  public async filterAcademy(query:any){
-const academyTypeId = query.academyTypeId ||{};
-const academySubTypeId = query.academySubTypeId || {};
-const city = query.city || {};
-const state = query.state || {};
-const academyData = await academy.find({
-    state:state,
-    city:city,
-    academyTypeId: academyTypeId,
-    academySubTypeId:academySubTypeId
-
-})  
-
- return academyData;
-
-}
-
-
-
-public async shareAcademy( body:any ) {
-  for (let i = 0; i < body.academySharedByOther.length; i++) {
-    let  academyInfo = await userActivity.findOneAndUpdate(
-      {
-        userId: body.academySharedByOther[i].friendId,
-        isDeleted:false
-      },
-      {
-        $push: {
-          academySharedByOther: {
-            friendId: body.userId,
-            academyId: body.academySharedByOther[i].academyId,
-            dateTime: currentTime,
-          },
-        },
-      },{new:true}
-    );
-   
-    return academyInfo;
-  }
+    if(academySubTypeId&&state&&city){
+      const academyData = await academy.find({
+        academySubTypeId: academySubTypeId,
+        city: city,
+        state: state
+      });
+      return academyData;
+    }
+    
+ 
+    if(academySubTypeId&&city){
+      const academyData = await academy.find({
+        academySubTypeId: academySubTypeId,
+        city: city,
+        
+      });
+      return academyData;
     }
 
+    
+    if(academySubTypeId&&state){
+      const academyData = await academy.find({
+        academySubTypeId: academySubTypeId,
+        state: state,
+      });
+      return academyData;
+    }
 
+ 
+ 
+  }
 
+  public async shareAcademy(body: any) {
+    for (let i = 0; i < body.academySharedByOther.length; i++) {
+      let academyInfo = await userActivity.findOneAndUpdate(
+        {
+          userId: body.academySharedByOther[i].friendId,
+          isDeleted: false,
+        },
+        {
+          $push: {
+            academySharedByOther: {
+              friendId: body.userId,
+              academyId: body.academySharedByOther[i].academyId,
+              dateTime: currentTime,
+            },
+          },
+        },
+        { new: true }
+      );
+
+      return academyInfo;
+    }
+  }
 }

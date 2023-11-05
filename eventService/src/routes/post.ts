@@ -12,7 +12,10 @@ router.post("/create", async (req, res) => {
     res
       .status(200)
       .json(successResponse("create Post", response, res.statusCode));
+
+      
   } catch (error) {
+    console.log(error,"error")
     res.status(500).json(errorResponse("error in create Post", res.statusCode));
   }
 });
@@ -86,19 +89,23 @@ router.get("/list/sponsor",  async (req, res) => {
 });
 
 
-router.get("/getlist/byuser/id", async (req, res) => {
+router.get("/getlist/byuser/id",checkAuth, async (req, res) => {
   try {
     const controller = new PostController();
     const userId = req.query.userId;
-    const response = await controller.getPostListBYUserId(userId);
+    const currentUser = res.locals.user;
+    const response = await controller.getPostListBYUserId(userId,currentUser);
     res
       .status(200)
       .json(successResponse("getPostListBYUserId", response, res.statusCode));
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json(errorResponse("error in getPostListBYUserId", res.statusCode));
   }
+
+  
 });
 
 router.get("/infobyid",  async (req, res) => {
@@ -192,7 +199,7 @@ router.post("/share", async (req, res) => {
 
 
 
-router.post("/delete", checkAuth, async (req, res) => {
+router.post("/delete", async (req, res) => {
   try {
     const postId = req.body._id;
     const controller = new PostController();

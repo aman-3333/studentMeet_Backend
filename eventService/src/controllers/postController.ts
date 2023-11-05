@@ -11,6 +11,20 @@ const currentTime: any = new Date();
 export default class PostController {
   public async createPost(body: any) {
     let PostInfo: any;
+
+if(body.academyId){
+  body.userType ="academy"
+}
+if(body.sponsorId){
+  body.userType ="sponsor"
+}
+if(body.schoolId){
+  body.userType ="school"
+}else{
+  body.userType ="user"
+}
+
+
     PostInfo = await Post.create(body);
     // let userInfo:any=await userDetails.findOne({_id:body.userId,isDeleted:false}).lean()
     // await Post.findOneAndUpdate({_id:PostInfo._id},{$set:{userName:userInfo.fullname}})
@@ -217,53 +231,139 @@ export default class PostController {
       return PostList;
   }
 
-  public async getPostListBYUserId(userId: any) {
-    let PostInfo: any = await Post.aggregate([
-      {
-        $match: {
-          userId: new mongoose.Types.ObjectId(userId),
+  public async getPostListBYUserId(userId: any,currentUser:any) {
+    console.log(currentUser,"currentUser")
+    if(userId==currentUser._id){
+      let PostInfo: any = await Post.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          },
         },
-      },
-      {
-        $sort: {
-          createdAt: -1,
+        {
+          $sort: {
+            createdAt: -1,
+          },
         },
-      },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
         },
-      },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
+      
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
         },
-      },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-    ]);
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
 
-    return PostInfo;
+        },
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            isEditable: "true"
+          }
+        },
+      ]);
+      PostInfo.forEach((val: any) => {
+        if (val.postLike.toString().includes(currentUser._id)) {
+          val.isLikes = true;
+        } else {
+          val.isLikes = false;
+        }
+      });
+      return PostInfo;
+    }
+    else{
+      let PostInfo: any = await Post.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+      
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+
+        },
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            isEditable: "false"
+          }
+        },
+      ]);
+      PostInfo.forEach((val: any) => {
+        if (val.postLike.toString().includes(currentUser._id)) {
+          val.isLikes = true;
+        } else {
+          val.isLikes = false;
+        }
+      });
+      return PostInfo;
+    }
+   
   }
 
   public async deletePost(postId: any) {

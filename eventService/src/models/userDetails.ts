@@ -30,7 +30,6 @@ const userSchema = new Schema(
     whatsapp_country_code: { type: Number, trim: true ,default:0},
     contact_verify: { type: Boolean, default: false },
     whatsapp_contact_verify: { type: Boolean, default: false },
-
     dob: { type: Date },
     gender: {
       type: String,
@@ -40,7 +39,6 @@ const userSchema = new Schema(
     fulladdress: { type: String, trim: true },
     profile_picture: { type: String ,default:""},
     signature: { type: String ,default:""},
-   
     isSubscribed: { type: Boolean, default: true },
     password_change: { type: Boolean, default: true },
     usertype: { type: String, default: "normel" },

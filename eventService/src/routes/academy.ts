@@ -138,8 +138,10 @@ router.post("/read/activity", async (req, res) => {
 router.get("/filter", async (req, res) => {
   try {
     const controller = new AcademyController();
-    const query: any = req.query;
-    const response: any = await controller.filterAcademy(query);
+    const city:any= req.query.city;
+    const state:any= req.query.state;
+    const academySubTypeId:any= req.query.academySubTypeId;
+    const response:any= await controller.filterAcademy(city,state,academySubTypeId);
     res
       .status(200)
       .json(successResponse("academy list", response, res.statusCode));

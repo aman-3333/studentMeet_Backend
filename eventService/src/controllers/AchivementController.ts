@@ -358,69 +358,151 @@ export default class AchivementController {
   }
 
   public async getUserAchivement(userId: any, loginUser: any) {
-    const achivementList = await Achivement.aggregate([
-      {
-        $match: {
-          user_id: new mongoose.Types.ObjectId(userId),
+    if(userId==loginUser._id){
+      const achivementList = await Achivement.aggregate([
+        {
+          $match: {
+            user_id: new mongoose.Types.ObjectId(userId),
+          },
         },
-      },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "userDetail",
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userDetail",
+          },
         },
-      },
-      { $unwind: { path: "$userDetail", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "schoolId",
-          from: "schools",
-          foreignField: "_id",
-          as: "school",
+        { $unwind: { path: "$userDetail", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "schoolId",
+            from: "schools",
+            foreignField: "_id",
+            as: "school",
+          },
         },
-      },
-      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
+        { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
         },
-      },
-      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
+        { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
         },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
+        { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
         },
-      },
-      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-    ]);
+        { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
 
-    achivementList.forEach((val: any) => {
-      if (val.achivementLike.toString().includes(loginUser._id.toString())) {
-        val.isLikes = true;
-      } else {
-        val.isLikes = false;
-      }
-    });
 
-    return achivementList;
+        {
+          $addFields: {
+            isEditable: "true"
+          }
+        },
+      ]);
+  
+      achivementList.forEach((val: any) => {
+        if (val.achivementLike.toString().includes(loginUser._id)) {
+          val.isLikes = true;
+        } else {
+          val.isLikes = false;
+        }
+      });
+  
+      return achivementList;
+    }else{
+      const achivementList = await Achivement.aggregate([
+        {
+          $match: {
+            user_id: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userDetail",
+          },
+        },
+        { $unwind: { path: "$userDetail", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "schoolId",
+            from: "schools",
+            foreignField: "_id",
+            as: "school",
+          },
+        },
+        { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            isEditable: "false"
+          }
+        },
+      ]);
+  
+      achivementList.forEach((val: any) => {
+        if (val.achivementLike.toString().includes(loginUser._id)) {
+          val.isLikes = true;
+        } else {
+          val.isLikes = false;
+        }
+      });
+  
+      return achivementList;
+    }
+   
   }
+
+
+
+
 
   public async getAchivementInfoById(AchivementId: any) {
     const achivementInfo: any = await Achivement.findOne({
