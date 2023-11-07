@@ -94,9 +94,7 @@ router.post("/activity",  async (req, res) => {
     const status = req.body.status;
     const acdemyComment = req.body.acdemyComment;
     const acdemyCommentId = req.body.acdemyCommentId;
-
     const body = req.body;
-
     const controller = new AcademyController();
     const response = await controller.academyActivity(
       userId,
@@ -110,6 +108,7 @@ router.post("/activity",  async (req, res) => {
       .status(200)
       .json(successResponse("academy Activity", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res
       .status(500)
       .json(errorResponse("error in academy Activity", res.statusCode));

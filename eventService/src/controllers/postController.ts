@@ -226,10 +226,14 @@ if(body.schoolId){
     return mergedArray;
   }
 
+
+
   public async getPostInfoById(postId:any) {
       const PostList: IPost[] = await Post.findOne({_id:postId, isDeleted: false }).lean();
       return PostList;
   }
+
+
 
   public async getPostListBYUserId(userId: any,currentUser:any) {
     console.log(currentUser,"currentUser")
@@ -366,6 +370,8 @@ if(body.schoolId){
    
   }
 
+
+
   public async deletePost(postId: any) {
 
 
@@ -376,6 +382,9 @@ if(body.schoolId){
     ).lean();
     return PostInfo;
   }
+
+
+
   public async PostActivity(
     userId: any,
     PostId: any,
@@ -509,8 +518,6 @@ return PostInfo;
 
 
 
-
-
   public async sharePost( body:any ) {
 for (let i = 0; i < body.sharePostByOther.length; i++) {
   let  PostInfo = await userActivity.findOneAndUpdate(
@@ -534,10 +541,6 @@ for (let i = 0; i < body.sharePostByOther.length; i++) {
   }
    
 
- 
-
-
-    
   
 
   public async readPostActivity(PostId: any, status: any, userId: any) {
@@ -599,6 +602,7 @@ for (let i = 0; i < body.sharePostByOther.length; i++) {
     return PostInfo;
   }
 
+
   public async getPostListSchool(schoolId: any) {
     let PostLike = await Post.aggregate([
       { $match: { isDeleted: false, schoolId:new mongoose.Types.ObjectId(schoolId)  } },
@@ -640,6 +644,9 @@ for (let i = 0; i < body.sharePostByOther.length; i++) {
 
     return PostLike;
   }
+
+
+
   public async getPostListAcademy(academyId: any) {
     let PostLike = await Post.aggregate([
       { $match: { isDeleted: false, academyId: academyId } },
@@ -734,6 +741,8 @@ for (let i = 0; i < body.sharePostByOther.length; i++) {
 
     return PostLike;
   }
+  
+
   
   public async getPostListSponsor(sponsorId: any) {
     let PostLike = await Post.aggregate([

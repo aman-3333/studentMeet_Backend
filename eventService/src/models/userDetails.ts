@@ -49,7 +49,7 @@ const userSchema = new Schema(
     facebookID: { type: String ,default:""},
     googleID: { type: String ,default:""},
     otp: { type: String ,default:""},
-    email: { type: String ,default:""},
+    email: { type: String ,default:""},  
     password: { type: String},
     isVerified: { type: Boolean, default: false },
     verifyToken: { type: String ,default:""},

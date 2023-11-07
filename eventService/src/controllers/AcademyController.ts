@@ -208,10 +208,12 @@ export default class academyController {
         },
         { new: true }
       );
+
+      
       let userData = await userActivity.aggregate([
         {
           $match: {
-            userId: new mongoose.Types.ObjectId(body.academyComment[0].userId),
+            userId: new mongoose.Types.ObjectId(body.userId),
             isDeleted: false,
           },
         },
@@ -232,12 +234,8 @@ export default class academyController {
         let userFcmToken = await userDevice.findOne({
           userId: followersData[i],
         });
-        console.log(
-          userData[0].userdetails.fullName,
-          "userData[0].userdetails.fullName"
-        );
         if (userFcmToken) {
-          const body = `${userData[0].userdetails.fullName} like academy check and react.`;
+          const body = `${userData[0].userdetails.fullName} comment on academy check and react.`;
           sendNotification(
             userFcmToken.fcmtoken,
             body,

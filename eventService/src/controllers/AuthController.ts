@@ -29,6 +29,7 @@ const expiration = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);
 
 
 import { log } from "util";
+import userDetails from "../models/userDetails";
 const { createJwtToken } = require("../utils/JwtToken");
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
 // import SignupOtp from "../models/SignupOtp";
@@ -238,28 +239,17 @@ export default class AuthController {
   }
 
 
+public async suggestionUser(user:any){
+let userInfo = await userDetails.findOne({_id:user._id,isDeleted:false}).lean()
+
+let allUser=await userDetails.find({})
+
+
+}
 
 
 
-  //     if(existingUser){
-  //       return res.status(400).json({message:"User Already exists"})
-  //     }
 
-  //    const hashedPassword=await bcrypt.hash(password,10)
-  //    const userData=await UserModel.create({
-  //       email:email,
-  //       password:hashedPassword,
-  //       username:username
-  //    })
-  //    const token=jwt.sign({email:userData.email,id:userData._id},"Stack", {
-  //       expiresIn: '24h'
-  //        },SECRET_KEY);
-  //        await UserModel.findOneAndUpdate({_id:userData._id},{$set:{token:token}})
-  //        res.status(200).json(successResponse("signup",{userData,token},res.statusCode))
-  //   } catch (error) {
-  //       res.status(500).json(errorResponse("error in signup", res.statusCode));
-  //   }
-  // };
 
   public async signUpEmail(body: any, SECRET_KEY: any) {
     const { email, password, confirmPassword, type } = body;

@@ -44,7 +44,7 @@ router.post("/editprofile", async (req, res) => {
   }
 });
 
-router.get("/getprofile", checkAuth, async (req, res) => {
+router.get("/getprofile", async (req, res) => {
   try {
     const userId: any = req.query.userId;
     const controller = new authController();
