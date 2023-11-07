@@ -138,18 +138,18 @@ export default class academyController {
       },
       {
         $lookup: {
-          localField: "_id",
-          from: "State",
-          foreignField: "state",
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
           as: "state",
         },
       },
       { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
-          localField: "_id",
-          from: "city",
-          foreignField: "city",
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
           as: "city",
         },
       },
@@ -158,7 +158,7 @@ export default class academyController {
       {
         $lookup: {
           localField: "country",
-          from: "country",
+          from: "countries",
           foreignField: "_id",
           as: "country",
         },
