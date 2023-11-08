@@ -96,7 +96,7 @@ router.post("/activity",  async (req, res) => {
     const acdemyCommentId = req.body.acdemyCommentId;
     const body = req.body;
     const controller = new AcademyController();
-    const response = await controller.academyActivity(
+    const response:any = await controller.academyActivity(
       userId,
       acdemyId,
       status,
@@ -170,9 +170,9 @@ router.get("/details", async (req, res) => {
 router.get("/info/byid", async (req, res) => {
   try {
     const academyId: any = req.query.academyId;
-
+    const coachId: any = req.query.coachId;
     const status: any = req.query.status;
-
+    
     const controller = new AcademyController();
     const response: any = await controller.getacademyInfoById(
       academyId,

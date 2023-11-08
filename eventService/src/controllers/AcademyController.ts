@@ -501,15 +501,14 @@ export default class academyController {
     console.log(academyInfo.coachId, "academyInfo");
 
     if (status == "coachInfo") {
+
       coachDetails = await userDetails.find({
         _id: { $in: academyInfo.coachId },
         isDeleted: false,
       });
 
       for (let i = 0; i < coachDetails.length; i++) {
-        let achivement: any = await Achivement.findOne({
-          user_id: coachDetails[i]._id,
-        });
+       
 
         let profile_pucture = coachDetails[i].profile_pucture;
         let experienceYear = coachDetails[i].experienceYear;
@@ -518,9 +517,10 @@ export default class academyController {
         let fullName = coachDetails[i].fullName;
         let playFor = coachDetails[i].playFor;
         let experience = coachDetails[i].experience;
-
+        let _id = coachDetails[i]._id;
+        let stages = coachDetails[i].stages;
         data.push({
-          achivement,
+         
           profile_pucture,
           experienceYear,
           experties,
@@ -528,6 +528,8 @@ export default class academyController {
           fullName,
           playFor,
           experience,
+          _id,
+          stages
         });
       }
 

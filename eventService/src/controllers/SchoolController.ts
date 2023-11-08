@@ -336,40 +336,26 @@ export default class SchoolController {
     let data: any = [];
     let a: any = [];
     let info: any;
+    let minuscount=-1;
     let schoolInfo: any;
 const school_id=body.schoolId
   
     if (status == "schoolLike") {
-      await school.findOneAndUpdate(
-        { _id: body.schoolId ,isDeleted:false},
-        { $inc: { schoolLikeCount: 1 } },
-        { new: true }
-      ).lean();
-      schoolInfo = await school.findOneAndUpdate(
-        {
-          _id: body.schoolId,isDeleted:false
-        },
-        {
-          $push: {
-            schoolLike: userId,
-          },
-        },
-        { new: true }
-      );
+     
 
-      console.log(schoolInfo);
-
-      await userActivity.findOneAndUpdate(
-        { userId: schoolInfo.userId },
-        { $inc: { schoolLikeCount: 1 } },
-        { new: true }
-      );
+   
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $push: { schoolLike: userId },
+        $inc: { schoolCommentCount: 1 } }
+     )
+     
 
  
       let userData= await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.schoolComment[0].userId), isDeleted: false,
+            userId:new mongoose.Types.ObjectId(body.userId), isDeleted: false,
           },
         },
         {
@@ -385,7 +371,7 @@ const school_id=body.schoolId
     
      const followersData = userData[0].userFollowers;
      
-     
+     if(followersData.length>0){
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
@@ -394,67 +380,35 @@ const school_id=body.schoolId
     sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",followersData[i],school_id);
    }  
   }
+     }
+ 
 
       return schoolInfo;
     }
     if (status == "removeSchoolLike") {
-      await school.findOneAndUpdate(
-        { _id: body.schoolId ,isDeleted:false},
-        { $inc: { schoolLikeCount: -1 } },
-        { new: true }
-      );
+     
 
-      schoolInfo = await school.findOneAndUpdate(
-        {
-          _id: body.schoolId,
-        },
-        {
-          $pull: {
-            schoolLike: userId,
-          },
-        },
-        { new: true }
-      );
-      await userActivity.findOneAndUpdate(
-        { userId: schoolInfo.userId },
-        { $inc: { schoolLikeCount: -1 } },
-        { new: true }
-      );
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $push: { schoolLike: userId },
+        $inc: { schoolCommentCount: -1 } }
+     )
       return schoolInfo;
     }
 
     if (status == "schoolComment") {
-      for (let i = 0; i < body.schoolComment.length; i++) {
-        schoolInfo = await school.findOneAndUpdate(
-          {
-            _id: body.schoolId,
-            isDeleted:false
-          },
-          {
-            $push: {
-              schoolComment: {
-                userId: body.schoolComment[i].userId,
-                comment: body.schoolComment[i].comment,
-                dateTime: currentTime,
-              },
-            },
-          }
-        );
-        schoolInfo = await school.findOneAndUpdate(
-          { _id: body.schoolId,isDeleted:false },
-          { $inc: { schoolCommentCount: 1 } },
-          { new: true }
-        );
-        await userActivity.findOneAndUpdate(
-          { userId: schoolInfo.userId,isDeleted:false },
-          { $inc: { schoolCommentCount: 1 } },
-          { new: true }
-        );
-      }
+
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $push: { schoolComment: { comment: body.comment,userId:userId,dateTime: currentTime } },
+        $inc: { schoolCommentCount: 1 } }
+     )
+
+     
       let userData= await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.schoolComment[0].userId), isDeleted: false,
+            userId:new mongoose.Types.ObjectId(body.userId), isDeleted: false,
           },
         },
         {
@@ -469,6 +423,7 @@ const school_id=body.schoolId
       ]);
     
      const followersData = userData[0].userFollowers;
+     if(followersData.length>0){
       for (let i = 0; i < followersData.length; i++) {
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
    if(userFcmToken){
@@ -476,24 +431,16 @@ const school_id=body.schoolId
     sendNotification(userFcmToken.fcmtoken,body,"abc","school_home",followersData[i],school_id);
    }  
   }
+     }
+ 
   return schoolInfo;
     }
     if (status == "removeSchoolComment") {
-
       schoolInfo = await school.updateOne(
-  { _id: body.schoolId},
-  {
-    $pull: {
-      schoolComment: { _id: body._id }
-    }
-  },
-  {
-    multi: true
-  }
-)
-
-
-
+        { _id: body.schoolId }, 
+        { $pull: { schoolComment: { _id: body._id } },
+        $inc: { schoolCommentCount: -1 } }
+     )
 
 
 

@@ -63,8 +63,9 @@ router.patch("/editprofile", checkAuth, async (req, res) => {
 router.get("/viewProfile", checkAuth, async (req, res) => {
     try {
         const userId = req.query.userId ;
+        const loginUser:any =res.locals.user;
         const controller = new AuthController();
-        const response = await controller.viewProfile(userId);
+        const response = await controller.viewProfile(userId,loginUser);
         res.status(200).json(successResponse("viewProfile", response, res.statusCode));
     } catch (error) {
      

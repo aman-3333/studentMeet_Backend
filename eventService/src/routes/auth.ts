@@ -44,11 +44,12 @@ router.post("/editprofile", async (req, res) => {
   }
 });
 
-router.get("/getprofile", async (req, res) => {
+router.get("/getprofile",checkAuth, async (req, res) => {
   try {
     const userId: any = req.query.userId;
+    const loginUser:any =res.locals.user;
     const controller = new authController();
-    const response: any = await controller.viewProfile(userId);
+    const response: any = await controller.viewProfile(userId,loginUser);
     res
       .status(200)
       .json(successResponse("getProfile", response, res.statusCode));

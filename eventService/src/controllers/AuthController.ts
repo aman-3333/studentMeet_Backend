@@ -132,11 +132,25 @@ export default class AuthController {
     return userInfo;
   }
 
-  public async viewProfile(userId: any) {
+  public async viewProfile(userId: any,loginUser:any) {
+   let currentUser:any = await userActivity.findOne({
+    userId: loginUser._id,
+    isDeleted: false,
+  }).lean();
     let userInfo: any = await Users.findOne({
       _id: userId,
       isDeleted: false,
     }).lean();
+    if(loginUser._id==userId){
+      userInfo.isEditable == true;
+    }
+    if (currentUser.userFollowers.toString().includes(userId)) {
+      userInfo.isFollow = true;
+    }
+    else{
+      userInfo.isFollow = false;
+      userInfo.isEditable ==false;
+    }
     return userInfo;
   }
 
@@ -246,9 +260,6 @@ let allUser=await userDetails.find({})
 
 
 }
-
-
-
 
 
   public async signUpEmail(body: any, SECRET_KEY: any) {
