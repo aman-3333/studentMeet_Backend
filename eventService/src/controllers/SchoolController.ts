@@ -347,11 +347,9 @@ const school_id=body.schoolId
       schoolInfo = await school.updateOne(
         { _id: body.schoolId }, 
         { $push: { schoolLike: userId },
-        $inc: { schoolCommentCount: 1 } }
+        $inc: { schoolLikeCount: 1 } }
      )
      
-
- 
       let userData= await userActivity.aggregate([
         {
           $match: {
@@ -390,8 +388,8 @@ const school_id=body.schoolId
 
       schoolInfo = await school.updateOne(
         { _id: body.schoolId }, 
-        { $push: { schoolLike: userId },
-        $inc: { schoolCommentCount: -1 } }
+        { $pull: { schoolLike: userId },
+        $inc: { schoolLikeCount: -1 } }
      )
       return schoolInfo;
     }

@@ -112,25 +112,13 @@ export default class SponsorshipController {
     let followersData:any;
     let sponsorship_id:any;
     if (status == "removeSponsorshipComment") {
-
+      sponsorshipInfo = await SponsorshipModel.updateOne(
+        { _id: body.sponsorshipId }, 
+        { $pull: { sponsorshipComment: { _id: body._id } },
+        $inc: { sponsorshipCommentCount: -1 } }
+     )
       
-            sponsorshipInfo = await SponsorshipModel.updateOne(
-              { _id: body.sponsorshipId},
-              {
-                $pull: {
-                  sponsorshipComment: { _id: body._id }
-                }
-              },
-              {
-                multi: true
-              }
-            )
-      
-      sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-        { _id: body.sponsorshipId },
-        { $inc: { sponsorshipCommentCount: -1 } },
-        { new: true }
-      );
+         
       
       await userActivity.findOneAndUpdate(
         { userId: sponsorshipInfo.userId },
@@ -143,26 +131,15 @@ export default class SponsorshipController {
    
 
     if (status == "sponsorshipLike") {
-      await SponsorshipModel.findOneAndUpdate(
-        { _id: body.sponsorshipId },
-        { $inc: { sponsorshipLikeCount: 1 } },
-        { new: true }
-      ).lean();
-      sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-        {
-          _id: body.sponsorshipId,
-        },
-        {
-          $push: {
-            sponsorshipLike: userId,
-          },
-        },
-        { new: true }
-      );
 
 
 
 
+      sponsorshipInfo = await SponsorshipModel.updateOne(
+        { _id: body.sponsorshipId }, 
+        { $push: { sponsorshipLike: userId },
+        $inc: { sponsorshipLikeCount: 1 } }
+     )
       
 
       await userActivity.findOneAndUpdate(
@@ -203,67 +180,25 @@ export default class SponsorshipController {
       return sponsorshipInfo;
     }
     if (status == "removeSponsorshipLike") {
-      await SponsorshipModel.findOneAndUpdate(
-        { _id: body.sponsorshipId },
-        { $inc: { sponsorshipLikeCount: -1 } },
-        { new: true }
-      );
-
-      sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-        {
-          _id: body.sponsorshipId,
-        },
-        {
-          $pull: {
-            sponsorshipLike: userId,
-          },
-        },
-        { new: true }
-      );
-
-      await userActivity.findOneAndUpdate(
-        { userId: sponsorshipInfo.userId },
-        { $inc: { sponsorshipLikeCount: -1 } },
-        { new: true }
-      );
+      sponsorshipInfo = await SponsorshipModel.updateOne(
+        { _id: body.sponsorshipId }, 
+        { $pull: { sponsorshipLike: userId },
+        $inc: { sponsorshipLikeCount: -1 } }
+     )
       return sponsorshipInfo;
     }
  
     if (status == "sponsorshipComment") {
 
-      for (let i = 0; i < body.sponsorshipComment.length; i++) {
-        sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-          {
-            _id: body.sponsorshipId,
-          },
-          {
-            $push: {
-              sponsorshipComment: {
-                userId: body.sponsorshipComment[i].userId,
-                comment: body.sponsorshipComment[i].comment,
-                dateTime: currentTime,
-              },
-            },
-          },{
-            new:true
-          }
-        );
-        console.log(sponsorshipInfo, "sponsorshipInfo");
 
-        sponsorshipInfo = await SponsorshipModel.findOneAndUpdate(
-          { _id: body.sponsorshipId },
-          { $inc: { sponsorshipCommentCount: 1 } },
-          { new: true }
-        );
+      sponsorshipInfo = await SponsorshipModel.updateOne(
+        { _id: body.sponsorshipId }, 
+        { $push: { sponsorshipComment: { comment: body.comment,userId:userId,dateTime: currentTime } },
+        $inc: { sponsorshipCommentCount: 1 } }
+     )
 
-        await userActivity.findOneAndUpdate(
-          { userId: sponsorshipInfo.userId },
-          { $inc: { sponsorshipCommentCount: 1 } },
-          { new: true }
-        );
 
    
-      }
 
       let userData= await userActivity.aggregate([
         {

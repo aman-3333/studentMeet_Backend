@@ -9,7 +9,8 @@ export default class NotificationController {
     }   
 
     public async editNotification(body: any) {
-        const notificationInfo : any =   await Notification.findOneAndUpdate({ userId: body.user_id,  content : body.title, isDeleted : false }, body, { new : true }).lean();
+        const {user_id,title,createdAt ,_id} =body;
+        const notificationInfo : any =   await Notification.findOneAndUpdate({ _id: _id,   isDeleted : false, }, body, { new : true }).lean();
         return notificationInfo;
     }
 

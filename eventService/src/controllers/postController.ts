@@ -387,133 +387,53 @@ if(body.schoolId){
 
   public async PostActivity(
     userId: any,
-    PostId: any,
     status: any,
-    postComment: any,
-    postCommentId: any,
     body: any
   ) {
     let userInfo: any;
     let data: any = [];
-    let a: any = [];
-    let info: any;
     let PostInfo: any;
-console.log(body,"body");
-
     if (status == "postLike") {
-      await Post.findOneAndUpdate(
-        { _id: body.postId },
-        { $inc: { postLikeCount: 1 } },
-        { new: true }
-      ).lean();
-      PostInfo = await Post.findOneAndUpdate(
-        {
-          _id: body.postId,isDeleted:false
-        },
-        {
-          $push: {
-            postLike: userId,
-          },
-        },
-        { new: true }
-      );
 
-      console.log(PostInfo);
+      PostInfo = await Post.updateOne(
+        { _id: body.postId }, 
+        { $push: { postLike: userId },
+        $inc: { postLikeCount: 1 } }
+     )
 
-      await userActivity.findOneAndUpdate(
-        { userId: PostInfo.userId },
-        { $inc: { postLikeCount: 1 } },
-        { new: true }
-      );
       return PostInfo;
     }
     if (status == "removePostLike") {
-      await Post.findOneAndUpdate(
-        { _id: body.postId ,isDeleted:false},
-        { $inc: { postLikeCount: -1 } },
-        { new: true }
-      );
-
-      PostInfo = await Post.findOneAndUpdate(
-        {
-          _id: body.postId,
-        },
-        {
-          $pull: {
-            postLike: userId,
-          },
-        },
-        { new: true }
-      );
-      await userActivity.findOneAndUpdate(
-        { userId: PostInfo.userId },
-        { $inc: { postLikeCount: -1 } },
-        { new: true }
-      );
+      
+      PostInfo = await Post.updateOne(
+        { _id: body.postId }, 
+        { $pull: { postLike: userId },
+        $inc: { postLikeCount: -1 } }
+     )
       return PostInfo;
     }
 
     if (status == "postComment") {
      
-      for (let i = 0; i < body.postComment.length; i++) {
-        PostInfo = await Post.findOneAndUpdate(
-          {
-            _id: body.postId,isDeleted:false
-          },
-          {
-            $push: {
-              postComment: {
-                userId: body.postComment[i].userId,
-                comment: body.postComment[i].comment,
-                dateTime: currentTime,
-              },
-            },
-          }
-        );
-        console.log(PostInfo, "PostInfo");
+      PostInfo = await Post.updateOne(
+        { _id: body.postId }, 
+        { $push: { postComment: { comment: body.comment,userId:userId,dateTime: currentTime } },
+        $inc: { postCommentCount: 1 } }
+     )
 
-        PostInfo = await Post.findOneAndUpdate(
-          { _id: body.postId,isDeleted:false },
-          { $inc: { postCommentCount: 1 } },
-          { new: true }
-        );
-
-        await userActivity.findOneAndUpdate(
-          { userId: PostInfo.userId,isDeleted:false },
-          { $inc: { postCommentCount: 1 } },
-          { new: true }
-        );
-        return PostInfo;
-      }
+    
     }
     if (status == "removePostComment") {
+
       PostInfo = await Post.updateOne(
-        { _id: body.postId},
-        {
-          $pull: {
-            postComment: { _id: body._id }
-          }
-        },
-        {
-          multi: true
-        }
-      )
+        { _id: body.postId }, 
+        { $pull: { postComment: { _id: body._id } },
+        $inc: { postCommentCount: -1 } }
+     )
+     
 return PostInfo;
     }
-    if (status == "readpostComment") {
-      userInfo = await userActivity.findOne({ userId: body.userId }).lean();
-      userInfo = userInfo.postComment;
-
-      for (let i = 0; i < userInfo.length; i++) {
-        let PostInfo: any = await Post.findOne({ _id: userInfo[i].postId });
-
-        let comment: any = userInfo[i].comment;
-        let DateTime: any = userInfo[i].dateTime;
-
-        data.push({ PostInfo, comment, DateTime });
-      }
-      return data;
-    }
+  
   }
 
 

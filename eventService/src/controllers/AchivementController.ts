@@ -577,88 +577,65 @@ export default class AchivementController {
         sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id);
       }
       userInfo = userInfo[0].userFollowers;
-      
-      for (let i = 0; i < userInfo.length; i++) {
-        let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
-   if(userFcmToken){
-   const body = `${userName} like Achivemnt check and react. `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
-   }  
+      if(userInfo.length>0){
+        for (let i = 0; i < userInfo.length; i++) {
+          let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+     if(userFcmToken){
+     const body = `${userName} like Achivemnt check and react. `;
+      sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
+     }  
+      }
+   
 
    
       }
       return achivementInfo;
     }
     if (status == "removAchivementLike") {
-      await Achivement.updateOne(
-        {
-          _id: body.achivementId,
-        },
-        {
-          $inc: { achivementLikeCount: minuscount },
-        }
-      );
 
-      achivementInfo = await Achivement.findOneAndUpdate(
-        {
-          _id: body.achivementId,
-        },
-        {
-          $pull: {
-            achivementLike: userId,
-          },
-        },
-        { new: true }
-      );
+
+
+      achivementInfo = await Achivement.updateOne(
+        { _id: body.achivementId }, 
+        { $pull: { achivementLike: userId },
+        $inc: { achivementLikeCount: -1 } }
+     )
 
       return achivementInfo;
     }
 
     if (status == "achivementComment") {
       let userInfo:any ;
-      for (let i = 0; i < body.achivementComment.length; i++) {
-        achivementInfo = await Achivement.findOneAndUpdate(
-          {
-            _id: body.achivementId,
-          },
-          {
-            $push: {
-              achivementComment: {
-                userId: body.achivementComment[i].userId,
-                comment: body.achivementComment[i].comment,
-                dateTime: currentTime,
-              },
-            },
-          }
-        );
-        await Achivement.updateOne(
-          {
-            _id: body.achivementId,
-          },
-          {
-            $inc: { achivementCommentCount: count },
-          }
+  
+
+
+        achivementInfo = await Achivement.updateOne(
+          { _id: body.achivementId }, 
+          { $push: { achivementComment: { comment: body.comment,userId:userId,dateTime: currentTime } },
+          $inc: { achivementCommentCount: 1 } }
+       )
+       achivementInfo=await Achivement.findOne({_id: body.achivementId}).lean()
+      
+
+       userInfo = await userActivity.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(body.userId),
           
-        );
-        userInfo = await userActivity.aggregate([
-          {
-            $match: {
-              userId: new mongoose.Types.ObjectId(body.achivementComment[i].userId),
-            
-              isDeleted: false,
-            },
+            isDeleted: false,
           },
-          {
-            $lookup: {
-              localField: "userId",
-              from: "userdetails",
-              foreignField: "_id",
-              as: "userData",
-            },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userData",
           },
-          { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
-        ]);
-        }
+        },
+        { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+      ]);
+
         let userName =  userInfo[0].userData.fullName;
         if(achivementInfo.user_id) {
           const achivementUser= await userDevice.findOne({ userId : achivementInfo.user_id });
@@ -666,43 +643,27 @@ export default class AchivementController {
           sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id);
         }
         userInfo = userInfo[0].userFollowers;
-        for (let i = 0; i < userInfo.length; i++) {
-          let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
-     if(userFcmToken){
-     const body =`${userName} Comment on  Achivemnt check and react.`;
-      sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
-     }  
+
+        if(userInfo.length>0){
+          for (let i = 0; i < userInfo.length; i++) {
+            let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+      
+       const body =`${userName} Comment on  Achivemnt check and react.`;
+        sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
+        
+          }
         }
+       
 
         return achivementInfo;
       
     }
     if (status == "removeAchivementComment") {
-      for (let i = 0; i < body.achivementComment.length; i++) {
-        achivementInfo = await Achivement.findOneAndUpdate(
-          {
-            _id: body.achivementComment[i].achivementId,
-          },
-          {
-            $pull: {
-              achivementComment: {
-                _id: body.achivementComment[i]._id,
-              },
-            },
-          }
-        );
-
-        await Achivement.updateOne(
-          {
-            _id: body.achivementId,
-          },
-          {
-            $inc: { achivementCommentCount: minuscount },
-          }
-        );
-
-        return achivementInfo;
-      }
+      achivementInfo = await Achivement.updateOne(
+        { _id: body.achivementId }, 
+        { $pull: { achivementComment: { _id: body._id } },
+        $inc: { achivementCommentCount: -1 } }
+     )
     }
   }
 

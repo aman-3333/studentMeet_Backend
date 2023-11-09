@@ -121,10 +121,9 @@ router.get("/infobyid",  async (req, res) => {
 router.post("/activity", async (req, res) => {
   try {
     const userId = req.body.userId;
-    const PostId = req.body.PostId;
+   
     const status = req.body.status;
-    const postComment = req.body.postComment;
-    const postCommentId = req.body.postCommentId;
+   
 
     req.body.user = res.locals.user;
     const body = req.body;
@@ -132,10 +131,9 @@ router.post("/activity", async (req, res) => {
     const controller = new PostController();
     const response = await controller.PostActivity(
       userId,
-      PostId,
+      
       status,
-      postComment,
-      postCommentId,
+      
       body
     );
     res

@@ -29,10 +29,10 @@ router.post("/edit",  async (req, res) => {
 });
 
 
-router.get("/list",   async (req, res) => {
+router.get("/list", checkAuth,  async (req, res) => {
     try {
         const controller = new NotificationController();
-const userId = req.query.userId;
+const userId = res.locals.user._id;
         const response: any = await controller.getNotificationList(userId);
         res.status(200).json(successResponse("Notification list", response, res.statusCode));
     } catch (error) {

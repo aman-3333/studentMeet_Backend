@@ -9,6 +9,14 @@ const admin = require("firebase-admin");
 
 
 export async function sendNotification(fcmToken: any, title: any, body: any,screen:any,user_id:any,screen_id:any) {
+  const userInfo = await userDevice.findOne({fcmtoken:fcmToken})
+const notificationData:any =  await notificationModel.create({
+userId:userInfo.userId,
+content: title,
+screen: screen,
+screen_id: screen_id,
+})
+
   var message = {
     to: fcmToken,
     notification: {
@@ -18,7 +26,8 @@ export async function sendNotification(fcmToken: any, title: any, body: any,scre
       vibrate: [200, 100, 200],
       screen: screen,
       user_id:user_id,
-      screen_id:screen_id
+      screen_id:screen_id,
+      notification_id:notificationData._id
     },
     data: {
       screen: screen,
@@ -31,13 +40,7 @@ export async function sendNotification(fcmToken: any, title: any, body: any,scre
       console.log("successful send ", response);
     }
   });
-  const userInfo = await userDevice.findOne({fcmtoken:fcmToken})
-await notificationModel.create({
-userId:userInfo.userId,
-content: title,
-screen: screen,
-screen_id: screen_id,
-})
+
 
 }
 
