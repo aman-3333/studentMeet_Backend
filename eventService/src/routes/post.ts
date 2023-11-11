@@ -43,6 +43,7 @@ router.get("/list", checkAuth, async (req, res) => {
       .status(200)
       .json(successResponse("Post list", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res.status(500).json(errorResponse("error in Post list", res.statusCode));
   }
 });

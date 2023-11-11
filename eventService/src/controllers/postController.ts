@@ -20,7 +20,8 @@ if(body.sponsorId){
 }
 if(body.schoolId){
   body.userType ="school"
-}else{
+}
+if(body.userId){
   body.userType ="user"
 }
 
@@ -43,7 +44,7 @@ if(body.schoolId){
 
   public async getPostList(user: any) {
     let PostLike = await Post.aggregate([
-      { $match: { isDeleted: false, postLike: { $in: [user._id] } } },
+      { $match: { isDeleted: false  } },
       {
         $lookup: {
           localField: "userId",
@@ -127,103 +128,39 @@ if(body.schoolId){
         },
       },
       { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
-    ]);
-    let PostList = await Post.aggregate([
-      { $match: { isDeleted: false, postLike: { $nin: [user._id] } } },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "academyId",
-          from: "academies",
-          foreignField: "_id",
-          as: "academyObj",
-        },
-      },
-      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "sponsorId",
-          from: "sponsorshipdetails",
-          foreignField: "_id",
-          as: "sponsorshipObj",
-        },
-      },
-      {
-        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
-      },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "instituteId",
-          from: "institutes",
-          foreignField: "_id",
-          as: "institutes",
-        },
-      },
-      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "schoolId",
-          from: "schools",
-          foreignField: "_id",
-          as: "school",
-        },
-      },
-      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-
-      {
-        $addFields: {
-          isLikes: false,
-        },
-      },
+    
     ]);
 
-    PostLike = PostLike.concat(PostList);
+    PostLike.forEach((val: any) => {
 
-    const mergedArray = [...PostLike, ...PostList];
+      if (val.userType=="user") {
+        val.ownerId = val.userId;
+        val.ownerPic=val.user.profile_picture?val.user.profile_picture:"";
+        val.ownerName=val.user.fullName?val.user.fullName:"";
+      }
+      if (val.userType=="school") {
+        val.ownerId = val.schoolId;
+        val.ownerPic=val.school.profilePicture?val.school.profilePicture:"";
+        val.ownerName=val.school.schoolName?val.school.schoolName:"";
+      }
+      if (val.userType=="sponsor") {
+        val.ownerId = val.sponsorId;
+        val.ownerPic=val.sponsorshipObj.sponsorshipProfileImage?val.sponsorshipObj.sponsorshipProfileImage:"";
+        val.ownerName=val.sponsorshipObj.sponsorshipName?val.sponsorshipObj.sponsorshipName:"";
+      }
+      if (val.userType=="academy") {
+        val.ownerId = val.academyId;
+        val.ownerPic=val.academyObj.profile_picture?val.academyObj.profile_picture:"";
+        val.ownerName=val.academyObj.academyName?val.academyObj.academyName:"";
+      }
+  if (val.postLike.length >0 && val.postLike.toString().includes(user._id.toString())) {
+    val.isLikes = true;
+  } else {
+    val.isLikes = false;
+  }
+    });
 
-    mergedArray.sort((a, b) => b.createdAt - a.createdAt);
-
-    return mergedArray;
+    return PostLike;
   }
 
 
