@@ -24,6 +24,7 @@ export default class AcademyOwnerController {
     return AcademyOwnerList;
   }
 
+
   public async getAcademyOwnerInfoById(AcademyOwnerId: any) {
     const AcademyOwnerInfo: any = await AcademyOwner.findOne({
       _id: AcademyOwnerId,
@@ -32,6 +33,7 @@ export default class AcademyOwnerController {
     return AcademyOwnerInfo;
   }
 
+  
   public async deleteAcademyOwner(AcademyOwnerId: String) {
     const AcademyOwnerInfo: IAcademyOwner = await AcademyOwner.findOneAndUpdate(
       { _id: AcademyOwnerId, isDeleted: false },

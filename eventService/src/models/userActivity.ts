@@ -82,6 +82,7 @@ const schema = new Schema({
     followerRequestRejectbyOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     blockList: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     blockbyOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    allOverFollowing:[{ type: Schema.Types.ObjectId }],
     followersCount: { type: Number, default: 0 },
     followingCount: { type: Number, default: 0 },
     academyFollowersCount: { type: Number, default: 0 },

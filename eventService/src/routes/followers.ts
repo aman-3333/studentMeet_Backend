@@ -4,10 +4,10 @@ const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
-router.post("/following",  async (req, res) => {
+router.post("/following",checkAuth,  async (req, res) => {
     try {
         
-        const userId = req.body.userId; 
+        const userId = res.locals.user._id; 
         const followingId = req.body.followingId;
         const userType = req.body.userType;
         const controller = new followersController();

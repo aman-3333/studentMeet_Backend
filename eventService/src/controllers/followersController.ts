@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import userDetails from "../models/userDetails";
 import academyModel from "../models/academy";
 import sponsorshipDetails from "../models/sponsorshipDetails";
+import school from "../models/school";
 
 var currentdate = new Date(); 
 export default class followersController {
@@ -14,14 +15,18 @@ public async following(userId: any, followingId: any,userType:any) {
     let plusOne=1;
     let userInfo: any;
     userInfo = await userDetails.findOne({_id:followingId,isDeleted:false }).lean()
+console.log(userInfo);
 
-    if(userType=="normal" ||  userType=="coach" ){
+
+    if(userType=="user"  ){
     if(userInfo.isProfilePublic == true){
+
         userInfo = await userActivity.updateOne({ userId: userId},
             {
-              $push: { userFollowing: followingId }, 
+              $push: { userFollowing: followingId,allOverFollowing:followingId }, 
               $inc: { followingCount: 1 } 
             }),
+            console.log(userInfo,"userInfo");
             userInfo = await userActivity.updateOne({ userId: followingId},
                 {
                   $push: { userFollowers: userId }, 
@@ -54,7 +59,7 @@ if(userInfo.isProfilePublic == false){
      userInfo = await userActivity.updateOne({ userId: userId},
             
         {
-          $push: { academyFollowing: followingId }, 
+          $push: { academyFollowing: followingId,allOverFollowing:followingId }, 
           $inc: { academyFollowingCount: 1 } 
         }),
            
@@ -70,16 +75,16 @@ if(userInfo.isProfilePublic == false){
 
   
     }
-        if(userType=="sponsorship"){
+        if(userType=="sponsor"){
             userInfo = await userActivity.updateOne({ userId: userId},
                 {
-                  $push: { sponsorshipFollowing: followingId }, 
+                  $push: { sponsorshipFollowing: followingId,allOverFollowing:followingId }, 
                   $inc: { sponsorshipFollowingCount: 1 } 
                 }),
                    
           
         
-                    await academyModel.findOneAndUpdate({
+                    await sponsorshipDetails.findOneAndUpdate({
                         _id: followingId,
                     }, {
                         $push: {
@@ -88,7 +93,26 @@ if(userInfo.isProfilePublic == false){
                     },{new:true}).lean()
             
        
-            }   
+            } 
+            if(userType=="school"){
+                userInfo = await userActivity.updateOne({ userId: userId},
+                    {
+                      $push: { schoolFollowing: followingId,allOverFollowing:followingId }, 
+                      $inc: { schoolFollowingCount: 1 } 
+                    }),
+                       
+              
+            
+                        await school.findOneAndUpdate({
+                            _id: followingId,
+                        }, {
+                            $push: {
+                                followers: userId
+                            }
+                        },{new:true}).lean()
+                
+           
+                }   
     return userInfo
 
         }

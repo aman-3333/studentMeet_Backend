@@ -13,16 +13,16 @@ export default class PostController {
     let PostInfo: any;
 
 if(body.academyId){
-  body.userType ="academy"
+  body.postUserType ="academy"
 }
 if(body.sponsorId){
-  body.userType ="sponsor"
+  body.postUserType ="sponsor"
 }
 if(body.schoolId){
-  body.userType ="school"
+  body.postUserType ="school"
 }
 if(body.userId){
-  body.userType ="user"
+  body.postUserType ="user"
 }
 
 
@@ -130,33 +130,38 @@ if(body.userId){
       { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
     
     ]);
-
+let userData:any = await userActivity.findOne({userId:user._id})
     PostLike.forEach((val: any) => {
 
-      if (val.userType=="user") {
+      if (val.postUserType=="user") {
         val.ownerId = val.userId;
         val.ownerPic=val.user.profile_picture?val.user.profile_picture:"";
         val.ownerName=val.user.fullName?val.user.fullName:"";
       }
-      if (val.userType=="school") {
+      if (val.postUserType=="school") {
         val.ownerId = val.schoolId;
         val.ownerPic=val.school.profilePicture?val.school.profilePicture:"";
         val.ownerName=val.school.schoolName?val.school.schoolName:"";
       }
-      if (val.userType=="sponsor") {
+      if (val.postUserType=="sponsor") {
         val.ownerId = val.sponsorId;
         val.ownerPic=val.sponsorshipObj.sponsorshipProfileImage?val.sponsorshipObj.sponsorshipProfileImage:"";
         val.ownerName=val.sponsorshipObj.sponsorshipName?val.sponsorshipObj.sponsorshipName:"";
       }
-      if (val.userType=="academy") {
+      if (val.postUserType=="academy") {
         val.ownerId = val.academyId;
         val.ownerPic=val.academyObj.profile_picture?val.academyObj.profile_picture:"";
         val.ownerName=val.academyObj.academyName?val.academyObj.academyName:"";
       }
   if (val.postLike.length >0 && val.postLike.toString().includes(user._id.toString())) {
     val.isLikes = true;
-  } else {
+  } 
+  if (userData.allOverFollowing.length >0 && userData.allOverFollowing.toString().includes(val.ownerId)) {
+    val.isFollow= true;
+  }
+   else {
     val.isLikes = false;
+    val.isFollow = false;
   }
     });
 

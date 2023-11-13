@@ -18,7 +18,6 @@ export default class academyRepresentativeController {
 
 
     public async editAcademyRepresentative(body: any, academyRepresentativeId: string) {
-       
         const academyRepresentativeInfo: any = await academyRepresentative.findOneAndUpdate({ _id: academyRepresentativeId, isDeleted: false }, body, { new: true }).lean();
         return academyRepresentativeInfo;
 
@@ -29,10 +28,13 @@ export default class academyRepresentativeController {
         const academyRepresentativeList: any[] = await academyRepresentative.find({ isDeleted: false });
         return academyRepresentativeList;
     }
+
     public async getAcademyRepresentativeInfobyId(representativeId:any) {
         const academyRepresentativeList: any[] = await academyRepresentative.find({ _id:representativeId,isDeleted: false });
         return academyRepresentativeList;
     }
+    
+
     public async searchAcademyRepresentative(stateId:any,searchValue:any) {
         if(searchValue){
         let academyRepresentativeList: any = await academyRepresentative.find({academyRepresentativeStateId:stateId,isDeleted: false });
