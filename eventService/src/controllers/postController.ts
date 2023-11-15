@@ -5,7 +5,8 @@ import FuzzySearch from "fuzzy-search";
 import event from "../models/sponsorshipDetails";
 import academy from "../models/academy";
 import sponsorPartner from "../models/sponsorPartner";
-import { createLessThan } from "typescript";
+import { sendNotification } from "../services/notification";
+import userDevice from "../models/userDevice";
 const mongoose = require("mongoose");
 const currentTime: any = new Date();
 export default class PostController {
@@ -334,6 +335,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
   ) {
     let userInfo: any;
     let data: any = [];
+    const postId = body.postId;
     let PostInfo: any;
     if (status == "postLike") {
 
@@ -343,6 +345,58 @@ let userData:any = await userActivity.findOne({userId:user._id})
         $inc: { postLikeCount: 1 } }
      )
 
+
+     PostInfo = await Post.findOne(
+      {
+        _id: body.postId,
+      },
+    
+    );
+
+    let userInfo = await userActivity.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userData",
+        },
+      },
+      { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+    ]);
+
+
+    let userName =  userInfo[0].userData.fullName;
+    if(PostInfo.user_id) {
+      const achivementUser= await  userDevice.findOne({ userId : PostInfo.user_id });
+
+      
+      const body =`${userName} like Your Post check and react `;
+      sendNotification(achivementUser.fcmtoken,body,"abc","post_screen",PostInfo.user_id, postId);
+    }
+    userInfo = userInfo[0].userFollowers;
+
+    if(userInfo.length>0){
+      for (let i = 0; i < userInfo.length; i++) {
+
+        let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+       
+   if(userFcmToken){
+   const body = `${userName} like Post check and react. `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId);
+   }  
+    }
+ 
+
+ 
+    }
       return PostInfo;
     }
     if (status == "removePostLike") {
@@ -363,6 +417,52 @@ let userData:any = await userActivity.findOne({userId:user._id})
         $inc: { postCommentCount: 1 } }
      )
 
+     PostInfo = await Post.findOne(
+      { _id: body.postId }
+   )
+
+    let userInfo = await userActivity.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "userData",
+        },
+      },
+      { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
+    ]);
+
+
+    let userName =  userInfo[0].userData.fullName;
+  
+    if(PostInfo.userId) {
+     
+      const achivementUser= await  userDevice.findOne({ userId : PostInfo.userId });
+      const body =`${userName} Comment Your Post check and react `;
+      sendNotification(achivementUser.fcmtoken,body,"abc","post_screen",PostInfo.userId, postId);
+    }
+    userInfo = userInfo[0].userFollowers;
+
+    if(userInfo.length>0){
+      for (let i = 0; i < userInfo.length; i++) {
+
+        let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+       
+   if(userFcmToken){
+   const body = `${userName} Comment Post check and react. `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId);
+   }  
+    } 
+    }
+
     
     }
     if (status == "removePostComment") {
@@ -373,6 +473,8 @@ let userData:any = await userActivity.findOne({userId:user._id})
         $inc: { postCommentCount: -1 } }
      )
      
+   
+     
 return PostInfo;
     }
   
@@ -381,25 +483,38 @@ return PostInfo;
 
 
   public async sharePost( body:any ) {
-for (let i = 0; i < body.sharePostByOther.length; i++) {
-  let  PostInfo = await userActivity.findOneAndUpdate(
+    const {userId,sharePostByOther} = body;
+    let  PostInfo:any;
+for (let i = 0; i < sharePostByOther.length; i++) {
+    PostInfo = await userActivity.findOneAndUpdate(
     {
-      userId: body.sharePostByOther[i].friendId,
+      userId:sharePostByOther[i].friendId,
       isDeleted:false
     },
     {
       $push: {
         sharePostByOther: {
-          friendId: body.userId,
-          post: body.sharePostByOther[i].postId,
+          friendId: userId,
+          post:sharePostByOther[i].postId,
           dateTime: currentTime,
         },
       },
     },{new:true}
   );
+  
+
+  let userData:any = await userDetails.findOne({_id:userId});
+  let userToken:any = await userDevice.findOne({userId:sharePostByOther[i].friendId});
+  const body =`${userData.fullName} share  post to  you please check and react`;
+  sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sharePostByOther[i].postId);
+
  
   return PostInfo;
+
+
 }
+
+
   }
    
 

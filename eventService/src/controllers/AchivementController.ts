@@ -109,7 +109,7 @@ export default class AchivementController {
   }
 
   public async getAcademyAchivement(academyId: any, user: any) {
-    console.log(user,"useruser")
+
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $match: {
@@ -164,7 +164,7 @@ export default class AchivementController {
     ]);
   
     achivementList.forEach((val: any) => {
-      console.log(val.achivementLike);
+
       if(val.achivementLike.length>0){
         if ( val.achivementLike.toString().includes(user._id.toString())) {
           val.isLikes = true;
@@ -528,26 +528,20 @@ export default class AchivementController {
     let minuscount: any = -1;
     const achivement_id = body.achivementId;
     if (status == "achivementLike") {
-      await Achivement.updateOne(
+
+       
+      achivementInfo = await Achivement.updateOne(
+        { _id: body.achivementId }, 
+        { $push: { achivementLike: userId },
+        $inc: { achivementLikeCount: 1 } }
+     )
+   
+
+      achivementInfo = await Achivement.findOne(
         {
           _id: body.achivementId,
         },
-
-        {
-          $inc: { achivementLikeCount: count },
-        }
-      );
-
-      achivementInfo = await Achivement.findOneAndUpdate(
-        {
-          _id: body.achivementId,
-        },
-        {
-          $push: {
-            achivementLike: userId,
-          },
-        },
-        { new: true }
+      
       );
 
       let userInfo = await userActivity.aggregate([
@@ -573,13 +567,18 @@ export default class AchivementController {
       let userName =  userInfo[0].userData.fullName;
       if(achivementInfo.user_id) {
         const achivementUser= await  userDevice.findOne({ userId : achivementInfo.user_id });
+
+        
         const body =`${userName} like Your Achivemnt check and react `;
         sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id);
       }
       userInfo = userInfo[0].userFollowers;
+  
       if(userInfo.length>0){
         for (let i = 0; i < userInfo.length; i++) {
+ 
           let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
+         
      if(userFcmToken){
      const body = `${userName} like Achivemnt check and react. `;
       sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
@@ -647,9 +646,11 @@ export default class AchivementController {
         if(userInfo.length>0){
           for (let i = 0; i < userInfo.length; i++) {
             let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
-      
-       const body =`${userName} Comment on  Achivemnt check and react.`;
+      if(userFcmToken){
+        const body =`${userName} Comment on  Achivemnt check and react.`;
         sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
+      }
+
         
           }
         }
@@ -659,13 +660,20 @@ export default class AchivementController {
       
     }
     if (status == "removeAchivementComment") {
+      console.log("hello")
       achivementInfo = await Achivement.updateOne(
         { _id: body.achivementId }, 
         { $pull: { achivementComment: { _id: body._id } },
         $inc: { achivementCommentCount: -1 } }
      )
+
+     return achivementInfo
     }
   }
+
+
+
+
 
   public async readAchivementActivity(
     achivementId: any,
@@ -684,9 +692,7 @@ export default class AchivementController {
     if (status == "readAchivementComment") {
       let a = [];
       achivementInfo = await Achivement.findOne({ _id: achivementId }).lean();
-      console.log(achivementInfo);
       achivementInfo = achivementInfo.achivementComment;
-
       for (let i = 0; i < achivementInfo.length; i++) {
         let userInfo: any = await userDetails.findOne(
           { _id: achivementInfo[i].userId },
@@ -707,5 +713,33 @@ export default class AchivementController {
     }
   }
 
+
+
+  
+  public async shareAchivement( body:any ) {
+    const {achivementSharedByOther,userId}=body
+    for (let i = 0; i < achivementSharedByOther.length; i++) {
+      let  achivementInfo = await userActivity.findOneAndUpdate(
+        {
+          userId: achivementSharedByOther[i].friendId,
+          isDeleted:false
+        },
+        {
+          $push: {
+            achivementSharedByOther: {
+              friendId: userId,
+              achivementId: achivementSharedByOther[i].achivementId,
+              dateTime: currentTime,
+            },
+          },
+        },{new:true}
+      );
+      let userData:any = await userDetails.findOne({_id:userId});
+      let userToken:any = await userDevice.findOne({userId:achivementSharedByOther[i].friendId});
+      const body =`${userData.fullName} share achivement to you  please check and react`;
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,achivementSharedByOther[i].academyId);
+      return achivementInfo;
+    }
+      }
   
 }

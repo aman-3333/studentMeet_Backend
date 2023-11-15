@@ -154,23 +154,27 @@ export default class SchoolController {
 
 
   public async shareSchool( body:any ) {
-    for (let i = 0; i < body.schoolSharedByOther.length; i++) {
+    const {schoolSharedByOther,userId}=body
+    for (let i = 0; i < schoolSharedByOther.length; i++) {
       let  schoolInfo = await userActivity.findOneAndUpdate(
         {
-          userId: body.schoolSharedByOther[i].friendId,
+          userId: schoolSharedByOther[i].friendId,
           isDeleted:false
         },
         {
           $push: {
             schoolSharedByOther: {
-              friendId: body.userId,
-              schoolId: body.schoolSharedByOther[i].schoolId,
+              friendId: userId,
+              schoolId: schoolSharedByOther[i].schoolId,
               dateTime: currentTime,
             },
           },
         },{new:true}
       );
-     
+      let userData:any = await userDetails.findOne({_id:userId});
+      let userToken:any = await userDevice.findOne({userId:schoolSharedByOther[i].friendId});
+      const body =`${userData.fullName} share school to you  please check and react`;
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,schoolSharedByOther[i].academyId);
       return schoolInfo;
     }
       }

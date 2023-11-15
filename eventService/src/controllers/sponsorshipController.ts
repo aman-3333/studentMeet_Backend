@@ -374,23 +374,27 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
   
 
   public async shareSponsorship( body:any ) {
-    for (let i = 0; i < body.sponsorshipSharedByOther.length; i++) {
+    const {userId,sponsorshipSharedByOther} = body;
+    for (let i = 0; i < sponsorshipSharedByOther.length; i++) {
       let  sponsorshipInfo = await userActivity.findOneAndUpdate(
         {
-          userId: body.sponsorshipSharedByOther[i].friendId,
+          userId: sponsorshipSharedByOther[i].friendId,
           isDeleted:false
         },
         {
           $push: {
             sponsorshipSharedByOther: {
-              friendId: body.userId,
-              sponsorshipId: body.sponsorshipSharedByOther[i].sponsorshipId,
+              friendId: userId,
+              sponsorshipId: sponsorshipSharedByOther[i].sponsorshipId,
               dateTime: currentTime,
             },
           },
         },{new:true}
       );
-     
+      let userData:any = await userDetails.findOne({_id:userId});
+      let userToken:any = await userDevice.findOne({userId:sponsorshipSharedByOther[i].friendId});
+      const body =`${userData.fullName} share  sponsorship to you please check and react`;
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sponsorshipSharedByOther[i].postId);
       return sponsorshipInfo;
     }
       }

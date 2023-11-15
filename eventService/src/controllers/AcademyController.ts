@@ -642,24 +642,28 @@ export default class academyController {
   }
 
   public async shareAcademy(body: any) {
-    for (let i = 0; i < body.academySharedByOther.length; i++) {
+  const {userId,academySharedByOther}=body
+    for (let i = 0; i <academySharedByOther.length; i++) {
       let academyInfo = await userActivity.findOneAndUpdate(
         {
-          userId: body.academySharedByOther[i].friendId,
+          userId:academySharedByOther[i].friendId,
           isDeleted: false,
         },
         {
           $push: {
             academySharedByOther: {
-              friendId: body.userId,
-              academyId: body.academySharedByOther[i].academyId,
+              friendId:userId,
+              academyId:academySharedByOther[i].academyId,
               dateTime: currentTime,
             },
           },
         },
         { new: true }
       );
-
+      let userData:any = await userDetails.findOne({_id:userId});
+      let userToken:any = await userDevice.findOne({userId:academySharedByOther[i].friendId});
+      const body =`${userData.fullName} share academy to you  please check and react`;
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,academySharedByOther[i].academyId);
       return academyInfo;
     }
   }

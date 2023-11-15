@@ -141,6 +141,7 @@ router.post("/activity", async (req, res) => {
       .status(200)
       .json(successResponse("postActivity", response, res.statusCode));
   } catch (error) {
+    console.log(error)
     res
       .status(500)
       .json(errorResponse("error in postActivity", res.statusCode));

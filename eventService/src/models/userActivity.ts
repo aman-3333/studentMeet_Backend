@@ -49,6 +49,11 @@ const schema = new Schema({
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
         dateTime:{type:Date}
     }],
+    achivementSharedByOther: [{
+        achivementId: { type: Schema.Types.ObjectId, ref: "achivements" },
+         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+         dateTime:{type:Date}
+     }],
     userFollowers: [
         { type: Schema.Types.ObjectId, ref: "userDetails" },
     ],

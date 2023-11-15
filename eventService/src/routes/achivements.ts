@@ -273,4 +273,24 @@ router.post("/read/activity", async (req, res) => {
   }
 });
 
+
+router.post("/share", async (req, res) => {
+  try {
+    const body=req.body;
+   
+    const controller = new AchivementController();
+    const response:any = await controller.shareAchivement(body);
+    res
+      .status(200)
+      .json(successResponse("share Achivement", response, res.statusCode));
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in share Achivement", res.statusCode));
+  }
+});
+
+
+
+
 export default router;

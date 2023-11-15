@@ -1,11 +1,11 @@
 
 import userActivity from "../models/userActivity"
-import mongoose from 'mongoose';
 import userDetails from "../models/userDetails";
 import academyModel from "../models/academy";
 import sponsorshipDetails from "../models/sponsorshipDetails";
 import school from "../models/school";
-
+import { sendNotification } from "../services/notification";
+const mongoose = require("mongoose");
 var currentdate = new Date(); 
 export default class followersController {
 
@@ -14,26 +14,45 @@ export default class followersController {
 public async following(userId: any, followingId: any,userType:any) {
     let plusOne=1;
     let userInfo: any;
-    userInfo = await userDetails.findOne({_id:followingId,isDeleted:false }).lean()
-console.log(userInfo);
+    userInfo = await userDetails.aggregate([{
+        $match:{
+            _id:new mongoose.Types.ObjectId(followingId), isDeleted: false,
+        },
+     
+    },
+    {
+        $lookup: {
+          localField: "_id",
+          from: "userdevices",
+          foreignField: "userId",
+          as: "userDevicesObj",
+        },
+      },
+      { $unwind: { path: '$userDevicesObj', preserveNullAndEmptyArrays: true } },
 
+])
+
+let  userData = await userDetails.findOne({_id:userId,isDeleted:false})
 
     if(userType=="user"  ){
-    if(userInfo.isProfilePublic == true){
 
-        userInfo = await userActivity.updateOne({ userId: userId},
+    if(userInfo[0].isProfilePublic == true){
+
+       await userActivity.updateOne({ userId: userId},
             {
               $push: { userFollowing: followingId,allOverFollowing:followingId }, 
               $inc: { followingCount: 1 } 
             }),
-            console.log(userInfo,"userInfo");
-            userInfo = await userActivity.updateOne({ userId: followingId},
+          
+           await userActivity.updateOne({ userId: followingId},
                 {
                   $push: { userFollowers: userId }, 
                   $inc: { followersCount: 1 } 
                 })
+const body = `${userData.fullName} is starting following you`
+                sendNotification(userInfo[0].userDevicesObj.fcmtoken,body,"abc","school_home","followersData[i]","65280dd8b19d1481f3324956");
     }
-if(userInfo.isProfilePublic == false){
+if(userInfo[0].isProfilePublic == false){
 
     userInfo = await userActivity.findOneAndUpdate({
         userId: userId,
@@ -146,7 +165,7 @@ public async unfollowing(userId: any, followingId: any,userType:any) {
 
     }
     if(userType=="academy"){
-     console.log("hello")
+
             userInfo = await userActivity.findOneAndUpdate({
                 userId: userId,
             }, {
@@ -206,27 +225,14 @@ public async unfollowing(userId: any, followingId: any,userType:any) {
                         { $inc: { followersCount: -1 } },{new:true}).lean()
         
             }
-            
-       
-            }
-
-    
-            
-          
-      
-        
-            
-            
-      
+            }       
     return userInfo
-
-
 }
 
 public async getFollowingRequestByOther(userId:any){
     let data:any=[]
   let  userActivityInfo:any = await userActivity.findOne({userId:userId,isDeleted:false }).lean()
-  console.log(userActivityInfo.sendFollowingRequestBYOther);
+
   
 for (let i = 0; i < userActivityInfo.sendFollowingRequestBYOther.length; i++) {
     let  userInfo = await userDetails.findOne({_id:userActivityInfo.sendFollowingRequestBYOther[i],isDeleted:false }).lean()
@@ -358,25 +364,6 @@ public async  getFollowing(userId:any,userType:any){
    
     return data
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
 
 
 }
