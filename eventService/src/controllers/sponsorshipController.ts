@@ -450,7 +450,7 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
           { _id: sponsorshipInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
-
+        let commentId=sponsorshipInfo[i]._id;
         let comment = sponsorshipInfo[i].comment;
         let DateTime: any = sponsorshipInfo[i].dateTime;
 
@@ -460,7 +460,7 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
           isDeleteable=false
         }
 
-        a.push({ userInfo, comment, DateTime,isDeleteable });
+        a.push({ userInfo, comment, DateTime,isDeleteable,commentId });
       }
       var y = [...a].reverse();
 
@@ -611,14 +611,11 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
       const academySubTypeId = query.academySubTypeId;
       let academyData;
       if(academyTypeId){
-        console.log(academyTypeId,"academyTypeId");
-        
          academyData = await SponsorshipModel.find({
           academyTypeId: academyTypeId,
       })  
       }
       if(academySubTypeId&&academyTypeId){
-        console.log(academyTypeId,"academyTypeId");
         academyData = await SponsorshipModel.find({
           academyTypeId: academyTypeId,
           academySubTypeId:academySubTypeId

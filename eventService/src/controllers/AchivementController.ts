@@ -698,7 +698,7 @@ export default class AchivementController {
           { _id: achivementInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
-
+        let commentId = achivementInfo[i]._id;
         let comment = achivementInfo[i].comment;
         let DateTime: any = achivementInfo[i].dateTime;
         if (userId == achivementInfo[i].userId) {
@@ -706,7 +706,7 @@ export default class AchivementController {
         } else {
           isDeleteable = false;
         }
-        a.push({ userInfo, comment, DateTime, isDeleteable });
+        a.push({ userInfo, comment, DateTime, isDeleteable,commentId });
       }
       var data = [...a].reverse();
       return data;

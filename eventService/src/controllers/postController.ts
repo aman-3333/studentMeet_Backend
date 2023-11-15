@@ -461,6 +461,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
     sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId);
    }  
     } 
+    return PostInfo
     }
 
     
@@ -471,10 +472,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
         { _id: body.postId }, 
         { $pull: { postComment: { _id: body._id } },
         $inc: { postCommentCount: -1 } }
-     )
-     
-   
-     
+     ) 
 return PostInfo;
     }
   
@@ -539,6 +537,7 @@ for (let i = 0; i < sharePostByOther.length; i++) {
           { _id: PostInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
+        let commentId = PostInfo[i]._id;
         let comment = PostInfo[i].comment;
         let DateTime: any = PostInfo[i].dateTime;
 
@@ -547,7 +546,7 @@ for (let i = 0; i < sharePostByOther.length; i++) {
         } else {
           isDeleteable = false;
         }
-        a.push({ userInfo, comment, DateTime,isDeleteable });
+        a.push({ userInfo, comment, DateTime,isDeleteable,commentId });
       }
       var y = [...a].reverse();
       return y;

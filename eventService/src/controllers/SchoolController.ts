@@ -517,6 +517,7 @@ return schoolInfo
           { _id: schoolInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
+        let commentId = schoolInfo[i]._id;
         let comment = schoolInfo[i].comment;
         let DateTime: any = schoolInfo[i].dateTime;
 
@@ -525,7 +526,7 @@ return schoolInfo
         } else {
           isDeleteable = false;
         }
-        a.push({ userInfo, comment, DateTime,isDeleteable });
+        a.push({ userInfo, comment, DateTime,isDeleteable,commentId });
       }
       var y = [...a].reverse();
       return y;

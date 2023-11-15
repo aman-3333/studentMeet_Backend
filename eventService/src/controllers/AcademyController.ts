@@ -431,7 +431,7 @@ export default class academyController {
           { _id: academyInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
-
+let commentId=academyInfo[i]._id;
         let comment = academyInfo[i].comment;
         let DateTime: any = academyInfo[i].dateTime;
         if (userId == academyInfo[i].userId) {
@@ -439,7 +439,7 @@ export default class academyController {
         } else {
           isDeleteable = false;
         }
-        a.push({ userInfo, comment, DateTime, isDeleteable });
+        a.push({ userInfo, comment, DateTime, isDeleteable,commentId });
       }
       var data = [...a].reverse();
       return data;
@@ -606,37 +606,18 @@ export default class academyController {
     return academyInfo;
   }
 
-  public async filterAcademy(city: any, state: any, academySubTypeId: any) {
+  public async filterAcademy(query: any) {
  
-
-    if(academySubTypeId&&state&&city){
-      const academyData = await academy.find({
-        academySubTypeId: academySubTypeId,
-        city: city,
-        state: state
-      });
-      return academyData;
-    }
+    const academySubTypeId=query.academySubTypeId;
+    const state=query.state||{};
+    const city=query.city||{};
     
- 
-    if(academySubTypeId&&city){
-      const academyData = await academy.find({
-        academySubTypeId: academySubTypeId,
-        city: city,
-        
-      });
-      return academyData;
-    }
-
     
-    if(academySubTypeId&&state){
-      const academyData = await academy.find({
-        academySubTypeId: academySubTypeId,
-        state: state,
-      });
-      return academyData;
-    }
-
+    const academyData = await academy.find({
+      ...academySubTypeId,
+     
+    });
+return academyData
  
  
   }
