@@ -606,26 +606,38 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
 
 
 
-    public async filterSponsorship(query:any){
-      const academyTypeId = query.academyTypeId ;
-      const academySubTypeId = query.academySubTypeId;
-      let academyData;
-      if(academyTypeId){
-         academyData = await SponsorshipModel.find({
-          academyTypeId: academyTypeId,
-      })  
-      }
-      if(academySubTypeId&&academyTypeId){
-        academyData = await SponsorshipModel.find({
-          academyTypeId: academyTypeId,
-          academySubTypeId:academySubTypeId
-      })  
-      }
+
+
+
+
+  public async filterSponsorship(query: any) {
+    const queryParam:any = {};
+    const searchParams = {
+      academySubTypeId: query.academySubTypeId?query.academySubTypeId:"",
+      academyTypeId: query.academyTypeId?query.academyTypeId:"",
+      stage:query.stage?query.stage:""
+    };
+
+if (searchParams.hasOwnProperty('academySubTypeId')&&searchParams.academySubTypeId !=="" ) {
+  queryParam.academySubTypeId = searchParams.academySubTypeId;
+}
+
+
+if (searchParams.hasOwnProperty('academyTypeId')&&searchParams.academyTypeId !=="") {
+  queryParam.academyTypeId = searchParams.academyTypeId;
+}
+
+if (searchParams.hasOwnProperty('stage')&&searchParams.stage!=="") {
+  queryParam.stage = searchParams.stage;
+}
+    const sponsorshipData = await SponsorshipModel.find(
+      queryParam
      
-      
-       return academyData;
-      
-      }
+    );
+return sponsorshipData
+ 
+ 
+  }
 
 
 

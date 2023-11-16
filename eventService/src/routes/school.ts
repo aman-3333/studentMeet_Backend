@@ -158,6 +158,24 @@ router.post("/activity", async (req, res) => {
   }
 });
 
+router.get("/filter", async (req, res) => {
+  try {
+    const controller = new SchoolController();
+    const query:any= req.query;
+  
+    const response:any= await controller.filterSchool(query);
+    res
+      .status(200)
+      .json(successResponse("school list", response, res.statusCode));
+  } catch (error) {
+    console.log(error);
+
+    res
+      .status(500)
+      .json(errorResponse("error in school list", res.statusCode));
+  }
+});
+
 router.post("/read/activity", async (req, res) => {
   try {
     const schoolId = req.body.schoolId;

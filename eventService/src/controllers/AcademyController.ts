@@ -607,16 +607,29 @@ let commentId=academyInfo[i]._id;
   }
 
   public async filterAcademy(query: any) {
- 
-    const academySubTypeId=query.academySubTypeId;
-    const state=query.state||{};
-    const city=query.city||{};
-    
-    
-    const academyData = await academy.find({
-      ...academySubTypeId,
+    const queryParam:any = {};
+    const searchParams = {
+      academySubTypeId: query.academySubTypeId?query.academySubTypeId:"",
+      state: query.state?query.state:"",
+      city:query.city?query.city:""
+    };
+
+if (searchParams.hasOwnProperty('academySubTypeId')&&searchParams.academySubTypeId !=="" ) {
+  queryParam.academySubTypeId = searchParams.academySubTypeId;
+}
+
+
+if (searchParams.hasOwnProperty('state')&&searchParams.state !=="") {
+  queryParam.state = searchParams.state;
+}
+
+if (searchParams.hasOwnProperty('city')&&searchParams.city!=="") {
+  queryParam.city = searchParams.city;
+}
+    const academyData = await academy.find(
+      queryParam
      
-    });
+    );
 return academyData
  
  

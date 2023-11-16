@@ -540,6 +540,43 @@ return schoolInfo
 
 
 
+  
+  public async filterSchool(query: any) {
+    const queryParam:any = {};
+    const searchParams = {
+      schoolType: query.schoolType?query.schoolType:"",
+      schoolAssociateWith: query.schoolAssociateWith?query.schoolAssociateWith:"",
+      state: query.state?query.state:"",
+      city:query.city?query.city:""
+    };
+
+if (searchParams.hasOwnProperty('schoolType')&&searchParams.schoolType !=="" ) {
+  queryParam.schoolType = searchParams.schoolType;
+}
+
+if (searchParams.hasOwnProperty('schoolAssociateWith')&&searchParams.schoolAssociateWith !=="" ) {
+  queryParam.schoolAssociateWith = searchParams.schoolAssociateWith;
+}
+
+if (searchParams.hasOwnProperty('state')&&searchParams.state !=="") {
+  queryParam.state = searchParams.state;
+}
+
+if (searchParams.hasOwnProperty('city')&&searchParams.city!=="") {
+  queryParam.city = searchParams.city;
+}
+    const academyData = await school.find(
+      queryParam
+     
+    );
+return academyData
+ 
+ 
+  }
+
+
+ 
+
 
 
 }
