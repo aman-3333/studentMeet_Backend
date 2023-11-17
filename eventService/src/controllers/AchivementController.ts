@@ -252,6 +252,7 @@ export default class AchivementController {
           as: "userParticipient",
         },
       },
+   
       {
         $lookup: {
           localField: "schoolId",
@@ -522,10 +523,7 @@ export default class AchivementController {
   }
 
   public async achivementActivity(userId: any, status: any, body: any) {
-    
     let achivementInfo: any;
-    let count: any = 1;
-    let minuscount: any = -1;
     const achivement_id = body.achivementId;
     if (status == "achivementLike") {
 
@@ -604,6 +602,7 @@ export default class AchivementController {
     }
 
     if (status == "achivementComment") {
+      console.log("hello")
       let userInfo:any ;
   
 
@@ -614,7 +613,7 @@ export default class AchivementController {
           $inc: { achivementCommentCount: 1 } }
        )
        achivementInfo=await Achivement.findOne({_id: body.achivementId}).lean()
-      
+      console.log(achivementInfo,"achivementInfo")
 
        userInfo = await userActivity.aggregate([
         {

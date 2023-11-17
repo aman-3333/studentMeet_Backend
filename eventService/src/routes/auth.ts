@@ -58,6 +58,19 @@ router.get("/getprofile",checkAuth, async (req, res) => {
   }
 });
 
+router.post("/getmultiple/profile", async (req, res) => {
+  try {
+    const userId: any = req.body.userId;
+    const controller = new authController();
+    const response: any = await controller.viewProfileMultiple(userId);
+    res
+      .status(200)
+      .json(successResponse("getProfile", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in getProfile", res.statusCode));
+  }
+});
+
 router.get("/search/user", async (req, res) => {
   try {
     const search: any = req.query.search;

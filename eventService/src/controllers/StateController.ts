@@ -17,7 +17,7 @@ export default class StateController {
     }
 
     public async getCountryList() {
-        const CountryList: ICountry[] = await Country.find({ isDeleted: false });
+        const CountryList: ICountry[] = await Country.find({ isDeleted: false }).sort({ country: 1 });
         return CountryList;
     }
 
@@ -46,7 +46,7 @@ export default class StateController {
     }
 
     public async getStateList(countryId:any) {
-        const StateList: IState[] = await State.find({ countryId:countryId,isDeleted: false });
+        const StateList: IState[] = await State.find({ countryId:countryId,isDeleted: false }).sort({ State: 1 });
         return StateList;
     }
 
@@ -77,7 +77,7 @@ export default class StateController {
     }
 
     public async getCityList(stateId:any) {
-        const CityList: ICity[] = await city.find({stateId:stateId, isDeleted: false });
+        const CityList: ICity[] = await city.find({stateId:stateId, isDeleted: false }).sort({ city: 1 });;
         return CityList;
     }
 

@@ -154,6 +154,32 @@ export default class AuthController {
     return userInfo;
   }
 
+
+  public async viewProfileMultiple(userId: any,) {
+ 
+     let userInfo: any = await Users.aggregate([{
+      $match:{
+        _id:  { $in: userId.map((val:any) => new mongoose.Types.ObjectId(val)) }
+       
+      }
+     },
+     {
+      $lookup: {
+        localField: "stages",
+        from: "stages",
+        foreignField: "_id",
+        as: "stage",
+      },
+    },
+    { $unwind: { path: "$stage", preserveNullAndEmptyArrays: true } },
+  ])
+    
+     return userInfo;
+   }
+
+
+
+
   public async sendotpByApi(body: any) {
     let phone = body.country_code.toString() + body.contact.toString();
     let otp = generateOTP(6);
