@@ -23,7 +23,7 @@ const path = require('path');
 import SponsorshipController from "../controllers/sponsorshipController"
 import AuthController from "../controllers/AuthController";
 import { AnyAaaaRecord } from "dns";
-import PaymentController from "../controllers/PaymentController";
+// import PaymentController from "../controllers/PaymentController";
 //import AuthController from "../controllers/AuthController";
 const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
@@ -257,17 +257,17 @@ router.post('/upload', upload1.array('file', 50), function (req:any, res:any) {
 //         res.status(500).json(errorResponse("error in createorder", res.statusCode));
 //     }
 // });
-router.post("/paymentCapture", async (req, res) => {
-    try {
-      const data = req.body;
-      const controller = new PaymentController();
-      const response:any = await controller.paymentCallback(data);
-      res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
-    } catch (error) {
+// router.post("/paymentCapture", async (req, res) => {
+//     try {
+//       const data = req.body;
+//       const controller = new PaymentController();
+//       const response:any = await controller.paymentCallback(data);
+//       res.status(200).json(successResponse("paymentCallback", response, res.statusCode));
+//     } catch (error) {
       
-        res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
-    }
-});
+//         res.status(500).json(errorResponse("error in paymentCallback", res.statusCode));
+//     }
+// });
 // //////////////////////////////////////////////post//////////////////////////////////////////////////
 
 

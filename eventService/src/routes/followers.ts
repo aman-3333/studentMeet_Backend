@@ -7,7 +7,7 @@ import {successResponse, errorResponse} from "../services/apiResponse";
 router.post("/following",checkAuth,  async (req, res) => {
     try {
         
-        const userId = res.locals.user._id; 
+        const userId = req.body.userId;
         const followingId = req.body.followingId;
         const userType = req.body.userType;
         const controller = new followersController();

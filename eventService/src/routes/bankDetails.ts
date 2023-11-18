@@ -8,7 +8,7 @@ router.post("/create",  async (req, res) => {
     try {
 const body = req.body;
         const controller = new BankDetailsController();
-        const response = await controller.createBankDetails(body);
+        const response:any = await controller.createBankDetails(body);
         res.status(200).json(successResponse("create BankDetails", response, res.statusCode));
     } catch (error) {
    console.log(error)

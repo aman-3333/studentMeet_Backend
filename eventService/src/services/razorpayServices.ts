@@ -1,35 +1,162 @@
-export async function createVendorAccount(data: any, key_id: any, key_secret: any) {
-  console.log(data, key_id, key_secret,"key_secret config");
-  var axios = require('axios');
- const auth= {
-    Username: "rzp_test_jVa5iExtyQCEk1",
-    Password: "2VFDN8OChr2iFNndPY6906rQ"
+const razorpayKey= "rzp_test_sIR02kOhciAGll";
+const  razorpaySecret="mg1EJI3f1zr07H6YeRkCF98O";
+var axios = require('axios');
+const auth = Buffer.from(`${razorpayKey}:${razorpaySecret}`).toString('base64');
+const  headers={
+    'Content-Type': 'application/json',
+    'Authorization': `Basic ${auth}`
   }
-  var headers = {
-    'Content-type': 'application/json',
-    'Authorization': `Basic Auth ${auth.Username,auth.Password}`,
-  };
+
+
+
+
+export async function linkedAccount(data: any) {
   var config = {
     method: 'post',
-    url: 'https://api.razorpay.com/v1/accounts',
+    url: 'https://api.razorpay.com/v2/accounts',
     headers: headers,
-    data: JSON.stringify(data),
-   
+    data,
+
   };
-console.log(config,"config");
-
   const resp = await axios(config)
-    .then(function (response: any) {
-      console.log(response, "respinse")
-      return response.data
-    })
-    .catch(function (error: any) {
-      console.log(error, "error")
+  .then(function (response: any) {
+    console.log(response, "response")
+    return response.data
+  })
+  .catch(function (error: any) {
+    console.log(error, "error")
 
-      return error
-    });
-  return resp
+    return error
+  });
+
+ return resp
 }
+
+
+export async function createProduct(account_id: any) {
+  const createProduct ={
+    product_name:"route",
+    tnc_accepted:true
+ };
+  const axiosInstance = axios.create({
+    baseURL: 'https://api.razorpay.com/v2',
+    headers: {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+
+let linkProduct = await  axiosInstance.post(`/accounts/${account_id}/products`, createProduct)
+  .then((response:any) => {
+    return  response.data
+    // Handle successful response
+  })
+  .catch((error:any) => {
+    // Log the error response for more details
+    if (error.response) {
+      console.error('Request failed with status:', error.response.status);
+      console.error('Error response data:', error.response.data);
+    } else {
+      console.error('Error message:', error.message);
+    }
+  });
+  
+return linkProduct    
+}
+
+
+
+
+export async function addBankDetail(account_id:any,product_id:any,bankDetail:any) {
+console.log(account_id,product_id)
+ const bank_details = {
+ settlements:{
+  account_number:"1234567890",
+  ifsc_code:"HDFC0000317",
+  beneficiary_name:"Gaurav Kumar"
+},
+tnc_accepted:true,
+
+ }
+
+
+
+
+
+  const axiosInstance = axios.create({
+    baseURL: 'https://api.razorpay.com/v2',
+    headers: {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+
+let updateProduct = await  axiosInstance.patch(`/accounts/${account_id}/products/${product_id}/`, bank_details)
+  .then((response:any) => {
+    return  response.data
+    // Handle successful response
+    console.log('Success:', response.data);
+  })
+  .catch((error:any) => {
+    // Log the error response for more details
+    if (error.response) {
+      console.log(error,"error")
+      console.error('Request failed with status:', error.response.status);
+      console.error('Error response data:', error.response.data);
+    } else {
+      console.error('Error message:', error.message);
+    }
+  });
+
+return updateProduct
+  
+    
+}
+
+
+export async function verifyBankDetail() {
+
+  
+  
+  const axiosInstance = axios.create({
+    baseURL: 'https://api.razorpay.com/v2',
+    headers: {
+      'Authorization': `Basic ${auth}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  
+  
+ 
+
+
+  
+  const bankDetails = {
+    account_number:"1234567890",
+    ifsc_code:"HDFC0000317",
+    beneficiary_name:"Gaurav Kumar"
+    // Add any other required details
+  };
+  
+  axiosInstance.post('/verify/bank_account', bankDetails)
+    .then((response:any) => {
+      console.log('Verification Response:', response.data);
+      // Handle the verification response here
+    })
+    .catch((error:any) => {
+      console.error('Error verifying bank details:', error.response ? error.response.data : error.message);
+      // Handle errors here
+    });
+
+
+    
+      
+  }
+
+
+
 
 
 
