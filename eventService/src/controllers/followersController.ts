@@ -74,7 +74,6 @@ if(userInfo[0].isProfilePublic == false){
     }
     if(userType=="academy"){
 
-
      userInfo = await userActivity.updateOne({ userId: userId},
             
         {
@@ -92,7 +91,7 @@ if(userInfo[0].isProfilePublic == false){
                 }
             },{new:true}).lean()
 
-  
+  return userInfo
     }
         if(userType=="sponsor"){
             userInfo = await userActivity.updateOne({ userId: userId},

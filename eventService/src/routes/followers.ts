@@ -4,7 +4,7 @@ const router = express.Router();
 const checkAuth = require("../middleware/checkAuth");
 import {successResponse, errorResponse} from "../services/apiResponse";
 
-router.post("/following",checkAuth,  async (req, res) => {
+router.post("/following",  async (req, res) => {
     try {
         
         const userId = req.body.userId;
@@ -14,7 +14,7 @@ router.post("/following",checkAuth,  async (req, res) => {
         const response: any = await controller.following(userId,followingId,userType);
         res.status(200).json(successResponse("following ", response, res.statusCode));
     } catch (error) {
-       
+       console.log(error,"error")
         res.status(500).json(errorResponse("error in following", res.statusCode));
     }
 });

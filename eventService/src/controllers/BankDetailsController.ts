@@ -16,24 +16,24 @@ export default class BankDetailsController {
     let data;
     let BankDetailsInfo: any;
 
+
+
     BankDetailsInfo = await BankDetails.create(body);
-    // user_id: { type: Schema.Types.ObjectId, ref: "userdetails" },
-    // academyOwner: { type: Schema.Types.ObjectId, ref: "academy_owners" },
-    // sponsorshipPartner: { type: Schema.Types.ObjectId, ref: "sponsor_partners" },
-    // schoolOwner: { type: Schema.Types.ObjectId, ref: "school_owners" },
     if (body.user_id) {
       userInfo = await userDetails
         .findOne({ _id: body.user_id, isDeleted: false })
         .lean();
 
+        console.log("userInfo",userInfo);
+        
       data = {
-        email: "gaurav.kumar9677599@example.com",
-        phone: 9000090000,
+        email: "amansharma141998@gmail.com",
+        phone: userInfo.contact,
         type: "route",
-        reference_id: "12006777",
-        legal_business_name: "Acme Corp",
-        business_type: "partnership",
-        contact_name: "aman sharma",
+        reference_id: "9888120067779",
+        legal_business_name: "userInfo.fullName",
+        business_type: "",
+        contact_name: userInfo.fullName,
         profile: {
           category: "healthcare",
           subcategory: "clinic",
