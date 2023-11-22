@@ -11,8 +11,15 @@ const BankDetailsSchema = new Schema(
     ifsc_code: { type: String },
     Bank_name: { type: String },
     Bank_address: { type: String },
+    razorpay_product_id: { type: String },
     razorpay_account_id: { type: String },
     account_holder_name: { type: String },
+    activation_status: { type: String },
+    requested_at: { type: Number },
+    product_name: { type: String },
+   
+
+
     isActive: { type: Boolean, default: true },
     isBlocked: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },

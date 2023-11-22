@@ -13,10 +13,10 @@ var razorpayConfig = require("../../config/razorpay/betaProperties").RAZORPAY;
 export default class BankDetailsController {
   public async createBankDetails(body: any) {
     let userInfo;
-    let data;
+    let data:any;
     let BankDetailsInfo: any;
-
-
+let random_no:any=Math.floor(1000000000 + Math.random() * 9000000000);
+random_no=random_no.toString()
 
     BankDetailsInfo = await BankDetails.create(body);
     if (body.user_id) {
@@ -24,31 +24,31 @@ export default class BankDetailsController {
         .findOne({ _id: body.user_id, isDeleted: false })
         .lean();
 
-        console.log("userInfo",userInfo);
+        data =   {
+          "email":userInfo.email,
+          "phone":"9000090000",
+          "type":"route",
+          "reference_id":random_no,
+          "legal_business_name":"Acme Corp",
+          "business_type":"partnership",
+          "contact_name":userInfo.fullName,
+          "profile":{
+             "category":"healthcare",
+             "subcategory":"clinic",
+             "addresses":{
+                "registered":{
+                   "street1":"507, Koramangala 1st block",
+                   "street2":"MG Road",
+                   "city":"Bengaluru",
+                   "state":"KARNATAKA",
+                   "postal_code":"560034",
+                   "country":"IN"
+                }
+             }
+          }
+       }
         
-      data = {
-        email: "amansharma141998@gmail.com",
-        phone: userInfo.contact,
-        type: "route",
-        reference_id: "9888120067779",
-        legal_business_name: "userInfo.fullName",
-        business_type: "",
-        contact_name: userInfo.fullName,
-        profile: {
-          category: "healthcare",
-          subcategory: "clinic",
-          addresses: {
-            registered: {
-              street1: "507, Koramangala 1st block",
-              street2: "MG Road",
-              city: "Bengaluru",
-              state: "KARNATAKA",
-              postal_code: "131001",
-              country: "IN",
-            },
-          },
-        },
-      };
+   
     }
     if (body.academyOwner) {
       userInfo = await academyOwner
@@ -64,9 +64,13 @@ export default class BankDetailsController {
 
     let account:any = await linkedAccount(data);
     let product:any = await createProduct(account.id);
-     let updateProduct:any = await addBankDetail(account.id,product.id,body);
-
-      await verifyBankDetail()
+    let updateProduct:any = await addBankDetail(account.id,product.id,body,data.contact_name);
+await BankDetails.updateOne({_id:BankDetailsInfo._id},{
+  $set:{
+    razorpay_product_id:updateProduct.id,razorpay_account_id:updateProduct.account_id,activation_status:updateProduct.activation_status,requested_at:updateProduct.requested_at,product_name:updateProduct.product_name
+  }
+})
+      await verifyBankDetail(body,data.contact_name)
     return updateProduct;
   }
 
@@ -103,4 +107,16 @@ export default class BankDetailsController {
     ).lean();
     return BankDetailsInfo;
   }
+
+
+  public async createOder(BankDetailsId: String) {
+    const BankDetailsInfo: IBankDetails = await BankDetails.findOneAndUpdate(
+      { _id: BankDetailsId, isDeleted: false },
+      { $set: { isDeleted: true } },
+      { new: true }
+    ).lean();
+    return BankDetailsInfo;
+  }
+
+
 }

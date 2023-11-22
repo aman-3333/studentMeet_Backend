@@ -141,15 +141,17 @@ export default class AuthController {
       _id: userId,
       isDeleted: false,
     }).lean();
-    if(loginUser._id==userId){
-      userInfo.isEditable == true;
+
+    if(loginUser._id.toString()==userId.toString()){
+      console.log("hello")
+      userInfo.isEditable = true;
     }
     if (currentUser.userFollowers.toString().includes(userId)) {
       userInfo.isFollow = true;
     }
     else{
       userInfo.isFollow = false;
-      userInfo.isEditable ==false;
+      userInfo.isEditable =false;
     }
     return userInfo;
   }

@@ -11,6 +11,8 @@ const  headers={
 
 
 export async function linkedAccount(data: any) {
+  console.log("data 14",data);
+  
   var config = {
     method: 'post',
     url: 'https://api.razorpay.com/v2/accounts',
@@ -68,13 +70,13 @@ return linkProduct
 
 
 
-export async function addBankDetail(account_id:any,product_id:any,bankDetail:any) {
+export async function addBankDetail(account_id:any,product_id:any,bankDetail:any,beneficiary_name:any) {
 console.log(account_id,product_id)
  const bank_details = {
  settlements:{
-  account_number:"1234567890",
-  ifsc_code:"HDFC0000317",
-  beneficiary_name:"Gaurav Kumar"
+  account_number:bankDetail.account_number,
+  ifsc_code:bankDetail.ifsc_code,
+  beneficiary_name:beneficiary_name
 },
 tnc_accepted:true,
 
@@ -116,7 +118,7 @@ return updateProduct
 }
 
 
-export async function verifyBankDetail() {
+export async function verifyBankDetail(bankDetail:any,beneficiary_name:any) {
 
   
   
@@ -134,9 +136,9 @@ export async function verifyBankDetail() {
 
   
   const bankDetails = {
-    account_number:"1234567890",
-    ifsc_code:"HDFC0000317",
-    beneficiary_name:"Gaurav Kumar"
+    account_number:bankDetail.account_number,
+    ifsc_code:bankDetail.ifsc_code,
+    beneficiary_name:beneficiary_name
     // Add any other required details
   };
   

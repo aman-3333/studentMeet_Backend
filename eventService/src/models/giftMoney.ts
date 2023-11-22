@@ -5,7 +5,10 @@ const schema = new Schema(
     amount: { type: Number },
     userId: { type: Schema.Types.ObjectId, ref: "userDetail" },
     donerId: { type: Schema.Types.ObjectId, ref: "userDetail" },
+    order_id: { type: String },
     postId: { type: Schema.Types.ObjectId, ref: "post" },
+    achivemntId: { type: Schema.Types.ObjectId, ref: "achivement" },
+    type: { type: String },
     paymentId: { type: String },
     status: { type: String },
     isDeleted: { type: Boolean, default: false },
@@ -15,7 +18,7 @@ const schema = new Schema(
   }
 );
 
-export interface IMoneyDonation extends Document {
+export interface IGiftMoney extends Document {
     amount: Number,
     userId: ObjectId,
     donerId: ObjectId,
@@ -24,4 +27,4 @@ export interface IMoneyDonation extends Document {
     isDeleted: Boolean,
 }
 
-export default model<IMoneyDonation>("moneyDonation", schema);
+export default model<IGiftMoney>("gift_money", schema);

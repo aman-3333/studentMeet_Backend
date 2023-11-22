@@ -1,11 +1,34 @@
 import bankDetails from "../models/bankDetails";
-import moneyDonation, { IMoneyDonation } from "../models/moneyDonation";
+import giftMoney, { IGiftMoney } from "../models/giftMoney";
 const razorpay = require('razorpay');
-export default class moneyDonationController {
+const razorpayKey= "rzp_test_sIR02kOhciAGll";
+const  razorpaySecret="mg1EJI3f1zr07H6YeRkCF98O";
+export default class giftMoneyController {
 
-    public async createmoneyDonation(body: any) {
-
+    public async createOrder(body: any) {
         const { amount, donorId, email,userId,postId,status,note } = body;
+        var instance = new razorpay({ key_id: razorpayKey, key_secret: razorpaySecret })
+    return    instance.orders.create({
+          amount: 2000,
+          currency: "INR",
+          transfers: [
+            {
+              account: "acc_N2ytFnw3TUUP0K",
+              amount: 2000,
+              currency: "INR",
+              notes: {
+                branch: "Acme Corp Bangalore North",
+                name: "Gaurav Kumar"
+              },
+              linked_account_notes: [
+                "branch"
+              ],
+              on_hold: 1,
+              on_hold_until: 1771222870
+            }
+          ]
+        })
+
 
         const order = await razorpay.orders.create({
           amount: amount * 100, 
@@ -14,7 +37,7 @@ export default class moneyDonationController {
         });
     
 
-        const donation = new moneyDonation({
+        const donation = new giftMoney({
           amount,
           donorId,
           postId,
@@ -31,10 +54,10 @@ export default class moneyDonationController {
 
 
     
-    public async transferMoneyDonation(body: any) {
+    public async transfergiftMoney(body: any) {
             const { userId } = body;
             let bankDetail=await bankDetails.findOne({userId:userId,isDeleted:false}).lean()
-            const totalDonationAmount = await moneyDonation.aggregate([
+            const totalDonationAmount = await giftMoney.aggregate([
               {
                 $group: {
                   _id: null,
