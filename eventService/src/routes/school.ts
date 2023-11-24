@@ -42,8 +42,9 @@ router.post("/edit",  async (req, res) => {
 router.get("/list", checkAuth, async (req, res) => {
   try {
     const user = res.locals.user;
+    const body = req.body;
     const controller = new SchoolController();
-    const response: any = await controller.getSchool(user);
+    const response: any = await controller.getSchool(user,body);
     res
       .status(200)
       .json(successResponse("get School", response, res.statusCode));

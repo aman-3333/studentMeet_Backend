@@ -74,7 +74,7 @@ import stage from "./routes/stage";
 import notification from "./routes/notification";
 import user from "./routes/userDetails";
 import vendor from "./routes/vendorShop";
-import gift from "./routes/giftMoney";
+import servicePurchase from "./routes/servicePurchase";
  import role from "./routes/role";
 
 app.use("/api/auth", auth);
@@ -85,7 +85,7 @@ app.use("/api/academy/owner", academyOwner);
 app.use("/api/academy/representative", academyRepresentative);
 app.use("/api/achivement", achivement);
 app.use("/api/bankdetail", bankdetail);
-app.use("/api/gift", gift);
+app.use("/api/service", servicePurchase);
 // app.use("/api/category", category);
 app.use("/api/chat", chat);
 app.use("/api/connection", followers);

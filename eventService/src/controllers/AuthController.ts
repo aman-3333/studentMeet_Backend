@@ -248,6 +248,8 @@ export default class AuthController {
               osVersion: body.osVersion,
               networkCarrier: body.networkCarrier,
               dimension: body.dimension,
+              currentLat:body.currentLat,
+              currentLong:body.currentLong,
             },
           }
         );

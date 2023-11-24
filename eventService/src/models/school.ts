@@ -18,15 +18,30 @@ const schoolSchema = new Schema(
     schoolType: { type: String },
     schoolAssociateWith: { type: String },
     isActive: { type: Boolean, default: true },
+
     faculty: [{ type: Schema.Types.ObjectId,ref:"userdetails"}],
+    isRegistrationOn: { type: Boolean, default: false },
+    registrationLastDate: { type: Date },
+    advancedRegistrationAmount: { type: Number, default: 0 },
+    advancedRegistrationUser: [{ 
+   userId:  { type: Schema.Types.ObjectId,ref:"userdetails"},
+   registrationDateTime: { type: Date},
+   amount: { type: Number, default: 0 },
+   payment_id: { type: String },
+   order_id: { type: String },
+    }],
+
     infrastructure:[{
       type:{ type: String },
 description: { type: String },
 picture:[{ type: String }],
 facility: { type: String },
     }],
-    lat: { type: String },
-    long: { type: String },
+
+    coordinates: {
+      type: { type: String, default: 'Point' },
+      coordinates: { type: [Number], index: '2dsphere' }
+    },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     followersCount: { type: Number, default: 0 },
     schoolLikeCount: { type: Number, default: 0 },
@@ -121,7 +136,18 @@ facility: String,
   ],
   isActive: Boolean,
   isVerify: Boolean,
-  isDeleted: Boolean
+  isDeleted: Boolean,
+
+  isRegistrationOn: Boolean,
+  registrationLastDate: Date,
+  advancedRegistrationAmount: Number,
+  advancedRegistrationUser: [{ 
+ userId:  ObjectId,
+ registrationDateTime: Date,
+ amount: Number,
+ payment_id: String,
+ order_id:String
+  }],
 }
 // user
 

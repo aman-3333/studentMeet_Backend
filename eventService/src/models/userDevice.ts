@@ -16,8 +16,8 @@ const userdeviceSchema = new Schema(
     appVersion:{ type: Number, trim: true },
     networkCarrier:{ type: String },
     dimension:{ type: String },
-
-    
+    currentLat:{ type: Number },
+    currentLong:{ type: Number },
    
   },
   {

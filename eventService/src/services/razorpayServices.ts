@@ -1,5 +1,7 @@
 const razorpayKey= "rzp_test_sIR02kOhciAGll";
 const  razorpaySecret="mg1EJI3f1zr07H6YeRkCF98O";
+const crypto = require("crypto");
+const Razorpay = require('razorpay');
 var axios = require('axios');
 const auth = Buffer.from(`${razorpayKey}:${razorpaySecret}`).toString('base64');
 const  headers={
@@ -33,6 +35,37 @@ export async function linkedAccount(data: any) {
 
  return resp
 }
+
+
+
+export async function capturePayment(payment_id:any,amount:any) {
+  var axios = require("axios");
+  var headers = { "Content-type": "application/json" };
+  var config = {
+    method: "post",
+    url: `https://${razorpayKey}:${razorpaySecret}@api.razorpay.com/v1/payments/${payment_id}/capture`,
+    headers: headers,
+    data: { amount: amount, currency: "INR" }
+  };
+  return axios(config)
+    .then((resp:any) => resp.data)
+    .catch((error:any) => {
+      return null;
+    });
+   
+}
+
+
+export async function validatePayment(order_id: any,payment_id:any,razorpay_signature:any) {
+  const sign = crypto
+    .createHmac("sha256", razorpaySecret)
+    .update(order_id+ "|" + payment_id)
+    .digest("hex");
+  return sign == razorpay_signature;
+   
+}
+
+
 
 
 export async function createProduct(account_id: any) {
@@ -189,3 +222,31 @@ export async function CapturePayment(paymentID: any, amount: any, currency: any,
   });
 return resp
 }
+
+
+
+export async function accountStatusUpdate(account_id: any) {
+  const razorpay = new Razorpay({
+    key_id: razorpayKey,
+    key_secret: razorpaySecret,
+  });
+
+  razorpay.accounts.edit(account_id, {
+    active: true // Set the appropriate field or parameters according to your requirement
+}, function(error:any, response:any) {
+    if (error) {
+        console.error('Error updating account status:', error);
+        // Handle error appropriately
+    } else {
+        console.log('Account status updated:', response);
+        // Handle successful response
+    }
+});
+
+
+
+
+
+
+}
+

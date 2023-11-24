@@ -3,8 +3,8 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema(
   {
     amount: { type: Number },
-    userId: { type: Schema.Types.ObjectId, ref: "userDetail" },
-    donerId: { type: Schema.Types.ObjectId, ref: "userDetail" },
+    ownerId: { type: Schema.Types.ObjectId, ref: "userDetail" },
+    senderId: { type: Schema.Types.ObjectId, ref: "userDetail" },
     order_id: { type: String },
     postId: { type: Schema.Types.ObjectId, ref: "post" },
     achivemntId: { type: Schema.Types.ObjectId, ref: "achivement" },
@@ -18,13 +18,13 @@ const schema = new Schema(
   }
 );
 
-export interface IGiftMoney extends Document {
+export interface IServicePurchase extends Document {
     amount: Number,
-    userId: ObjectId,
-    donerId: ObjectId,
+    ownerId: ObjectId,
+    senderId: ObjectId,
     paymentId: String,
     status: String,
     isDeleted: Boolean,
 }
 
-export default model<IGiftMoney>("gift_money", schema);
+export default model<IServicePurchase>("service_purchase", schema);

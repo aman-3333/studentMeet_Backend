@@ -7,7 +7,8 @@ import {
   createProduct,
   CapturePayment,
   addBankDetail,
-  verifyBankDetail
+  verifyBankDetail,
+  accountStatusUpdate
 } from "../services/razorpayServices";
 var razorpayConfig = require("../../config/razorpay/betaProperties").RAZORPAY;
 export default class BankDetailsController {
@@ -46,9 +47,7 @@ random_no=random_no.toString()
                 }
              }
           }
-       }
-        
-   
+       } 
     }
     if (body.academyOwner) {
       userInfo = await academyOwner
@@ -65,12 +64,14 @@ random_no=random_no.toString()
     let account:any = await linkedAccount(data);
     let product:any = await createProduct(account.id);
     let updateProduct:any = await addBankDetail(account.id,product.id,body,data.contact_name);
+
+    await accountStatusUpdate(account.id)
 await BankDetails.updateOne({_id:BankDetailsInfo._id},{
   $set:{
     razorpay_product_id:updateProduct.id,razorpay_account_id:updateProduct.account_id,activation_status:updateProduct.activation_status,requested_at:updateProduct.requested_at,product_name:updateProduct.product_name
   }
 })
-      await verifyBankDetail(body,data.contact_name)
+
     return updateProduct;
   }
 
