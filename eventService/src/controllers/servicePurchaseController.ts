@@ -128,14 +128,7 @@ if(type=="achivement"&& achivementId){
     public async capturePament(body: any) {
             const { order_id, payment_id, razorpay_signature, amount  } = body;
             return   await capturePayment(payment_id, amount);
-        //  const validatePament =  await validatePayment(order_id, payment_id, razorpay_signature);
-        
-        //  if (!validatePament) {
-
-        //  }
-        //  else{
-        // return   await capturePayment(payment_id, amount);
-        //  }
+      
         
     
 
