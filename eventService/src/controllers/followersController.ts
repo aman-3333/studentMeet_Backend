@@ -318,6 +318,16 @@ public async  getFollowers(userId:any,userType:any){
 
     
     }
+
+    if(userType=="school"){
+        for (let i = 0; i < userInfo.schoolFollowers.length; i++) {
+            let schoolFollowers=await school.findOne({_id:userInfo.schoolFollowers[i],isDeleted:false}).lean()
+            data.push(schoolFollowers)
+            
+           }
+
+    
+    }
     else{
         for (let i = 0; i < userInfo.userFollowers.length; i++) {
          let userFollowers=await userDetails.findOne({_id:userInfo.userFollowers[i],isDeleted:false})
@@ -350,6 +360,16 @@ public async  getFollowing(userId:any,userType:any){
             data.push(brandFollowing)
             
            }
+    
+    }
+
+    if(userType=="school"){
+        for (let i = 0; i < userInfo.schoolFollowing.length; i++) {
+            let schoolFollowers=await school.findOne({_id:userInfo.schoolFollowing[i],isDeleted:false}).lean()
+            data.push(schoolFollowers)
+            
+           }
+
     
     }
     else{

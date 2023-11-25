@@ -132,7 +132,7 @@ if(type=="achivement"&& achivementId){
 
          }
          else{
-          await capturePayment(payment_id, amount);
+        return   await capturePayment(payment_id, amount);
          }
         
     

@@ -1,5 +1,5 @@
 import Tournament, { ITournament } from "../models/tournament.model";
-
+const mongoose = require("mongoose");
 export default class TournamentController {
 
     public async createTournament(body: any) {
@@ -17,21 +17,95 @@ export default class TournamentController {
     }
 
     public async getTournamentList() {
-        const TournamentList: ITournament[] = await Tournament.find({  isDeleted: false });
-        return TournamentList;
+        const tournamentList: any = await Tournament.aggregate([
+            {
+      $match:{
+        isDeleted: false
+      }
+            },
+            {
+                $lookup: {
+                  localField: "academySubTypeId",
+                  from: "tournaments",
+                  foreignField: "_id",
+                  as: "academySubType",
+                },
+              },
+              { $unwind: { path: "$academySubType", preserveNullAndEmptyArrays: true } },
+        ])
+        return tournamentList;
     }
 
     public async getSchoolTournamentList(schoolId:any) {
-        const TournamentList: ITournament[] = await Tournament.find({ schoolId:schoolId, isDeleted: false });
-        return TournamentList;
+
+        const tournamentList: any = await Tournament.aggregate([
+            {
+      $match:{
+        schoolId:new mongoose.Types.ObjectId(schoolId), isDeleted: false
+      }
+            },
+            {
+                $lookup: {
+                  localField: "academySubTypeId",
+                  from: "tournaments",
+                  foreignField: "_id",
+                  as: "academySubType",
+                },
+              },
+              { $unwind: { path: "$academySubType", preserveNullAndEmptyArrays: true } },
+        ])
+
+
+        return tournamentList;
     }
     public async getAcademyTournamentList(academyId:any) {
-        const TournamentList: ITournament[] = await Tournament.find({ academyId:academyId, isDeleted: false });
-        return TournamentList;
+      
+        
+        const tournamentList: any = await Tournament.aggregate([
+            {
+      $match:{
+        academyId:new mongoose.Types.ObjectId(academyId), isDeleted: false
+      }
+            },
+            {
+                $lookup: {
+                  localField: "academySubTypeId",
+                  from: "tournaments",
+                  foreignField: "_id",
+                  as: "academySubType",
+                },
+              },
+              { $unwind: { path: "$academySubType", preserveNullAndEmptyArrays: true } },
+        ])
+
+        
+        return tournamentList;
     }
     
     public async getTournamentInfoById(TournamentId: any) {
-        const tournamentInfo: any = await Tournament.findOne({ _id: TournamentId, isDeleted: false }).lean();
+        let tournamentInfo: any = await Tournament.aggregate([
+            {
+      $match:{
+        _id:new mongoose.Types.ObjectId(TournamentId), isDeleted: false
+      }
+            },
+            {
+                $lookup: {
+                  localField: "academySubTypeId",
+                  from: "tournaments",
+                  foreignField: "_id",
+                  as: "academySubType",
+                },
+              },
+              { $unwind: { path: "$academySubType", preserveNullAndEmptyArrays: true } },
+        ])
+
+
+        tournamentInfo=tournamentInfo[0]
+
+
+
+
         return tournamentInfo;
     }
 
