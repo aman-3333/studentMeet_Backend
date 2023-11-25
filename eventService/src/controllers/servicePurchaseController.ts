@@ -127,7 +127,10 @@ if(type=="achivement"&& achivementId){
     
     public async capturePament(body: any) {
             const { order_id, payment_id, razorpay_signature, amount  } = body;
-            return   await capturePayment(payment_id, amount);
+
+
+            const captureResponse = await razorpay.payments.capture(payment_id, amount);
+            return   captureResponse;
       
         
     
