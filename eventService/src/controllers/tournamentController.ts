@@ -26,7 +26,7 @@ export default class TournamentController {
             {
                 $lookup: {
                   localField: "academySubTypeId",
-                  from: "tournaments",
+                  from: "academysubtypes",
                   foreignField: "_id",
                   as: "academySubType",
                 },
@@ -47,7 +47,7 @@ export default class TournamentController {
             {
                 $lookup: {
                   localField: "academySubTypeId",
-                  from: "tournaments",
+                  from: "academysubtypes",
                   foreignField: "_id",
                   as: "academySubType",
                 },
@@ -70,7 +70,7 @@ export default class TournamentController {
             {
                 $lookup: {
                   localField: "academySubTypeId",
-                  from: "tournaments",
+                  from: "academysubtypes",
                   foreignField: "_id",
                   as: "academySubType",
                 },
@@ -92,7 +92,7 @@ export default class TournamentController {
             {
                 $lookup: {
                   localField: "academySubTypeId",
-                  from: "tournaments",
+                  from: "academysubtypes",
                   foreignField: "_id",
                   as: "academySubType",
                 },
