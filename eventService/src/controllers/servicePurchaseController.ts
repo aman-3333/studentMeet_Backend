@@ -6,6 +6,8 @@ const razorpay = require('razorpay');
 const razorpayKey= "rzp_test_sIR02kOhciAGll";
 const  razorpaySecret="mg1EJI3f1zr07H6YeRkCF98O";
 const mongoose = require("mongoose");
+const SendOtp = require('sendotp');
+const sendOtp = new SendOtp('AuthKey');
 import {
   capturePayment,
   validatePayment
@@ -125,15 +127,15 @@ if(type=="achivement"&& achivementId){
     
     public async capturePament(body: any) {
             const { order_id, payment_id, razorpay_signature, amount  } = body;
-         
-         const validatePament =  await validatePayment(order_id, payment_id, razorpay_signature);
+            return   await capturePayment(payment_id, amount);
+        //  const validatePament =  await validatePayment(order_id, payment_id, razorpay_signature);
         
-         if (!validatePament) {
+        //  if (!validatePament) {
 
-         }
-         else{
-        return   await capturePayment(payment_id, amount);
-         }
+        //  }
+        //  else{
+        // return   await capturePayment(payment_id, amount);
+        //  }
         
     
 
@@ -186,6 +188,7 @@ $match:{
 }
 
 public async userAccountDetailForPost(body: any) {
+
   let postDetail = await post.aggregate([
     { $match: {  _id:new mongoose.Types.ObjectId(body.postId), isDeleted: false } },
     {
@@ -240,10 +243,7 @@ public async userAccountDetailForPost(body: any) {
         foreignField: "_id",
         as: "institutes",
       },
-    },
-   
- 
-  
+    }, 
   ]);
 
 
@@ -324,19 +324,8 @@ public async userAccountDetailForPost(body: any) {
         },
         { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
       ]);
-  
-     
-  
       return achivementList;
-    
-    
-    
-    
-   
    
   }
-
-
-
 
 }
