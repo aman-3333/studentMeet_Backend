@@ -20,6 +20,7 @@ const schoolSchema = new Schema(
     isActive: { type: Boolean, default: true },
 
     faculty: [{ type: Schema.Types.ObjectId,ref:"userdetails"}],
+    isValidForRegistrationOn: { type: Boolean, default: false },
     isRegistrationOn: { type: Boolean, default: false },
     registrationLastDate: { type: Date },
     advancedRegistrationAmount: { type: Number, default: 0 },
@@ -137,7 +138,7 @@ facility: String,
   isActive: Boolean,
   isVerify: Boolean,
   isDeleted: Boolean,
-
+  isValidForRegistrationOn: Boolean,
   isRegistrationOn: Boolean,
   registrationLastDate: Date,
   advancedRegistrationAmount: Number,
