@@ -37,6 +37,7 @@ const academyModel = new Schema(
     isActive: { type: Boolean, default: true },
     isBlocked: { type: Boolean, default: false },
     isValidForRegistrationOn: { type: Boolean, default: false },
+    isData: { type: Boolean, default: false },
     isRegistrationOn: { type: Boolean, default: false },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     followersCount: { type: Number, default: 0 },
