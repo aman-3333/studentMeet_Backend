@@ -301,8 +301,9 @@ public async  getFollowers(userId:any,userType:any){
     let userInfo:any=await userActivity.findOne({ userId:userId }).lean()
 
     if(userType=="academy"){
-       
+        console.log("hello")
         for (let i = 0; i < userInfo.academyFollowers.length; i++) {
+            console.log(userInfo.academyFollowers)
             let academyFollowers=await academyModel.findOne({_id:userInfo.academyFollowers[i]}).lean()
             data.push(academyFollowers)
             
@@ -310,9 +311,9 @@ public async  getFollowers(userId:any,userType:any){
     
     }
     if(userType=="sponsorship"){
-        for (let i = 0; i < userInfo.brandFollowers.length; i++) {
-            let brandFollowers=await sponsorshipDetails.findOne({_id:userInfo.brandFollowers[i],isDeleted:false}).lean()
-            data.push(brandFollowers)
+        for (let i = 0; i < userInfo.sponsorshipFollowers.length; i++) {
+            let sponsorshipFollowers=await sponsorshipDetails.findOne({_id:userInfo.sponsorshipFollowers[i],isDeleted:false}).lean()
+            data.push(sponsorshipFollowers)
             
            }
 
@@ -328,13 +329,13 @@ public async  getFollowers(userId:any,userType:any){
 
     
     }
-    else{
+    if(userType=="user"){
         for (let i = 0; i < userInfo.userFollowers.length; i++) {
-         let userFollowers=await userDetails.findOne({_id:userInfo.userFollowers[i],isDeleted:false})
-         data.push(userFollowers)
-        }
-        
-     }
+            let userFollowers=await userDetails.findOne({_id:userInfo.userFollowers[i],isDeleted:false})
+            data.push(userFollowers)
+           }
+    }
+   
    
     return data
 }
@@ -355,9 +356,9 @@ public async  getFollowing(userId:any,userType:any){
       
     }
     if(userType=="sponsorship"){
-        for (let i = 0; i < userInfo.brandFollowing.length; i++) {
-            let brandFollowing=await sponsorshipDetails.findOne({_id:userInfo.brandFollowing[i],isDeleted:false}).lean()
-            data.push(brandFollowing)
+        for (let i = 0; i < userInfo.sponsorshipFollowing.length; i++) {
+            let sponsorshipFollowing=await sponsorshipDetails.findOne({_id:userInfo.sponsorshipFollowing[i],isDeleted:false}).lean()
+            data.push(sponsorshipFollowing)
             
            }
     
@@ -372,14 +373,16 @@ public async  getFollowing(userId:any,userType:any){
 
     
     }
-    else{
-        for (let i = 0; i < userInfo.academyFollowing.length; i++) {
-            let academyFollowing=await academyModel.findOne({_id:userInfo.academyFollowing[i]}).lean()
-            data.push(academyFollowing)
-            
-           }
+    if(userType=="user"){
       
+           for (let i = 0; i < userInfo.userFollowing.length; i++) {
+            let userFollowing=await userDetails.findOne({_id:userInfo.userFollowing[i],isDeleted:false})
+            data.push(userFollowing)
+           }
+
+    
     }
+  
    
     return data
 }

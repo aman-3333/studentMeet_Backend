@@ -34,10 +34,10 @@ router.post("/unfollowing",  async (req, res) => {
     }
 });
 
-router.get("/getFollowers",  async (req, res) => {
+router.post("/getFollowers",  async (req, res) => {
     try {
-        const userId = req.query.userId; 
-        const userType = req.query.userType; 
+        const userId = req.body.userId; 
+        const userType = req.body.userType; 
         const controller = new followersController();
         const response: any = await controller.getFollowers(userId,userType);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
@@ -46,10 +46,10 @@ router.get("/getFollowers",  async (req, res) => {
     }
 });
 
-router.get("/getFollowing",  async (req, res) => {
+router.post("/getFollowing",  async (req, res) => {
     try {
-        const userId = req.query.userId; 
-        const userType = req.query.userType; 
+        const userId = req.body.userId; 
+        const userType = req.body.userType; 
         const controller = new followersController();
         const response: any = await controller.getFollowing(userId,userType);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));

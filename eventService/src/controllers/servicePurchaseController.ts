@@ -145,10 +145,10 @@ const Amount = amount*100
 
 
     public async getPostGiftTranstion(body: any) {
-  const data=   await servicePurchase.aggregate([
+  const data=   await post.aggregate([
       {
 $match:{
-  postId:new mongoose.Types.ObjectId(body.postId)
+  _id:new mongoose.Types.ObjectId(body.postId)
 }
       },
       {
@@ -163,7 +163,7 @@ $match:{
       
       {
         $lookup: {
-          localField: "ownerId",
+          localField: "userId",
           from: "userdetails",
           foreignField: "_id",
           as: "ownerData",
@@ -174,19 +174,38 @@ $match:{
 
       {
         $lookup: {
-          localField: "postId",
-          from: "posts",
-          foreignField: "_id",
-          as: "postData",
+          localField: "_id",
+          from: "service_purchases",
+          foreignField: "postId",
+          as: "servicePurchaseData",
         },
       },
-      { $unwind: { path: "$postData", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$servicePurchaseData", preserveNullAndEmptyArrays: true } },
+
+      {
+        $lookup: {
+          localField: "servicePurchaseData.senderId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "senderData",
+        },
+      },
+
+
 
     ])
 
 
+
+
     return data
 }
+
+
+
+
+
+
 
 
 public async getAchivementGiftTranstion(body: any) {
