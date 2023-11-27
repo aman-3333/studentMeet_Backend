@@ -159,7 +159,7 @@ $match:{
           as: "senderData",
         },
       },
-   
+      { $unwind: { path: "$senderData", preserveNullAndEmptyArrays: true } },
       
       {
         $lookup: {
@@ -204,7 +204,7 @@ $match:{
           as: "senderData",
         },
       },
-  
+      { $unwind: { path: "$senderData", preserveNullAndEmptyArrays: true } },
 
       {
         $lookup: {
@@ -214,7 +214,7 @@ $match:{
           as: "ownerData",
         },
       },
-      { $unwind: { path: "$senderData", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$ownerData", preserveNullAndEmptyArrays: true } },
 
       {
         $lookup: {
