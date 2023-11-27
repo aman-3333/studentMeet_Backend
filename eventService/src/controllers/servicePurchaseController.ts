@@ -127,13 +127,19 @@ if(type=="achivement"&& achivementId){
     
     public async capturePament(body: any) {
             const { order_id, payment_id, razorpay_signature, amount  } = body;
+            var instance = new razorpay({ key_id: razorpayKey, key_secret: razorpaySecret })
 
-
-            const captureResponse = await razorpay.payments.capture(payment_id, amount);
+const Amount = amount*100
+            const captureResponse = await  instance.payments.capture(payment_id,Amount );
+            if(captureResponse.status == "captured"){
+              await servicePurchase.updateOne({
+                
+              })
+            }
             return   captureResponse;
       
         
-    
+  
 
     }
 
@@ -153,7 +159,29 @@ $match:{
           as: "senderData",
         },
       },
-      { $unwind: { path: "$senderData", preserveNullAndEmptyArrays: true } },
+   
+      
+      {
+        $lookup: {
+          localField: "ownerId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "ownerData",
+        },
+      },
+      { $unwind: { path: "$ownerData", preserveNullAndEmptyArrays: true } },
+
+
+      {
+        $lookup: {
+          localField: "postId",
+          from: "posts",
+          foreignField: "_id",
+          as: "postData",
+        },
+      },
+      { $unwind: { path: "$postData", preserveNullAndEmptyArrays: true } },
+
     ])
 
 
@@ -176,7 +204,28 @@ $match:{
           as: "senderData",
         },
       },
+  
+
+      {
+        $lookup: {
+          localField: "ownerId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "ownerData",
+        },
+      },
       { $unwind: { path: "$senderData", preserveNullAndEmptyArrays: true } },
+
+      {
+        $lookup: {
+          localField: "achivemntId",
+          from: "achivements",
+          foreignField: "_id",
+          as: "achivementData",
+        },
+      },
+      { $unwind: { path: "$achivementData", preserveNullAndEmptyArrays: true } },
+
     ])
 
 

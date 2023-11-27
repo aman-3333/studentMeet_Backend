@@ -38,20 +38,35 @@ export async function linkedAccount(data: any) {
 
 
 
+
+
+
 export async function capturePayment(payment_id:any,amount:any) {
-  var axios = require("axios");
-  var headers = { "Content-type": "application/json" };
-  var config = {
-    method: "post",
-    url: `https://${razorpayKey}:${razorpaySecret}@api.razorpay.com/v1/payments/${payment_id}/capture`,
-    headers: headers,
-    data: { amount: amount, currency: "INR" }
-  };
-  return axios(config)
-    .then((resp:any) => resp.data)
-    .catch((error:any) => {
-      return null;
-    });
+  const razorpay = new Razorpay({
+    key_id: razorpayKey,
+    key_secret: razorpaySecret,
+  });
+ 
+  const Amount  = amount*100
+
+return razorpay.payments.capture(payment_id, Amount, (error:any, payment:any) => {
+    if (error) {
+      console.error('Capture failed:', error);
+      // Handle error
+    } else {
+      console.log('Payment captured:', payment);
+      return payment
+   
+      // Process successful payment capture
+    }
+  });
+
+ 
+  
+
+
+
+
    
 }
 
@@ -195,33 +210,7 @@ export async function verifyBankDetail(bankDetail:any,beneficiary_name:any) {
 
 
 
-export async function CapturePayment(paymentID: any, amount: any, currency: any, key: any, secret: any) {
-  var axios = require('axios');
-  var headers = {
-    'Content-type': 'application/json'
-  };
-  var config = {
-    method: 'post',
-    url: `https://${key}:${secret}@api.razorpay.com/v1/payments/${paymentID}/capture`,
-    headers: headers,
-    data: {
-      amount: amount,
-      currency: currency,
-    },
 
-  };
-  const resp = await axios(config)
-  .then(function (response: any) {
-    console.log(response, "response")
-    return response.data
-  })
-  .catch(function (error: any) {
-    console.log(error, "error")
-
-    return error
-  });
-return resp
-}
 
 
 

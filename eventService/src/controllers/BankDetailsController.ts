@@ -5,7 +5,7 @@ import userDetails from "../models/userDetails";
 import {
   linkedAccount,
   createProduct,
-  CapturePayment,
+  capturePayment,
   addBankDetail,
   verifyBankDetail,
   accountStatusUpdate

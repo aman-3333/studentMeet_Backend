@@ -3,11 +3,11 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema(
   {
     amount: { type: Number },
-    ownerId: { type: Schema.Types.ObjectId, ref: "userDetail" },
-    senderId: { type: Schema.Types.ObjectId, ref: "userDetail" },
+    ownerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+    senderId: { type: Schema.Types.ObjectId, ref: "userdetails" },
     order_id: { type: String },
-    postId: { type: Schema.Types.ObjectId, ref: "post" },
-    achivemntId: { type: Schema.Types.ObjectId, ref: "achivement" },
+    postId: { type: Schema.Types.ObjectId, ref: "posts" },
+    achivemntId: { type: Schema.Types.ObjectId, ref: "achivements" },
     type: { type: String },
     paymentId: { type: String },
     status: { type: String },
