@@ -19,14 +19,14 @@ router.post("/following",  async (req, res) => {
     }
 });
 
-router.post("/unfollowing",  async (req, res) => {
+router.post("/remove/followers",  async (req, res) => {
     try {
         
         const userId = req.body.userId; 
-        const followingId = req.body.followingId;
+        const followingId = req.body.removeId;
         const userType = req.body.userType;
         const controller = new followersController();
-        const response: any = await controller.unfollowing(userId,followingId,userType);
+        const response: any = await controller.removefollowers(userId,followingId,userType);
         res.status(200).json(successResponse("unfollowing", response, res.statusCode));
     } catch (error) {
      
@@ -34,24 +34,43 @@ router.post("/unfollowing",  async (req, res) => {
     }
 });
 
-router.post("/getFollowers",  async (req, res) => {
+
+router.post("/remove/following",  async (req, res) => {
+    try {
+        
+        const userId = req.body.userId; 
+        const followingId = req.body.removeId;
+        const userType = req.body.userType;
+        const controller = new followersController();
+        const response: any = await controller.removefollowing(userId,followingId,userType);
+        res.status(200).json(successResponse("unfollowing", response, res.statusCode));
+    } catch (error) {
+     
+        res.status(500).json(errorResponse("error in unfollowing", res.statusCode));
+    }
+});
+
+
+router.post("/getFollowers",checkAuth,  async (req, res) => {
     try {
         const userId = req.body.userId; 
         const userType = req.body.userType; 
+        const loginUser = res.locals.user._id;
         const controller = new followersController();
-        const response: any = await controller.getFollowers(userId,userType);
+        const response: any = await controller.getFollowers(userId,userType,loginUser);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
     } catch (error) {
         res.status(500).json(errorResponse("error in getFollowers", res.statusCode));
     }
 });
 
-router.post("/getFollowing",  async (req, res) => {
+router.post("/getFollowing",checkAuth,  async (req, res) => {
     try {
         const userId = req.body.userId; 
         const userType = req.body.userType; 
+        const loginUser = res.locals.user._id;
         const controller = new followersController();
-        const response: any = await controller.getFollowing(userId,userType);
+        const response: any = await controller.getFollowing(userId,userType,loginUser);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
     } catch (error) {
         res.status(500).json(errorResponse("error in getFollowers", res.statusCode));

@@ -136,11 +136,11 @@ if(userInfo[0].isProfilePublic == false){
         }
 
 
-public async unfollowing(userId: any, followingId: any,userType:any) {
+public async removefollowing(userId: any, followingId: any,userType:any) {
     let userInfo: any;
-    userInfo = await userDetails.findOne({_id:followingId,isDeleted:false }).lean()
+   let minus =-1
 
-    if(userType=="normal" ||  userType=="coach" ){
+    if(userType=="user" ){
  
         userInfo = await userActivity.updateOne({ userId: userId},
             
@@ -163,70 +163,155 @@ public async unfollowing(userId: any, followingId: any,userType:any) {
     
 
     }
-    if(userType=="academy"){
+    if(userType=="academy")
+    {
 
-            userInfo = await userActivity.findOneAndUpdate({
-                userId: userId,
-            }, {
-                $pull: {
-                    academyFollowing: followingId
-                }
-            },{new:true}).lean()
-            await userActivity.findOneAndUpdate({
-                userId: followingId,
-            }, {
-                $pull: {
-                    userFollowers: userId
-                }
-            },{new:true}).lean()
-            await userActivity.findOneAndUpdate({
-                userId: userId,
-            },
-                { $inc: { followingCount: -1 } },{new:true}).lean()
+        userInfo = await userActivity.updateOne({ userId: userId},
+            
+            {
+              $pull: { academyFollowing: followingId }, 
+              $inc: { academyFollowingCount: -1 } 
+            })
+
+            await academyModel.findOneAndUpdate({ _id: followingId},
+            
+                {
+                  $pull: { followers: userId }, 
+                 
+                })
+
+              
+
+                
+                
+
+        }
+       
+        if(userType=="school"){
+            userInfo = await userActivity.updateOne({ userId: userId},
+            
+                {
+                  $pull: { schoolFollowing: followingId }, 
+                  $inc: { schoolFollowingCount: -1 } 
+                })
+            }   
     
     
-                  
-                await userActivity.findOneAndUpdate({
-                    userId: followingId,
-                },
-                    { $inc: { followersCount: -1 } },{new:true}).lean()
+            await school.updateOne({ _id: followingId},
+            
+                {
+                  $pull: { followers: userId }, 
+                  $inc: { followersCount: -1 } 
+                })
+    
+         
     
         
         
    
-        }
+        
         if(userType=="sponsorship"){
-            if(userInfo.isProfilePublic == true){
-                userInfo = await userActivity.findOneAndUpdate({
-                    userId: userId,
-                }, {
-                    $pull: {
-                        userFollowing: followingId
-                    }
-                },{new:true}).lean()
-                await userActivity.findOneAndUpdate({
-                    userId: followingId,
-                }, {
-                    $pull: {
-                        userFollowers: userId
-                    }
-                },{new:true}).lean()
-                await userActivity.findOneAndUpdate({
-                    userId: userId,
-                },
-                    { $inc: { followingCount: -1 } },{new:true}).lean()
-        
-        
-                      
-                    await userActivity.findOneAndUpdate({
-                        userId: followingId,
-                    },
-                        { $inc: { followersCount: -1 } },{new:true}).lean()
-        
-            }
+            userInfo = await userActivity.updateOne({ userId: userId},
+            
+                {
+                  $pull: { sponsorshipFollowing: followingId }, 
+                  $inc: { sponsorshipFollowingCount: -1 } 
+                })
+
+
+                await sponsorshipDetails.updateOne({ _id: followingId},
+            
+                    {
+                      $pull: { followers: userId }, 
+                      $inc: { followersCount: -1 } 
+                    })
+
             }       
     return userInfo
 }
+
+
+public async removefollowers(userId: any, followingId: any,userType:any) {
+    let userInfo: any;
+   let minus =-1
+
+    if(userType=="user" ){
+ 
+        userInfo = await userActivity.updateOne({ userId: userId},
+            
+            {
+              $pull: { userFollowers: followingId }, 
+              $inc: { followersCount: -1 } 
+            })
+    }
+    if(userType=="academy")
+    {
+
+        userInfo = await userActivity.updateOne({ userId: userId},
+            
+            {
+              $pull: { academyFollowers: followingId }, 
+              $inc: { academyFollowersCount: -1 } 
+            })
+
+            await academyModel.findOneAndUpdate({ _id: followingId},
+            
+                {
+                  $pull: { following: userId }, 
+                 
+                })
+
+              
+
+                
+                
+
+        }
+       
+        if(userType=="school"){
+            userInfo = await userActivity.updateOne({ userId: userId},
+            
+                {
+                  $pull: { schoolFollowers: followingId }, 
+                  $inc: { schoolFollowersCount: -1 } 
+                })
+            }   
+    
+    
+            await school.updateOne({ _id: followingId},
+            
+                {
+                  $pull: { following: userId }, 
+                  $inc: { followingCount: -1 } 
+                })
+    
+         
+    
+        
+        
+   
+        
+        if(userType=="sponsorship"){
+            userInfo = await userActivity.updateOne({ userId: userId},
+            
+                {
+                  $pull: { sponsorshipFollowers: followingId }, 
+                  $inc: { sponsorshipFollowersCount: -1 } 
+                })
+
+
+                await sponsorshipDetails.updateOne({ _id: followingId},
+            
+                    {
+                      $pull: { following: userId }, 
+                      $inc: { followingCount: -1 } 
+                    })
+
+            }       
+    return userInfo
+}
+
+
 
 public async getFollowingRequestByOther(userId:any){
     let data:any=[]
@@ -296,7 +381,7 @@ return data
 
 
 
-public async  getFollowers(userId:any,userType:any){
+public async  getFollowers(userId:any,userType:any,loginUser:any){
     let data:any =[]
     let userInfo:any=await userActivity.findOne({ userId:userId }).lean()
 
@@ -341,7 +426,7 @@ public async  getFollowers(userId:any,userType:any){
 }
 
 
-public async  getFollowing(userId:any,userType:any){
+public async  getFollowing(userId:any,userType:any,loginUser:any){
     let data:any =[]
     let userInfo:any=await userActivity.findOne({ userId:userId })
  
@@ -383,7 +468,7 @@ public async  getFollowing(userId:any,userType:any){
     
     }
   
-   
+
     return data
 }
 
