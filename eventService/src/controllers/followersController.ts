@@ -381,7 +381,7 @@ return data
 
 
 
-public async  getFollowers(userId:any,userType:any,loginUser:any){
+public async  getFollowers(userId:any,userType:any){
     let data:any =[]
     let userInfo:any=await userActivity.findOne({ userId:userId }).lean()
 
@@ -426,7 +426,7 @@ public async  getFollowers(userId:any,userType:any,loginUser:any){
 }
 
 
-public async  getFollowing(userId:any,userType:any,loginUser:any){
+public async  getFollowing(userId:any,userType:any){
     let data:any =[]
     let userInfo:any=await userActivity.findOne({ userId:userId })
  
