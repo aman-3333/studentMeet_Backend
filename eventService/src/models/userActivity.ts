@@ -8,10 +8,15 @@ const schema = new Schema({
     postLikeCount:{type:Number},
     sharePost: [{
         post: { type: Schema.Types.ObjectId, ref: "posts" },
-       
          friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
          dateTime: { type: Date },
      }],
+     sharePostByOther: [{
+        post: { type: Schema.Types.ObjectId, ref: "posts" },
+         friendId: { type: Schema.Types.ObjectId, ref: "userdetails" },
+         dateTime: { type: Date },
+     }],
+
     sponsorshipShare: [{
         sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
@@ -20,15 +25,43 @@ const schema = new Schema({
     sponsorshipSharedByOther: [{
         sponsorshipId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        dateTime:{type:Date}
     }],
+
+   academyShare: [{
+       academyId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        dateTime: { type: Date },
+    }],
+   academySharedByOther: [{
+       academyId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        dateTime:{type:Date}
+    }],
+
+   schoolShare: [{
+       schoolId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        dateTime: { type: Date },
+    }],
+   schoolSharedByOther: [{
+       schoolId: { type: Schema.Types.ObjectId, ref: "sponsorships" },
+        friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+        dateTime:{type:Date}
+    }],
+    achivementSharedByOther: [{
+        achivementId: { type: Schema.Types.ObjectId, ref: "achivements" },
+         friendId: { type: Schema.Types.ObjectId, ref: "userDetails" },
+         dateTime:{type:Date}
+     }],
     userFollowers: [
         { type: Schema.Types.ObjectId, ref: "userDetails" },
     ],
     userFollowing: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
-    brandFollowers: [
+   sponsorshipFollowers: [
         { type: Schema.Types.ObjectId, ref: "sponsorshipdetail" },
     ],
-    brandFollowing: [{ type: Schema.Types.ObjectId, ref: "sponsorshipdetail" }],
+   sponsorshipFollowing: [{ type: Schema.Types.ObjectId, ref: "sponsorshipdetail" }],
     schoolFollowers: [
         { type: Schema.Types.ObjectId, ref: "school" },
     ],
@@ -54,8 +87,15 @@ const schema = new Schema({
     followerRequestRejectbyOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     blockList: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
     blockbyOther: [{ type: Schema.Types.ObjectId, ref: "userDetails" }],
+    allOverFollowing:[{ type: Schema.Types.ObjectId }],
     followersCount: { type: Number, default: 0 },
     followingCount: { type: Number, default: 0 },
+    academyFollowersCount: { type: Number, default: 0 },
+    academyFollowingCount: { type: Number, default: 0 },
+    sponsorshipFollowersCount: { type: Number, default: 0 },
+    sponsorshipFollowingCount: { type: Number, default: 0 },
+   schoolFollowersCount: { type: Number, default: 0 },
+   schoolFollowingCount: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false }
 }, {
@@ -85,10 +125,10 @@ export interface IUserActivity extends Document {
         ObjectId,
     ],
     userFollowing: [ObjectId],
-    brandFollowers: [
+   sponsorshipFollowers: [
         ObjectId,
     ],
-    brandFollowing: [ObjectId],
+   sponsorshipFollowing: [ObjectId],
     schoolFollowers: [
         ObjectId,
     ],

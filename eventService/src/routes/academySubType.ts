@@ -45,6 +45,18 @@ router.get("/list",  async (req, res) => {
 });
 
 
+router.get("/getlist",  async (req, res) => {
+    try {
+        const controller = new AcademySubTypeController();
+        const response: IAcademySubType[] = await controller.getList();
+        res.status(200).json(successResponse("AcademySubType list", response, res.statusCode));
+    } catch (error) {
+       
+        res.status(500).json(errorResponse("error in AcademySubType list", res.statusCode));
+    }
+});
+
+
 router.get("/ById", checkAuth, async (req, res) => {
     try {
         const AcademySubTypeId:any = req.query.AcademySubTypeId;
@@ -58,9 +70,9 @@ router.get("/ById", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const AcademySubTypeId = req.params.id;
+        const AcademySubTypeId = req.body._id;
         const controller = new AcademySubTypeController();
         const response: IAcademySubType = await controller.deleteAcademySubType(AcademySubTypeId);
         res.status(200).json(successResponse("delete AcademySubType", response, res.statusCode));

@@ -4,9 +4,13 @@ import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
 import Achivement from "../models/achivement";
 import FuzzySearch from "fuzzy-search";
+import { sendNotification } from "../services/notification";
+import userDevice from "../models/userDevice";
+const mongoose = require("mongoose");
+const currentTime: any = new Date();
 export default class academyController {
   public async createAcademy(body: any) {
-    const academyInfo = await academy.create({ 
+    const academyInfo = await academy.create({
       fullAddress: body.fullAddress,
       academyOwnerId: body.academyOwnerId,
       academyTypeId: body.academyTypeId,
@@ -29,16 +33,13 @@ export default class academyController {
       feesPerMonth: body.feesPerMonth,
       feesPerYear: body.feesPerYear,
       feesDiscount: body.feesDiscount,
-      profile_picture: body.profile_picture});
-    
+      profile_picture: body.profile_picture,
+    });
 
-    return academyInfo
- 
+    return academyInfo;
   }
 
   public async editAcademy(body: any) {
-    console.log(body.academyId, "body.academyId");
-
     const academyInfo: any = await academy
       .findOneAndUpdate({ _id: body.academyId }, body, {
         new: true,
@@ -49,7 +50,7 @@ export default class academyController {
 
   public async getAcademyList(user: any) {
     let academyLike = await academy.aggregate([
-      { $match: { isDeleted: false, academyLike: { $in: [user._id] } } },
+      { $match: { isDeleted: false } },
 
       {
         $lookup: {
@@ -91,75 +92,21 @@ export default class academyController {
           as: "school",
         },
       },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
-    ]);
-    let academyList = await academy.aggregate([
-      { $match: { isDeleted: false, academyLike: { $ne: [user._id] } } },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      {
-        $lookup: {
-          localField: "instituteId",
-          from: "institutes",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      {
-        $lookup: {
-          localField: "schoolId",
-          from: "schools",
-          foreignField: "_id",
-          as: "school",
-        },
-      },
-      {
-        $addFields: {
-          isLikes: true,
-        },
-      },
-      {
-        $addFields: {
-          isLikes: false,
-        },
-      },
     ]);
 
-    const mergedArray = [...academyLike, ...academyList];
+    academyLike.forEach((val: any) => {
+      if (val.followers.toString().includes(user._id.toString())) {
+        val.isFollow = true;
+      }
+      if (val.academyLike.toString().includes(user._id.toString())) {
+        val.isLikes = true;
+      } else {
+        val.isFollow = false;
+        val.isLikes = false;
+      }
+    });
 
-    mergedArray.sort((a, b) => a.createdAt - b.createdAt);
-    return mergedArray;
-  }
-
-  public async getAcademyInfoById(academyId: any) {
-    const academyInfo: any = await academy.findOne({ _id: academyId }).lean();
-    return academyInfo;
+    return academyLike;
   }
 
   public async deleteAcademy(academyId: String) {
@@ -180,146 +127,297 @@ export default class academyController {
 
   public async searchAcademy(search: any) {
     let academyInfo: any = await academy.aggregate([
-      { $match: { isDeleted: false } },
+      {
+        $match: {
+          isDeleted: false,
+          academyName: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     ]);
 
-    academyInfo = new FuzzySearch(academyInfo, ["academyName"], {
-      caseSensitive: false,
-    });
-    academyInfo = academyInfo.search(search);
     return academyInfo;
   }
 
-  // public async academyActivity(
-  //   userId: any,
-  //   academyId: any,
-  //   status: any,
-  //   academyComment: any,
-  //   academyCommentId: any,
-  //   body: any
-  // ) {
-  //   let userInfo: any;
-  //   let data: any = [];
-  //   let a: any = [];
-  //   let info: any;
-  //   let academyInfo: any;
-
-  //   if (status == "academyLike") {
-  //     await academy.findOneAndUpdate({ _id: body.academyId },{ $inc: { academyLikeCount: 1 },{ new: true } ).lean();
-  //     academyInfo = await academy.findOneAndUpdate(
-  //       {
-  //         _id: body.academyId,
-  //       },
-  //       {
-  //         $push: {
-  //           academyLike: userId,
-  //         },
-  //       },
-  //       { new: true }
-  //     );
-
-  //     console.log(academyInfo);
-
-  //     return academyInfo;
-  //   }
-  //   if (status == "removAcademyLike") {
-  //     await academy.findOneAndUpdate(
-  //       { _id: body.academyId },
-  //       { $inc: { academyLikeCount: -1 } },
-  //       { new: true }
-  //     );
-
-  //     academyInfo = await academy.findOneAndUpdate(
-  //       {
-  //         _id: body.academyId,
-  //       },
-  //       {
-  //         $pull: {
-  //           academyLike: userId,
-  //         },
-  //       },
-  //       { new: true }
-  //     );
-
-  //     return academyInfo;
-  //   }
-
-  //   if (status == "academyComment") {
-  //     let currentTime: any = new Date();
-  //     for (let i = 0; i < body.academyComment.length; i++) {
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         {
-  //           _id: body.academyId,
-  //         },
-  //         {
-  //           $push: {
-  //             academyComment: {
-  //               userId: body.academyComment[i].userId,
-  //               comment: body.academyComment[i].comment,
-  //               dateTime: currentTime,
-  //             },
-  //           },
-  //         }
-  //       );
-
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         { _id: body.academyId },
-  //         { $inc: { academyCommentCount: 1 } },
-  //         { new: true }
-  //       );
-
-  //       return academyInfo;
-  //     }
-  //   }
-  //   if (status == "removeAcademyComment") {
-  //     for (let i = 0; i < body.academyComment.length; i++) {
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         {
-  //           _id: body.academyComment[i].academyId,
-  //         },
-  //         {
-  //           $pull: {
-  //             academyComment: {
-  //               _id: body.academyComment[i]._id,
-  //             },
-  //           },
-  //         }
-  //       );
-
-  //       academyInfo = await academy.findOneAndUpdate(
-  //         { _id: body.academyComment[i].academyId },
-  //         { $inc: { academyCommentCount: -1 } },
-  //         { new: true }
-  //       );
-
-  //       return academyInfo;
-  //     }
-  //   }
-  //   if (status == "readacAdemyComment") {
-  //     userInfo = await userActivity.findOne({ userId: body.userId }).lean();
-  //     userInfo = userInfo.academyComment;
-
-  //     for (let i = 0; i < userInfo.length; i++) {
-  //       let academyInfo: any = await academy.findOne({
-  //         _id: userInfo[i].academyId,
-  //       });
-
-  //       let comment: any = userInfo[i].comment;
-  //       let DateTime: any = userInfo[i].dateTime;
-
-  //       data.push({ academyInfo, comment, DateTime });
-  //     }
-  //     return data;
-  //   }
-  // }
-
-  public async readAcademyActivity(academyId: any, status: any) {
+  public async academyActivity(
+    userId: any,
+    academyId: any,
+    status: any,
+    academyComment: any,
+    academyCommentId: any,
+    body: any
+  ) {
+    let userInfo: any;
+    let data: any = [];
+    let a: any = [];
+    let info: any;
     let academyInfo: any;
+    let count: any = 1;
+    let minuscount: any = -1;
+    const academy_id: any = body.academyId;
+
+    if (status == "academyLike") {
+      await academy.updateOne(
+        {
+          _id: body.academyId,
+        },
+        {
+          $inc: { academyLikeCount: count },
+        }
+      );
+
+      academyInfo = await academy.findOneAndUpdate(
+        {
+          _id: body.academyId,
+        },
+        {
+          $push: {
+            academyLike: userId,
+          },
+        },
+        { new: true }
+      );
+
+      
+      let userData = await userActivity.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(body.userId),
+            isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: "$userdetails", preserveNullAndEmptyArrays: true } },
+      ]);
+
+      const followersData = userData[0].userFollowers;
+
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({
+          userId: followersData[i],
+        });
+        if (userFcmToken) {
+          const body = `${userData[0].userdetails.fullName} comment on academy check and react.`;
+          sendNotification(
+            userFcmToken.fcmtoken,
+            body,
+            "abc",
+            "academy_home",
+            followersData[i],
+            academy_id
+          );
+        }
+      }
+      return academyInfo;
+    }
+    if (status == "removAcademyLike") {
+      // await academy.findOneAndUpdate(
+      //   { _id: body.academyId },
+      //   { $inc: { academyLikeCount: -1 } },
+      //   { new: true }
+      // );
+      await academy.updateOne(
+        {
+          _id: body.academyId,
+        },
+        {
+          $inc: { academyLikeCount: minuscount },
+        }
+      );
+
+      academyInfo = await academy.findOneAndUpdate(
+        {
+          _id: body.academyId,
+        },
+        {
+          $pull: {
+            academyLike: userId,
+          },
+        },
+        { new: true }
+      );
+
+      return academyInfo;
+    }
+
+    if (status == "academyComment") {
+      for (let i = 0; i < body.academyComment.length; i++) {
+        academyInfo = await academy.findOneAndUpdate(
+          {
+            _id: body.academyId,
+          },
+          {
+            $push: {
+              academyComment: {
+                userId: body.academyComment[i].userId,
+                comment: body.academyComment[i].comment,
+                dateTime: currentTime,
+              },
+            },
+          }
+        );
+        await academy.updateOne(
+          {
+            _id: body.academyId,
+          },
+          {
+            $inc: { academyCommentCount: count },
+          }
+        );
+      }
+      let userData = await userActivity.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(body.academyComment[0].userId),
+            isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: "$userdetails", preserveNullAndEmptyArrays: true } },
+      ]);
+
+      const followersData = userData[0].userFollowers;
+
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({
+          userId: followersData[i],
+        });
+        if (userFcmToken) {
+          const body = `${userData[0].userdetails.fullName} comment on academy check and react.`;
+          sendNotification(
+            userFcmToken.fcmtoken,
+            body,
+            "abc",
+            "academy_home",
+            followersData[i],
+            academy_id
+          );
+        }
+      }
+      return academyInfo;
+    }
+
+    if (status == "removeAcademyComment") {
+      for (let i = 0; i < body.academyComment.length; i++) {
+        academyInfo = await academy.findOneAndUpdate(
+          {
+            _id: body.academyComment[i].academyId,
+          },
+          {
+            $pull: {
+              academyComment: {
+                _id: body.academyComment[i]._id,
+              },
+            },
+          }
+        );
+
+        await academy.updateOne(
+          {
+            _id: body.academyId,
+          },
+          {
+            $inc: { academyCommentCount: minuscount },
+          }
+        );
+
+        return academyInfo;
+      }
+    }
+    if (status == "readacAdemyComment") {
+      userInfo = await userActivity.findOne({ userId: body.userId }).lean();
+      userInfo = userInfo.academyComment;
+
+      for (let i = 0; i < userInfo.length; i++) {
+        let academyInfo: any = await academy.findOne({
+          _id: userInfo[i].academyId,
+        });
+
+        let comment: any = userInfo[i].comment;
+        let DateTime: any = userInfo[i].dateTime;
+
+        data.push({ academyInfo, comment, DateTime });
+      }
+      return data;
+    }
+  }
+
+  public async readAcademyActivity(academyId: any, status: any, userId: any) {
+    let academyInfo: any;
+    let isDeleteable: any;
     if (status == "readAcademyLike") {
-      academyInfo = await academy
-        .findOne({ _id: academyId })
-        .populate("academyLike");
-      academyInfo = academyInfo.academyLike;
+      let academyInfo: any = await academy.aggregate([
+        {
+          $match: {
+            _id: new mongoose.Types.ObjectId(academyId),
+            isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "academyLike",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+      ]);
+      academyInfo = academyInfo[0].userdetails;
+
+      let userData: any = await userActivity.findOne({ userId: userId });
+      userData = userData.userFollowing;
+      academyInfo.forEach((val: any) => {
+        if (userData.toString().includes(val._id.toString())) {
+          val.isFollow = true;
+        } else {
+          val.isFollow = false;
+        }
+      });
       return academyInfo;
     }
     if (status == "readAcademyComment") {
@@ -329,19 +427,22 @@ export default class academyController {
       academyInfo = academyInfo.academyComment;
 
       for (let i = 0; i < academyInfo.length; i++) {
-        console.log(academyId);
         let userInfo: any = await userDetails.findOne(
           { _id: academyInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
-
+let commentId=academyInfo[i]._id;
         let comment = academyInfo[i].comment;
         let DateTime: any = academyInfo[i].dateTime;
-
-        a.push({ userInfo, comment, DateTime });
+        if (userId == academyInfo[i].userId) {
+          isDeleteable = true;
+        } else {
+          isDeleteable = false;
+        }
+        a.push({ userInfo, comment, DateTime, isDeleteable,commentId });
       }
-      var y = [...a].reverse();
-      return y;
+      var data = [...a].reverse();
+      return data;
     }
     if (status == "readacademyFavourite") {
       academyInfo = await academy
@@ -352,10 +453,42 @@ export default class academyController {
     }
   }
 
-  public async filterAcademy(sports: any) {}
-
   public async getAcademyDetails(academyId: any) {
-    const academyList: any = await academy.find({ _id: academyId });
+    const academyList = await academy.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(academyId),
+        },
+      },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    ]);
+
     return academyList;
   }
 
@@ -368,15 +501,14 @@ export default class academyController {
     console.log(academyInfo.coachId, "academyInfo");
 
     if (status == "coachInfo") {
+
       coachDetails = await userDetails.find({
         _id: { $in: academyInfo.coachId },
         isDeleted: false,
       });
 
       for (let i = 0; i < coachDetails.length; i++) {
-        let achivement: any = await Achivement.findOne({
-          user_id: coachDetails[i]._id,
-        });
+       
 
         let profile_pucture = coachDetails[i].profile_pucture;
         let experienceYear = coachDetails[i].experienceYear;
@@ -385,9 +517,10 @@ export default class academyController {
         let fullName = coachDetails[i].fullName;
         let playFor = coachDetails[i].playFor;
         let experience = coachDetails[i].experience;
-
+        let _id = coachDetails[i]._id;
+        let stages = coachDetails[i].stages;
         data.push({
-          achivement,
+         
           profile_pucture,
           experienceYear,
           experties,
@@ -395,19 +528,60 @@ export default class academyController {
           fullName,
           playFor,
           experience,
+          _id,
+          stages
         });
       }
 
       return data;
     }
     if (status == "academyAchivment") {
-      console.log("academyAchivment", "academyAchivment");
+      const achivementList = await Achivement.aggregate([
+        {
+          $match: {
+            academyId: new mongoose.Types.ObjectId(academyId),
+          },
+        },
+        {
+          $lookup: {
+            from: "userdetails",
+            localField: "academyUserId",
+            foreignField: "_id",
+            as: "academyUser",
+          },
+        },
+        {
+          $lookup: {
+            from: "cities",
+            localField: "city",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "states",
+            localField: "state",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
 
-      academyInfo = await achivement.findOne({
-        isDeleted: false,
-        academyId: academyId,
-      });
-      return academyInfo;
+        { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: "countries",
+            localField: "country",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+
+        { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      ]);
+
+      return achivementList;
     }
   }
 
@@ -430,5 +604,61 @@ export default class academyController {
     //       }])
 
     return academyInfo;
+  }
+
+  public async filterAcademy(query: any) {
+    const queryParam:any = {};
+    const searchParams = {
+      academySubTypeId: query.academySubTypeId?query.academySubTypeId:"",
+      state: query.state?query.state:"",
+      city:query.city?query.city:""
+    };
+
+if (searchParams.hasOwnProperty('academySubTypeId')&&searchParams.academySubTypeId !=="" ) {
+  queryParam.academySubTypeId = searchParams.academySubTypeId;
+}
+
+
+if (searchParams.hasOwnProperty('state')&&searchParams.state !=="") {
+  queryParam.state = searchParams.state;
+}
+
+if (searchParams.hasOwnProperty('city')&&searchParams.city!=="") {
+  queryParam.city = searchParams.city;
+}
+    const academyData = await academy.find(
+      queryParam
+     
+    );
+return academyData
+ 
+ 
+  }
+
+  public async shareAcademy(body: any) {
+  const {userId,academySharedByOther}=body
+    for (let i = 0; i <academySharedByOther.length; i++) {
+      let academyInfo = await userActivity.findOneAndUpdate(
+        {
+          userId:academySharedByOther[i].friendId,
+          isDeleted: false,
+        },
+        {
+          $push: {
+            academySharedByOther: {
+              friendId:userId,
+              academyId:academySharedByOther[i].academyId,
+              dateTime: currentTime,
+            },
+          },
+        },
+        { new: true }
+      );
+      let userData:any = await userDetails.findOne({_id:userId});
+      let userToken:any = await userDevice.findOne({userId:academySharedByOther[i].friendId});
+      const body =`${userData.fullName} share academy to you  please check and react`;
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,academySharedByOther[i].academyId);
+      return academyInfo;
+    }
   }
 }

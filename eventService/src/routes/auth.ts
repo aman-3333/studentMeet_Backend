@@ -7,7 +7,8 @@ import authController from "../controllers/AuthController";
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
 router.post("/sendotp", async (req, res) => {
   try {
-    req.body.user = res.locals.user;
+console.log(req.body);
+
     const body = req.body;
     const controller = new authController();
     const response = await controller.sendotp(body);
@@ -43,11 +44,39 @@ router.post("/editprofile", async (req, res) => {
   }
 });
 
-router.get("/getprofile", checkAuth, async (req, res) => {
+
+router.post("/editprofile", async (req, res) => {
+  try {
+    const controller = new authController();
+    const body = req.body;
+    const response = await controller.editProfile(body);
+    res
+      .status(200)
+      .json(successResponse("editProfile", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in editProfile", res.statusCode));
+  }
+});
+
+router.get("/getprofile",checkAuth, async (req, res) => {
   try {
     const userId: any = req.query.userId;
+    const loginUser:any =res.locals.user;
     const controller = new authController();
-    const response: any = await controller.viewProfile(userId);
+    const response: any = await controller.viewProfile(userId,loginUser);
+    res
+      .status(200)
+      .json(successResponse("getProfile", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in getProfile", res.statusCode));
+  }
+});
+
+router.post("/getmultiple/profile", async (req, res) => {
+  try {
+    const userId: any = req.body.userId;
+    const controller = new authController();
+    const response: any = await controller.viewProfileMultiple(userId);
     res
       .status(200)
       .json(successResponse("getProfile", response, res.statusCode));

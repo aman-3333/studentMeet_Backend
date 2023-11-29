@@ -12,7 +12,7 @@ let security: {
 }
 
 exports.createJwtToken = (payload:any) => {
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "12h" });
+  const token = jwt.sign(payload, JWT_SECRET,);
   return token;
 };
 
@@ -33,8 +33,6 @@ console.log(header);
 
         // verify  auth token
         const token = header.split("Bearer ")[1]
-console.log("token",token);
-
         if (!token) {
             next({ status: 403, message: "AUTH_TOKEN_MISSING_ERR" })
             return
@@ -48,8 +46,6 @@ console.log("token",token);
         }
 
         const user = await userDetails.findOne({_id:userId.userId})
-
-console.log(user,"user");
 
         if (!user) {
             next({status: 404, message: "USER_NOT_FOUND_ERR" })

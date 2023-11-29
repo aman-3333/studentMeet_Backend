@@ -1,20 +1,26 @@
 import school from "../models/school";
 import FuzzySearch from "fuzzy-search";
-import { ObjectId } from "mongoose";
+const mongoose = require("mongoose");
 
 import School from "../models/school";
+import userDetails from "../models/userDetails";
+import userActivity from "../models/userActivity";
+import userDevice from "../models/userDevice";
+import { sendNotification } from "../services/notification";
 
+const currentTime: any = new Date();
 export default class SchoolController {
   //////////////////////////////school///////////////////////////////////////////////////////////
-
-  public async createschool(body: any) {
+  
+  public async createSchool(body: any) {
     let schoolInfo: any;
     schoolInfo = await school.create(body);
-
     return schoolInfo;
   }
 
-  public async editschool(body: any, schoolId: string) {
+  
+
+  public async editSchool(body: any, schoolId: string) {
     const schoolInfo: any = await school
       .findOneAndUpdate({ _id: schoolId, isDeleted: false }, body, {
         new: true,
@@ -23,23 +29,213 @@ export default class SchoolController {
     return schoolInfo;
   }
 
-  public async getschool(stateId: any) {
-    const schoolList: any[] = await school.find({
-      schoolStateId: stateId,
-      isDeleted: false,
-    });
-    return schoolList;
-  }
-  public async searchschool( searchValue: any) {
-    if (searchValue) {
-      let schoolList: any = await school.find({
+
+
+  public async getSchool(user:any,body:any) {
+    const increasedMaxDistance = 10; 
+    let schoolListlike= await school.aggregate([
+
+    
+
+      { $match: { isDeleted: false,  } },
+      {
+        $lookup: {
+          localField: "faculty",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "faculty",
+        },
+      },
+      {
+        $lookup: {
+          localField: "schoolOwnerId",
+          from: "school_owners",
+          foreignField: "_id",
+          as: "schoolOwner",
+        },
+      },
+      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      
+    ]);
+   
+
+    
+  console.log(user);
+  
+
+    schoolListlike.forEach((val:any)=>{
+      if( val.followers.toString().includes(user._id.toString())){ 
+       val.isFollow=true
+      }
+      if( val.schoolLike.toString().includes(user._id.toString())){ 
+        val.isLikes=true
+       }
+      else{
+       val.isFollow=false;
+       val.isLikes=false;
        
-        isDeleted: false,
-      });
-      schoolList = new FuzzySearch(schoolList, ["schoolName"], {
-        caseSensitive: false,
-      });
-      schoolList = schoolList.search(searchValue);
+      }
+     })
+
+
+    return schoolListlike;
+  }
+
+
+  public async getSchools(user:any,body:any) {
+    const {lat,long} = body;
+    const increasedMaxDistance = 10; 
+    let schoolListlike= await school.aggregate([
+
+      {
+        $geoNear: {
+          near: { type: "Point", coordinates: [long, lat] },
+          distanceField: "distance",
+          maxDistance: increasedMaxDistance,
+          spherical: true
+        }
+      },
+
+      { $match: { isDeleted: false,  } },
+      {
+        $lookup: {
+          localField: "faculty",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "faculty",
+        },
+      },
+      {
+        $lookup: {
+          localField: "schoolOwnerId",
+          from: "school_owners",
+          foreignField: "_id",
+          as: "schoolOwner",
+        },
+      },
+      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      
+    ]);
+   
+
+    
+  console.log(user);
+  
+
+    schoolListlike.forEach((val:any)=>{
+      if( val.followers.toString().includes(user._id.toString())){ 
+       val.isFollow=true
+      }
+      if( val.schoolLike.toString().includes(user._id.toString())){ 
+        val.isLikes=true
+       }
+      else{
+       val.isFollow=false;
+       val.isLikes=false;
+       
+      }
+     })
+
+
+    return schoolListlike;
+  }
+
+
+
+  public async searchSchool( searchValue: any) {
+    if (searchValue) {
+      let schoolList= await school.aggregate([
+        { $match: { isDeleted: false ,schoolName: {
+          $regex: searchValue,
+          $options: "i" 
+      }} },
+      
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+     
+      ]);
+
+
+   
       return schoolList;
     }
   }
@@ -47,16 +243,169 @@ export default class SchoolController {
 
 
 
+  public async shareSchool( body:any ) {
+    const {schoolSharedByOther,userId}=body
+    for (let i = 0; i < schoolSharedByOther.length; i++) {
+      let  schoolInfo = await userActivity.findOneAndUpdate(
+        {
+          userId: schoolSharedByOther[i].friendId,
+          isDeleted:false
+        },
+        {
+          $push: {
+            schoolSharedByOther: {
+              friendId: userId,
+              schoolId: schoolSharedByOther[i].schoolId,
+              dateTime: currentTime,
+            },
+          },
+        },{new:true}
+      );
+      let userData:any = await userDetails.findOne({_id:userId});
+      let userToken:any = await userDevice.findOne({userId:schoolSharedByOther[i].friendId});
+      const body =`${userData.fullName} share school to you  please check and react`;
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,schoolSharedByOther[i].academyId);
+      return schoolInfo;
+    }
+      }
+
+
+
 
   public async getSchoolInfoById(schoolId: any) {
-    const schoolInfo: any = await school
-      .findOne({ _id: schoolId, isDeleted: false })
-      .lean();
+      const schoolInfo= await school.aggregate([
+        {
+          $match: {
+            _id:new mongoose.Types.ObjectId(schoolId), isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "faculty",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "faculty",
+          },
+        },
+        {
+          $lookup: {
+            localField: "_id",
+            from: "school_scholarships",
+            foreignField: "schoolId",
+            as: "scholarships",
+          },
+        },
+        {
+          $lookup: {
+            localField: "schoolOwnerId",
+            from: "school_owners",
+            foreignField: "_id",
+            as: "schoolOwner",
+          },
+        },
+        { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+      ]);
 
     return schoolInfo;
   }
 
-  public async deleteschool(schoolId: any) {
+
+
+  public async getSchoolByOwnerId(schoolOwnerId: any) {
+    const schoolInfo= await school.aggregate([
+      {
+        $match: {
+          schoolOwnerId:new mongoose.Types.ObjectId(schoolOwnerId),
+           isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "faculty",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "faculty",
+        },
+      },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "school_scholarships",
+          foreignField: "schoolId",
+          as: "scholarships",
+        },
+      },
+      {
+        $lookup: {
+          localField: "schoolOwnerId",
+          from: "school_owners",
+          foreignField: "_id",
+          as: "schoolOwner",
+        },
+      },
+      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+    ]);
+
+  return schoolInfo;
+}
+
+
+
+  public async deleteSchool(schoolId: any) {
     const schoolInfo: any = await school
       .findOneAndUpdate(
         { _id: schoolId, isDeleted: false },
@@ -66,42 +415,258 @@ export default class SchoolController {
     return schoolInfo;
   }
 
-  public async createSchool(body: any) {
+
+
+
+  public async schoolActivity(
+    userId: any,
+    schoolId: any,
+    status: any,
+    schoolComment: any,
+    schoolCommentId: any,
+    body: any
+  ) {
+    let userInfo: any;
+    let data: any = [];
+    let a: any = [];
+    let info: any;
+    let minuscount=-1;
     let schoolInfo: any;
-    schoolInfo = await School.create(body);
+const school_id=body.schoolId
+  
+    if (status == "schoolLike") {
+     
 
-    return schoolInfo;
+   
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $push: { schoolLike: userId },
+        $inc: { schoolLikeCount: 1 } }
+     )
+     
+      let userData= await userActivity.aggregate([
+        {
+          $match: {
+            userId:new mongoose.Types.ObjectId(body.userId), isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+      ]);
+    
+     const followersData = userData[0].userFollowers;
+     
+     if(followersData.length>0){
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} like school check and react  `;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",followersData[i],school_id);
+   }  
   }
+     }
+ 
 
-  public async editSchool(body: any, SchoolId: string) {
-    const schoolInfo: any = await School.findOneAndUpdate(
-      { _id: SchoolId, isDeleted: false },
-      body,
-      { new: true }
-    ).lean();
-    return schoolInfo;
-  }
+      return schoolInfo;
+    }
+    if (status == "removeSchoolLike") {
+     
 
-  public async getSchool() {
-    const schoolList: any[] = await School.find({ isDeleted: false });
-    return schoolList;
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $pull: { schoolLike: userId },
+        $inc: { schoolLikeCount: -1 } }
+     )
+      return schoolInfo;
+    }
+
+    if (status == "schoolComment") {
+
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $push: { schoolComment: { comment: body.comment,userId:userId,dateTime: currentTime } },
+        $inc: { schoolCommentCount: 1 } }
+     )
+
+     
+      let userData= await userActivity.aggregate([
+        {
+          $match: {
+            userId:new mongoose.Types.ObjectId(body.userId), isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "userId",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+      ]);
+    
+     const followersData = userData[0].userFollowers;
+     if(followersData.length>0){
+      for (let i = 0; i < followersData.length; i++) {
+        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
+   if(userFcmToken){
+   const body =`${userData[0].userdetails.fullName} comment on school check and react.`;
+    sendNotification(userFcmToken.fcmtoken,body,"abc","school_home",followersData[i],school_id);
+   }  
   }
-  public async searchSchool(stateId: any, search: any) {
-    if (search) {
-      let schoolList: any = await School.find({ isDeleted: false });
-      schoolList = new FuzzySearch(schoolList, ["SchoolName"], {
-        caseSensitive: false,
-      });
-      schoolList = schoolList.search(search);
-      return schoolList;
+     }
+ 
+  return schoolInfo;
+    }
+    if (status == "removeSchoolComment") {
+      schoolInfo = await school.updateOne(
+        { _id: body.schoolId }, 
+        { $pull: { schoolComment: { _id: body._id } },
+        $inc: { schoolCommentCount: -1 } }
+     )
+
+
+
+return schoolInfo
+
+
+    
+    }
+    if (status == "readschoolComment") {
+      userInfo = await userActivity.findOne({ userId: body.userId }).lean();
+      userInfo = userInfo.schoolComment;
+
+      for (let i = 0; i < userInfo.length; i++) {
+        let schoolInfo: any = await school.findOne({ _id: userInfo[i].schoolId });
+
+        let comment: any = userInfo[i].comment;
+        let DateTime: any = userInfo[i].dateTime;
+
+        data.push({ schoolInfo, comment, DateTime });
+      }
+      return data;
     }
   }
 
-  public async deleteSchool(SchoolId: any) {
-    const schoolInfo: any = await School.findOneAndUpdate(
-      { _id: SchoolId, isDeleted: false },
-      { $set: { isDeleted: true } }
-    ).lean();
-    return schoolInfo;
+  
+
+ 
+
+  public async readschoolActivity(schoolId: any, status: any, userId: any) {
+    console.log(schoolId, status);
+    let isDeleteable: any;
+    let schoolInfo: any;
+    if (status == "readSchoolLike") {
+    
+      let schoolInfo:any= await school.aggregate([
+        {
+          $match: {
+            _id:new mongoose.Types.ObjectId(schoolId),
+             isDeleted: false,
+          },
+        },
+        {
+          $lookup: {
+            localField: "schoolLike",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userdetails",
+          },
+        },
+      
+      ]);
+      schoolInfo= schoolInfo[0].userdetails;
+
+      let userData:any = await userActivity.findOne({userId:userId})
+      userData=userData.userFollowing;
+      schoolInfo.forEach((val:any)=>{
+        if(userData.toString().includes(val._id.toString())){
+          val.isFollow=true
+        }else{
+          val.isFollow=false
+        }
+      })
+      return schoolInfo;
+    }
+    if (status == "readSchoolComment") {
+      let a = [];
+      schoolInfo = await school.findOne({ _id: schoolId }).lean();
+      schoolInfo = schoolInfo.schoolComment;
+
+      for (let i = 0; i < schoolInfo.length; i++) {
+        let userInfo: any = await userDetails.findOne(
+          { _id: schoolInfo[i].userId },
+          { fullName: true, profile_picture: true }
+        );
+        let commentId = schoolInfo[i]._id;
+        let comment = schoolInfo[i].comment;
+        let DateTime: any = schoolInfo[i].dateTime;
+
+        if (userId == schoolInfo[i].userId) {
+          isDeleteable = true;
+        } else {
+          isDeleteable = false;
+        }
+        a.push({ userInfo, comment, DateTime,isDeleteable,commentId });
+      }
+      var y = [...a].reverse();
+      return y;
+    }
+    if (status == "readSchoolFavourite") {
+      schoolInfo = await school.findOne({ _id: schoolId }).populate("schoolFavourite");
+      schoolInfo = schoolInfo.schoolFavourite;
+      return schoolInfo;
+    }
   }
+
+
+
+  
+  public async filterSchool(query: any) {
+    const queryParam:any = {};
+    const searchParams = {
+      schoolType: query.schoolType?query.schoolType:"",
+      schoolAssociateWith: query.schoolAssociateWith?query.schoolAssociateWith:"",
+      state: query.state?query.state:"",
+      city:query.city?query.city:""
+    };
+
+if (searchParams.hasOwnProperty('schoolType')&&searchParams.schoolType !=="" ) {
+  queryParam.schoolType = searchParams.schoolType;
+}
+
+if (searchParams.hasOwnProperty('schoolAssociateWith')&&searchParams.schoolAssociateWith !=="" ) {
+  queryParam.schoolAssociateWith = searchParams.schoolAssociateWith;
+}
+
+if (searchParams.hasOwnProperty('state')&&searchParams.state !=="") {
+  queryParam.state = searchParams.state;
+}
+
+if (searchParams.hasOwnProperty('city')&&searchParams.city!=="") {
+  queryParam.city = searchParams.city;
+}
+    const academyData = await school.find(
+      queryParam
+     
+    );
+return academyData
+ 
+ 
+  }
+
+
+ 
+
+
+
 }

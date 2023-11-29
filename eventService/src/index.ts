@@ -63,8 +63,18 @@ import sponsorshipForm from "./routes/sponsorshipForm";
 import sports from "./routes/sportsCategory";
 import state from "./routes/state";
 import school from "./routes/school";
+import schoolOwner from "./routes/schoolOwner";
+import schoolInfrastructure from "./routes/schoolInfrastructure";
+import scholarship from "./routes/scholarship.routes";
+import scholarshipApplication from "./routes/scholarshipApplication.routes";
+import starPerformer from "./routes/starPermormer";
+import tournament from "./routes/tournament.route";
+import tournamentMATCH from "./routes/tournament.route";
+import stage from "./routes/stage";
+import notification from "./routes/notification";
 import user from "./routes/userDetails";
 import vendor from "./routes/vendorShop";
+import servicePurchase from "./routes/servicePurchase";
  import role from "./routes/role";
 
 app.use("/api/auth", auth);
@@ -75,7 +85,7 @@ app.use("/api/academy/owner", academyOwner);
 app.use("/api/academy/representative", academyRepresentative);
 app.use("/api/achivement", achivement);
 app.use("/api/bankdetail", bankdetail);
-
+app.use("/api/service", servicePurchase);
 // app.use("/api/category", category);
 app.use("/api/chat", chat);
 app.use("/api/connection", followers);
@@ -95,6 +105,16 @@ app.use("/api/sponsor/representative", sponsorsRepresentative);
 app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/sports", sports);
 app.use("/api/school", school);
+app.use("/api/school/owner", schoolOwner);
+app.use("/api/notification", notification);
+app.use("/api/tournament", tournament);
+app.use("/api/tournament/match", tournamentMATCH);
+app.use("/api/stage", stage);
+app.use("/api/location", state);
+app.use("/api/scholarship", scholarship);
+app.use("/api/school/infrastructure", schoolInfrastructure);
+app.use("/api/scholarship/application", scholarshipApplication);
+app.use("/api/starperformer", starPerformer);
 app.use("/api/location", state);
 app.use("/api/user", user);
 app.use("/api/vendorshop", vendor);
@@ -141,7 +161,8 @@ pingInterval: 25000,
 // !
 
 io.on("connection", (socket:any) => {
-  console.log('A user connected');
+console.log("heelo");
+
   socket.on("setup", (userData:any) => {
     
     let id=userData.token_data.userid;
@@ -150,10 +171,7 @@ io.on("connection", (socket:any) => {
 
 
     // socket.join(userData._id);
-    socket.join(id)
-
-;
-
+    socket.join(id);
 
 
     // console.log(userData,"userData")
@@ -206,6 +224,7 @@ io.on("connection", (socket:any) => {
   
 });
 setEnvironment();
+
 
 mongoose.connect(nconf.get('mongodb'),
   {

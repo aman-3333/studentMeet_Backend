@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import mongoose, { ObjectId } from "mongoose";
 //Edneed objects
 import Users from "../models/userDetails";
-
+import { sendNotification } from "../services/notification";
 import { IEdneedResponse, IError, IOtp } from "../models/Interfaces";
 import * as constants from "../utils/Constants";
 import nconf from "nconf";
@@ -24,7 +24,12 @@ import post from "../models/post";
 import userConfig from "../models/userConfig";
 import academyOwner from "../models/academyOwner";
 import sponsorPartner from "../models/sponsorPartner";
+import schoolOwner from "../models/schoolsOwner.model";
+const expiration = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);
+
+
 import { log } from "util";
+import userDetails from "../models/userDetails";
 const { createJwtToken } = require("../utils/JwtToken");
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
 // import SignupOtp from "../models/SignupOtp";
@@ -60,6 +65,7 @@ function makeid(length = 5) {
   return text;
 }
 export default class AuthController {
+
   public async sendotp(body: any) {
     let otp: any;
     let createUser: any;
@@ -67,7 +73,6 @@ export default class AuthController {
     function couponGenerator() {
       let text = "";
       let possible = "0123456789";
-
       for (let i = 0; i < 4; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
@@ -75,13 +80,9 @@ export default class AuthController {
     }
 
     otp = couponGenerator();
-    otpInfo = await Otp.findOneAndUpdate(
-      { contact: body.contact },
-      { $set: { otp: "1234" } },
-      { new: true }
-    );
+  
 
-    if (!otpInfo) {
+   
       createUser = await Users.create({
         contact: body.contact,
         country_code: body.country_code,
@@ -93,7 +94,6 @@ export default class AuthController {
 
       await userDevice.create({
         userId: createUser._id,
-
         fcmtoken: body.fcmtoken,
         ipAddress: body.ipAddress,
         modelName: body.modelName,
@@ -110,7 +110,7 @@ export default class AuthController {
         otp: 1234,
         otpId: otp,
       });
-    }
+    
 
     return {
       otpInfo,
@@ -119,14 +119,11 @@ export default class AuthController {
   }
 
   public async editProfile(body: any) {
-    console.log(body, "body");
-
     let userInfo: any = await Users.findOneAndUpdate(
       { _id: body.userId, isDeleted: false },
       body,
       { new: true }
     ).lean();
-    console.log(userInfo, "userInfo");
 
     await userActivity.findOneAndUpdate(
       { userId: body.userId },
@@ -135,13 +132,55 @@ export default class AuthController {
     return userInfo;
   }
 
-  public async viewProfile(userId: any) {
+  public async viewProfile(userId: any,loginUser:any) {
+   let currentUser:any = await userActivity.findOne({
+    userId: loginUser._id,
+    isDeleted: false,
+  }).lean();
     let userInfo: any = await Users.findOne({
       _id: userId,
       isDeleted: false,
     }).lean();
+
+    if(loginUser._id.toString()==userId.toString()){
+      console.log("hello")
+      userInfo.isEditable = true;
+    }
+    if (currentUser.userFollowers.toString().includes(userId)) {
+      userInfo.isFollow = true;
+    }
+    else{
+      userInfo.isFollow = false;
+      userInfo.isEditable =false;
+    }
     return userInfo;
   }
+
+
+  public async viewProfileMultiple(userId: any,) {
+ 
+     let userInfo: any = await Users.aggregate([{
+      $match:{
+        _id:  { $in: userId.map((val:any) => new mongoose.Types.ObjectId(val)) }
+       
+      }
+     },
+     {
+      $lookup: {
+        localField: "stages",
+        from: "stages",
+        foreignField: "_id",
+        as: "stage",
+      },
+    },
+    { $unwind: { path: "$stage", preserveNullAndEmptyArrays: true } },
+  ])
+    
+     return userInfo;
+   }
+
+
+
 
   public async sendotpByApi(body: any) {
     let phone = body.country_code.toString() + body.contact.toString();
@@ -174,21 +213,24 @@ export default class AuthController {
   public async verifyotpByApi(body: any) {
     let userData: any;
     let userInfo: any;
+    console.log(body,"userData");
     userData = await Users.findOne({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
     }).lean();
-
+   
     if (userData) {
+
       let otpInfo = await Otp.findOne({
         contact: body.contact,
         country_code: body.country_code,
         otp: body.otp,
       }).lean();
-      console.log(body);
-
+      console.log(otpInfo,"otpInfo");
       const token = createJwtToken({ userId: userData._id });
+      console.log(token,"token");
+      
       if (otpInfo) {
         await userDevice.findOneAndUpdate(
           {
@@ -206,6 +248,8 @@ export default class AuthController {
               osVersion: body.osVersion,
               networkCarrier: body.networkCarrier,
               dimension: body.dimension,
+              currentLat:body.currentLat,
+              currentLong:body.currentLong,
             },
           }
         );
@@ -239,63 +283,54 @@ export default class AuthController {
   }
 
 
+public async suggestionUser(user:any){
+let userInfo = await userDetails.findOne({_id:user._id,isDeleted:false}).lean()
+
+let allUser=await userDetails.find({})
 
 
+}
 
-  //     if(existingUser){
-  //       return res.status(400).json({message:"User Already exists"})
-  //     }
-
-  //    const hashedPassword=await bcrypt.hash(password,10)
-  //    const userData=await UserModel.create({
-  //       email:email,
-  //       password:hashedPassword,
-  //       username:username
-  //    })
-  //    const token=jwt.sign({email:userData.email,id:userData._id},"Stack", {
-  //       expiresIn: '24h'
-  //        },SECRET_KEY);
-  //        await UserModel.findOneAndUpdate({_id:userData._id},{$set:{token:token}})
-  //        res.status(200).json(successResponse("signup",{userData,token},res.statusCode))
-  //   } catch (error) {
-  //       res.status(500).json(errorResponse("error in signup", res.statusCode));
-  //   }
-  // };
 
   public async signUpEmail(body: any, SECRET_KEY: any) {
     const { email, password, confirmPassword, type } = body;
 
+
     if (type == "academy" && confirmPassword == password) {
+      
+      
       const existingUser: any = await academyOwner.findOne({ email: email });
       if (existingUser) {
         return { message: "User Already exists" };
       }
+ 
       const hashedPassword = await bcrypt.hash(password, 10);
-     
       
-      let userData:any = await academyOwner.create({
+      
+      let userData:any =await academyOwner.create({
         email: email,
         password: hashedPassword,
         userType:type
       });
-      console.log(userData,"userData");
+    
      
+     console.log(userData);
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: expiration
         },
         SECRET_KEY
       );
       console.log(token);
       
-      userData=     await academyOwner.findOneAndUpdate(
-        { _id: userData._id },
+   let userInfo=    await academyOwner.findOneAndUpdate(
+        { email: email },
         { $set: { token: token,otp:"1234" } },{new:true}
       );
 
-return userData
+return userInfo
       
     }
     if (type == "sponsor" && confirmPassword == password) {
@@ -306,24 +341,59 @@ return userData
       const hashedPassword = await bcrypt.hash(password, 10);
      
       
-      let userData:any = await sponsorPartner.create({
+      let userData:any = new sponsorPartner({
         email: email,
         password: hashedPassword,
         userType:type
       });
+     await userData.save()
       console.log(userData,"userData");
      
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
       console.log(token);
       
       userData=     await sponsorPartner.findOneAndUpdate(
+        { _id: userData._id },
+        { $set: { token: token,otp:"1234" } },{new:true}
+      );
+
+return userData
+      
+    }
+    if (type == "school" && confirmPassword == password) {
+      const existingUser: any = await schoolOwner.findOne({ email: email });
+      if (existingUser) {
+        return { message: "User Already exists" };
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+     
+      
+      let userData:any = new schoolOwner({
+        email: email,
+        password: hashedPassword,
+        userType:type
+      });
+     await userData.save()
+      console.log(userData,"userData");
+     
+      const token = jwt.sign(
+        { email: userData.email, id: userData._id },
+        "Stack",
+        {
+          expiresIn: expiration,
+        },
+        SECRET_KEY
+      );
+      console.log(token);
+      
+      userData=     await schoolOwner.findOneAndUpdate(
         { _id: userData._id },
         { $set: { token: token,otp:"1234" } },{new:true}
       );
@@ -355,7 +425,7 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
@@ -384,11 +454,40 @@ return userData
         { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
-          expiresIn: "24h",
+          expiresIn: expiration,
         },
         SECRET_KEY
       );
       existingUser = await sponsorPartner.findOneAndUpdate(
+        { _id: existingUser._id },
+        { $set: { token: token } }
+      );
+      return existingUser;
+    }
+    if (type == "school") {
+    
+      let existingUser: any = await schoolOwner.findOne({ email: email });
+      if (!existingUser) {
+        return { message: "User not exists" };
+      }
+    
+      const matchPassword = await bcrypt.compare(
+        password,
+        existingUser.password
+      );
+      if (!matchPassword) {
+        return { message: "Invalid Credentials" };
+      }
+
+      const token = jwt.sign(
+        { email: existingUser.email, id: existingUser._id },
+        "Stack",
+        {
+          expiresIn: expiration,
+        },
+        SECRET_KEY
+      );
+      existingUser = await schoolOwner.findOneAndUpdate(
         { _id: existingUser._id },
         { $set: { token: token } }
       );
@@ -452,6 +551,39 @@ return userData
         
   
           await sponsorPartner.findOneAndUpdate(
+            {
+              _id: userData._id,
+            },
+            { $set: { email_verify: true } },{new:true}
+          );
+          return { Status: "Sucess", Details: "OTP Match", userData };
+        }   else {
+          return { Status: "Error", Details: "OTP Mismatch", userInfo };
+        }
+  
+       
+      }
+    
+    }
+    if(type=="school"){
+      userData = await schoolOwner.findOne({
+        email:email,
+     
+        isDeleted: false,
+      }).lean();
+  
+      if (userData) {
+        let otpInfo = await schoolOwner.findOne({
+          email: email,
+          otp:otp,
+        }).lean();
+        console.log(body);
+  
+       
+        if (otpInfo) {
+        
+  
+          await schoolOwner.findOneAndUpdate(
             {
               _id: userData._id,
             },

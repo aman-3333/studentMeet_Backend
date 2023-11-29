@@ -4,8 +4,7 @@ import { ObjectId } from 'bson';
 const AcademyTypSchema = new Schema(
   {
     user_id: { type:Schema.Types.ObjectId, ref: "userdetails" },
-    academyTypeName: { type: String,index:true},
-    
+    academyTypeName: { type: String,index:true}, 
     isActive:{type:Boolean,default:true},
     isBlocked:{type:Boolean,default:false},
     isDeleted:{type:Boolean,default:false},

@@ -1,5 +1,5 @@
 {
-  "name": "eventService",
+  "name": "eventService_2222",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
@@ -25,7 +25,7 @@
     "@types/moment": "^2.13.0",
     "async": "^3.2.0",
     "aws-sdk": "^2.1430.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -49,6 +49,7 @@
     "nodemon": "^2.0.7",
     "path": "^0.12.7",
     "s3-streamlogger": "^1.7.0",
+    "sendotp": "^1.2.9",
     "socket.io": "^4.7.2",
     "swagger-ui-express": "^4.6.3",
     "tslint": "^6.1.3",

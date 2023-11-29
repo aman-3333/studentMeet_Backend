@@ -4,13 +4,13 @@ import UserActivity from "../models/userActivity"
 import FuzzySearch from "fuzzy-search";
 import userDetails from "../models/userDetails";
 import userActivity from "../models/userActivity";
-import { sendNotification } from "../services/notification";
+
 export default class HashtagController {
 
     public async createHashtag(body: any,fcmtoken:any) {
         let HashtagInfo: any;
         HashtagInfo = await Hashtag.create(body);
-        sendNotification(fcmtoken,"userhastag create","data")
+
         return HashtagInfo;
     }
     public async editHashtag(body: IHashtag, HashtagId: string) {
@@ -310,7 +310,6 @@ public async searchHashtag(search:any){
                 a.push({ userInfo, comment, DateTime })
             }
             var y = [...a].reverse();
-
             return y
     
     

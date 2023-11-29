@@ -36,8 +36,13 @@ const academyModel = new Schema(
     description: { type: String },
     isActive: { type: Boolean, default: true },
     isBlocked: { type: Boolean, default: false },
+    isValidForRegistrationOn: { type: Boolean, default: false },
+    isData: { type: Boolean, default: false },
+    isRegistrationOn: { type: Boolean, default: false },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     followersCount: { type: Number, default: 0 },
+    following: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
+    followingCount: { type: Number, default: 0 },
     academyLikeCount: { type: Number, default: 0 },
     shareCount: { type: Number, default: 0 },
     academyCommentCount: { type: Number, default: 0 },
@@ -61,7 +66,7 @@ const academyModel = new Schema(
         dateTime: { type: Date },
       },
     ],
-    sharePost: [
+    shareAchivemnt: [
       {
         academy: { type: Schema.Types.ObjectId, ref: "posts" },
         userId: { type: Schema.Types.ObjectId, ref: "userdetails" },
@@ -165,7 +170,7 @@ export interface IAcademy extends Document {
       dateTime: Date,
     },
   ],
-  sharePost: [
+  shareAchivemnt: [
     {
       academy: ObjectId,
       userId: ObjectId,

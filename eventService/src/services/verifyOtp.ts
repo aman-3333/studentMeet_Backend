@@ -12,10 +12,8 @@ export async function verifyOtp(otpInfo: any, otp: String) {
     };
 
     let resp = await axios(config).then(function (response: any) {
-        //console.log(JSON.stringify(response.data));;
         return response.data;
     }).catch(function (error: any) {
-        //console.log(error.response.data);
         return error.response.data;
     });
 

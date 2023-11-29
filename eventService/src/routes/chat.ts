@@ -34,14 +34,12 @@ router.get("/getFriendRequest", checkAuth, async (req, res) => {
     }
 });
 
-router.get("/getallfriend", checkAuth, async (req, res) => {
+router.get("/allfriend",  async (req, res) => {
     try {
-     
-       
         let user:any=req.query.user;
-       
+        let search:any=req.query.search;
         const controller = new ChatController();
-        const response = await controller.getFriend(user);
+        const response = await controller.getFriend(user,search);
         res.status(200).json(successResponse("getAllFriend",response,res.statusCode));
     } catch (error) {
         res.status(500).json(errorResponse("error in getAllFriend", res.statusCode));

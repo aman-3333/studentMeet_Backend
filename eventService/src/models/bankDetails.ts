@@ -4,13 +4,22 @@ import { ObjectId } from "bson";
 const BankDetailsSchema = new Schema(
   {
     user_id: { type: Schema.Types.ObjectId, ref: "userdetails" },
-    academyOwner: { type: Schema.Types.ObjectId, ref: "academy_owner" },
-    sponsorshipPartner: { type: Schema.Types.ObjectId, ref: "sponsor_partner" },
+    academyOwner: { type: Schema.Types.ObjectId, ref: "academy_owners" },
+    sponsorshipPartner: { type: Schema.Types.ObjectId, ref: "sponsor_partners" },
+    schoolOwner: { type: Schema.Types.ObjectId, ref: "school_owners" },
     account_number: { type: Number },
     ifsc_code: { type: String },
     Bank_name: { type: String },
     Bank_address: { type: String },
+    razorpay_product_id: { type: String },
+    razorpay_account_id: { type: String },
     account_holder_name: { type: String },
+    activation_status: { type: String },
+    requested_at: { type: Number },
+    product_name: { type: String },
+   
+
+
     isActive: { type: Boolean, default: true },
     isBlocked: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },

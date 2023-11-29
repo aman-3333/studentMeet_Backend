@@ -57,9 +57,9 @@ router.get("/infobyid", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const SportsId = req.params.id;
+        const SportsId = req.body._id;
         const controller = new SportsController();
         const response: ISports = await controller.deleteSports(SportsId);
         res.status(200).json(successResponse("deleteSports", response, res.statusCode));

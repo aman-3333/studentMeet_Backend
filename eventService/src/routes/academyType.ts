@@ -56,9 +56,9 @@ router.get("/ById", checkAuth, async (req, res) => {
 });
 
 
-router.get("/delete/:id", checkAuth, async (req, res) => {
+router.post("/delete", checkAuth, async (req, res) => {
     try {
-        const AcademyTypeId = req.params.id;
+        const AcademyTypeId = req.body._id;
         const controller = new AcademyTypeController();
         const response: IAcademyType = await controller.deleteAcademyType(AcademyTypeId);
         res.status(200).json(successResponse("delete AcademyType", response, res.statusCode));
