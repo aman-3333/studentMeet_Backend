@@ -55,9 +55,9 @@ router.post("/getFollowers",  async (req, res) => {
     try {
         const userId = req.body.userId; 
         const userType = req.body.userType; 
-        const loginUser = res.locals.user._id;
+    
         const controller = new followersController();
-        const response: any = await controller.getFollowers(userId,userType,loginUser);
+        const response: any = await controller.getFollowers(userId,userType);
         res.status(200).json(successResponse("getFollowers", response, res.statusCode));
     } catch (error) {
         res.status(500).json(errorResponse("error in getFollowers", res.statusCode));
