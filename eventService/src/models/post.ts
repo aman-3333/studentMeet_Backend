@@ -6,6 +6,7 @@ const schema = new Schema({
     sponsorId: { type: Schema.Types.ObjectId,ref: "sponsor" },
     schoolId: { type: Schema.Types.ObjectId,ref: "schools" },
     userType:{type:String},
+    postUserType:{type:String},
     userDp:{type:String},
     userShortDiscription:{type:String},
     userName:{type:String},
@@ -67,7 +68,7 @@ export interface IPost extends Document {
     video: [String],
 location: ObjectId,
     attechment: [String],
-  
+    postUserType:String,
     postLikeCount: Number,
     shareCount: Number,
     postCommentCount: Number,

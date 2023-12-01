@@ -16,14 +16,16 @@ export default class servicePurchaseController {
 
     public async createOrder(body: any) {
         const { amount,type, senderId,postId,achivementId,schoolId,academyId,ownerId, email,userId,status,note,account_id } = body;
+       const orderAmount =amount*100
+       
         var instance = new razorpay({ key_id: razorpayKey, key_secret: razorpaySecret })
   const orderDetail =  await   instance.orders.create({
-          amount: amount,
+          amount: orderAmount,
           currency: "INR",
           transfers: [
             {
               account: account_id,
-              amount: amount,
+              amount: orderAmount,
               currency: "INR",
               notes: {
                 branch: "Acme Corp Bangalore North",
@@ -41,7 +43,7 @@ export default class servicePurchaseController {
 if(type=="post"&& postId){
 
 const serviceCreate= new servicePurchase({
-    amount: amount,
+    amount: orderAmount,
     account_id: account_id,
     senderId: senderId,
     ownerId:ownerId,
@@ -60,7 +62,7 @@ await serviceCreate.save()
 if(type=="achivement"&& achivementId){
 
   const serviceCreate= new servicePurchase({
-      amount: amount,
+      amount: orderAmount,
       account_id: account_id,
       senderId: senderId,
       ownerId:ownerId,
@@ -80,7 +82,7 @@ if(type=="achivement"&& achivementId){
   if(type=="academy registration"&& academyId){
 
     const serviceCreate= new servicePurchase({
-        amount: amount,
+        amount: orderAmount,
         account_id: account_id,
         senderId: senderId,
         ownerId:ownerId,
@@ -101,7 +103,7 @@ if(type=="achivement"&& achivementId){
     if(type=="school registration"&& schoolId){
 
       const serviceCreate= new servicePurchase({
-          amount: amount,
+          amount: orderAmount,
           account_id: account_id,
           senderId: senderId,
           ownerId:ownerId,
