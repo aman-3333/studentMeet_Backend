@@ -48,42 +48,104 @@ export default class academyController {
     return academyInfo;
   }
 
-  public async getAcademyList(user: any) {
+
+  // public async getAcademyList(user: any) {
+  //   let academyLike = await academy.aggregate([
+  //     { $match: { isDeleted: false } },
+
+  //     {
+  //       $lookup: {
+  //         localField: "state",
+  //         from: "States",
+  //         foreignField: "_id",
+  //         as: "state",
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         localField: "_id",
+  //         from: "city",
+  //         foreignField: "city",
+  //         as: "city",
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         localField: "country",
+  //         from: "country",
+  //         foreignField: "_id",
+  //         as: "country",
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         localField: "instituteId",
+  //         from: "institutes",
+  //         foreignField: "_id",
+  //         as: "state",
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         localField: "schoolId",
+  //         from: "schools",
+  //         foreignField: "_id",
+  //         as: "school",
+  //       },
+  //     },
+  //   ]);
+
+
+
+  //   return academyLike;
+  // }
+
+
+  
+  public async getBYDomain(academySubType:any) {
     let academyLike = await academy.aggregate([
-      { $match: { isDeleted: false } },
+      { $match: { isDeleted: false,academySubType: new mongoose.Types.ObjectId(academySubType), } },
 
       {
         $lookup: {
-          localField: "_id",
-          from: "State",
-          foreignField: "state",
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
           as: "state",
         },
       },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
-          localField: "_id",
-          from: "city",
-          foreignField: "city",
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
           as: "city",
         },
       },
+
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "country",
-          from: "country",
+          from: "countries",
           foreignField: "_id",
           as: "country",
         },
       },
+
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    
+      
       {
         $lookup: {
           localField: "instituteId",
           from: "institutes",
           foreignField: "_id",
-          as: "state",
+          as: "institutes",
         },
       },
+      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "schoolId",
@@ -92,6 +154,68 @@ export default class academyController {
           as: "school",
         },
       },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+    ]);
+
+  
+
+    return academyLike;
+  }
+
+
+  public async getAcademyList(user: any) {
+    let academyLike = await academy.aggregate([
+      { $match: { isDeleted: false } },
+
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    
+      
+      {
+        $lookup: {
+          localField: "instituteId",
+          from: "institutes",
+          foreignField: "_id",
+          as: "institutes",
+        },
+      },
+      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
     ]);
 
     academyLike.forEach((val: any) => {

@@ -55,6 +55,22 @@ router.get("/list", checkAuth, async (req, res) => {
 });
 
 
+router.get("/by/domain", checkAuth, async (req, res) => {
+  try {
+    const controller = new AcademyController();
+    const academySubType = req.query.academySubType;
+
+    const response: IAcademy[] = await controller.getBYDomain(academySubType);
+    res
+      .status(200)
+      .json(successResponse("academy list", response, res.statusCode));
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in academy list", res.statusCode));
+  }
+});
+
 
 router.post("/delete", checkAuth, async (req, res) => {
   try {
