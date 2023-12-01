@@ -87,21 +87,19 @@ export default class SchoolController {
    
 
     
-  console.log(user);
+
   
 
     schoolListlike.forEach((val:any)=>{
+      val.isFollow = false;
+      val.isLikes = false;
       if( val.followers.toString().includes(user._id.toString())){ 
        val.isFollow=true
       }
       if( val.schoolLike.toString().includes(user._id.toString())){ 
         val.isLikes=true
        }
-      else{
-       val.isFollow=false;
-       val.isLikes=false;
-       
-      }
+    
      })
 
 

@@ -124,7 +124,8 @@ if(body.userId){
     ]);
 let userData:any = await userActivity.findOne({userId:user._id})
     PostLike.forEach((val: any) => {
-
+      val.isLikes = false;
+      val.isFollow = false;
       if (val.postUserType=="user") {
         val.ownerId = val.userId;
         val.ownerPic=val.user.profile_picture?val.user.profile_picture:"";
@@ -151,10 +152,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
   if (userData.allOverFollowing.length >0 && userData.allOverFollowing.toString().includes(val.ownerId)) {
     val.isFollow= true;
   }
-   else {
-    val.isLikes = false;
-    val.isFollow = false;
-  }
+
     });
 
     return PostLike;

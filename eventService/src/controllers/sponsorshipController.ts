@@ -73,16 +73,15 @@ export default class SponsorshipController {
       { $match: { isDeleted: false } },
     ]);
     sponsorshipLike.forEach((val:any)=>{
+      val.isFollow=false;
+      val.isLikes=false;
      if( val.followers.toString().includes(user._id.toString())){ 
       val.isFollow=true
      }
      if( val.sponsorshipLike.toString().includes(user._id.toString())){ 
       val.isLikes=true
      }
-     else{
-      val.isFollow=false
-      val.isLikes=false
-     }
+   
     })
     return sponsorshipLike;
   }

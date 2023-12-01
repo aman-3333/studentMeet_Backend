@@ -13,6 +13,7 @@ const userSchema = new Schema(
     userName:{type:String,unique:true,default:""},
     experienceMonth:{type:Number,default:0},
     experienceYear:{type:Number,default:0},
+    isBankDetailComplete:{ type: Boolean, default: false },
     experties:{ type: String ,default:""},
     experience:{ type: String ,default:""},
     playFor:[{ type: String ,default:""}],
