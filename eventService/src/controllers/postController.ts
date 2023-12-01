@@ -120,16 +120,7 @@ if(body.userId){
         },
       },
       { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "_id",
-          from: "states",
-          foreignField: "state",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-    
+  
     ]);
 let userData:any = await userActivity.findOne({userId:user._id})
     PostLike.forEach((val: any) => {
