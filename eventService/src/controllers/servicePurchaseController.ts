@@ -15,7 +15,7 @@ import {
 export default class servicePurchaseController {
 
     public async createOrder(body: any) {
-        const { amount,type, senderId,postId,achivementId,schoolId,academyId,ownerId, email,userId,status,note,account_id } = body;
+        const { amount,type, senderId,postId,achivementId,schoolId,academyId,ownerId,account_id } = body;
        const orderAmount =amount*100
        
         var instance = new razorpay({ key_id: razorpayKey, key_secret: razorpaySecret })
@@ -135,7 +135,12 @@ const Amount = amount*100
             const captureResponse = await  instance.payments.capture(payment_id,Amount );
             if(captureResponse.status == "captured"){
               await servicePurchase.updateOne({
-                
+                orderId:order_id
+              },
+              {
+                paymentId:captureResponse.id,
+                status:captureResponse.status
+
               })
             }
             return   captureResponse;

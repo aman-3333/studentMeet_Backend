@@ -30,6 +30,7 @@ const expiration = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);
 
 import { log } from "util";
 import userDetails from "../models/userDetails";
+import stages from "../models/stages";
 const { createJwtToken } = require("../utils/JwtToken");
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
 // import SignupOtp from "../models/SignupOtp";
@@ -133,25 +134,95 @@ export default class AuthController {
   }
 
   public async viewProfile(userId: any,loginUser:any) {
+
+
+
+
     let currentUser:any = await userActivity.findOne({
      userId: loginUser._id,
      isDeleted: false,
    }).lean();
-     let userInfo: any = await Users.findOne({
-       _id: userId,
-       isDeleted: false,
-     }).lean();
- let isEditable = false
-     console.log(loginUser._id,userId)
-     if(loginUser._id.toString()==userId.toString()){
-       console.log("hello")
-       userInfo.isEditable = true;
-     }
-     if (currentUser.userFollowers.toString().includes(userId)) {
-       userInfo.isFollow = true;
-     }
+  
  
+     let userInfo:any = await Users.aggregate([
+       { $match: { isDeleted: false,_id: new mongoose.Types.ObjectId(userId), } },
+
+       {
+         $lookup: {
+           localField: "academy_id",
+           from: "academies",
+           foreignField: "_id",
+           as: "academy",
+         },
+       },
+       { $unwind: { path: "$academy", preserveNullAndEmptyArrays: true } },
+       {
+         $lookup: {
+           localField: "stages",
+           from: "stages",
+           foreignField: "_id",
+           as: "stage",
+         },
+       },
+ 
+
+       {
+         $lookup: {
+           localField: "profection",
+           from: "academysubtypes",
+           foreignField: "_id",
+           as: "profectionObj",
+         },
+       },
+ 
+       { $unwind: { path: "$profectionObj", preserveNullAndEmptyArrays: true } },
+       {
+         $lookup: {
+           localField: "profectionDomain",
+           from: "academytypes",
+           foreignField: "_id",
+           as: "profectionDomainObj",
+         },
+       },
+ 
+       { $unwind: { path: "$profectionDomainObj", preserveNullAndEmptyArrays: true } },
+       
+       {
+         $lookup: {
+           localField: "institute",
+           from: "institutes",
+           foreignField: "_id",
+           as: "institutes",
+         },
+       },
+       { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
+       {
+         $lookup: {
+           localField: "school",
+           from: "schools",
+           foreignField: "_id",
+           as: "school",
+         },
+       },
+       { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+     ]);
+     userInfo=userInfo[0];
+
+   for (let i = 0; i < userInfo.stages.length; i++) {
+    const stageData = await stages.findOne({_id:userInfo.stages[i]})
+    userInfo.stages[i] =stageData
+  
+   }
+   userInfo.isEditable = false;
+   userInfo.isFollow = false;
+   if(loginUser._id==userId){
+    userInfo.isEditable = true;
+  }
+  if (currentUser.userFollowers.toString().includes(userId)) {
+    userInfo.isFollow = true;
+  }
     
+ 
      return userInfo;
    }
 

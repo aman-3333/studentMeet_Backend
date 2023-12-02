@@ -49,56 +49,7 @@ export default class academyController {
   }
 
 
-  // public async getAcademyList(user: any) {
-  //   let academyLike = await academy.aggregate([
-  //     { $match: { isDeleted: false } },
 
-  //     {
-  //       $lookup: {
-  //         localField: "state",
-  //         from: "States",
-  //         foreignField: "_id",
-  //         as: "state",
-  //       },
-  //     },
-  //     {
-  //       $lookup: {
-  //         localField: "_id",
-  //         from: "city",
-  //         foreignField: "city",
-  //         as: "city",
-  //       },
-  //     },
-  //     {
-  //       $lookup: {
-  //         localField: "country",
-  //         from: "country",
-  //         foreignField: "_id",
-  //         as: "country",
-  //       },
-  //     },
-  //     {
-  //       $lookup: {
-  //         localField: "instituteId",
-  //         from: "institutes",
-  //         foreignField: "_id",
-  //         as: "state",
-  //       },
-  //     },
-  //     {
-  //       $lookup: {
-  //         localField: "schoolId",
-  //         from: "schools",
-  //         foreignField: "_id",
-  //         as: "school",
-  //       },
-  //     },
-  //   ]);
-
-
-
-  //   return academyLike;
-  // }
 
 
   

@@ -10,7 +10,7 @@ let  sessionExpiration=  60 * 60 * 24 * 365;
 const userSchema = new Schema(
   {
     fullName: { type: String,index:1,default:"" },
-    userName:{type:String,unique:true,default:""},
+    userName:{type:String,unique:true,default:""}, 
     experienceMonth:{type:Number,default:0},
     experienceYear:{type:Number,default:0},
     isBankDetailComplete:{ type: Boolean, default: false },
