@@ -133,27 +133,27 @@ export default class AuthController {
   }
 
   public async viewProfile(userId: any,loginUser:any) {
-   let currentUser:any = await userActivity.findOne({
-    userId: loginUser._id,
-    isDeleted: false,
-  }).lean();
-    let userInfo: any = await Users.findOne({
-      _id: userId,
-      isDeleted: false,
-    }).lean();
-let isEditable = false
-    console.log(loginUser._id,userId)
-    if(loginUser._id.toString()==userId.toString()){
-      console.log("hello")
-      userInfo.isEditable = true;
-    }
-    if (currentUser.userFollowers.toString().includes(userId)) {
-      userInfo.isFollow = true;
-    }
-
-   
-    return userInfo;
-  }
+    let currentUser:any = await userActivity.findOne({
+     userId: loginUser._id,
+     isDeleted: false,
+   }).lean();
+     let userInfo: any = await Users.findOne({
+       _id: userId,
+       isDeleted: false,
+     }).lean();
+ let isEditable = false
+     console.log(loginUser._id,userId)
+     if(loginUser._id.toString()==userId.toString()){
+       console.log("hello")
+       userInfo.isEditable = true;
+     }
+     if (currentUser.userFollowers.toString().includes(userId)) {
+       userInfo.isFollow = true;
+     }
+ 
+    
+     return userInfo;
+   }
 
 
   public async viewProfileMultiple(userId: any,) {
