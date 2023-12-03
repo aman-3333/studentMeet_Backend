@@ -211,7 +211,7 @@ export default class AuthController {
    for (let i = 0; i < userInfo.stages.length; i++) {
     const stageData = await stages.findOne({_id:userInfo.stages[i]})
     userInfo.stages[i] =stageData
-  
+
    }
    userInfo.isEditable = false;
    userInfo.isFollow = false;

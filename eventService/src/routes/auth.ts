@@ -68,6 +68,7 @@ router.get("/getprofile",checkAuth, async (req, res) => {
       .status(200)
       .json(successResponse("getProfile", response, res.statusCode));
   } catch (error) {
+    console.log("error",error)
     res.status(500).json(errorResponse("error in getProfile", res.statusCode));
   }
 });

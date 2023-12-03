@@ -368,7 +368,7 @@ export default class AchivementController {
         },
         {
           $lookup: {
-            localField: "userId",
+            localField: "user_id",
             from: "userdetails",
             foreignField: "_id",
             as: "userDetail",
