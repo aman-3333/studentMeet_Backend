@@ -336,7 +336,7 @@ public async userAccountDetailForPost(body: any) {
       const achivementList = await achivement.aggregate([
         {
           $match: {
-            user_id: new mongoose.Types.ObjectId(body.userId),isDeleted: false,
+            _id: new mongoose.Types.ObjectId(body.achivementId),isDeleted: false,
           },
         },
         {
