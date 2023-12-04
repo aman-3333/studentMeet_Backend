@@ -40,7 +40,7 @@ export default class servicePurchaseController {
           ]
         })
 
-if(type=="post"&& postId){
+if(postId){
 
 const serviceCreate= new servicePurchase({
     amount: orderAmount,
@@ -59,7 +59,7 @@ await serviceCreate.save()
 
 }
 
-if(type=="achivement"&& achivementId){
+if(achivementId){
 
   const serviceCreate= new servicePurchase({
       amount: orderAmount,
@@ -152,10 +152,10 @@ const Amount = amount*100
 
 
     public async getPostGiftTranstion(body: any) {
-  const data=   await post.aggregate([
+  const data=   await servicePurchase.aggregate([
       {
 $match:{
-  _id:new mongoose.Types.ObjectId(body.postId)
+  postId:new mongoose.Types.ObjectId(body.postId)
 }
       },
       {
@@ -178,25 +178,17 @@ $match:{
       },
       { $unwind: { path: "$ownerData", preserveNullAndEmptyArrays: true } },
 
-
       {
         $lookup: {
-          localField: "_id",
-          from: "service_purchases",
-          foreignField: "postId",
-          as: "servicePurchaseData",
-        },
-      },
-      { $unwind: { path: "$servicePurchaseData", preserveNullAndEmptyArrays: true } },
-
-      {
-        $lookup: {
-          localField: "servicePurchaseData.senderId",
-          from: "userdetails",
+          localField: "postId",
+          from: "posts",
           foreignField: "_id",
-          as: "senderData",
+          as: "postData",
         },
       },
+      { $unwind: { path: "$postData", preserveNullAndEmptyArrays: true } },
+  
+
 
 
 

@@ -7,7 +7,7 @@ const schema = new Schema(
     senderId: { type: Schema.Types.ObjectId, ref: "userdetails" },
     orderId: { type: String },
     postId: { type: Schema.Types.ObjectId, ref: "posts" },
-    achivemntId: { type: Schema.Types.ObjectId, ref: "achivements" },
+    achivementId: { type: Schema.Types.ObjectId, ref: "achivements" },
     type: { type: String },
     paymentId: { type: String },
     status: { type: String },
