@@ -40,82 +40,7 @@ export default class servicePurchaseController {
           ]
         })
 
-if(postId){
 
-const serviceCreate= new servicePurchase({
-    amount: orderAmount,
-    account_id: account_id,
-    senderId: senderId,
-    ownerId:ownerId,
-    order_id: orderDetail.id,
-    postId: postId,
-    type: "post money",
-    status: orderDetail.status,
-
-})
-
-
-await serviceCreate.save()
-
-}
-
-if(achivementId){
-
-  const serviceCreate= new servicePurchase({
-      amount: orderAmount,
-      account_id: account_id,
-      senderId: senderId,
-      ownerId:ownerId,
-      order_id: orderDetail.id,
-      achivementId: achivementId,
-      type: "achivement money",
-      status: orderDetail.status,
-  
-  })
-  
-  
-  await serviceCreate.save()
-  
-  }
-
-
-  if(type=="academy registration"&& academyId){
-
-    const serviceCreate= new servicePurchase({
-        amount: orderAmount,
-        account_id: account_id,
-        senderId: senderId,
-        ownerId:ownerId,
-        order_id: orderDetail.id,
-        academyId: academyId,
-        type: "academy registration",
-        status: orderDetail.status,
-    
-    })
-    
-    
-    await serviceCreate.save()
-    
-    }
-
-
-
-    if(type=="school registration"&& schoolId){
-
-      const serviceCreate= new servicePurchase({
-          amount: orderAmount,
-          account_id: account_id,
-          senderId: senderId,
-          ownerId:ownerId,
-          order_id: orderDetail.id,
-          schoolId: schoolId,
-          type: "school registration",
-          status: orderDetail.status,
-      
-      })
-      await serviceCreate.save()
-      
-      }
 
 
 
@@ -128,20 +53,89 @@ if(achivementId){
 
     
     public async capturePament(body: any) {
-            const { order_id, payment_id, razorpay_signature, amount  } = body;
+            const { order_id, payment_id, razorpay_signature, amount,postId,account_id,senderId,ownerId,academyId,achivementId,schoolId  } = body;
             var instance = new razorpay({ key_id: razorpayKey, key_secret: razorpaySecret })
 
 const Amount = amount*100
             const captureResponse = await  instance.payments.capture(payment_id,Amount );
             if(captureResponse.status == "captured"){
-              await servicePurchase.updateOne({
-                orderId:order_id
-              },
-              {
-                paymentId:captureResponse.id,
-                status:captureResponse.status
 
-              })
+
+              if(postId){
+
+                const serviceCreate= new servicePurchase({
+                    amount: Amount,
+                    account_id: account_id,
+                    senderId: senderId,
+                    ownerId:ownerId,
+                    order_id: order_id,
+                    postId: postId,
+                    type: "post money",
+                    status:captureResponse.status,
+                
+                })
+                
+                
+                await serviceCreate.save()
+                
+                }
+                
+                if(achivementId){
+                
+                  const serviceCreate= new servicePurchase({
+                      amount: Amount,
+                      account_id: account_id,
+                      senderId: senderId,
+                      ownerId:ownerId,
+                      order_id: order_id,
+                      achivementId: achivementId,
+                      type: "achivement money",
+                      status:captureResponse.status,
+                  
+                  })
+                  
+                  
+                  await serviceCreate.save()
+                  
+                  }
+                
+                  if(academyId){
+                
+                    const serviceCreate= new servicePurchase({
+                        amount: Amount,
+                        account_id: account_id,
+                        senderId: senderId,
+                        ownerId:ownerId,
+                        order_id: order_id,
+                        academyId: academyId,
+                        type: "academy registration",
+                        status:captureResponse.status,
+                    
+                    })
+                    
+                    
+                    await serviceCreate.save()
+                    
+                    }
+                    if(schoolId){
+                
+                      const serviceCreate= new servicePurchase({
+                          amount: Amount,
+                          account_id: account_id,
+                          senderId: senderId,
+                          ownerId:ownerId,
+                          order_id: order_id,
+                          schoolId: schoolId,
+                          type: "school registration",
+                          status:captureResponse.status,
+                      
+                      })
+                      await serviceCreate.save()
+                      
+                      }
+
+
+           
             }
             return   captureResponse;
       
