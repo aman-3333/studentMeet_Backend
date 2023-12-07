@@ -88,6 +88,7 @@ const Amount = amount*100
                       senderId: senderId,
                       ownerId:ownerId,
                       order_id: order_id,
+                      payment_id:captureResponse.id,
                       achivementId: achivementId,
                       type: "achivement money",
                       status:captureResponse.status,

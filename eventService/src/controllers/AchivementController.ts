@@ -717,8 +717,9 @@ export default class AchivementController {
   
   public async shareAchivement( body:any ) {
     const {achivementSharedByOther,userId}=body
+    let  achivementInfo;
     for (let i = 0; i < achivementSharedByOther.length; i++) {
-      let  achivementInfo = await userActivity.findOneAndUpdate(
+        achivementInfo = await userActivity.findOneAndUpdate(
         {
           userId: achivementSharedByOther[i].friendId,
           isDeleted:false
@@ -733,12 +734,20 @@ export default class AchivementController {
           },
         },{new:true}
       );
+
       let userData:any = await userDetails.findOne({_id:userId});
+   
       let userToken:any = await userDevice.findOne({userId:achivementSharedByOther[i].friendId});
-      const body =`${userData.fullName} share achivement to you  please check and react`;
-      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,achivementSharedByOther[i].academyId);
-      return achivementInfo;
+      if(userToken){
+
+        const body =`${userData.fullName} share achivement to you  please check and react`;
+        sendNotification(userToken.fcmtoken,body,"abc","achivement_home",userToken.userId,achivementSharedByOther[i].academyId);
+      }
+  
+
     }
+  
+      return achivementInfo;
       }
   
 }

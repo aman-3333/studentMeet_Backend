@@ -284,6 +284,7 @@ router.post("/share", async (req, res) => {
       .status(200)
       .json(successResponse("share Achivement", response, res.statusCode));
   } catch (error) {
+    console.log("error",error)
     res
       .status(500)
       .json(errorResponse("error in share Achivement", res.statusCode));
