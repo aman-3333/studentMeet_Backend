@@ -112,6 +112,11 @@ export default class AchivementController {
 
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      {
         $match: {
           academyId: new mongoose.Types.ObjectId(academyId),
           isDeleted: false,
@@ -161,6 +166,41 @@ export default class AchivementController {
         },
       },
       { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
     ]);
   
     achivementList.forEach((val: any) => {
@@ -181,6 +221,11 @@ export default class AchivementController {
 
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      {
         $match: {
           academyId: new mongoose.Types.ObjectId(academyId),
           isDeleted: false,
@@ -230,6 +275,42 @@ export default class AchivementController {
         },
       },
       { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
     ]);
   
     
@@ -239,6 +320,12 @@ export default class AchivementController {
 
   public async getSchoolAchivement(schoolId: any, user: any) {
     const achivementList: IAchivement[] = await Achivement.aggregate([
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+
       {
         $match: {
           schoolId: new mongoose.Types.ObjectId(schoolId),
@@ -289,6 +376,43 @@ export default class AchivementController {
         },
       },
       { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
+
     ]);
 
     achivementList.forEach((val: any) => {
@@ -303,6 +427,12 @@ export default class AchivementController {
 
   public async getSchoolAchivementForAdmin(schoolId: any) {
     const achivementList: IAchivement[] = await Achivement.aggregate([
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+
       {
         $match: {
           schoolId: new mongoose.Types.ObjectId(schoolId),
@@ -352,6 +482,43 @@ export default class AchivementController {
         },
       },
       { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
+
     ]);
 
  
@@ -361,6 +528,11 @@ export default class AchivementController {
   public async getUserAchivement(userId: any, loginUser: any) {
     if(userId==loginUser._id){
       const achivementList = await Achivement.aggregate([
+        {
+          $sort: {
+            createdAt: -1
+          }
+        },
         {
           $match: {
             user_id: new mongoose.Types.ObjectId(userId),
@@ -412,7 +584,41 @@ export default class AchivementController {
         },
         { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
 
-
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedCreatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date:"$adjustedTime"
+              }
+            }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedUpdatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date: "$adjustedOneTime"
+              }
+            }
+          }
+        },
         {
           $addFields: {
             isEditable: "true"
@@ -431,6 +637,11 @@ export default class AchivementController {
       return achivementList;
     }else{
       const achivementList = await Achivement.aggregate([
+        {
+          $sort: {
+            createdAt: -1
+          }
+        },
         {
           $match: {
             user_id: new mongoose.Types.ObjectId(userId),
@@ -484,6 +695,41 @@ export default class AchivementController {
         {
           $addFields: {
             isEditable: "false"
+          }
+        },
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedCreatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date:"$adjustedTime"
+              }
+            }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedUpdatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date: "$adjustedOneTime"
+              }
+            }
           }
         },
       ]);

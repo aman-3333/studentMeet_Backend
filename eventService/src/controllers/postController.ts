@@ -45,6 +45,12 @@ if(body.userId){
 
   public async getPostList(user: any) {
     let PostLike = await Post.aggregate([
+
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
       { $match: { isDeleted: false  } },
       {
         $lookup: {
@@ -120,7 +126,41 @@ if(body.userId){
         },
       },
       { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-  
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
     ]);
 let userData:any = await userActivity.findOne({userId:user._id})
     PostLike.forEach((val: any) => {
@@ -224,6 +264,42 @@ let userData:any = await userActivity.findOne({userId:user._id})
             isEditable: "true"
           }
         },
+
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedCreatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date:"$adjustedTime"
+              }
+            }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedUpdatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date: "$adjustedOneTime"
+              }
+            }
+          }
+        }
       ]);
       PostInfo.forEach((val: any) => {
         if (val.postLike.toString().includes(currentUser._id)) {
@@ -289,6 +365,43 @@ let userData:any = await userActivity.findOne({userId:user._id})
             isEditable: "false"
           }
         },
+
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedCreatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date:"$adjustedTime"
+              }
+            }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedUpdatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y %H:%M", // Customize the format as needed
+                date: "$adjustedOneTime"
+              }
+            }
+          }
+        }
+
       ]);
       PostInfo.forEach((val: any) => {
         if (val.postLike.toString().includes(currentUser._id)) {
@@ -599,7 +712,41 @@ for (let i = 0; i < sharePostByOther.length; i++) {
         },
       },
       { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-     
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
    
      
     ]);
@@ -698,7 +845,41 @@ for (let i = 0; i < sharePostByOther.length; i++) {
         },
       },
       { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-     
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
     ]);
  
 
@@ -795,7 +976,41 @@ for (let i = 0; i < sharePostByOther.length; i++) {
         },
       },
       { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-     
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
     ]);
     return PostLike;
   }

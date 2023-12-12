@@ -6,6 +6,7 @@ const schema = new Schema(
     ownerId: { type: Schema.Types.ObjectId, ref: "userdetails" },
     senderId: { type: Schema.Types.ObjectId, ref: "userdetails" },
     orderId: { type: String },
+    dateTime:{type:String},
     postId: { type: Schema.Types.ObjectId, ref: "posts" },
     achivementId: { type: Schema.Types.ObjectId, ref: "achivements" },
     type: { type: String },

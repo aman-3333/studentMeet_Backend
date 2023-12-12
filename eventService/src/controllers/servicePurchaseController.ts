@@ -8,10 +8,17 @@ const  razorpaySecret="mg1EJI3f1zr07H6YeRkCF98O";
 const mongoose = require("mongoose");
 const SendOtp = require('sendotp');
 const sendOtp = new SendOtp('AuthKey');
+
 import {
   capturePayment,
   validatePayment
 } from "../services/razorpayServices";
+
+import {
+  currentDateTime
+} from "../services/dateUtils";
+
+
 export default class servicePurchaseController {
 
     public async createOrder(body: any) {
@@ -91,6 +98,7 @@ const Amount = amount*100
                       orderId: order_id,
                       paymentId:captureResponse.id,
                       achivementId: achivementId,
+
                       type: "achivement money",
                       status:captureResponse.status,
                   
@@ -111,6 +119,7 @@ const Amount = amount*100
                         orderId: order_id,
                         paymentId:captureResponse.id,
                         academyId: academyId,
+  
                         type: "academy registration",
                         status:captureResponse.status,
                     
@@ -130,6 +139,7 @@ const Amount = amount*100
                           orderId: order_id,
                           paymentId:captureResponse.id,
                           schoolId: schoolId,
+    
                           type: "school registration",
                           status:captureResponse.status,
                       
@@ -151,6 +161,12 @@ const Amount = amount*100
 
     public async getPostGiftTranstion(body: any) {
   const data=   await servicePurchase.aggregate([
+
+    {
+      $sort: {
+        createdAt: -1
+      }
+    },
       {
 $match:{
   postId:new mongoose.Types.ObjectId(body.postId)
@@ -185,8 +201,27 @@ $match:{
         },
       },
       { $unwind: { path: "$postData", preserveNullAndEmptyArrays: true } },
-  
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$createdAt"
+            }
+          }
+        }
+      },
 
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$updatedAt"
+            }
+          }
+        }
+      }
 
 
 
@@ -207,11 +242,19 @@ $match:{
 
 public async getAchivementGiftTranstion(body: any) {
   const data=   await servicePurchase.aggregate([
+
+    {
+      $sort: {
+        createdAt: -1
+      }
+    },
+
       {
 $match:{
   achivementId:new mongoose.Types.ObjectId(body.achivementId)
 }
       },
+   
       {
         $lookup: {
           localField: "senderId",
@@ -241,7 +284,41 @@ $match:{
         },
       },
       { $unwind: { path: "$achivementData", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
 
+      {
+        $addFields: {
+          // Adding 330 minutes to the createdAt field
+          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date:"$adjustedTime"
+            }
+          }
+        }
+      },
+
+      {
+        $addFields: {
+          formattedUpdatedAt: {
+            $dateToString: {
+              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              date: "$adjustedOneTime"
+            }
+          }
+        }
+      }
     ])
 
 

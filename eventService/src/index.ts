@@ -10,8 +10,9 @@ import setEnvironment from "./env";
 const session = require('express-session');
 import router from "./routes/fileUpload";
 const http = require('http');
+const socketIO = require("socket.io");
+const CryptoJS = require("crypto-js");
 const PORT = process.env.PORT || nconf.get('port');
-
 
 
 
@@ -148,20 +149,36 @@ app.use("/api/role", role);
 //  app.use("/eventService", Auth.authManagement,router);
 
 const server:any = http.createServer(app);
-const io = require("socket.io")(server,{
-  pingTimeout: 20000,
-pingInterval: 25000,
-  cors: {
-    origin: "*",
-    credentials: true,
-  },
+// const io = require("socket.io")(server,{
+//   pingTimeout: 20000,
+// pingInterval: 25000,
+//   cors: {
+//     origin: "*",
+//     credentials: true,
+//   },
+// });
+
+console.log(server,"server")
+const io = socketIO(server);
+console.log(io,"io")
+
+
+io.on("connection", (socket:any) => {
+  // ...
+
+  socket.on("chat message", (msg:any) => {
+    const encryptedMessage = CryptoJS.AES.encrypt(
+      msg,
+      "secret passphrase"
+    ).toString();
+    socket.broadcast.emit("chat message", encryptedMessage);
+  });
 });
 
 
 // !
 
 io.on("connection", (socket:any) => {
-console.log("heelo");
 
   socket.on("setup", (userData:any) => {
     
@@ -188,8 +205,8 @@ console.log("heelo");
     // console.log("User Joined Room: " + room);
 
   });
- /*  socket.on("typing", (room:any) => socket.in(room).emit("typing"));
-  socket.on("stop typing", (room:any) => socket.in(room).emit("stop typing")); */
+   socket.on("typing", (room:any) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room:any) => socket.in(room).emit("stop typing")); 
 
   socket.on("new message", (newMessageRecieved:any) => {
    
@@ -207,6 +224,14 @@ console.log("heelo");
     });
   });
 
+
+  socket.on("chat message", (msg:any) => {
+    const encryptedMessage = CryptoJS.AES.encrypt(
+      msg,
+      "secret passphrase"
+    ).toString();
+    socket.broadcast.emit("chat message", encryptedMessage);
+  });
  
  /*  socket.on('forceDisconnect', function(){
     console.log("disconnect")
