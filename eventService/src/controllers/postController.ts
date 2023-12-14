@@ -126,37 +126,38 @@ if(body.userId){
         },
       },
       { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
+     
 
       {
         $addFields: {
           formattedCreatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date:"$adjustedTime"
-            }
-          }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedUpdatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date: "$adjustedOneTime"
+            $let: {
+              vars: {
+                timeDifferenceMillis: {
+                  $subtract: [new Date(), "$createdAt"]
+                }
+              },
+              in: {
+                $cond: {
+                  if: {
+                    $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                  },
+                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  else: {
+                    $cond: {
+                      if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      else: {
+                        $cond: {
+                          if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -264,42 +265,41 @@ let userData:any = await userActivity.findOne({userId:user._id})
             isEditable: true
           }
         },
-
-        {
-          $addFields: {
-            // Adding 330 minutes to the createdAt field
-            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-          }
-        },
-  
-        {
-          $addFields: {
-            // Adding 330 minutes to the createdAt field
-            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-          }
-        },
-  
         {
           $addFields: {
             formattedCreatedAt: {
-              $dateToString: {
-                format: "%d/%m/%Y %H:%M", // Customize the format as needed
-                date:"$adjustedTime"
-              }
-            }
-          }
-        },
-  
-        {
-          $addFields: {
-            formattedUpdatedAt: {
-              $dateToString: {
-                format: "%d/%m/%Y %H:%M", // Customize the format as needed
-                date: "$adjustedOneTime"
+              $let: {
+                vars: {
+                  timeDifferenceMillis: {
+                    $subtract: [new Date(), "$createdAt"]
+                  }
+                },
+                in: {
+                  $cond: {
+                    if: {
+                      $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                    },
+                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                    else: {
+                      $cond: {
+                        if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                        then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                        else: {
+                          $cond: {
+                            if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                            then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                            else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
+       
       ]);
       PostInfo.forEach((val: any) => {
         if (val.postLike.toString().includes(currentUser._id)) {
@@ -368,35 +368,34 @@ let userData:any = await userActivity.findOne({userId:user._id})
 
         {
           $addFields: {
-            // Adding 330 minutes to the createdAt field
-            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-          }
-        },
-  
-        {
-          $addFields: {
-            // Adding 330 minutes to the createdAt field
-            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-          }
-        },
-  
-        {
-          $addFields: {
             formattedCreatedAt: {
-              $dateToString: {
-                format: "%d/%m/%Y %H:%M", // Customize the format as needed
-                date:"$adjustedTime"
-              }
-            }
-          }
-        },
-  
-        {
-          $addFields: {
-            formattedUpdatedAt: {
-              $dateToString: {
-                format: "%d/%m/%Y %H:%M", // Customize the format as needed
-                date: "$adjustedOneTime"
+              $let: {
+                vars: {
+                  timeDifferenceMillis: {
+                    $subtract: [new Date(), "$createdAt"]
+                  }
+                },
+                in: {
+                  $cond: {
+                    if: {
+                      $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                    },
+                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                    else: {
+                      $cond: {
+                        if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                        then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                        else: {
+                          $cond: {
+                            if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                            then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                            else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
