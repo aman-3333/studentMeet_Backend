@@ -621,7 +621,7 @@ export default class AchivementController {
         },
         {
           $addFields: {
-            isEditable: "true"
+            isEditable: true
           }
         },
       ]);
@@ -694,7 +694,7 @@ export default class AchivementController {
         { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
         {
           $addFields: {
-            isEditable: "false"
+            isEditable: false
           }
         },
         {

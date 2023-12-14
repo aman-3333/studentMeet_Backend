@@ -261,7 +261,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
         { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
         {
           $addFields: {
-            isEditable: "true"
+            isEditable: true
           }
         },
 
@@ -362,7 +362,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
         { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
         {
           $addFields: {
-            isEditable: "false"
+            isEditable: false
           }
         },
 

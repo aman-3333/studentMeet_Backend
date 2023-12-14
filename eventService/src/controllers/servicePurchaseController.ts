@@ -277,7 +277,7 @@ $match:{
 
       {
         $lookup: {
-          localField: "achivemntId",
+          localField: "achivementId",
           from: "achivements",
           foreignField: "_id",
           as: "achivementData",

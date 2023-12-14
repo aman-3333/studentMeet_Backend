@@ -82,41 +82,53 @@ export default class AuthController {
 
     otp = couponGenerator();
   
+const findUser = await Users.findOne({  contact: body.contact})
+if(!findUser){
+  createUser = await Users.create({
+    contact: body.contact,
+    country_code: body.country_code,
+  });
+  await userActivity.create({
+    userId: createUser._id,
+    name: createUser.fullName,
+  });
+
+  await userDevice.create({
+    userId: createUser._id,
+    fcmtoken: body.fcmtoken,
+    ipAddress: body.ipAddress,
+    modelName: body.modelName,
+    manufacturer: body.manufacturer,
+    maxMemorybigint: body.maxMemorybigint,
+    freeMemory: body.freeMemory,
+    osVersion: body.osVersion,
+    networkCarrier: body.networkCarrier,
+    dimension: body.dimension,
+  });
+  otpInfo = await Otp.create({
+    contact: body.contact,
+    country_code: body.country_code,
+    otp: 1234,
+    otpId: otp,
+  });
+
+  return {
+    otpInfo,
+    createUser,
+  };
+
+}
+else{
+  return {
+    otpInfo,
+    findUser,
+  };
+
+}
+   
+  
 
    
-      createUser = await Users.create({
-        contact: body.contact,
-        country_code: body.country_code,
-      });
-      await userActivity.create({
-        userId: createUser._id,
-        name: createUser.fullName,
-      });
-
-      await userDevice.create({
-        userId: createUser._id,
-        fcmtoken: body.fcmtoken,
-        ipAddress: body.ipAddress,
-        modelName: body.modelName,
-        manufacturer: body.manufacturer,
-        maxMemorybigint: body.maxMemorybigint,
-        freeMemory: body.freeMemory,
-        osVersion: body.osVersion,
-        networkCarrier: body.networkCarrier,
-        dimension: body.dimension,
-      });
-      otpInfo = await Otp.create({
-        contact: body.contact,
-        country_code: body.country_code,
-        otp: 1234,
-        otpId: otp,
-      });
-    
-
-    return {
-      otpInfo,
-      createUser,
-    };
   }
 
   public async editProfile(body: any) {
