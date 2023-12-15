@@ -71,6 +71,41 @@ export default class SponsorshipController {
   public async getsponsorshipList(user: any) {
     let sponsorshipLike:any = await SponsorshipModel.aggregate([
       { $match: { isDeleted: false } },
+
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $let: {
+              vars: {
+                timeDifferenceMillis: {
+                  $subtract: [new Date(), "$createdAt"]
+                }
+              },
+              in: {
+                $cond: {
+                  if: {
+                    $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                  },
+                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  else: {
+                    $cond: {
+                      if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      else: {
+                        $cond: {
+                          if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     ]);
     sponsorshipLike.forEach((val:any)=>{
       val.isFollow=false;
@@ -202,7 +237,7 @@ export default class SponsorshipController {
       let userData= await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.sponsorshipComment[0].userId),
+            userId:new mongoose.Types.ObjectId(body.userId),
              isDeleted: false,
           },
         },
@@ -630,6 +665,8 @@ if (searchParams.hasOwnProperty('stage')&&searchParams.stage!=="") {
   queryParam.stage = searchParams.stage;
 }
     const sponsorshipData = await SponsorshipModel.find(
+
+   
       queryParam
      
     );
