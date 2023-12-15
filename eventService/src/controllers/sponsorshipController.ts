@@ -335,7 +335,7 @@ export default class SponsorshipController {
           $push: {
             applyInfo: {
               userId: userId,
-              text: body.text,
+            
               dateTime: currentTime,
             },
           },
@@ -352,7 +352,6 @@ export default class SponsorshipController {
       return sponsorshipInfo;
     }
   }
-
 ////////////////////////////////////////////////////////////////////////////
   public async getAppliedUser(sponsorshipId: any) {
     var appliedUserInfo: any = await SponsorshipModel.findOne({

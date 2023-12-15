@@ -267,7 +267,7 @@ router.post("/applySponsorship", async (req, res) => {
         const response: any = await controller.applySponsorship(sponsorshipId,userId,status);
         res.status(200).json(successResponse("applySponsorship ", response, res.statusCode));
     } catch (error) {
-
+console.log(error,"error")
         res.status(500).json(errorResponse("error in applySponsorship", res.statusCode));
     }
 });
