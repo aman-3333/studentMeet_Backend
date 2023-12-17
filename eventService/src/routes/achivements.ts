@@ -78,9 +78,10 @@ router.get("/academy", checkAuth, async (req, res) => {
     const controller = new AchivementController();
     const academyId = req.query.academyId;
     const user = res.locals.user;
+    const index =req.query.index;
     const response: IAchivement[] = await controller.getAcademyAchivement(
       academyId,
-      user
+      user,index
     );
     res
       .status(200)
@@ -101,9 +102,9 @@ router.get("/academy/admin",  async (req, res) => {
   try {
     const controller = new AchivementController();
     const academyId = req.query.academyId;
-   
+    const index =req.query.index;
     const response: IAchivement[] = await controller.getAcademyAchivementForAdmin(
-      academyId
+      academyId,index
     );
     res
       .status(200)
@@ -124,9 +125,9 @@ router.get("/academy/admin",  async (req, res) => {
   try {
     const controller = new AchivementController();
     const academyId = req.query.academyId;
-   
+    const index =req.query.index;
     const response: IAchivement[] = await controller.getAcademyAchivementForAdmin(
-      academyId
+      academyId,index
     );
     res
       .status(200)
@@ -148,9 +149,10 @@ router.get("/school", checkAuth, async (req, res) => {
     const controller = new AchivementController();
     const schoolId = req.query.schoolId;
     const user = res.locals.user;
+    const index =req.query.index;
     const response: IAchivement[] = await controller.getSchoolAchivement(
       schoolId,
-      user
+      user,index
     );
     res
       .status(200)
@@ -169,9 +171,9 @@ router.get("/school/admin",  async (req, res) => {
   try {
     const controller = new AchivementController();
     const schoolId = req.query.schoolId;
-   
+    const index =req.query.index;
     const response: IAchivement[] = await controller.getSchoolAchivementForAdmin(
-      schoolId
+      schoolId,index
       
     );
     res
@@ -191,9 +193,11 @@ router.get("/byuserid", checkAuth, async (req, res) => {
     const controller = new AchivementController();
     const userId = req.query.userId;
     const loginUser = res.locals.user;
+    const index =req.query.index;
     const response: IAchivement[] = await controller.getUserAchivement(
       userId,
-      loginUser
+      loginUser,
+      index
     );
     res
       .status(200)

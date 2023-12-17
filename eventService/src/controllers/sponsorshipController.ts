@@ -71,7 +71,6 @@ export default class SponsorshipController {
   public async getsponsorshipList(user: any) {
     let sponsorshipLike:any = await SponsorshipModel.aggregate([
       { $match: { isDeleted: false } },
-
       {
         $addFields: {
           formattedCreatedAt: {
@@ -95,7 +94,19 @@ export default class SponsorshipController {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                           then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }

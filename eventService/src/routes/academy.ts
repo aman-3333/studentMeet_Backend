@@ -41,9 +41,10 @@ router.get("/list", checkAuth, async (req, res) => {
   try {
     const controller = new AcademyController();
     let user = res.locals.user;
+    const index =req.query.index;
     console.log(user);
 
-    const response: IAcademy[] = await controller.getAcademyList(user);
+    const response: IAcademy[] = await controller.getAcademyList(user,index);
     res
       .status(200)
       .json(successResponse("academy list", response, res.statusCode));

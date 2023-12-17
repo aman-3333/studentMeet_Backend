@@ -36,9 +36,9 @@ router.post("/edit",  async (req, res) => {
 router.get("/list", checkAuth, async (req, res) => {
   try {
     let user = res.locals.user;
-
+    const index =req.query.index;
     const controller = new PostController();
-    const response = await controller.getPostList(user);
+    const response = await controller.getPostList(user,index);
     res
       .status(200)
       .json(successResponse("Post list", response, res.statusCode));
@@ -52,8 +52,9 @@ router.get("/list", checkAuth, async (req, res) => {
 router.get("/list/school",  async (req, res) => {
   try {
     let schoolId = req.query.schoolId;
+    const index =req.query.index;
     const controller = new PostController();
-    const response = await controller.getPostListSchool(schoolId);
+    const response = await controller.getPostListSchool(schoolId,index);
     res
       .status(200)
       .json(successResponse("Post list", response, res.statusCode));
@@ -66,8 +67,9 @@ router.get("/list/school",  async (req, res) => {
 router.get("/list/academy",  async (req, res) => {
   try {
     let academyId = req.query.academyId;
+    const index =req.query.index;
     const controller = new PostController();
-    const response = await controller.getPostListAcademy(academyId);
+    const response = await controller.getPostListAcademy(academyId,index);
     res
       .status(200)
       .json(successResponse("Academy Post list", response, res.statusCode));
@@ -79,8 +81,9 @@ router.get("/list/academy",  async (req, res) => {
 router.get("/list/sponsor",  async (req, res) => {
   try {
     let sponsorId = req.query.sponsorId;
+    const index =req.query.index;
     const controller = new PostController();
-    const response = await controller.getPostListSponsor(sponsorId);
+    const response = await controller.getPostListSponsor(sponsorId,index);
     res
       .status(200)
       .json(successResponse("sponsor Post list", response, res.statusCode));
@@ -95,7 +98,8 @@ router.get("/getlist/byuser/id",checkAuth, async (req, res) => {
     const controller = new PostController();
     const userId = req.query.userId;
     const currentUser = res.locals.user;
-    const response = await controller.getPostListBYUserId(userId,currentUser);
+    const index =req.query.index;
+    const response = await controller.getPostListBYUserId(userId,currentUser,index);
     res
       .status(200)
       .json(successResponse("getPostListBYUserId", response, res.statusCode));

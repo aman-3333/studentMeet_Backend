@@ -31,11 +31,18 @@ export default class SchoolController {
 
 
 
-  public async getSchool(user:any,body:any) {
-    const increasedMaxDistance = 10; 
+  public async getSchool(user:any,body:any,index:any) {
+
+    const indexData = parseInt(index) -1;
     let schoolListlike= await school.aggregate([
 
-    
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      { $skip:  50 * indexData },
+      { $limit: 50},
 
       { $match: { isDeleted: false,  } },
       {

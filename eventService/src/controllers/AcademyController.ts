@@ -114,8 +114,17 @@ export default class academyController {
   }
 
 
-  public async getAcademyList(user: any) {
+  public async getAcademyList(user: any,index:any) {
+    const indexData = parseInt(index) -1;
     let academyLike = await academy.aggregate([
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      { $skip:  50 * indexData },
+      { $limit: 50},
+
       { $match: { isDeleted: false } },
 
       {

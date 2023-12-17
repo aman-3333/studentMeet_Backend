@@ -108,14 +108,16 @@ export default class AchivementController {
     return achivementList;
   }
 
-  public async getAcademyAchivement(academyId: any, user: any) {
-
+  public async getAcademyAchivement(academyId: any, user: any, index: any) {
+    const indexData = parseInt(index) -1;
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $sort: {
           createdAt: -1
         }
       },
+      { $skip:  50 * indexData },
+      { $limit: 50},
       {
         $match: {
           academyId: new mongoose.Types.ObjectId(academyId),
@@ -189,7 +191,19 @@ export default class AchivementController {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                           then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -216,14 +230,16 @@ export default class AchivementController {
     return achivementList;
   }
 
-  public async getAcademyAchivementForAdmin(academyId: any) {
-
+  public async getAcademyAchivementForAdmin(academyId: any,index: any) {
+    const indexData = parseInt(index) -1;
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $sort: {
           createdAt: -1
         }
       },
+      { $skip:  50 * indexData },
+      { $limit: 50},
       {
         $match: {
           academyId: new mongoose.Types.ObjectId(academyId),
@@ -298,7 +314,19 @@ export default class AchivementController {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                           then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -316,13 +344,16 @@ export default class AchivementController {
   }
 
 
-  public async getSchoolAchivement(schoolId: any, user: any) {
+  public async getSchoolAchivement(schoolId: any, user: any, index: any) {
+    const indexData = parseInt(index) -1;
     const achivementList: IAchivement[] = await Achivement.aggregate([
       {
         $sort: {
           createdAt: -1
         }
       },
+      { $skip:  50 * indexData },
+      { $limit: 50},
 
       {
         $match: {
@@ -400,7 +431,19 @@ export default class AchivementController {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                           then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -424,13 +467,18 @@ export default class AchivementController {
     return achivementList;
   }
 
-  public async getSchoolAchivementForAdmin(schoolId: any) {
+  public async getSchoolAchivementForAdmin(schoolId: any, index: any) {
+    const indexData = parseInt(index) -1;
     const achivementList: IAchivement[] = await Achivement.aggregate([
+   
+
       {
         $sort: {
           createdAt: -1
         }
       },
+      { $skip:  50 * indexData },
+      { $limit: 50},
 
       {
         $match: {
@@ -505,7 +553,19 @@ export default class AchivementController {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                           then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -525,7 +585,8 @@ export default class AchivementController {
     return achivementList;
   }
 
-  public async getUserAchivement(userId: any, loginUser: any) {
+  public async getUserAchivement(userId: any, loginUser: any,index:any) {
+    const indexData = parseInt(index) -1;
     if(userId==loginUser._id){
       const achivementList = await Achivement.aggregate([
         {
@@ -533,6 +594,8 @@ export default class AchivementController {
             createdAt: -1
           }
         },
+        { $skip:  50 * indexData },
+        { $limit: 50},
         {
           $match: {
             user_id: new mongoose.Types.ObjectId(userId),
@@ -614,7 +677,19 @@ export default class AchivementController {
                           $cond: {
                             if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                             then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                            else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                            else: {
+                              $cond: {
+                                if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                                then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                                else: {
+                                  $cond: {
+                                    if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                    else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                  }
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -643,6 +718,8 @@ export default class AchivementController {
             createdAt: -1
           }
         },
+        { $skip:  50 * indexData },
+        { $limit: 50},
         {
           $match: {
             user_id: new mongoose.Types.ObjectId(userId),
@@ -721,7 +798,19 @@ export default class AchivementController {
                           $cond: {
                             if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                             then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                            else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                            else: {
+                              $cond: {
+                                if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                                then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                                else: {
+                                  $cond: {
+                                    if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                    else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                  }
+                                }
+                              }
+                            }
                           }
                         }
                       }

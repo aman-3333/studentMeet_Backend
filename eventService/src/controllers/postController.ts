@@ -43,14 +43,17 @@ if(body.userId){
     return PostInfo;
   }
 
-  public async getPostList(user: any) {
+  public async getPostList(user: any,index:any) {
+const indexData = parseInt(index) -1;
     let PostLike = await Post.aggregate([
-
+   
       {
         $sort: {
           createdAt: -1
         }
       },
+      { $skip:  50 * indexData },
+      { $limit: 50},
       { $match: { isDeleted: false  } },
       {
         $lookup: {
@@ -151,7 +154,19 @@ if(body.userId){
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                           then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                          else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
@@ -163,6 +178,8 @@ if(body.userId){
         }
       }
     ]);
+
+  
 let userData:any = await userActivity.findOne({userId:user._id})
     PostLike.forEach((val: any) => {
       val.isLikes = false;
@@ -201,6 +218,400 @@ let userData:any = await userActivity.findOne({userId:user._id})
 
 
 
+
+
+  public async getPostListSchool(schoolId: any,index:any) {
+    const indexData = parseInt(index) -1;
+    let PostLike = await Post.aggregate([
+      { $match: { isDeleted: false, schoolId:new mongoose.Types.ObjectId(schoolId)  } },
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      { $skip:  50 * indexData },
+      { $limit: 50},
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $let: {
+              vars: {
+                timeDifferenceMillis: {
+                  $subtract: [new Date(), "$createdAt"]
+                }
+              },
+              in: {
+                $cond: {
+                  if: {
+                    $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                  },
+                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  else: {
+                    $cond: {
+                      if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      else: {
+                        $cond: {
+                          if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+     
+    ]);
+ 
+
+   
+
+    return PostLike;
+  }
+
+
+
+  public async getPostListAcademy(academyId: any,index:any) {
+    const indexData = parseInt(index) -1;
+    let PostLike = await Post.aggregate([
+      { $match: { isDeleted: false, academyId: academyId } },
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      { $skip:  50 * indexData },
+      { $limit: 50},
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "academyId",
+          from: "academies",
+          foreignField: "_id",
+          as: "academyObj",
+        },
+      },
+      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "sponsorId",
+          from: "sponsorshipdetails",
+          foreignField: "_id",
+          as: "sponsorshipObj",
+        },
+      },
+      {
+        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "instituteId",
+          from: "institutes",
+          foreignField: "_id",
+          as: "institutes",
+        },
+      },
+      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "states",
+          foreignField: "state",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $let: {
+              vars: {
+                timeDifferenceMillis: {
+                  $subtract: [new Date(), "$createdAt"]
+                }
+              },
+              in: {
+                $cond: {
+                  if: {
+                    $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                  },
+                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  else: {
+                    $cond: {
+                      if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      else: {
+                        $cond: {
+                          if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]);
+ 
+
+   
+
+    return PostLike;
+  }
+  
+
+  
+  public async getPostListSponsor(sponsorId: any,index:any) {
+    const indexData = parseInt(index) -1;
+    let PostLike = await Post.aggregate([
+      { $match: { isDeleted: false, sponsorId: sponsorId } },
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      { $skip:  50 * indexData },
+      { $limit: 50},
+      {
+        $lookup: {
+          localField: "userId",
+          from: "userdetails",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "academyId",
+          from: "academies",
+          foreignField: "_id",
+          as: "academyObj",
+        },
+      },
+      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "sponsorId",
+          from: "sponsorshipdetails",
+          foreignField: "_id",
+          as: "sponsorshipObj",
+        },
+      },
+      {
+        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
+      },
+      {
+        $lookup: {
+          localField: "state",
+          from: "states",
+          foreignField: "_id",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "city",
+          from: "cities",
+          foreignField: "_id",
+          as: "city",
+        },
+      },
+      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "country",
+          from: "countries",
+          foreignField: "_id",
+          as: "country",
+        },
+      },
+      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "instituteId",
+          from: "institutes",
+          foreignField: "_id",
+          as: "institutes",
+        },
+      },
+      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "schoolId",
+          from: "schools",
+          foreignField: "_id",
+          as: "school",
+        },
+      },
+      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "states",
+          foreignField: "state",
+          as: "state",
+        },
+      },
+      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          formattedCreatedAt: {
+            $let: {
+              vars: {
+                timeDifferenceMillis: {
+                  $subtract: [new Date(), "$createdAt"]
+                }
+              },
+              in: {
+                $cond: {
+                  if: {
+                    $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                  },
+                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  else: {
+                    $cond: {
+                      if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      else: {
+                        $cond: {
+                          if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          else: {
+                            $cond: {
+                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              else: {
+                                $cond: {
+                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]);
+    return PostLike;
+  }
+
+
+
+
   public async getPostInfoById(postId:any) {
       const PostList: IPost[] = await Post.findOne({_id:postId, isDeleted: false }).lean();
       return PostList;
@@ -208,7 +619,8 @@ let userData:any = await userActivity.findOne({userId:user._id})
 
 
 
-  public async getPostListBYUserId(userId: any,currentUser:any) {
+  public async getPostListBYUserId(userId: any,currentUser:any,index:any) {
+    const indexData = parseInt(index) -1;
     console.log(currentUser,"currentUser")
     if(userId==currentUser._id){
       let PostInfo: any = await Post.aggregate([
@@ -219,9 +631,11 @@ let userData:any = await userActivity.findOne({userId:user._id})
         },
         {
           $sort: {
-            createdAt: -1,
-          },
+            createdAt: -1
+          }
         },
+        { $skip:  50 * indexData },
+        { $limit: 50},
         {
           $lookup: {
             localField: "city",
@@ -288,7 +702,19 @@ let userData:any = await userActivity.findOne({userId:user._id})
                           $cond: {
                             if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                             then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                            else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                            else: {
+                              $cond: {
+                                if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                                then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                                else: {
+                                  $cond: {
+                                    if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                    else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                  }
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -319,9 +745,11 @@ let userData:any = await userActivity.findOne({userId:user._id})
         },
         {
           $sort: {
-            createdAt: -1,
-          },
+            createdAt: -1
+          }
         },
+        { $skip:  50 * indexData },
+        { $limit: 50},
         {
           $lookup: {
             localField: "city",
@@ -389,7 +817,19 @@ let userData:any = await userActivity.findOne({userId:user._id})
                           $cond: {
                             if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
                             then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
-                            else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] }
+                            else: {
+                              $cond: {
+                                if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                                then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                                else: {
+                                  $cond: {
+                                    if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                    else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                  }
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -680,339 +1120,6 @@ for (let i = 0; i < sharePostByOther.length; i++) {
   }
 
 
-  public async getPostListSchool(schoolId: any) {
-    let PostLike = await Post.aggregate([
-      { $match: { isDeleted: false, schoolId:new mongoose.Types.ObjectId(schoolId)  } },
-      
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedCreatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date:"$adjustedTime"
-            }
-          }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedUpdatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date: "$adjustedOneTime"
-            }
-          }
-        }
-      }
-   
-     
-    ]);
- 
-
-   
-
-    return PostLike;
-  }
-
-
-
-  public async getPostListAcademy(academyId: any) {
-    let PostLike = await Post.aggregate([
-      { $match: { isDeleted: false, academyId: academyId } },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "academyId",
-          from: "academies",
-          foreignField: "_id",
-          as: "academyObj",
-        },
-      },
-      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "sponsorId",
-          from: "sponsorshipdetails",
-          foreignField: "_id",
-          as: "sponsorshipObj",
-        },
-      },
-      {
-        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
-      },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "instituteId",
-          from: "institutes",
-          foreignField: "_id",
-          as: "institutes",
-        },
-      },
-      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "schoolId",
-          from: "schools",
-          foreignField: "_id",
-          as: "school",
-        },
-      },
-      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "_id",
-          from: "states",
-          foreignField: "state",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedCreatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date:"$adjustedTime"
-            }
-          }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedUpdatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date: "$adjustedOneTime"
-            }
-          }
-        }
-      }
-    ]);
- 
-
-   
-
-    return PostLike;
-  }
-  
-
-  
-  public async getPostListSponsor(sponsorId: any) {
-    let PostLike = await Post.aggregate([
-      { $match: { isDeleted: false, sponsorId: sponsorId } },
-      {
-        $lookup: {
-          localField: "userId",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "academyId",
-          from: "academies",
-          foreignField: "_id",
-          as: "academyObj",
-        },
-      },
-      { $unwind: { path: "$academyObj", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "sponsorId",
-          from: "sponsorshipdetails",
-          foreignField: "_id",
-          as: "sponsorshipObj",
-        },
-      },
-      {
-        $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
-      },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "instituteId",
-          from: "institutes",
-          foreignField: "_id",
-          as: "institutes",
-        },
-      },
-      { $unwind: { path: "$institutes", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "schoolId",
-          from: "schools",
-          foreignField: "_id",
-          as: "school",
-        },
-      },
-      { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "_id",
-          from: "states",
-          foreignField: "state",
-          as: "state",
-        },
-      },
-      { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          // Adding 330 minutes to the createdAt field
-          adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedCreatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date:"$adjustedTime"
-            }
-          }
-        }
-      },
-
-      {
-        $addFields: {
-          formattedUpdatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date: "$adjustedOneTime"
-            }
-          }
-        }
-      }
-    ]);
-    return PostLike;
-  }
 
 
 }
