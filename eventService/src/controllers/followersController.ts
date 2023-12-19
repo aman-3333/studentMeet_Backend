@@ -50,7 +50,7 @@ let  userData = await userDetails.findOne({_id:userId,isDeleted:false})
                   $inc: { followersCount: 1 } 
                 })
 const body = `${userData.fullName} is starting following you`
-                sendNotification(userInfo[0].userDevicesObj.fcmtoken,body,"abc","school_home","followersData[i]","65280dd8b19d1481f3324956");
+                sendNotification(userInfo[0].userDevicesObj.fcmtoken,body,"abc","school_home","followersData[i]","65280dd8b19d1481f3324956",userData._id);
     }
 if(userInfo[0].isProfilePublic == false){
 

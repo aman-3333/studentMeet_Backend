@@ -106,9 +106,10 @@ router.get("/list", checkAuth, async (req, res) => {
     try {
         const controller = new SponsorshipController();
        const user=res.locals.user
+      const index =req.query.index;
        console.log(user,"user");
        
-        const response: ISponsorship[] = await controller.getsponsorshipList(user);
+        const response: ISponsorship[] = await controller.getsponsorshipList(user,index);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {
        
@@ -331,7 +332,17 @@ router.get("/readActivity", async (req, res) => {
 })
 
 
-
+router.get("/apply/by/user", async (req, res) => {
+    try{
+        const userId=req.query.userId;
+        const controller=new SponsorshipController();
+        const response:any =await controller.applyByUser(userId);
+        res.status(200).json(successResponse("apply by user",response,res.statusCode));
+    }catch(error) {
+      
+        res.status(500).json(errorResponse("error in apply by user", res.statusCode));
+    }
+})
 
 
 

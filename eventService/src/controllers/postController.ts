@@ -920,7 +920,8 @@ let userData:any = await userActivity.findOne({userId:user._id})
 
       
       const body =`${userName} like Your Post check and react `;
-      sendNotification(achivementUser.fcmtoken,body,"abc","post_screen",PostInfo.user_id, postId);
+      sendNotification(achivementUser.fcmtoken,body,"abc","post_screen",PostInfo.user_id, postId,
+      userInfo[0].userData._id);
     }
     userInfo = userInfo[0].userFollowers;
 
@@ -931,7 +932,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
        
    if(userFcmToken){
    const body = `${userName} like Post check and react. `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId,userInfo[0].userData._id);
    }  
     }
  
@@ -988,7 +989,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
      
       const achivementUser= await  userDevice.findOne({ userId : PostInfo.userId });
       const body =`${userName} Comment Your Post check and react `;
-      sendNotification(achivementUser.fcmtoken,body,"abc","post_screen",PostInfo.userId, postId);
+      sendNotification(achivementUser.fcmtoken,body,"abc","post_screen",PostInfo.userId, postId,userInfo[0].userData._id);
     }
     userInfo = userInfo[0].userFollowers;
 
@@ -999,7 +1000,7 @@ let userData:any = await userActivity.findOne({userId:user._id})
        
    if(userFcmToken){
    const body = `${userName} Comment Post check and react. `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i], postId,userInfo[0].userData._id);
    }  
     } 
     return PostInfo
@@ -1045,7 +1046,7 @@ for (let i = 0; i < sharePostByOther.length; i++) {
   let userData:any = await userDetails.findOne({_id:userId});
   let userToken:any = await userDevice.findOne({userId:sharePostByOther[i].friendId});
   const body =`${userData.fullName} share  post to  you please check and react`;
-  sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sharePostByOther[i].postId);
+  sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sharePostByOther[i].postId,userData._id);
 
  
   return PostInfo;

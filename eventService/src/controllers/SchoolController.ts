@@ -269,7 +269,7 @@ export default class SchoolController {
       let userData:any = await userDetails.findOne({_id:userId});
       let userToken:any = await userDevice.findOne({userId:schoolSharedByOther[i].friendId});
       const body =`${userData.fullName} share school to you  please check and react`;
-      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,schoolSharedByOther[i].academyId);
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,schoolSharedByOther[i].academyId,userData._id);
       return schoolInfo;
     }
       }
@@ -474,7 +474,7 @@ const school_id=body.schoolId
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} like school check and react  `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",followersData[i],school_id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",followersData[i],school_id,userData[0].userdetails._id);
    }  
   }
      }
@@ -525,7 +525,7 @@ const school_id=body.schoolId
         let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} comment on school check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","school_home",followersData[i],school_id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","school_home",followersData[i],school_id,userData[0].userdetails._id);
    }  
   }
      }

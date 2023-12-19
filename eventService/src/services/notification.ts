@@ -8,13 +8,14 @@ var fcm = new FCM(serverKey);
 const admin = require("firebase-admin");
 
 
-export async function sendNotification(fcmToken: any, title: any, body: any,screen:any,user_id:any,screen_id:any) {
+export async function sendNotification(fcmToken: any, title: any, body: any,screen:any,user_id:any,screen_id:any, activityUser:any) {
   const userInfo = await userDevice.findOne({fcmtoken:fcmToken})
 const notificationData:any =  await notificationModel.create({
 userId:userInfo.userId,
 content: title,
 screen: screen,
 screen_id: screen_id,
+activityUser:activityUser
 })
 
   var message = {

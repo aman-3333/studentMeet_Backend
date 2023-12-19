@@ -3,6 +3,7 @@ import { Document, model, ObjectId, Schema } from "mongoose";
 const schema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "userDetail" },
+    activityUser: { type: Schema.Types.ObjectId, ref: "userDetail" },
     notificationType: { type: String },
     content: { type: String },
     read: { type: Boolean, default: false },

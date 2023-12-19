@@ -38,7 +38,7 @@ export default class AchivementController {
         let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
    if(userFcmToken){
    const body=`${userName} Create a new acchivement please check and react`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivementInfo._id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivementInfo._id,userInfo[0].userData._id);
    }  
       }
     }
@@ -58,7 +58,7 @@ export default class AchivementController {
         let userFcmToken = await userDevice.findOne({ userId : academyInfo[i] });
    if(userFcmToken){
    const body=`${academyName} Create a new acchivement please check and react`
-    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_achivement",academyInfo[i],achivementInfo._id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","academy_achivement",academyInfo[i],achivementInfo._id,academyInfo[0]._id);
    }  
       }
     }
@@ -77,7 +77,7 @@ export default class AchivementController {
         let userFcmToken = await userDevice.findOne({ userId : schoolInfo[i] });
    if(userFcmToken){
    const body=`${schoolName} Create a new acchivement please check and react`
-    sendNotification(userFcmToken.fcmtoken,body,"abc","school_achivement",schoolInfo[i],achivementInfo._id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","school_achivement",schoolInfo[i],achivementInfo._id,schoolInfo[0]._id);
    }
   }
   }
@@ -903,7 +903,7 @@ export default class AchivementController {
 
         
         const body =`${userName} like Your Achivemnt check and react `;
-        sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id);
+        sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id,userInfo[0].userData._id);
       }
       userInfo = userInfo[0].userFollowers;
   
@@ -914,7 +914,7 @@ export default class AchivementController {
          
      if(userFcmToken){
      const body = `${userName} like Achivemnt check and react. `;
-      sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
+      sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id, userInfo[0].userData._id);
      }  
       }
    
@@ -973,7 +973,7 @@ export default class AchivementController {
         if(achivementInfo.user_id) {
           const achivementUser= await userDevice.findOne({ userId : achivementInfo.user_id });
           const body =`${userName} Comment On  Your Achivemnt check and react.`;
-          sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id);
+          sendNotification(achivementUser.fcmtoken,body,"abc","user_achivement",achivementInfo.user_id,achivement_id,userInfo[0].userData._id);
         }
         userInfo = userInfo[0].userFollowers;
 
@@ -982,7 +982,7 @@ export default class AchivementController {
             let userFcmToken = await userDevice.findOne({ userId : userInfo[i] });
       if(userFcmToken){
         const body =`${userName} Comment on  Achivemnt check and react.`;
-        sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id);
+        sendNotification(userFcmToken.fcmtoken,body,"abc","user_achivement",userInfo[i],achivement_id,userInfo[0].userData._id);
       }
 
         
@@ -1076,7 +1076,7 @@ export default class AchivementController {
       if(userToken){
 
         const body =`${userData.fullName} share achivement to you  please check and react`;
-        sendNotification(userToken.fcmtoken,body,"abc","achivement_home",userToken.userId,achivementSharedByOther[i].academyId);
+        sendNotification(userToken.fcmtoken,body,"abc","achivement_home",userToken.userId,achivementSharedByOther[i].academyId,userData._id);
       }
   
 

@@ -14,8 +14,35 @@ export default class NotificationController {
         return notificationInfo;
     }
 
-    public async getNotificationList(userId:any) {
-        const notificationList : any = await Notification.find({userId : userId,  isDeleted : false }).sort({createdAt:-1});
+    public async getNotificationList(userId:any,index:any) {
+        const indexData = parseInt(index) -1;
+
+        const notificationList : any = await Notification.aggregate([
+            {
+                $sort: {
+                  createdAt: -1
+                }
+              },
+            { $skip:  50 * indexData },
+            { $limit: 50},
+      
+            {
+            $match:{
+                userId : userId,  isDeleted : false
+            }
+        },
+     
+      
+          {
+            $lookup: {
+              localField: "activityUser",
+              from: "userdetails",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+    ])
         return notificationList;
     }
 

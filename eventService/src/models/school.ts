@@ -39,8 +39,9 @@ picture:[{ type: String }],
 facility: { type: String },
     }],
 
+
     coordinates: {
-      type: { type: String, default: 'Point' },
+      type: { type: String,  enum: ['Point'],default: 'Point' },
       coordinates: { type: [Number], index: '2dsphere' }
     },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],

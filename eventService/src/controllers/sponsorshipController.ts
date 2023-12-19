@@ -68,8 +68,16 @@ export default class SponsorshipController {
 
   /////////////////////////////////USER SCREEN SPONSORSHIP API/////////////////////////
 
-  public async getsponsorshipList(user: any) {
+  public async getsponsorshipList(user: any,index:any) {
+    const indexData = parseInt(index) -1;
     let sponsorshipLike:any = await SponsorshipModel.aggregate([
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+      { $skip:  50 * indexData },
+      { $limit: 50},
       { $match: { isDeleted: false } },
       {
         $addFields: {
@@ -219,7 +227,7 @@ export default class SponsorshipController {
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} like 😄 sponsorship check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id,userData[0].userdetails._id);
    }  
   }
       return sponsorshipInfo;
@@ -273,7 +281,7 @@ export default class SponsorshipController {
         console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
    if(userFcmToken){
    const body =`${userData[0].userdetails.fullName} comment on sponsorship check and react  `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id);
+    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id,userData[0].userdetails._id);
    }  
   }
 
@@ -438,7 +446,7 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
       let userData:any = await userDetails.findOne({_id:userId});
       let userToken:any = await userDevice.findOne({userId:sponsorshipSharedByOther[i].friendId});
       const body =`${userData.fullName} share  sponsorship to you please check and react`;
-      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sponsorshipSharedByOther[i].postId);
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sponsorshipSharedByOther[i].sponsorshipId,userData._id);
       return sponsorshipInfo;
     }
       }
@@ -674,17 +682,57 @@ if (searchParams.hasOwnProperty('academyTypeId')&&searchParams.academyTypeId !==
 if (searchParams.hasOwnProperty('stage')&&searchParams.stage!=="") {
   queryParam.stage = searchParams.stage;
 }
-    const sponsorshipData = await SponsorshipModel.find(
+
+if(query.stage){
+  const sponsorshipData = await SponsorshipModel.aggregate([
+    {
+      $match: {
+        stageId: { $in: [query.stage] }, 
+        academySubTypeId: new mongoose.Types.ObjectId(query.academySubTypeId),
+          academyTypeId: new mongoose.Types.ObjectId(query.academyTypeId)
+         } 
+      
+    
+  }
+  ]
+   
+  );
+  return sponsorshipData
+}
+
+
+if(!query.stage){
+  
+  const sponsorshipData = await SponsorshipModel.find(
+    queryParam
+  );
+
+  return sponsorshipData
+}
+ 
 
    
-      queryParam
-     
-    );
-return sponsorshipData
+
  
  
   }
 
+  public async applyByUser(userId: any) {
+   const sponsrData = await SponsorshipModel.find(
+    {
+      applyInfo: {
+         $elemMatch: {
+          userId: userId
+         }
+      }
+   }).sort({createdAt :-1})
+return sponsrData
+ 
 
+   
+
+ 
+ 
+  }
 
 }

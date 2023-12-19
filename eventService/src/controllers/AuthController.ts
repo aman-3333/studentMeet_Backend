@@ -332,6 +332,7 @@ else{
               dimension: body.dimension,
               currentLat:body.currentLat,
               currentLong:body.currentLong,
+              appVersion:body.appVersion,
             },
           }
         );

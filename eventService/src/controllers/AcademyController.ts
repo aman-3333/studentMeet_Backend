@@ -326,7 +326,8 @@ export default class academyController {
             "abc",
             "academy_home",
             followersData[i],
-            academy_id
+            academy_id,
+            userData[0]._id
           );
         }
       }
@@ -364,6 +365,14 @@ export default class academyController {
 
     if (status == "academyComment") {
       for (let i = 0; i < body.academyComment.length; i++) {
+        await academy.updateOne(
+          {
+            _id: body.academyId,
+          },
+          {
+            $inc: { academyCommentCount: count },
+          }
+        );
         academyInfo = await academy.findOneAndUpdate(
           {
             _id: body.academyId,
@@ -376,16 +385,9 @@ export default class academyController {
                 dateTime: currentTime,
               },
             },
-          }
+          },{new:true}
         );
-        await academy.updateOne(
-          {
-            _id: body.academyId,
-          },
-          {
-            $inc: { academyCommentCount: count },
-          }
-        );
+      
       }
       let userData = await userActivity.aggregate([
         {
@@ -419,7 +421,8 @@ export default class academyController {
             "abc",
             "academy_home",
             followersData[i],
-            academy_id
+            academy_id,
+            userData[0]._id
           );
         }
       }
@@ -712,7 +715,6 @@ if (searchParams.hasOwnProperty('city')&&searchParams.city!=="") {
 }
     const academyData = await academy.find(
       queryParam
-     
     );
 return academyData
  
@@ -741,7 +743,7 @@ return academyData
       let userData:any = await userDetails.findOne({_id:userId});
       let userToken:any = await userDevice.findOne({userId:academySharedByOther[i].friendId});
       const body =`${userData.fullName} share academy to you  please check and react`;
-      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,academySharedByOther[i].academyId);
+      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,academySharedByOther[i].academyId,userData._id);
       return academyInfo;
     }
   }
