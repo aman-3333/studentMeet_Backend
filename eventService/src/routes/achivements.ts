@@ -160,6 +160,7 @@ router.get("/school", checkAuth, async (req, res) => {
         successResponse("getSchoolAchivement list", response, res.statusCode)
       );
   } catch (error) {
+    console.log(error,"error")
     res
       .status(500)
       .json(errorResponse("error in getSchoolAchivement list", res.statusCode));

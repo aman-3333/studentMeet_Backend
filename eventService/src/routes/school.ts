@@ -16,6 +16,7 @@ router.post("/create", async (req, res) => {
       .status(200)
       .json(successResponse("create School", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res
       .status(500)
       .json(errorResponse("error in create School", res.statusCode));

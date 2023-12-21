@@ -31,6 +31,7 @@ const expiration = Math.floor(Date.now() / 1000) + (10 * 365 * 24 * 60 * 60);
 import { log } from "util";
 import userDetails from "../models/userDetails";
 import stages from "../models/stages";
+import bankDetails from "../models/bankDetails";
 const { createJwtToken } = require("../utils/JwtToken");
 const SECRET_KEY = "ffswvdxjhnxdlluuq";
 // import SignupOtp from "../models/SignupOtp";
@@ -296,11 +297,22 @@ else{
     let userData: any;
     let userInfo: any;
     console.log(body,"userData");
-    userData = await Users.findOne({
+    userData = await Users.find({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
     }).lean();
+
+    for (let i = 0; i < userData.length; i++) {
+     const bankDetail = await bankDetails.findOne({user_id:userData._id})
+     userData[i].bankDetails = bankDetail
+    }
+ 
+    userData =userData[0]
+
+    // { $match: { isDeleted: false,academySubType: new mongoose.Types.ObjectId(academySubType), } },
+
+
    
     if (userData) {
 
@@ -337,19 +349,7 @@ else{
           }
         );
 
-        await userConfig.findOneAndUpdate(
-          {
-            userId: userData._id,
-          },
-          {
-            $set: {
-              current_app_version: body.current_app_version,
-              device_token: body.device_token,
-              location_coords: body.location_coords,
-              uninstalled_on: body.uninstalled_on,
-            },
-          }
-        );
+      
 
         await Users.findOneAndUpdate(
           {
