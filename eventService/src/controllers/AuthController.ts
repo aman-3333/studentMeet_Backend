@@ -305,12 +305,15 @@ else{
 
     for (let i = 0; i < userData.length; i++) {
      const bankDetail = await bankDetails.findOne({user_id:userData._id})
-     userData[i].bankDetails = bankDetail
+     if(bankDetail){
+      userData[i].bankDetails = bankDetail
+     }
+   
     }
  
     userData =userData[0]
 
-    // { $match: { isDeleted: false,academySubType: new mongoose.Types.ObjectId(academySubType), } },
+    
 
 
    

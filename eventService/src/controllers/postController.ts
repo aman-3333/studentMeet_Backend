@@ -186,23 +186,23 @@ let userData:any = await userActivity.findOne({userId:user._id})
       val.isFollow = false;
       if (val.postUserType=="user") {
         val.ownerId = val.userId;
-        val.ownerPic=val.user.profile_picture?val.user.profile_picture:"";
-        val.ownerName=val.user.fullName?val.user.fullName:"";
+        val.ownerPic=val.user&&val.user.profile_picture?val.user.profile_picture:"";
+        val.ownerName=val.user&&val.user.fullName?val.user.fullName:"";
       }
       if (val.postUserType=="school") {
         val.ownerId = val.schoolId;
-        val.ownerPic=val.school.profilePicture?val.school.profilePicture:"";
-        val.ownerName=val.school.schoolName?val.school.schoolName:"";
+        val.ownerPic=val.school&&val.school.profilePicture?val.school.profilePicture:"";
+        val.ownerName=val.school&&val.school.schoolName?val.school.schoolName:"";
       }
       if (val.postUserType=="sponsor") {
         val.ownerId = val.sponsorId;
-        val.ownerPic=val.sponsorshipObj.sponsorshipProfileImage?val.sponsorshipObj.sponsorshipProfileImage:"";
-        val.ownerName=val.sponsorshipObj.sponsorshipName?val.sponsorshipObj.sponsorshipName:"";
+        val.ownerPic=val.sponsorshipObj&&val.sponsorshipObj.sponsorshipProfileImage?val.sponsorshipObj.sponsorshipProfileImage:"";
+        val.ownerName=val.sponsorshipObj&&val.sponsorshipObj.sponsorshipName?val.sponsorshipObj.sponsorshipName:"";
       }
       if (val.postUserType=="academy") {
         val.ownerId = val.academyId;
-        val.ownerPic=val.academyObj.profile_picture?val.academyObj.profile_picture:"";
-        val.ownerName=val.academyObj.academyName?val.academyObj.academyName:"";
+        val.ownerPic=val.academyObj&&val.academyObj.profile_picture?val.academyObj.profile_picture:"";
+        val.ownerName=val.academyObj&&val.academyObj.academyName?val.academyObj.academyName:"";
       }
   if (val.postLike.length >0 && val.postLike.toString().includes(user._id.toString())) {
     val.isLikes = true;
