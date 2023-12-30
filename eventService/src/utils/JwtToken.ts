@@ -12,7 +12,7 @@ let security: {
 }
 
 exports.createJwtToken = (payload:any) => {
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "15d" });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "60d" });
   
   return token;
 };

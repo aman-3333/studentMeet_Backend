@@ -120,6 +120,7 @@ router.post("/signin", async (req, res) => {
     const response = await controller.signInEmail(body, SECRET_KEY);
     res.status(200).json(successResponse("signin", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res.status(500).json(errorResponse("error in signin", res.statusCode));
   }
 });

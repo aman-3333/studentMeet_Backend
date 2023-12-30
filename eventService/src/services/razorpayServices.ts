@@ -13,7 +13,7 @@ const  headers={
 
 
 export async function linkedAccount(data: any) {
-  console.log("data 14",data);
+
   
   var config = {
     method: 'post',
@@ -24,11 +24,11 @@ export async function linkedAccount(data: any) {
   };
   const resp = await axios(config)
   .then(function (response: any) {
-    console.log(response, "response")
+    
     return response.data
   })
   .catch(function (error: any) {
-    console.log(error, "error")
+    
 
     return error
   });
@@ -51,10 +51,10 @@ export async function capturePayment(payment_id:any,amount:any) {
 
 return razorpay.payments.capture(payment_id, Amount, (error:any, payment:any) => {
     if (error) {
-      console.error('Capture failed:', error);
+     
       // Handle error
     } else {
-      console.log('Payment captured:', payment);
+     
       return payment
    
       // Process successful payment capture
@@ -105,8 +105,7 @@ let linkProduct = await  axiosInstance.post(`/accounts/${account_id}/products`, 
   .catch((error:any) => {
     // Log the error response for more details
     if (error.response) {
-      console.error('Request failed with status:', error.response.status);
-      console.error('Error response data:', error.response.data);
+   
     } else {
       console.error('Error message:', error.message);
     }
@@ -214,23 +213,50 @@ export async function verifyBankDetail(bankDetail:any,beneficiary_name:any) {
 
 
 
-export async function accountStatusUpdate(account_id: any) {
-  const razorpay = new Razorpay({
-    key_id: razorpayKey,
-    key_secret: razorpaySecret,
-  });
+export async function accountStatusUpdate(account_id: any,name:any,email:any) {
 
-  razorpay.accounts.edit(account_id, {
-    active: true // Set the appropriate field or parameters according to your requirement
-}, function(error:any, response:any) {
-    if (error) {
-        console.error('Error updating account status:', error);
-        // Handle error appropriately
-    } else {
-        console.log('Account status updated:', response);
-        // Handle successful response
-    }
-});
+
+  const axios = require('axios');
+
+  const apiKey = razorpayKey; // Replace with your Razorpay API key
+  const apiUrl = 'https://api.razorpay.com/v1/accounts'; // Razorpay API endpoint for accounts
+  
+
+  
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString('base64')}`,
+  };
+  const activationData = {
+    // Include the necessary fields to complete the activation form
+    // Refer to the Razorpay API documentation for the required fields
+    // Example:
+    legal_name: name,
+    email: email,
+    // Add more fields as needed
+  };
+  
+
+
+
+  try {
+    const response = await axios.patch(`${apiUrl}/${account_id}`, activationData, { headers });
+
+    console.log('Activation form completed successfully:', response.data);
+  } catch (error:any) {
+    console.error('Error completing activation form:', error.response ? error.response.data : error.message);
+  }
+
+
+
+ 
+  
+
+
+
+
+
 
 
 
@@ -238,4 +264,7 @@ export async function accountStatusUpdate(account_id: any) {
 
 
 }
+
+
+
 

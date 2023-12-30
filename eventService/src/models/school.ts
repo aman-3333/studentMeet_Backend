@@ -31,7 +31,7 @@ const schoolSchema = new Schema(
    payment_id: { type: String },
    order_id: { type: String },
     }],
-
+    isVerified: { type: Boolean, default: false },
     infrastructure:[{
       type:{ type: String },
 description: { type: String },

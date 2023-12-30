@@ -203,12 +203,22 @@ $match:{
       { $unwind: { path: "$postData", preserveNullAndEmptyArrays: true } },
       {
         $addFields: {
+
           formattedCreatedAt: {
             $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date: "$createdAt"
+              format: "%m/%d/%Y %H:%M",
+              date: {
+                $add: [
+                  "$createdAt", // assuming createdAt is your date field
+                  { $multiply: [330, 60000] } // 330 minutes in milliseconds
+                ]
+              }
             }
           }
+        }
+
+
+
         }
       },
 

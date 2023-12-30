@@ -107,7 +107,7 @@ app.use("/api/sponsorshipForm", sponsorshipForm);
 app.use("/api/sports", sports);
 app.use("/api/school", school);
 app.use("/api/school/owner", schoolOwner);
-app.use("/api/notification", notification);
+app.use("/api/notification", notification); 
 app.use("/api/tournament", tournament);
 app.use("/api/tournament/match", tournamentMATCH);
 app.use("/api/stage", stage);
@@ -120,9 +120,6 @@ app.use("/api/location", state);
 app.use("/api/user", user);
 app.use("/api/vendorshop", vendor);
 app.use("/api/role", role);
-
-
-
 
 
 

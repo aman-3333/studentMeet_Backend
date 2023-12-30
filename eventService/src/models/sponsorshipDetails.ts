@@ -39,6 +39,7 @@ const sponsorshipSchema = new Schema(
         userId: { type: String },
         text: { type: String },
         dateTime: { type: Date },
+        status:{type:String,default:"SEND"}
       },
     ],
     sponsorshipLike: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],

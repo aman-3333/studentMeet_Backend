@@ -30,7 +30,7 @@ random_no=random_no.toString()
           "phone":userInfo.contact,
           "type":"route",
           "reference_id":random_no,
-          "legal_business_name":"Acme Corp",
+          "legal_business_name":userInfo.fullName,
           "business_type":"partnership",
           "contact_name":userInfo.fullName,
           "profile":{
@@ -49,6 +49,8 @@ random_no=random_no.toString()
           }
        } 
     }
+
+    console.log(data,"data")
     if (body.academyOwner) {
       userInfo = await academyOwner
         .findOne({ _id: body.academyOwner, isDeleted: false })
@@ -62,10 +64,12 @@ random_no=random_no.toString()
     }
 
     let account:any = await linkedAccount(data);
+    console.log(account,"account")
     let product:any = await createProduct(account.id);
+    console.log(product,"product")
     let updateProduct:any = await addBankDetail(account.id,product.id,body,data.contact_name);
 
-    await accountStatusUpdate(account.id)
+    await accountStatusUpdate(account.id,userInfo.fullName,userInfo.email)
 await BankDetails.updateOne({_id:BankDetailsInfo._id},{
   $set:{
     razorpay_product_id:updateProduct.id,razorpay_account_id:updateProduct.account_id,activation_status:updateProduct.activation_status,requested_at:updateProduct.requested_at,product_name:updateProduct.product_name

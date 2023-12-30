@@ -11,7 +11,7 @@ const body = req.body;
         const response:any = await controller.createBankDetails(body);
         res.status(200).json(successResponse("create BankDetails", response, res.statusCode));
     } catch (error) {
-   console.log(error)
+ 
         res.status(500).json(errorResponse("error in create BankDetails", res.statusCode));
     }
 });

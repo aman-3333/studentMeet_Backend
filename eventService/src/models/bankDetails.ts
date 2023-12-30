@@ -19,7 +19,7 @@ const BankDetailsSchema = new Schema(
     product_name: { type: String },
    
 
-
+    isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     isBlocked: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },

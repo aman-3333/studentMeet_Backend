@@ -41,13 +41,13 @@ let  userData = await userDetails.findOne({_id:userId,isDeleted:false})
        await userActivity.updateOne({ userId: userId},
             {
               $push: { userFollowing: followingId,allOverFollowing:followingId }, 
-              $inc: { followingCount: 1 } 
+              $inc: { followingCount: 1,allOverFollowingCount:1 } 
             }),
           
            await userActivity.updateOne({ userId: followingId},
                 {
                   $push: { userFollowers: userId }, 
-                  $inc: { followersCount: 1 } 
+                  $inc: { followersCount: 1 ,allOverFollowersCount:1} 
                 })
 const body = `${userData.fullName} is starting following you`
                 sendNotification(userInfo[0].userDevicesObj.fcmtoken,body,"abc","school_home","followersData[i]","65280dd8b19d1481f3324956",userData._id);
@@ -78,7 +78,7 @@ if(userInfo[0].isProfilePublic == false){
             
         {
           $push: { academyFollowing: followingId,allOverFollowing:followingId }, 
-          $inc: { academyFollowingCount: 1 } 
+          $inc: { academyFollowingCount: 1 ,allOverFollowingCount:1} 
         }),
            
   
@@ -97,7 +97,7 @@ if(userInfo[0].isProfilePublic == false){
             userInfo = await userActivity.updateOne({ userId: userId},
                 {
                   $push: { sponsorshipFollowing: followingId,allOverFollowing:followingId }, 
-                  $inc: { sponsorshipFollowingCount: 1 } 
+                  $inc: { sponsorshipFollowingCount: 1,allOverFollowingCount:1 } 
                 }),
                    
           
@@ -116,7 +116,7 @@ if(userInfo[0].isProfilePublic == false){
                 userInfo = await userActivity.updateOne({ userId: userId},
                     {
                       $push: { schoolFollowing: followingId,allOverFollowing:followingId }, 
-                      $inc: { schoolFollowingCount: 1 } 
+                      $inc: { schoolFollowingCount: 1 ,allOverFollowingCount:1} 
                     }),
                        
               

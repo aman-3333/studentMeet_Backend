@@ -296,15 +296,19 @@ else{
   public async verifyotpByApi(body: any) {
     let userData: any;
     let userInfo: any;
-    console.log(body,"userData");
+   
     userData = await Users.find({
       contact: body.contact,
       country_code: body.country_code,
       isDeleted: false,
     }).lean();
-
+    console.log(userData,"userData");
     for (let i = 0; i < userData.length; i++) {
-     const bankDetail = await bankDetails.findOne({user_id:userData._id})
+      console.log("userData._id",userData._id)
+     const bankDetail = await bankDetails.findOne({user_id:userData[i]._id})
+
+     const activity = await userActivity.findOne({userId:userData[i]._id})
+     userData.userActivity = activity
      if(bankDetail){
       userData[i].bankDetails = bankDetail
      }
@@ -409,7 +413,7 @@ let allUser=await userDetails.find({})
         },
         SECRET_KEY
       );
-      console.log(token);
+ 
       
    let userInfo=    await academyOwner.findOneAndUpdate(
         { email: email },
@@ -493,7 +497,22 @@ return userData
   public async signInEmail(body: any, SECRET_KEY: any) {
     const { email, password, type } = body;
     if (type == "academy") {
-      let existingUser: any = await academyOwner.findOne({ email: email });
+
+      let existingUser: any = await academyOwner.aggregate([{
+        $match:{
+          email: email
+        }
+      },
+        {
+          $lookup: {
+            localField: "_id",
+            from: "academies",
+            foreignField: "academyOwnerId",
+            as: "academy",
+          },
+        },
+        { $unwind: { path: "$academy", preserveNullAndEmptyArrays: true } },
+      ])
       console.log(existingUser, "existingUser");
       if (!existingUser) {
         return { message: "User not exists" };
@@ -522,7 +541,23 @@ return userData
       return existingUser;
     }
     if (type == "sponsor") {
-      let existingUser: any = await sponsorPartner.findOne({ email: email });
+   
+
+      let existingUser: any = await sponsorPartner.aggregate([{
+        $match:{
+          email: email
+        }
+      },
+        {
+          $lookup: {
+            localField: "_id",
+            from: "sponsorshipdetails",
+            foreignField: "sponsorshipPartnerId",
+            as: "sponsorshipdetails",
+          },
+        },
+        { $unwind: { path: "$sponsorshipdetails", preserveNullAndEmptyArrays: true } },
+      ])
       console.log(existingUser, "existingUser");
       if (!existingUser) {
         return { message: "User not exists" };
@@ -552,7 +587,23 @@ return userData
     }
     if (type == "school") {
     
-      let existingUser: any = await schoolOwner.findOne({ email: email });
+     
+
+      let existingUser: any = await schoolOwner.aggregate([{
+        $match:{
+          email: email
+        }
+      },
+        {
+          $lookup: {
+            localField: "_id",
+            from: "schools",
+            foreignField: "schoolOwnerId",
+            as: "schools",
+          },
+        },
+        { $unwind: { path: "$schools", preserveNullAndEmptyArrays: true } },
+      ])
       if (!existingUser) {
         return { message: "User not exists" };
       }
