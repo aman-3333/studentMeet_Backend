@@ -219,19 +219,10 @@ $match:{
 
 
 
-        }
+        
       },
 
-      {
-        $addFields: {
-          formattedUpdatedAt: {
-            $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
-              date: "$updatedAt"
-            }
-          }
-        }
-      }
+     
 
 
 
