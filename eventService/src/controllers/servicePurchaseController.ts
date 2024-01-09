@@ -409,7 +409,7 @@ public async userAccountDetailForPost(body: any) {
         },
         {
           $lookup: {
-            localField: "userId",
+            localField: "user_id",
             from: "bank_details",
             foreignField: "user_id",
             as: "bankDetails",
