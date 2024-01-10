@@ -4,6 +4,15 @@ const schoolSchema = new Schema(
   {
     schoolOwnerId:{ type: Schema.Types.ObjectId,ref:"school_owners" },
     schoolName: { type: String, required: true },
+    
+    location: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+    },
     address: { type: String},
     email: { type: String },
     contact: [String], 
