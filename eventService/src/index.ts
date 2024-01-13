@@ -155,9 +155,9 @@ const server:any = http.createServer(app);
 //   },
 // });
 
-console.log(server,"server")
+
 const io = socketIO(server);
-console.log(io,"io")
+
 
 
 io.on("connection", (socket:any) => {

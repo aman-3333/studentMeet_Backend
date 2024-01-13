@@ -20,6 +20,7 @@ const sponsorshipSchema = new Schema(
       ref: "sponsorPartner",
     },
     participentId: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
+    slectedUser:[{type: Schema.Types.ObjectId, ref: "userdetails" }],
     sponsorshipGuideLines: { type: Schema.Types.ObjectId },
     category: { type: Schema.Types.ObjectId, ref: "category" },
     SubCategory: { type: Schema.Types.ObjectId, ref: "SubCategory" },
@@ -102,6 +103,7 @@ export interface ISponsorship extends Document {
   followers: [ObjectId],
   followersCount: Number,
   following: [ObjectId],
+  slectedUser: [ObjectId],
   followingCount: Number,
   applyCount: Number;
   applyInfo: [

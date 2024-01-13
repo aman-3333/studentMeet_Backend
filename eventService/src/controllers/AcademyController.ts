@@ -525,7 +525,7 @@ export default class academyController {
     if (status == "readAcademyComment") {
       let a = [];
       academyInfo = await academy.findOne({ _id: academyId }).lean();
-      console.log(academyInfo);
+  
       academyInfo = academyInfo.academyComment;
 
       for (let i = 0; i < academyInfo.length; i++) {
@@ -600,7 +600,7 @@ let commentId=academyInfo[i]._id;
     let data: any = [];
 
     academyInfo = await academy.findOne({ _id: academyId });
-    console.log(academyInfo.coachId, "academyInfo");
+ 
 
     if (status == "coachInfo") {
 
@@ -688,7 +688,7 @@ let commentId=academyInfo[i]._id;
   }
 
   public async getAcademyRegistrationDetail(academyId: any) {
-    console.log(academyId, "academyId");
+
 
     let academyInfo = await academy
       .findOne({ _id: academyId })

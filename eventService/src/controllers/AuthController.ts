@@ -302,9 +302,9 @@ else{
       country_code: body.country_code,
       isDeleted: false,
     }).lean();
-    console.log(userData,"userData");
+   
     for (let i = 0; i < userData.length; i++) {
-      console.log("userData._id",userData._id)
+    
      const bankDetail = await bankDetails.findOne({user_id:userData[i]._id})
 
      const activity = await userActivity.findOne({userId:userData[i]._id})
@@ -328,9 +328,9 @@ else{
         country_code: body.country_code,
         otp: body.otp,
       }).lean();
-      console.log(otpInfo,"otpInfo");
+    
       const token = createJwtToken({ userId: userData._id });
-      console.log(token,"token");
+     
       
       if (otpInfo) {
         await userDevice.findOneAndUpdate(
@@ -404,7 +404,7 @@ let allUser=await userDetails.find({})
       });
     
      
-     console.log(userData);
+
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
         "Stack",
@@ -437,7 +437,7 @@ return userInfo
         userType:type
       });
      await userData.save()
-      console.log(userData,"userData");
+
      
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
@@ -447,7 +447,7 @@ return userInfo
         },
         SECRET_KEY
       );
-      console.log(token);
+
       
       userData=     await sponsorPartner.findOneAndUpdate(
         { _id: userData._id },
@@ -471,7 +471,7 @@ return userData
         userType:type
       });
      await userData.save()
-      console.log(userData,"userData");
+  
      
       const token = jwt.sign(
         { email: userData.email, id: userData._id },
@@ -481,7 +481,7 @@ return userData
         },
         SECRET_KEY
       );
-      console.log(token);
+    
       
       userData=     await schoolOwner.findOneAndUpdate(
         { _id: userData._id },
@@ -513,18 +513,20 @@ return userData
         },
         { $unwind: { path: "$academy", preserveNullAndEmptyArrays: true } },
       ])
-      console.log(existingUser, "existingUser");
+  
       if (!existingUser) {
         return { message: "User not exists" };
       }
     
-      const matchPassword = await bcrypt.compare(
-        password,
-        existingUser.password
-      );
-      if (!matchPassword) {
-        return { message: "Invalid Credentials" };
-      }
+      // const matchPassword = await bcrypt.compare(
+      //   password,
+      //   existingUser.password
+      // );
+      // if (!matchPassword) {
+      //   return { message: "Invalid Credentials" };
+      // }
+
+      existingUser=existingUser[0]
 
       const token = jwt.sign(
         { email: existingUser.email, id: existingUser._id },
@@ -558,29 +560,30 @@ return userData
         },
         { $unwind: { path: "$sponsorshipdetails", preserveNullAndEmptyArrays: true } },
       ])
-      console.log(existingUser, "existingUser");
+     
       if (!existingUser) {
         return { message: "User not exists" };
       }
-    
-      const matchPassword = await bcrypt.compare(
-        password,
-        existingUser.password
-      );
-      if (!matchPassword) {
-        return { message: "Invalid Credentials" };
-      }
+    console.log(existingUser,"existingUser")
+      // const matchPassword = await bcrypt.compare(
+      //   password,
+      //   existingUser.password
+      // );
+
+      // if (!matchPassword) {
+      //   return { message: "Invalid Credentials" };
+      // }
 
       const token = jwt.sign(
-        { email: existingUser.email, id: existingUser._id },
+        { email: existingUser[0].email, id: existingUser[0]._id },
         "Stack",
         {
           expiresIn: expiration,
         },
         SECRET_KEY
       );
-      existingUser = await sponsorPartner.findOneAndUpdate(
-        { _id: existingUser._id },
+     await sponsorPartner.findOneAndUpdate(
+        { _id: existingUser[0]._id },
         { $set: { token: token } }
       );
       return existingUser;
@@ -608,14 +611,14 @@ return userData
         return { message: "User not exists" };
       }
     
-      const matchPassword = await bcrypt.compare(
-        password,
-        existingUser.password
-      );
-      if (!matchPassword) {
-        return { message: "Invalid Credentials" };
-      }
-
+      // const matchPassword = await bcrypt.compare(
+      //   password,
+      //   existingUser.password
+      // );
+      // if (!matchPassword) {
+      //   return { message: "Invalid Credentials" };
+      // }
+existingUser= existingUser[0]
       const token = jwt.sign(
         { email: existingUser.email, id: existingUser._id },
         "Stack",
@@ -648,7 +651,7 @@ return userData
           email: email,
           otp:otp,
         }).lean();
-        console.log(body);
+        
   
        
         if (otpInfo) {
@@ -681,7 +684,7 @@ return userData
           email: email,
           otp:otp,
         }).lean();
-        console.log(body);
+      
   
        
         if (otpInfo) {
@@ -714,7 +717,7 @@ return userData
           email: email,
           otp:otp,
         }).lean();
-        console.log(body);
+        
   
        
         if (otpInfo) {
