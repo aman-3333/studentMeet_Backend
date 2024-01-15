@@ -49,10 +49,6 @@ facility: { type: String },
     }],
 
 
-    coordinates: {
-      type: { type: String,  enum: ['Point'],default: 'Point' },
-      coordinates: { type: [Number], index: '2dsphere' }
-    },
     followers: [{ type: Schema.Types.ObjectId, ref: "userdetails" }],
     followersCount: { type: Number, default: 0 },
     schoolLikeCount: { type: Number, default: 0 },
@@ -162,6 +158,6 @@ facility: String,
 }
 // user
 
-
+schoolSchema.index({ location: "2dsphere" });
 
 export default model<ISchool>("school", schoolSchema);

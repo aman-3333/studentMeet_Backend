@@ -718,7 +718,8 @@ if(!query.stage){
   }
 
   public async applyByUser(userId: any) {
-   const sponsrData = await SponsorshipModel.find(
+  
+   let sponsrData:any= await SponsorshipModel.find(
     {
       applyInfo: {
          $elemMatch: {
@@ -728,15 +729,50 @@ if(!query.stage){
    }).sort({createdAt :-1})
 
 
+for (let i = 0; i < sponsrData.length; i++) {
+  sponsrData[i].data1=false
+  if(sponsrData[i].slectedUser.toString().includes(userId.toString())){ 
+
+    sponsrData[i].data1=true
+    
+   }
+   console.log( sponsrData[i].data1," sponsrData[i].data1")
+  
+}
 
 
-return sponsrData
- 
 
-   
-
- 
+  return sponsrData;
  
   }
+
+
+  public async selectUser(userId: any,sponsorshipId:any) {
+ 
+
+
+ const sponsrData:any = await SponsorshipModel.findOne(
+  { _id: sponsorshipId }, 
+)
+
+await SponsorshipModel.updateOne(
+  { _id: sponsorshipId }, 
+  { $push: { slectedUser: userId },
+}
+)
+
+
+  let userFcmToken = await userDevice.findOne({ userId : userId });
+  let userData = await userDetails.findOne({ _id : userId });
+if(userFcmToken){
+const body =`Hii, ${userData.fullName} you got selected for ${sponsrData.sponsorshipName} scloarship `;
+sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",userId,sponsorshipId,userId);
+}  
+
+
+   return sponsrData;
+  
+   }
+
 
 }

@@ -34,6 +34,7 @@ export default class academyController {
       feesPerYear: body.feesPerYear,
       feesDiscount: body.feesDiscount,
       profile_picture: body.profile_picture,
+      location:body.location
     });
 
     return academyInfo;
@@ -114,29 +115,31 @@ export default class academyController {
   }
 
 
+
+
+  
+
   public async getAcademyList(user: any,index:any) {
     const userLocation = await userDevice.findOne({userId:user._id})
     const indexData = parseInt(index) -1;
     let academyLike = await academy.aggregate([
+    
+    {
+      $geoNear: {
+        near: {
+          type: "Point",
+          coordinates: [userLocation.currentLong, userLocation.currentLat] 
+        },
+        distanceField: "distance",
+        spherical: true,
+        maxDistance: 10000000
+      }
+    },
+    {
+      $sort: { distance: 1 } 
+    },
 
-    //   {
-    //     $geoNear: {
-    //         near: { type: "Point", coordinates: [userLocation.currentLong, userLocation.currentLat] },
-    //         distanceField: "distance",
-    //         spherical: true,
-    //         maxDistance: 1000, // Specify the maximum distance in meters
-    //         query: { /* Additional query conditions */ },
-    //         includeLocs: "location",
-    //         key: "location" // Assuming your coordinates are stored in a field named "location"
-    //     }
-    // },
-
-
-      {
-        $sort: {
-          createdAt: -1
-        }
-      },
+   
       { $skip:  50 * indexData },
       { $limit: 50},
 
@@ -207,7 +210,6 @@ export default class academyController {
 
     return academyLike;
   }
-
   public async deleteAcademy(academyId: String) {
     const academyInfo: IAcademy = await academy
       .findOneAndUpdate(

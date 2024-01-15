@@ -56,6 +56,9 @@ router.get("/list", checkAuth, async (req, res) => {
 });
 
 
+
+
+
 router.get("/by/domain", checkAuth, async (req, res) => {
   try {
     const controller = new AcademyController();

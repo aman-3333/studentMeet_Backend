@@ -5,6 +5,14 @@ const academyModel = new Schema(
   {
     academyName: { type: String, index: true },
     fullAddress: { type: String },
+    location: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+    },
     lat: { type: String },
     long: { type: String },
     academyTypeId: { type: Schema.Types.ObjectId, ref: "academyType" },
@@ -182,7 +190,7 @@ export interface IAcademy extends Document {
   isDeleted: { type: Boolean, default: false },
 }
 
-
+academyModel.index({ location: "2dsphere" });
 export default model<IAcademy>("academy", academyModel);
 
 

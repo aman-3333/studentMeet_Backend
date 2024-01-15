@@ -336,7 +336,7 @@ router.get("/apply/by/user", async (req, res) => {
     try{
         const userId=req.query.userId;
         const controller=new SponsorshipController();
-        const response:any =await controller.applyByUser(userId);
+        const response =await controller.applyByUser(userId);
         res.status(200).json(successResponse("apply by user",response,res.statusCode));
     }catch(error) {
       
@@ -344,6 +344,19 @@ router.get("/apply/by/user", async (req, res) => {
     }
 })
 
+
+router.post("/select/user", async (req, res) => {
+    try{
+        const userId=req.body.userId;
+        const sponsorshipId=req.body.sponsorshipId;
+        const controller=new SponsorshipController();
+        const response:any =await controller.selectUser(userId,sponsorshipId);
+        res.status(200).json(successResponse("apply by user",response,res.statusCode));
+    }catch(error) {
+      
+        res.status(500).json(errorResponse("error in apply by user", res.statusCode));
+    }
+})
 
 
 

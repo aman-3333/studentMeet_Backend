@@ -32,14 +32,23 @@ export default class SchoolController {
 
 
   public async getSchool(user:any,body:any,index:any) {
-
+    const userLocation = await userDevice.findOne({userId:user._id})
+    console.log(userLocation.currentLong, userLocation.currentLat)
     const indexData = parseInt(index) -1;
     let schoolListlike= await school.aggregate([
-
       {
-        $sort: {
-          createdAt: -1
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [userLocation.currentLong, userLocation.currentLat] 
+          },
+          distanceField: "distance",
+          spherical: true,
+          maxDistance: 10000000
         }
+      },
+      {
+        $sort: { distance: 1 } 
       },
       { $skip:  50 * indexData },
       { $limit: 50},
@@ -114,90 +123,90 @@ export default class SchoolController {
   }
 
 
-  public async getSchools(user:any,body:any) {
-    const {lat,long} = body;
-    const increasedMaxDistance = 10; 
-    let schoolListlike= await school.aggregate([
+  // public async getSchool(user:any,body:any) {
+  //   const {lat,long} = body;
+  //   const increasedMaxDistance = 10; 
+  //   let schoolListlike= await school.aggregate([
 
-      {
-        $geoNear: {
-          near: { type: "Point", coordinates: [long, lat] },
-          distanceField: "distance",
-          maxDistance: increasedMaxDistance,
-          spherical: true
-        }
-      },
+  //     {
+  //       $geoNear: {
+  //         near: { type: "Point", coordinates: [long, lat] },
+  //         distanceField: "distance",
+  //         maxDistance: increasedMaxDistance,
+  //         spherical: true
+  //       }
+  //     },
 
-      { $match: { isDeleted: false,  } },
-      {
-        $lookup: {
-          localField: "faculty",
-          from: "userdetails",
-          foreignField: "_id",
-          as: "faculty",
-        },
-      },
-      {
-        $lookup: {
-          localField: "schoolOwnerId",
-          from: "school_owners",
-          foreignField: "_id",
-          as: "schoolOwner",
-        },
-      },
-      { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "city",
-          from: "cities",
-          foreignField: "_id",
-          as: "city",
-        },
-      },
-      { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "state",
-          from: "states",
-          foreignField: "_id",
-          as: "state",
-        },
-      },
-      { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
-      {
-        $lookup: {
-          localField: "country",
-          from: "countries",
-          foreignField: "_id",
-          as: "country",
-        },
-      },
-      { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
+  //     { $match: { isDeleted: false,  } },
+  //     {
+  //       $lookup: {
+  //         localField: "faculty",
+  //         from: "userdetails",
+  //         foreignField: "_id",
+  //         as: "faculty",
+  //       },
+  //     },
+  //     {
+  //       $lookup: {
+  //         localField: "schoolOwnerId",
+  //         from: "school_owners",
+  //         foreignField: "_id",
+  //         as: "schoolOwner",
+  //       },
+  //     },
+  //     { $unwind: { path: '$schoolOwner', preserveNullAndEmptyArrays: true } },
+  //     {
+  //       $lookup: {
+  //         localField: "city",
+  //         from: "cities",
+  //         foreignField: "_id",
+  //         as: "city",
+  //       },
+  //     },
+  //     { $unwind: { path: '$city', preserveNullAndEmptyArrays: true } },
+  //     {
+  //       $lookup: {
+  //         localField: "state",
+  //         from: "states",
+  //         foreignField: "_id",
+  //         as: "state",
+  //       },
+  //     },
+  //     { $unwind: { path: '$state', preserveNullAndEmptyArrays: true } },
+  //     {
+  //       $lookup: {
+  //         localField: "country",
+  //         from: "countries",
+  //         foreignField: "_id",
+  //         as: "country",
+  //       },
+  //     },
+  //     { $unwind: { path: '$country', preserveNullAndEmptyArrays: true } },
       
-    ]);
+  //   ]);
    
 
     
-  console.log(user);
+  // console.log(user);
   
 
-    schoolListlike.forEach((val:any)=>{
-      if( val.followers.toString().includes(user._id.toString())){ 
-       val.isFollow=true
-      }
-      if( val.schoolLike.toString().includes(user._id.toString())){ 
-        val.isLikes=true
-       }
-      else{
-       val.isFollow=false;
-       val.isLikes=false;
+  //   schoolListlike.forEach((val:any)=>{
+  //     if( val.followers.toString().includes(user._id.toString())){ 
+  //      val.isFollow=true
+  //     }
+  //     if( val.schoolLike.toString().includes(user._id.toString())){ 
+  //       val.isLikes=true
+  //      }
+  //     else{
+  //      val.isFollow=false;
+  //      val.isLikes=false;
        
-      }
-     })
+  //     }
+  //    })
 
 
-    return schoolListlike;
-  }
+  //   return schoolListlike;
+  // }
 
 
 
