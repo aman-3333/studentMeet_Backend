@@ -115,8 +115,6 @@ export default class academyController {
   }
 
 
-
-
   
 
   public async getAcademyList(user: any,index:any) {
@@ -210,6 +208,7 @@ export default class academyController {
 
     return academyLike;
   }
+  
   public async deleteAcademy(academyId: String) {
     const academyInfo: IAcademy = await academy
       .findOneAndUpdate(

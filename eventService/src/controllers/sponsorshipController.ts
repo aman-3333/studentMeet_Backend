@@ -1,4 +1,3 @@
-
 import SponsorshipModel, { ISponsorship } from "../models/sponsorshipDetails";
 import userActivity from "../models/userActivity";
 import userDetails from "../models/userDetails";
@@ -22,7 +21,7 @@ export default class SponsorshipController {
       registrationEndDateTime,
       academyTypeId,
       academySubTypeId,
-      eligibileId
+      eligibileId,
     } = body;
 
     let createSponsorsPartnerInfo = await SponsorshipModel.create({
@@ -37,7 +36,7 @@ export default class SponsorshipController {
       registrationEndDateTime: registrationEndDateTime,
       academyTypeId: academyTypeId,
       academySubTypeId: academySubTypeId,
-      eligibileId:eligibileId
+      eligibileId: eligibileId,
     });
 
     return createSponsorsPartnerInfo;
@@ -68,16 +67,16 @@ export default class SponsorshipController {
 
   /////////////////////////////////USER SCREEN SPONSORSHIP API/////////////////////////
 
-  public async getsponsorshipList(user: any,index:any) {
-    const indexData = parseInt(index) -1;
-    let sponsorshipLike:any = await SponsorshipModel.aggregate([
+  public async getsponsorshipList(user: any, index: any) {
+    const indexData = parseInt(index) - 1;
+    let sponsorshipLike: any = await SponsorshipModel.aggregate([
       {
         $sort: {
-          createdAt: -1
-        }
+          createdAt: -1,
+        },
       },
-      { $skip:  50 * indexData },
-      { $limit: 50},
+      { $skip: 50 * indexData },
+      { $limit: 50 },
       { $match: { isDeleted: false } },
       {
         $addFields: {
@@ -85,58 +84,140 @@ export default class SponsorshipController {
             $let: {
               vars: {
                 timeDifferenceMillis: {
-                  $subtract: [new Date(), "$createdAt"]
-                }
+                  $subtract: [new Date(), "$createdAt"],
+                },
               },
               in: {
                 $cond: {
                   if: {
-                    $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                    $lt: ["$$timeDifferenceMillis", 60000], // Less than 1 minute
                   },
-                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  then: {
+                    $concat: [
+                      {
+                        $toString: {
+                          $trunc: { $divide: ["$$timeDifferenceMillis", 1000] },
+                        },
+                      },
+                      "s ago",
+                    ],
+                  },
                   else: {
                     $cond: {
                       if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
-                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      then: {
+                        $concat: [
+                          {
+                            $toString: {
+                              $trunc: {
+                                $divide: ["$$timeDifferenceMillis", 60000],
+                              },
+                            },
+                          },
+                          "m ago",
+                        ],
+                      },
                       else: {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
-                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          then: {
+                            $concat: [
+                              {
+                                $toString: {
+                                  $trunc: {
+                                    $divide: [
+                                      "$$timeDifferenceMillis",
+                                      3600000,
+                                    ],
+                                  },
+                                },
+                              },
+                              "h ago",
+                            ],
+                          },
                           else: {
                             $cond: {
-                              if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
-                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              if: {
+                                $lt: ["$$timeDifferenceMillis", 2592000000],
+                              }, // Less than 30 days (approximating to 30 days as 1 month)
+                              then: {
+                                $concat: [
+                                  {
+                                    $toString: {
+                                      $trunc: {
+                                        $divide: [
+                                          "$$timeDifferenceMillis",
+                                          86400000,
+                                        ],
+                                      },
+                                    },
+                                  },
+                                  "d ago",
+                                ],
+                              },
                               else: {
                                 $cond: {
-                                  if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
-                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
-                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                                  if: {
+                                    $lt: [
+                                      "$$timeDifferenceMillis",
+                                      31536000000,
+                                    ],
+                                  }, // Less than 365 days (approximating to 365 days as 1 year)
+                                  then: {
+                                    $concat: [
+                                      {
+                                        $toString: {
+                                          $trunc: {
+                                            $divide: [
+                                              "$$timeDifferenceMillis",
+                                              2592000000,
+                                            ],
+                                          },
+                                        },
+                                      },
+                                      "mo ago",
+                                    ],
+                                  },
+                                  else: {
+                                    $concat: [
+                                      {
+                                        $toString: {
+                                          $trunc: {
+                                            $divide: [
+                                              "$$timeDifferenceMillis",
+                                              31536000000,
+                                            ],
+                                          },
+                                        },
+                                      },
+                                      "y ago",
+                                    ],
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     ]);
-    sponsorshipLike.forEach((val:any)=>{
-      val.isFollow=false;
-      val.isLikes=false;
-     if( val.followers.toString().includes(user._id.toString())){ 
-      val.isFollow=true
-     }
-     if( val.sponsorshipLike.toString().includes(user._id.toString())){ 
-      val.isLikes=true
-     }
-   
-    })
+    sponsorshipLike.forEach((val: any) => {
+      val.isFollow = false;
+      val.isLikes = false;
+      if (val.followers.toString().includes(user._id.toString())) {
+        val.isFollow = true;
+      }
+      if (val.sponsorshipLike.toString().includes(user._id.toString())) {
+        val.isLikes = true;
+      }
+    });
     return sponsorshipLike;
   }
 
@@ -162,49 +243,47 @@ export default class SponsorshipController {
     let a: any = [];
     let info: any;
     let sponsorshipInfo: any;
-    let followersData:any;
-    let sponsorship_id:any;
+    let followersData: any;
+    let sponsorship_id: any;
     if (status == "removeSponsorshipComment") {
       sponsorshipInfo = await SponsorshipModel.updateOne(
-        { _id: body.sponsorshipId }, 
-        { $pull: { sponsorshipComment: { _id: body._id } },
-        $inc: { sponsorshipCommentCount: -1 } }
-     )
-      
-         
-      
+        { _id: body.sponsorshipId },
+        {
+          $pull: { sponsorshipComment: { _id: body._id } },
+          $inc: { sponsorshipCommentCount: -1 },
+        }
+      );
+
       await userActivity.findOneAndUpdate(
         { userId: sponsorshipInfo.userId },
         { $inc: { sponsorshipCommentCount: -1 } },
         { new: true }
       );
-      
+
       return sponsorshipInfo;
-          }
-   
+    }
 
     if (status == "sponsorshipLike") {
-
-
-
-
       sponsorshipInfo = await SponsorshipModel.updateOne(
-        { _id: body.sponsorshipId }, 
-        { $push: { sponsorshipLike: userId },
-        $inc: { sponsorshipLikeCount: 1 } }
-     )
-      
+        { _id: body.sponsorshipId },
+        {
+          $push: { sponsorshipLike: userId },
+          $inc: { sponsorshipLikeCount: 1 },
+        }
+      );
 
       await userActivity.findOneAndUpdate(
         { userId: sponsorshipInfo.userId },
         { $inc: { sponsorshipLikeCount: 1 } },
         { new: true }
-      );  
-      let userData= await userActivity.aggregate([
+      );
+      let userData = await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.sponsorshipComment[0].userId),
-             isDeleted: false,
+            userId: new mongoose.Types.ObjectId(
+              body.sponsorshipComment[0].userId
+            ),
+            isDeleted: false,
           },
         },
         {
@@ -215,49 +294,67 @@ export default class SponsorshipController {
             as: "userdetails",
           },
         },
-        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: "$userdetails", preserveNullAndEmptyArrays: true } },
       ]);
-     
-      if(userData[0].userFollowers.length>0){
-         followersData = userData[0].userFollowers;
-         sponsorship_id = body.sponsorshipId;
+
+      if (userData[0].userFollowers.length > 0) {
+        followersData = userData[0].userFollowers;
+        sponsorship_id = body.sponsorshipId;
       }
       for (let i = 0; i < followersData.length; i++) {
-        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
-        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
-   if(userFcmToken){
-   const body =`${userData[0].userdetails.fullName} like 😄 sponsorship check and react.`;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id,userData[0].userdetails._id);
-   }  
-  }
+        let userFcmToken = await userDevice.findOne({
+          userId: followersData[i],
+        });
+        console.log(
+          userData[0].userdetails.fullName,
+          "userData[0].userdetails.fullName"
+        );
+        if (userFcmToken) {
+          const body = `${userData[0].userdetails.fullName} like 😄 sponsorship check and react.`;
+          sendNotification(
+            userFcmToken.fcmtoken,
+            body,
+            "abc",
+            "sponsorship_home",
+            followersData[i],
+            sponsorship_id,
+            userData[0].userdetails._id
+          );
+        }
+      }
       return sponsorshipInfo;
     }
     if (status == "removeSponsorshipLike") {
       sponsorshipInfo = await SponsorshipModel.updateOne(
-        { _id: body.sponsorshipId }, 
-        { $pull: { sponsorshipLike: userId },
-        $inc: { sponsorshipLikeCount: -1 } }
-     )
+        { _id: body.sponsorshipId },
+        {
+          $pull: { sponsorshipLike: userId },
+          $inc: { sponsorshipLikeCount: -1 },
+        }
+      );
       return sponsorshipInfo;
     }
- 
+
     if (status == "sponsorshipComment") {
-
-
       sponsorshipInfo = await SponsorshipModel.updateOne(
-        { _id: body.sponsorshipId }, 
-        { $push: { sponsorshipComment: { comment: body.comment,userId:userId,dateTime: currentTime } },
-        $inc: { sponsorshipCommentCount: 1 } }
-     )
+        { _id: body.sponsorshipId },
+        {
+          $push: {
+            sponsorshipComment: {
+              comment: body.comment,
+              userId: userId,
+              dateTime: currentTime,
+            },
+          },
+          $inc: { sponsorshipCommentCount: 1 },
+        }
+      );
 
-
-   
-
-      let userData= await userActivity.aggregate([
+      let userData = await userActivity.aggregate([
         {
           $match: {
-            userId:new mongoose.Types.ObjectId(body.userId),
-             isDeleted: false,
+            userId: new mongoose.Types.ObjectId(body.userId),
+            isDeleted: false,
           },
         },
         {
@@ -268,26 +365,39 @@ export default class SponsorshipController {
             as: "userdetails",
           },
         },
-        { $unwind: { path: '$userdetails', preserveNullAndEmptyArrays: true } },
+        { $unwind: { path: "$userdetails", preserveNullAndEmptyArrays: true } },
       ]);
-     
-      if(userData[0].userFollowers.length>0){
-         followersData = userData[0].userFollowers;
-         sponsorship_id = body.sponsorshipId;
+
+      if (userData[0].userFollowers.length > 0) {
+        followersData = userData[0].userFollowers;
+        sponsorship_id = body.sponsorshipId;
       }
 
       for (let i = 0; i < followersData.length; i++) {
-        let userFcmToken = await userDevice.findOne({ userId : followersData[i] });
-        console.log(userData[0].userdetails.fullName,"userData[0].userdetails.fullName")
-   if(userFcmToken){
-   const body =`${userData[0].userdetails.fullName} comment on sponsorship check and react  `;
-    sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",followersData[i],sponsorship_id,userData[0].userdetails._id);
-   }  
-  }
+        let userFcmToken = await userDevice.findOne({
+          userId: followersData[i],
+        });
+        console.log(
+          userData[0].userdetails.fullName,
+          "userData[0].userdetails.fullName"
+        );
+        if (userFcmToken) {
+          const body = `${userData[0].userdetails.fullName} comment on sponsorship check and react  `;
+          sendNotification(
+            userFcmToken.fcmtoken,
+            body,
+            "abc",
+            "sponsorship_home",
+            followersData[i],
+            sponsorship_id,
+            userData[0].userdetails._id
+          );
+        }
+      }
 
       return sponsorshipInfo;
     }
-   
+
     if (status == "readSponsorshipComment") {
       userInfo = await userActivity.findOne({ userId: body.userId }).lean();
       userInfo = userInfo.sponsorshipComment;
@@ -300,20 +410,21 @@ export default class SponsorshipController {
         data.push({ sponsorshipInfo, comment, DateTime });
       }
 
-      
-  
       return data;
     }
   }
 
- 
-
   public async searchSponsorship(search: any) {
     let sponsorshipInfo: any = await SponsorshipModel.aggregate([
-      { $match: { isDeleted: false,sponsorshipName: {
-        $regex: search,
-        $options: "i" 
-    }  } },
+      {
+        $match: {
+          isDeleted: false,
+          sponsorshipName: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      },
     ]);
     return sponsorshipInfo;
   }
@@ -354,7 +465,7 @@ export default class SponsorshipController {
           $push: {
             applyInfo: {
               userId: userId,
-            
+
               dateTime: currentTime,
             },
           },
@@ -371,20 +482,21 @@ export default class SponsorshipController {
       return sponsorshipInfo;
     }
   }
-////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
   public async getAppliedUser(sponsorshipId: any) {
     var appliedUserInfo: any = await SponsorshipModel.findOne({
       _id: sponsorshipId,
       isDeleted: false,
-    })
-let data=[]
+    });
+    let data = [];
 
-    appliedUserInfo=appliedUserInfo.applyInfo;
+    appliedUserInfo = appliedUserInfo.applyInfo;
     for (let i = 0; i < appliedUserInfo.length; i++) {
-     let userInfo=await userDetails.findOne({_id:appliedUserInfo[i].userId}).lean()
-     
-    
-     data.push(userInfo)
+      let userInfo = await userDetails
+        .findOne({ _id: appliedUserInfo[i].userId })
+        .lean();
+
+      data.push(userInfo);
     }
     return data;
   }
@@ -393,45 +505,42 @@ let data=[]
     var sponsorshipInfo: any = await SponsorshipModel.find({
       sponsorshipPartnerId: sponsorshipPartnerId,
       isDeleted: false,
-    })
+    });
 
     return sponsorshipInfo;
   }
-
-
 
   public async getsponsorshipPostPartnerId(sponsorshipPartnerId: any) {
     let postInfo;
     var sponsorshipInfo: any = await SponsorshipModel.find({
       sponsorshipPartnerId: sponsorshipPartnerId,
       isDeleted: false,
-    })
-for (let i = 0; i < sponsorshipInfo.length; i++) {
- postInfo=await post.aggregate([{
-  $match:{
-    sponsorId:sponsorshipInfo[i]._id,isDeleted:false
-  }
-},
-{
-  $sort: {
-    createdAt: -1 
-  }
-}])
-
-  
-}
+    });
+    for (let i = 0; i < sponsorshipInfo.length; i++) {
+      postInfo = await post.aggregate([
+        {
+          $match: {
+            sponsorId: sponsorshipInfo[i]._id,
+            isDeleted: false,
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+      ]);
+    }
     return postInfo;
   }
 
-  
-
-  public async shareSponsorship( body:any ) {
-    const {userId,sponsorshipSharedByOther} = body;
+  public async shareSponsorship(body: any) {
+    const { userId, sponsorshipSharedByOther } = body;
     for (let i = 0; i < sponsorshipSharedByOther.length; i++) {
-      let  sponsorshipInfo = await userActivity.findOneAndUpdate(
+      let sponsorshipInfo = await userActivity.findOneAndUpdate(
         {
           userId: sponsorshipSharedByOther[i].friendId,
-          isDeleted:false
+          isDeleted: false,
         },
         {
           $push: {
@@ -441,27 +550,36 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
               dateTime: currentTime,
             },
           },
-        },{new:true}
+        },
+        { new: true }
       );
-      let userData:any = await userDetails.findOne({_id:userId});
-      let userToken:any = await userDevice.findOne({userId:sponsorshipSharedByOther[i].friendId});
-      const body =`${userData.fullName} share  sponsorship to you please check and react`;
-      sendNotification(userToken.fcmtoken,body,"abc","sponsorship_home",userToken.userId,sponsorshipSharedByOther[i].sponsorshipId,userData._id);
+      let userData: any = await userDetails.findOne({ _id: userId });
+      let userToken: any = await userDevice.findOne({
+        userId: sponsorshipSharedByOther[i].friendId,
+      });
+      const body = `${userData.fullName} share  sponsorship to you please check and react`;
+      sendNotification(
+        userToken.fcmtoken,
+        body,
+        "abc",
+        "sponsorship_home",
+        userToken.userId,
+        sponsorshipSharedByOther[i].sponsorshipId,
+        userData._id
+      );
       return sponsorshipInfo;
     }
-      }
+  }
 
-
-
-  public async readActivity(sponsorshipId: any, status: any,userId:any) {
+  public async readActivity(sponsorshipId: any, status: any, userId: any) {
     let sponsorshipInfo: any;
-    let isDeleteable:any;
+    let isDeleteable: any;
     if (status == "readsponsorshipLike") {
-      let sponsorshipInfo:any= await SponsorshipModel.aggregate([
+      let sponsorshipInfo: any = await SponsorshipModel.aggregate([
         {
           $match: {
-            _id:new mongoose.Types.ObjectId(sponsorshipId),
-             isDeleted: false,
+            _id: new mongoose.Types.ObjectId(sponsorshipId),
+            isDeleted: false,
           },
         },
         {
@@ -472,20 +590,18 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
             as: "userdetails",
           },
         },
-      
       ]);
-      sponsorshipInfo= sponsorshipInfo[0].userdetails;
+      sponsorshipInfo = sponsorshipInfo[0].userdetails;
 
-      let userData:any = await userActivity.findOne({userId:userId})
-      userData=userData.userFollowing;
-      sponsorshipInfo.forEach((val:any)=>{
-        if(userData.toString().includes(val._id.toString())){
-          val.isFollow=true
-        }else{
-          val.isFollow=false
+      let userData: any = await userActivity.findOne({ userId: userId });
+      userData = userData.userFollowing;
+      sponsorshipInfo.forEach((val: any) => {
+        if (userData.toString().includes(val._id.toString())) {
+          val.isFollow = true;
+        } else {
+          val.isFollow = false;
         }
-      })
-
+      });
 
       return sponsorshipInfo;
     }
@@ -502,17 +618,17 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
           { _id: sponsorshipInfo[i].userId },
           { fullName: true, profile_picture: true }
         );
-        let commentId=sponsorshipInfo[i]._id;
+        let commentId = sponsorshipInfo[i]._id;
         let comment = sponsorshipInfo[i].comment;
         let DateTime: any = sponsorshipInfo[i].dateTime;
 
-        if(userId==sponsorshipInfo[i].userId) {
-          isDeleteable=true
-        }else{
-          isDeleteable=false
+        if (userId == sponsorshipInfo[i].userId) {
+          isDeleteable = true;
+        } else {
+          isDeleteable = false;
         }
 
-        a.push({ userInfo, comment, DateTime,isDeleteable,commentId });
+        a.push({ userInfo, comment, DateTime, isDeleteable, commentId });
       }
       var y = [...a].reverse();
 
@@ -528,7 +644,6 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
   }
 
   ///////////////////////////////////SponsorshipActivity/////////////////////////////////////////////////
-
 
   public async feadBackSponsorship(
     body: any,
@@ -557,8 +672,6 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
 
     return sponsorshipInfo;
   }
-
-
 
   public async getActivity(userId: any, status: any) {
     let userInfo: any;
@@ -594,9 +707,6 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     }
     return userInfo;
   }
-
-
-
 
   public async RemoveActivity(userId: any, status: any, removeUserId: any) {
     let userInfo: any;
@@ -656,123 +766,93 @@ for (let i = 0; i < sponsorshipInfo.length; i++) {
     return userInfo;
   }
 
-
-
-
-
-
-
   public async filterSponsorship(query: any) {
-    const queryParam:any = {};
+    const queryParam: any = {};
     const searchParams = {
-      academySubTypeId: query.academySubTypeId?query.academySubTypeId:"",
-      academyTypeId: query.academyTypeId?query.academyTypeId:"",
-      stage:query.stage?query.stage:""
+      academySubTypeId: query.academySubTypeId ? query.academySubTypeId : "",
+      academyTypeId: query.academyTypeId ? query.academyTypeId : "",
+      stage: query.stage ? query.stage : "",
     };
 
-if (searchParams.hasOwnProperty('academySubTypeId')&&searchParams.academySubTypeId !=="" ) {
-  queryParam.academySubTypeId = searchParams.academySubTypeId;
-}
+    if (
+      searchParams.hasOwnProperty("academySubTypeId") &&
+      searchParams.academySubTypeId !== ""
+    ) {
+      queryParam.academySubTypeId = searchParams.academySubTypeId;
+    }
 
+    if (
+      searchParams.hasOwnProperty("academyTypeId") &&
+      searchParams.academyTypeId !== ""
+    ) {
+      queryParam.academyTypeId = searchParams.academyTypeId;
+    }
 
-if (searchParams.hasOwnProperty('academyTypeId')&&searchParams.academyTypeId !=="") {
-  queryParam.academyTypeId = searchParams.academyTypeId;
-}
+    if (searchParams.hasOwnProperty("stage") && searchParams.stage !== "") {
+      queryParam.stage = searchParams.stage;
+    }
 
-if (searchParams.hasOwnProperty('stage')&&searchParams.stage!=="") {
-  queryParam.stage = searchParams.stage;
-}
+    if (query.stage) {
+      const sponsorshipData = await SponsorshipModel.aggregate([
+        {
+          $match: {
+            stageId: { $in: [query.stage] },
+            academySubTypeId: new mongoose.Types.ObjectId(
+              query.academySubTypeId
+            ),
+            academyTypeId: new mongoose.Types.ObjectId(query.academyTypeId),
+          },
+        },
+      ]);
+      return sponsorshipData;
+    }
 
-if(query.stage){
-  const sponsorshipData = await SponsorshipModel.aggregate([
-    {
-      $match: {
-        stageId: { $in: [query.stage] }, 
-        academySubTypeId: new mongoose.Types.ObjectId(query.academySubTypeId),
-          academyTypeId: new mongoose.Types.ObjectId(query.academyTypeId)
-         } 
-      
-    
-  }
-  ]
-   
-  );
-  return sponsorshipData
-}
+    if (!query.stage) {
+      const sponsorshipData = await SponsorshipModel.find(queryParam);
 
-
-if(!query.stage){
-  
-  const sponsorshipData = await SponsorshipModel.find(
-    queryParam
-  );
-
-  return sponsorshipData
-}
- 
-
-   
-
- 
- 
+      return sponsorshipData;
+    }
   }
 
   public async applyByUser(userId: any) {
-  
-   let sponsrData:any= await SponsorshipModel.find(
-    {
+    let sponsrData: any = await SponsorshipModel.find({
       applyInfo: {
-         $elemMatch: {
-          userId: userId
-         }
-      }
-   }).sort({createdAt :-1})
+        $elemMatch: {
+          userId: userId,
+        },
+      },
+    },{sponsorshipComment:0,applyInfo:0}).sort({ createdAt: -1 });
 
-
-for (let i = 0; i < sponsrData.length; i++) {
-  sponsrData[i].data1=false
-  if(sponsrData[i].slectedUser.toString().includes(userId.toString())){ 
-
-    sponsrData[i].data1=true
-    
-   }
-   console.log( sponsrData[i].data1," sponsrData[i].data1")
   
-}
 
-
-
-  return sponsrData;
- 
+    return sponsrData;
   }
 
+  public async selectUser(userId: any, sponsorshipId: any) {
+    const sponsrData: any = await SponsorshipModel.findOne({
+      _id: sponsorshipId,
+    });
 
-  public async selectUser(userId: any,sponsorshipId:any) {
- 
+    await SponsorshipModel.updateOne(
+      { _id: sponsorshipId },
+      { $push: { slectedUser: userId } }
+    );
 
+    let userFcmToken = await userDevice.findOne({ userId: userId });
+    let userData = await userDetails.findOne({ _id: userId });
+    if (userFcmToken) {
+      const body = `Hii, ${userData.fullName} you got selected for ${sponsrData.sponsorshipName} scloarship `;
+      sendNotification(
+        userFcmToken.fcmtoken,
+        body,
+        "abc",
+        "sponsorship_home",
+        userId,
+        sponsorshipId,
+        userId
+      );
+    }
 
- const sponsrData:any = await SponsorshipModel.findOne(
-  { _id: sponsorshipId }, 
-)
-
-await SponsorshipModel.updateOne(
-  { _id: sponsorshipId }, 
-  { $push: { slectedUser: userId },
-}
-)
-
-
-  let userFcmToken = await userDevice.findOne({ userId : userId });
-  let userData = await userDetails.findOne({ _id : userId });
-if(userFcmToken){
-const body =`Hii, ${userData.fullName} you got selected for ${sponsrData.sponsorshipName} scloarship `;
-sendNotification(userFcmToken.fcmtoken,body,"abc","sponsorship_home",userId,sponsorshipId,userId);
-}  
-
-
-   return sponsrData;
-  
-   }
-
-
+    return sponsrData;
+  }
 }
