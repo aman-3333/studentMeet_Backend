@@ -122,20 +122,21 @@ export default class academyController {
     const indexData = parseInt(index) -1;
     let academyLike = await academy.aggregate([
     
-    {
-      $geoNear: {
-        near: {
-          type: "Point",
-          coordinates: [userLocation.currentLong, userLocation.currentLat] 
-        },
-        distanceField: "distance",
-        spherical: true,
-        maxDistance: 10000000
-      }
-    },
-    {
-      $sort: { distance: 1 } 
-    },
+    // {
+    //   $geoNear: {
+    //     near: {
+    //       type: "Point",
+    //       coordinates: [userLocation.currentLong, userLocation.currentLat] 
+         
+    //     },
+    //     distanceField: "distance",
+    //     spherical: true,
+    //     maxDistance: 10000000
+    //   }
+    // },
+    // {
+    //   $sort: { distance: 1 } 
+    // },
 
    
       { $skip:  50 * indexData },

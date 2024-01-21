@@ -179,6 +179,24 @@ public async removefollowing(userId: any, followingId: any,userType:any) {
               $inc: { followingCount: -1 } 
             }),
        
+           await userDetails.updateOne({ _id: userId},
+            
+                {
+               
+                  $inc: { allOverFollowingCount: -1 } 
+                }),
+
+              
+
+
+                await userDetails.updateOne({ _id: followingId},
+            
+                    {
+                      $pull: { userFollowers: userId }, 
+                      $inc: { allOverFollowersCount: -1 } 
+                    })
+
+
             userInfo = await userActivity.updateOne({ userId: followingId},
             
                 {
@@ -203,6 +221,13 @@ public async removefollowing(userId: any, followingId: any,userType:any) {
               $inc: { academyFollowingCount: -1 } 
             })
 
+            await userDetails.updateOne({ _id: userId},
+            
+                {
+               
+                  $inc: { allOverFollowingCount: -1 } 
+                }),
+
             await academyModel.findOneAndUpdate({ _id: followingId},
             
                 {
@@ -225,7 +250,12 @@ public async removefollowing(userId: any, followingId: any,userType:any) {
                   $inc: { schoolFollowingCount: -1 } 
                 })
             }   
-    
+            await userDetails.updateOne({ _id: userId},
+            
+                {
+               
+                  $inc: { allOverFollowingCount: -1 } 
+                }),
     
             await school.updateOne({ _id: followingId},
             
@@ -248,7 +278,11 @@ public async removefollowing(userId: any, followingId: any,userType:any) {
                   $inc: { sponsorshipFollowingCount: -1 } 
                 })
 
-
+                await userDetails.updateOne({ _id: userId},
+                    {
+                   
+                      $inc: { allOverFollowingCount: -1 } 
+                    }),
                 await sponsorshipDetails.updateOne({ _id: followingId},
             
                     {

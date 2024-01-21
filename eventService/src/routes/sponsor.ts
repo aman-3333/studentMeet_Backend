@@ -332,6 +332,8 @@ router.get("/readActivity", async (req, res) => {
 })
 
 
+
+
 router.get("/apply/by/user", async (req, res) => {
     try{
         const userId=req.query.userId;

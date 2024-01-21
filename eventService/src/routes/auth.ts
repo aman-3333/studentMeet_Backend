@@ -31,18 +31,7 @@ router.post("/verifyotp", async (req, res) => {
   }
 });
 
-router.post("/editprofile", async (req, res) => {
-  try {
-    const controller = new authController();
-    const body = req.body;
-    const response = await controller.editProfile(body);
-    res
-      .status(200)
-      .json(successResponse("editProfile", response, res.statusCode));
-  } catch (error) {
-    res.status(500).json(errorResponse("error in editProfile", res.statusCode));
-  }
-});
+
 
 
 router.post("/editprofile", async (req, res) => {
@@ -54,6 +43,7 @@ router.post("/editprofile", async (req, res) => {
       .status(200)
       .json(successResponse("editProfile", response, res.statusCode));
   } catch (error) {
+    console.log(error,"error")
     res.status(500).json(errorResponse("error in editProfile", res.statusCode));
   }
 });
