@@ -49,6 +49,17 @@ let  userData = await userDetails.findOne({_id:userId,isDeleted:false})
                   $push: { userFollowers: userId }, 
                   $inc: { followersCount: 1 ,allOverFollowersCount:1} 
                 })
+
+                await userDetails.updateOne({ _id: userId},
+                    {
+                     
+                      $inc: { allOverFollowingCount:1} 
+                    })
+                    await userDetails.updateOne({ _id: followingId},
+                        {
+                        
+                          $inc: { allOverFollowersCount:1} 
+                        })
 const body = `${userData.fullName} is starting following you`
                 sendNotification(userInfo[0].userDevicesObj.fcmtoken,body,"abc","school_home","followersData[i]","65280dd8b19d1481f3324956",userData._id);
     }
@@ -81,6 +92,12 @@ if(userInfo[0].isProfilePublic == false){
           $inc: { academyFollowingCount: 1 ,allOverFollowingCount:1} 
         }),
            
+   await userDetails.updateOne({ _id: userId},
+            
+            {
+           
+              $inc: { allOverFollowingCount:1} 
+            }),
   
 
             await academyModel.findOneAndUpdate({
@@ -101,7 +118,13 @@ if(userInfo[0].isProfilePublic == false){
                 }),
                    
           
-        
+                await userDetails.updateOne({ _id: userId},
+            
+                    {
+                   
+                      $inc: { allOverFollowingCount:1} 
+                    }),
+          
                     await sponsorshipDetails.findOneAndUpdate({
                         _id: followingId,
                     }, {
@@ -119,6 +142,13 @@ if(userInfo[0].isProfilePublic == false){
                       $inc: { schoolFollowingCount: 1 ,allOverFollowingCount:1} 
                     }),
                        
+                    await userDetails.updateOne({ _id: userId},
+            
+                        {
+                       
+                          $inc: { allOverFollowingCount:1} 
+                        }),
+              
               
             
                         await school.findOneAndUpdate({

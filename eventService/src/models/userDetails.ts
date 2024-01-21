@@ -27,6 +27,9 @@ const userSchema = new Schema(
     about:{ type: String ,default:""},
     contact: { type: Number, trim: true,default:0 },
     is_bankDetail: { type: Boolean, default: false },
+    
+    allOverFollowingCount: { type: Number, default: 0 },
+    allOverFollowersCount: { type: Number, default: 0 },
     country_code: { type: Number, trim: true,default:0 },
     whatsapp_contact: { type: Number, trim: true,default:0 },
     whatsapp_country_code: { type: Number, trim: true ,default:0},
