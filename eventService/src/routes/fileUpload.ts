@@ -74,13 +74,7 @@ let storage = multer.memoryStorage({
 let upload = multer({ storage }).single('galleryImage')
 
 
-
-
-
-
-
 var s3 = new aws.S3({
-  
     accessKeyId: "AKIAYU4IZUHWKHIADRZL",
     secretAccessKey: "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",
 
@@ -111,7 +105,7 @@ var upload1 = multer({
 //Uploading Multiple Files to aws s3 bucket
 router.post('/upload', upload1.array('file', 50), function (req:any, res:any) {
    
-    
+    console.log(req.files,"req.files")
    res.send({
        data: req.files,
        msg: 'Successfully uploaded ' + req.files.length + ' files!'

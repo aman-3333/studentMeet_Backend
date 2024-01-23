@@ -150,11 +150,11 @@ public async getpartnerlist(){
     }
 
     public async getSponsorsPartnerInfoById(partnerId: any) {
-        let SponsorsPartnerInfo: any = await SponsorsPartner.aggregate([{
-            "$match": {
+        let SponsorsPartnerInfo: any = await SponsorsPartner.findOne({
+           
                 _id: partnerId
-            }
-        }])
+            
+    })
         return SponsorsPartnerInfo;
     }
 

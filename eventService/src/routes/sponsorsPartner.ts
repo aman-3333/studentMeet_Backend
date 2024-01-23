@@ -105,7 +105,7 @@ router.get("/getSponsorsPartnerAdminPannel", checkAuth, async (req, res) => {
 
 
 
-router.get("/InfoById", checkAuth, async (req, res) => {
+router.get("/InfoById",  async (req, res) => {
     try {
         const partnerId: any = req.query.partnerId;
         const controller = new SponsorsPartnerController();
