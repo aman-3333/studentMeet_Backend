@@ -49,7 +49,7 @@ router.get("/applied/user", async (req, res) => {
         const response:any= await controller.getAppliedUser(sponsorshipId);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {
-       
+       console.log(error,"error")
         res.status(500).json(errorResponse("getParticipantsList", res.statusCode));
     }
 });
@@ -353,6 +353,20 @@ router.post("/select/user", async (req, res) => {
         const sponsorshipId=req.body.sponsorshipId;
         const controller=new SponsorshipController();
         const response:any =await controller.selectUser(userId,sponsorshipId);
+        res.status(200).json(successResponse("apply by user",response,res.statusCode));
+    }catch(error) {
+      
+        res.status(500).json(errorResponse("error in apply by user", res.statusCode));
+    }
+})
+
+
+router.post("/remove/applied/user", async (req, res) => {
+    try{
+        const userId=req.body.userId;
+        const sponsorshipId=req.body.sponsorshipId;
+        const controller=new SponsorshipController();
+        const response:any =await controller.removedAppliedUser(userId,sponsorshipId);
         res.status(200).json(successResponse("apply by user",response,res.statusCode));
     }catch(error) {
       

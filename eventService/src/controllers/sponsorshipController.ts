@@ -22,6 +22,7 @@ export default class SponsorshipController {
       academyTypeId,
       academySubTypeId,
       eligibileId,
+      stageId
     } = body;
 
     let createSponsorsPartnerInfo = await SponsorshipModel.create({
@@ -37,6 +38,7 @@ export default class SponsorshipController {
       academyTypeId: academyTypeId,
       academySubTypeId: academySubTypeId,
       eligibileId: eligibileId,
+      stageId:stageId
     });
 
     return createSponsorsPartnerInfo;
@@ -488,17 +490,53 @@ export default class SponsorshipController {
       _id: sponsorshipId,
       isDeleted: false,
     });
-    let data = [];
 
-    appliedUserInfo = appliedUserInfo.applyInfo;
-    for (let i = 0; i < appliedUserInfo.length; i++) {
-      let userInfo = await userDetails
-        .findOne({ _id: appliedUserInfo[i].userId })
-        .lean();
+    appliedUserInfo = appliedUserInfo.applyInfo; 
+  let  userInfo = await userDetails.aggregate([
+      {
+        $match: {
+          _id: {$in:appliedUserInfo.map((val:any)=>new mongoose.Types.ObjectId(val.userId))},
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "profectionDomain",
+          from: "academytypes",
+          foreignField: "_id",
+          as: "profectionDomain",
+        },
+      },
+      { $unwind: { path: "$profectionDomain", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "profection",
+          from: "academysubtypes",
+          foreignField: "_id",
+          as: "profection",
+        },
+      },
+      { $unwind: { path: "$profection", preserveNullAndEmptyArrays: true } },
 
-      data.push(userInfo);
-    }
-    return data;
+      {
+        $lookup: {
+          localField: "stages",
+          from: "stages",
+          foreignField: "_id",
+          as: "stages",
+        },
+      },
+  
+
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+    ]);
+
+ 
+    return userInfo;
   }
 
   public async getsponsorshipByPartnerId(sponsorshipPartnerId: any) {
@@ -516,21 +554,23 @@ export default class SponsorshipController {
       sponsorshipPartnerId: sponsorshipPartnerId,
       isDeleted: false,
     });
-    for (let i = 0; i < sponsorshipInfo.length; i++) {
-      postInfo = await post.aggregate([
-        {
-          $match: {
-            sponsorId: sponsorshipInfo[i]._id,
-            isDeleted: false,
-          },
+
+
+    postInfo = await post.aggregate([
+      {
+        $match: {
+          sponsorId: {$in:sponsorshipInfo.map((val:any)=>val._id)},
+          isDeleted: false,
         },
-        {
-          $sort: {
-            createdAt: -1,
-          },
+      },
+      {
+        $sort: {
+          createdAt: -1,
         },
-      ]);
-    }
+      },
+    ]);
+
+  
     return postInfo;
   }
 
@@ -855,4 +895,19 @@ export default class SponsorshipController {
 
     return sponsrData;
   }
+
+
+  public async removedAppliedUser(userId: any, sponsorshipId: any) {
+   const sponsorshipInfo = await SponsorshipModel.updateOne(
+      { _id: sponsorshipId },
+      {
+        $pull: { applyInfo: { userId:userId } },
+          $inc: { applyCount: -1 },
+      }
+    );
+   
+
+    return sponsorshipInfo;
+  }
+  
 }
