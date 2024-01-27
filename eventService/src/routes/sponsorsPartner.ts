@@ -39,12 +39,12 @@ router.patch("/edit/:id",  async (req, res) => {
         const response: IPartner = await controller.editSponsorsPartner(body, SponsorsPartnerId);
         res.status(200).json(successResponse("edit shop", response, res.statusCode));
     } catch (error) {
-    
+    console.log(error,"error")
         res.status(500).json(errorResponse("error in edit shop", res.statusCode));
     }
 });
 
-router.get("/getInfo", checkAuth, async (req, res) => {
+router.get("/getInfo",  async (req, res) => {
     try {
         const userId = req.query.userId;
         const controller = new SponsorsPartnerController();

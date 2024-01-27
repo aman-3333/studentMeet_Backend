@@ -76,7 +76,7 @@ const indexData = parseInt(index) -1;
       {
         $lookup: {
           localField: "sponsorId",
-          from: "sponsorshipdetails",
+          from: "sponsor_partners",
           foreignField: "_id",
           as: "sponsorshipObj",
         },
@@ -196,8 +196,8 @@ let userData:any = await userActivity.findOne({userId:user._id})
       }
       if (val.postUserType=="sponsor") {
         val.ownerId = val.sponsorId;
-        val.ownerPic=val.sponsorshipObj&&val.sponsorshipObj.sponsorshipProfileImage?val.sponsorshipObj.sponsorshipProfileImage:"";
-        val.ownerName=val.sponsorshipObj&&val.sponsorshipObj.sponsorshipName?val.sponsorshipObj.sponsorshipName:"";
+        val.ownerPic=val.sponsorshipObj&&val.sponsorshipObj.companyLogo?val.sponsorshipObj.companyLogo:"";
+        val.ownerName=val.sponsorshipObj&&val.sponsorshipObj.companyName?val.sponsorshipObj.companyName:"";
       }
       if (val.postUserType=="academy") {
         val.ownerId = val.academyId;

@@ -98,7 +98,7 @@ public async getpartnerlist(){
     }
 
     public async getSponsorsPartnerByUserId(userId: any) {
-        const SponsorsPartnerInfo: IPartner = await SponsorsPartner.findOne({ SponsorsPartnerId: userId, isDeleted: false }).lean();
+        const SponsorsPartnerInfo: IPartner = await SponsorsPartner.findOne({ _id: userId, isDeleted: false }).lean();
         return SponsorsPartnerInfo;
     }
 

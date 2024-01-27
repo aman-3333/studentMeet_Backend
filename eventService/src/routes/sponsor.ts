@@ -77,10 +77,11 @@ router.get("/post/partner/id", async (req, res) => {
     try {
         const controller = new SponsorshipController();
         const sponsorshipPartnerId = req.query.sponsorshipPartnerId;
-        const response:any= await controller.getsponsorshipPostPartnerId(sponsorshipPartnerId);
+        const index = req.query.index;
+        const response:any= await controller.getsponsorshipPostPartnerId(sponsorshipPartnerId,index);
         res.status(200).json(successResponse("getParticipantsList", response, res.statusCode));
     } catch (error) {
-       
+       console.log(error,"error")
         res.status(500).json(errorResponse("getParticipantsList", res.statusCode));
     }
 });

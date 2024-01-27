@@ -5,6 +5,7 @@ import academyModel from "../models/academy";
 import sponsorshipDetails from "../models/sponsorshipDetails";
 import school from "../models/school";
 import { sendNotification } from "../services/notification";
+import sponsorsPartner from "../models/sponsorPartner";
 const mongoose = require("mongoose");
 var currentdate = new Date(); 
 export default class followersController {
@@ -460,29 +461,33 @@ public async  getFollowers(userId:any,userType:any){
     
     }
     if(userType=="sponsorship"){
-        for (let i = 0; i < userInfo.sponsorshipFollowers.length; i++) {
-            let sponsorshipFollowers=await sponsorshipDetails.findOne({_id:userInfo.sponsorshipFollowers[i],isDeleted:false}).lean()
-            data.push(sponsorshipFollowers)
-            
-           }
+        data = await sponsorsPartner.aggregate([{
+            $match:{
+                _id:{$in:userInfo.sponsorshipFollowers.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+       
 
     
     }
 
     if(userType=="school"){
-        for (let i = 0; i < userInfo.schoolFollowers.length; i++) {
-            let schoolFollowers=await school.findOne({_id:userInfo.schoolFollowers[i],isDeleted:false}).lean()
-            data.push(schoolFollowers)
-            
-           }
+        data = await school.aggregate([{
+            $match:{
+                _id:{$in:userInfo.schoolFollowers.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+      
 
     
     }
     if(userType=="user"){
-        for (let i = 0; i < userInfo.userFollowers.length; i++) {
-            let userFollowers=await userDetails.findOne({_id:userInfo.userFollowers[i],isDeleted:false})
-            data.push(userFollowers)
-           }
+        data = await userDetails.aggregate([{
+            $match:{
+                _id:{$in:userInfo.userFollowers.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+       
     }
    
    
@@ -491,43 +496,47 @@ public async  getFollowers(userId:any,userType:any){
 
 
 public async  getFollowing(userId:any,userType:any){
-    let data:any =[]
+    let data:any;
     let userInfo:any=await userActivity.findOne({ userId:userId })
  
 
   
     if(userType=="academy"){
-        for (let i = 0; i < userInfo.academyFollowing.length; i++) {
-            let academyFollowing=await academyModel.findOne({_id:userInfo.academyFollowing[i]}).lean()
-            data.push(academyFollowing)
-            
-           }
+        data = await academyModel.aggregate([{
+            $match:{
+                _id:{$in:userInfo.academyFollowing.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+       
       
     }
     if(userType=="sponsorship"){
-        for (let i = 0; i < userInfo.sponsorshipFollowing.length; i++) {
-            let sponsorshipFollowing=await sponsorshipDetails.findOne({_id:userInfo.sponsorshipFollowing[i],isDeleted:false}).lean()
-            data.push(sponsorshipFollowing)
-            
-           }
+        data = await sponsorsPartner.aggregate([{
+            $match:{
+                _id:{$in:userInfo.sponsorshipFollowing.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+        
     
     }
 
     if(userType=="school"){
-        for (let i = 0; i < userInfo.schoolFollowing.length; i++) {
-            let schoolFollowers=await school.findOne({_id:userInfo.schoolFollowing[i],isDeleted:false}).lean()
-            data.push(schoolFollowers)
-            
-           }
+        data = await school.aggregate([{
+            $match:{
+                _id:{$in:userInfo.schoolFollowing.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+        
 
     
     }
     if(userType=="user"){
-      
-           for (let i = 0; i < userInfo.userFollowing.length; i++) {
-            let userFollowing=await userDetails.findOne({_id:userInfo.userFollowing[i],isDeleted:false})
-            data.push(userFollowing)
-           }
+        data = await userDetails.aggregate([{
+            $match:{
+                _id:{$in:userInfo.userFollowing.map((val:any)=>val)},isDeleted:false
+            }
+        }])
+        
 
     
     }
