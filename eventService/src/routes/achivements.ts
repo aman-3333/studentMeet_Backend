@@ -212,6 +212,29 @@ router.get("/byuserid", checkAuth, async (req, res) => {
   }
 });
 
+router.get("/byuserid/admin",  async (req, res) => {
+  try {
+    const controller = new AchivementController();
+    const userId = req.query.userId;
+   
+    const index =req.query.index;
+    const response: IAchivement[] = await controller.getUserAdminAchivement(
+      userId,
+     
+      index
+    );
+    res
+      .status(200)
+      .json(
+        successResponse("getUserAchivement list", response, res.statusCode)
+      );
+  } catch (error) {
+    res
+      .status(500)
+      .json(errorResponse("error in getUserAchivement list", res.statusCode));
+  }
+});
+
 router.get("/infobyid", async (req, res) => {
   try {
     const AchivementId: any = req.query.AchivementId;

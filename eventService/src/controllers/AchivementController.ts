@@ -837,6 +837,130 @@ export default class AchivementController {
   }
 
 
+  public async getUserAdminAchivement(userId: any, index:any) {
+    const indexData = parseInt(index) -1;
+    
+      const achivementList = await Achivement.aggregate([
+        {
+          $sort: {
+            createdAt: -1
+          }
+        },
+        { $skip:  50 * indexData },
+        { $limit: 50},
+        {
+          $match: {
+            user_id: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $lookup: {
+            localField: "user_id",
+            from: "userdetails",
+            foreignField: "_id",
+            as: "userDetail",
+          },
+        },
+        { $unwind: { path: "$userDetail", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "schoolId",
+            from: "schools",
+            foreignField: "_id",
+            as: "school",
+          },
+        },
+        { $unwind: { path: "$school", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "city",
+            from: "cities",
+            foreignField: "_id",
+            as: "city",
+          },
+        },
+        { $unwind: { path: "$city", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "state",
+            from: "states",
+            foreignField: "_id",
+            as: "state",
+          },
+        },
+        { $unwind: { path: "$state", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "country",
+            from: "countries",
+            foreignField: "_id",
+            as: "country",
+          },
+        },
+        { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+
+       
+        {
+          $addFields: {
+            isEditable: true
+          }
+        },
+
+        {
+          $addFields: {
+            formattedCreatedAt: {
+              $let: {
+                vars: {
+                  timeDifferenceMillis: {
+                    $subtract: [new Date(), "$createdAt"]
+                  }
+                },
+                in: {
+                  $cond: {
+                    if: {
+                      $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
+                    },
+                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                    else: {
+                      $cond: {
+                        if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                        then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                        else: {
+                          $cond: {
+                            if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                            then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                            else: {
+                              $cond: {
+                                if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
+                                then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                                else: {
+                                  $cond: {
+                                    if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
+                                    then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
+                                    else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]);
+  
+  
+  
+      return achivementList;
+    
+  
+   
+  }
 
 
 
