@@ -76,6 +76,7 @@ router.post("/getmultiple/profile", async (req, res) => {
   }
 });
 
+
 router.get("/search/user", async (req, res) => {
   try {
     const search: any = req.query.search;

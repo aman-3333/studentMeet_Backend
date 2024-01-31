@@ -239,6 +239,21 @@ router.get("/filter", async (req, res) => {
 })
 
 
+router.get("/filter/user", async (req, res) => {
+    try{
+        
+   
+        const query=req.query;
+        const controller=new SponsorshipController();
+        const response:any =await controller.filterUser(query);
+        res.status(200).json(successResponse("readActivity",response,res.statusCode));
+    }catch(error) {
+      console.log(error,"error");
+        res.status(500).json(errorResponse("error in readActivity", res.statusCode));
+    }
+})
+
+
 
 router.post("/apply", async (req, res) => {
     try {

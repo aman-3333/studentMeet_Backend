@@ -491,11 +491,11 @@ export default class SponsorshipController {
       isDeleted: false,
     });
 
-    appliedUserInfo = appliedUserInfo.applyInfo; 
+   const appliedUser = appliedUserInfo.applyInfo; 
   let  userInfo = await userDetails.aggregate([
       {
         $match: {
-          _id: {$in:appliedUserInfo.map((val:any)=>new mongoose.Types.ObjectId(val.userId))},
+          _id: {$in:appliedUser.map((val:any)=>new mongoose.Types.ObjectId(val.userId))},
           isDeleted: false,
         },
       },
@@ -534,7 +534,12 @@ export default class SponsorshipController {
         },
       },
     ]);
-
+    userInfo.forEach((val)=>{
+      val.isSelected = false
+      if(appliedUserInfo.slectedUser.includes(val._id)){
+        val.isSelected = true
+      }
+    })
  
     return userInfo;
   }
@@ -943,6 +948,49 @@ export default class SponsorshipController {
 
     if (!query.stage) {
       const sponsorshipData = await SponsorshipModel.find(queryParam);
+
+      return sponsorshipData;
+    }
+  }
+
+
+  public async filterUser(query: any) {
+    const queryParam: any = {};
+    const searchParams = {
+      profectionDomain: query.profectionDomain ? query.profectionDomain : "",
+      profection: query.profection ? query.profection : "",
+      stage: query.stage ? query.stage : "",
+    };
+
+    
+
+    if (
+      searchParams.hasOwnProperty("profectionDomain") &&
+      searchParams.profectionDomain !== ""
+    ) {
+      queryParam.profectionDomain = searchParams.profectionDomain;
+    }
+
+    if (
+      searchParams.hasOwnProperty("profection") &&
+      searchParams.profection !== ""
+    ) {
+      queryParam.profection = searchParams.profection;
+    }
+
+    if (searchParams.hasOwnProperty("stage") && searchParams.stage !== "") {
+      queryParam.stage = searchParams.stage;
+    }
+
+    if (query.stage) {
+      const sponsorshipData = await userDetails.find({stages:  { $in : [query.stage]},profection:query.profection,profectionDomain:query.profectionDomain})
+      
+      
+      return sponsorshipData;
+    }
+
+    if (!query.stage) {
+      const sponsorshipData = await userDetails.find(queryParam);
 
       return sponsorshipData;
     }
