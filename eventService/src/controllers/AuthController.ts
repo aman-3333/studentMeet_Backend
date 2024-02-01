@@ -299,7 +299,7 @@ else{
    
     userData = await Users.find({
       contact: body.contact,
-      country_code: body.country_code,
+    
       isDeleted: false,
     }).lean();
    
@@ -308,7 +308,7 @@ else{
      const bankDetail = await bankDetails.findOne({user_id:userData[i]._id})
 
      const activity = await userActivity.findOne({userId:userData[i]._id})
-     userData.userActivity = activity
+     userData[i].userActivity = activity
      if(bankDetail){
       userData[i].bankDetails = bankDetail
      }
