@@ -206,7 +206,7 @@ $match:{
 
           formattedCreatedAt: {
             $dateToString: {
-              format: "%m/%d/%Y %H:%M",
+              format: "%d/%m/%Y  %H:%M",
               date: {
                 $add: [
                   "$createdAt", // assuming createdAt is your date field
@@ -303,7 +303,7 @@ $match:{
         $addFields: {
           formattedCreatedAt: {
             $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              format: "%d/%m/%Y  %H:%M", // Customize the format as needed
               date:"$adjustedTime"
             }
           }
@@ -314,7 +314,7 @@ $match:{
         $addFields: {
           formattedUpdatedAt: {
             $dateToString: {
-              format: "%d/%m/%Y %H:%M", // Customize the format as needed
+              format: "%d/%m/%Y  %H:%M", // Customize the format as needed
               date: "$adjustedOneTime"
             }
           }

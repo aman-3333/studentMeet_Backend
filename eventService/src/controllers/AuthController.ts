@@ -742,8 +742,58 @@ existingUser= existingUser[0]
 
 
     public async searchUser(search:any){
-let userData=await Users.find( { fullName: { $regex: search, $options: "i" } })
-return userData
+
+
+
+
+let  userData = await Users.aggregate([
+  {
+    $match: {
+      isDeleted: false,
+      fullName: {
+        $regex: search,
+        $options: "i",
+      },
+    },
+  },
+  {
+    $lookup: {
+      localField: "profectionDomain",
+      from: "academytypes",
+      foreignField: "_id",
+      as: "profectionDomain",
+    },
+  },
+  { $unwind: { path: "$profectionDomain", preserveNullAndEmptyArrays: true } },
+  {
+    $lookup: {
+      localField: "profection",
+      from: "academysubtypes",
+      foreignField: "_id",
+      as: "profection",
+    },
+  },
+  { $unwind: { path: "$profection", preserveNullAndEmptyArrays: true } },
+
+  {
+    $lookup: {
+      localField: "stages",
+      from: "stages",
+      foreignField: "_id",
+      as: "stages",
+    },
+  },
+
+
+  {
+    $sort: {
+      createdAt: -1,
+    },
+  },
+]);
+
+return userData;
+
     }
 
 
