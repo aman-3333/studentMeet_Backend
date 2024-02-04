@@ -982,16 +982,107 @@ export default class SponsorshipController {
       queryParam.stage = searchParams.stage;
     }
 
+  
+
     if (query.stage) {
-      const sponsorshipData = await userDetails.find({stages:  { $in : [query.stage]},profection:query.profection,profectionDomain:query.profectionDomain})
+      let  sponsorshipData = await userDetails.aggregate([
+        {
+          $match: {
+            isDeleted: false,
+             stages:new mongoose.Types.ObjectId(query.stage),
+            profection: new mongoose.Types.ObjectId(query.profection),
+            profectionDomain: new mongoose.Types.ObjectId(query.profectionDomain),
+          },
+        },
+        {
+          $lookup: {
+            localField: "profectionDomain",
+            from: "academytypes",
+            foreignField: "_id",
+            as: "profectionDomain",
+          },
+        },
+        { $unwind: { path: "$profectionDomain", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "profection",
+            from: "academysubtypes",
+            foreignField: "_id",
+            as: "profection",
+          },
+        },
+        { $unwind: { path: "$profection", preserveNullAndEmptyArrays: true } },
+      
+        {
+          $lookup: {
+            localField: "stages",
+            from: "stages",
+            foreignField: "_id",
+            as: "stages",
+          },
+        },
+      
+      
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+      ]);
+    
       
       
       return sponsorshipData;
     }
 
     if (!query.stage) {
-      const sponsorshipData = await userDetails.find(queryParam);
-
+      let  sponsorshipData = await userDetails.aggregate([
+        {
+          $match: {
+            isDeleted: false,
+            
+            profection: new mongoose.Types.ObjectId(query.profection),
+            profectionDomain: new mongoose.Types.ObjectId(query.profectionDomain),
+          },
+        },
+        {
+          $lookup: {
+            localField: "profectionDomain",
+            from: "academytypes",
+            foreignField: "_id",
+            as: "profectionDomain",
+          },
+        },
+        { $unwind: { path: "$profectionDomain", preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            localField: "profection",
+            from: "academysubtypes",
+            foreignField: "_id",
+            as: "profection",
+          },
+        },
+        { $unwind: { path: "$profection", preserveNullAndEmptyArrays: true } },
+      
+        {
+          $lookup: {
+            localField: "stages",
+            from: "stages",
+            foreignField: "_id",
+            as: "stages",
+          },
+        },
+      
+      
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+      ]);
+    
+      
+      
       return sponsorshipData;
     }
   }
