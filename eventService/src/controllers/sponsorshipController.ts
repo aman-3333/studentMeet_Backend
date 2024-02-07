@@ -565,7 +565,7 @@ export default class SponsorshipController {
     const indexData = parseInt(index) -1;
     let PostLike = await post.aggregate([
       { $match: {
-        sponsorId: sponsorshipPartnerId,
+        sponsorId:new mongoose.Types.ObjectId(sponsorshipPartnerId), 
       isDeleted: false 
     } },
       {
