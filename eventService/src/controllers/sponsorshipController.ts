@@ -112,7 +112,7 @@ export default class SponsorshipController {
                           $trunc: { $divide: ["$$timeDifferenceMillis", 1000] },
                         },
                       },
-                      "s ago",
+                      "s ",
                     ],
                   },
                   else: {
@@ -127,7 +127,7 @@ export default class SponsorshipController {
                               },
                             },
                           },
-                          "m ago",
+                          "m ",
                         ],
                       },
                       else: {
@@ -145,7 +145,7 @@ export default class SponsorshipController {
                                   },
                                 },
                               },
-                              "h ago",
+                              "h ",
                             ],
                           },
                           else: {
@@ -165,7 +165,7 @@ export default class SponsorshipController {
                                       },
                                     },
                                   },
-                                  "d ago",
+                                  "d ",
                                 ],
                               },
                               else: {
@@ -188,7 +188,7 @@ export default class SponsorshipController {
                                           },
                                         },
                                       },
-                                      "mo ago",
+                                      "mo ",
                                     ],
                                   },
                                   else: {
@@ -203,7 +203,7 @@ export default class SponsorshipController {
                                           },
                                         },
                                       },
-                                      "y ago",
+                                      "y ",
                                     ],
                                   },
                                 },
@@ -692,24 +692,24 @@ export default class SponsorshipController {
                   if: {
                     $lt: ["$$timeDifferenceMillis", 60000] // Less than 1 minute
                   },
-                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s ago"] },
+                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 1000] } } }, "s "] },
                   else: {
                     $cond: {
                       if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
-                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m ago"] },
+                      then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 60000] } } }, "m "] },
                       else: {
                         $cond: {
                           if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
-                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h ago"] },
+                          then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 3600000] } } }, "h "] },
                           else: {
                             $cond: {
                               if: { $lt: ["$$timeDifferenceMillis", 2592000000] }, // Less than 30 days (approximating to 30 days as 1 month)
-                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d ago"] },
+                              then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 86400000] } } }, "d "] },
                               else: {
                                 $cond: {
                                   if: { $lt: ["$$timeDifferenceMillis", 31536000000] }, // Less than 365 days (approximating to 365 days as 1 year)
-                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo ago"] },
-                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y ago"] }
+                                  then: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 2592000000] } } }, "mo "] },
+                                  else: { $concat: [{ $toString: { $trunc: { $divide: ["$$timeDifferenceMillis", 31536000000] } } }, "y "] }
                                 }
                               }
                             }
