@@ -545,18 +545,17 @@ return userData
     if (type == "sponsor") {
    
 
-      let existingUser: any = await sponsorPartner.aggregate([{
-        $match:{
+      let existingUser: any = await sponsorPartner.findOne({
+      
           email: email
-        }
-      },
+        
+      }
  
-      ])
+      )
      
       if (!existingUser) {
         return { message: "User not exists" };
       }
-    console.log(existingUser,"existingUser")
       // const matchPassword = await bcrypt.compare(
       //   password,
       //   existingUser.password
@@ -567,7 +566,7 @@ return userData
       // }
 
       const token = jwt.sign(
-        { email: existingUser[0].email, id: existingUser[0]._id },
+        { email: existingUser.email, id: existingUser._id },
         "Stack",
         {
           expiresIn: expiration,
@@ -575,7 +574,7 @@ return userData
         SECRET_KEY
       );
      await sponsorPartner.findOneAndUpdate(
-        { _id: existingUser[0]._id },
+        { _id: existingUser._id },
         { $set: { token: token } }
       );
       return existingUser;

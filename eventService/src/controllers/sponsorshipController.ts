@@ -77,6 +77,17 @@ export default class SponsorshipController {
           createdAt: -1,
         },
       },
+
+      {
+        $lookup: {
+          localField: "sponsorshipPartnerId",
+          from: "sponsor_partners",
+          foreignField: "_id",
+          as: "sponsorshipPartner",
+        },
+      },
+      { $unwind: { path: "$sponsorshipPartner", preserveNullAndEmptyArrays: true } },
+
       { $skip: 50 * indexData },
       { $limit: 50 },
       { $match: { isDeleted: false } },
