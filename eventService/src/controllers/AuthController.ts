@@ -550,15 +550,7 @@ return userData
           email: email
         }
       },
-        {
-          $lookup: {
-            localField: "_id",
-            from: "sponsorshipdetails",
-            foreignField: "sponsorshipPartnerId",
-            as: "sponsorshipdetails",
-          },
-        },
-        { $unwind: { path: "$sponsorshipdetails", preserveNullAndEmptyArrays: true } },
+ 
       ])
      
       if (!existingUser) {

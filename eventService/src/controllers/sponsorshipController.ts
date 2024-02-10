@@ -544,13 +544,62 @@ export default class SponsorshipController {
     return userInfo;
   }
 
-  public async getsponsorshipByPartnerId(sponsorshipPartnerId: any) {
-    var sponsorshipInfo: any = await SponsorshipModel.find({
-      sponsorshipPartnerId: sponsorshipPartnerId,
-      isDeleted: false,
-    });
 
-    return sponsorshipInfo;
+
+
+  public async getsponsorshipByPartnerId(sponsorshipPartnerId: any) {
+    const data=   await SponsorshipModel.aggregate([
+  
+      {
+        $sort: {
+          createdAt: -1
+        }
+      },
+  
+        {
+  $match:{
+    sponsorshipPartnerId:new mongoose.Types.ObjectId(sponsorshipPartnerId)
+  }
+        },
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            // Adding 330 minutes to the createdAt field
+            adjustedOneTime: { $add: ["$createdAt", 330 * 60 * 1000] }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedCreatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y  %H:%M", // Customize the format as needed
+                date:"$adjustedTime"
+              }
+            }
+          }
+        },
+  
+        {
+          $addFields: {
+            formattedUpdatedAt: {
+              $dateToString: {
+                format: "%d/%m/%Y  %H:%M", // Customize the format as needed
+                date: "$adjustedOneTime"
+              }
+            }
+          }
+        }
+      ])
+  
+  
+      return data
   }
 
   public async getsponsorshipPostPartnerId(sponsorshipPartnerId: any,index:any) {
