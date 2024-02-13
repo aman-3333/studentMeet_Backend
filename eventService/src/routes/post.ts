@@ -216,6 +216,20 @@ router.post("/delete", async (req, res) => {
   }
 });
 
+router.post("/delete/admin", async (req, res) => {
+  try {
+    const postId = req.body._id;
+    const controller = new PostController();
+    const response = await controller.deletePost(postId);
+    res
+      .status(200)
+      .json(successResponse("delete Post", response, res.statusCode));
+  } catch (error) {
+    res.status(500).json(errorResponse("error in delete Post", res.statusCode));
+  }
+});
+
+
 router.get("/search", async (req, res) => {
   try {
     const search = req.query.search;
@@ -298,5 +312,7 @@ router.get("/search", async (req, res) => {
 //         res.status(500).json(errorResponse("error in suggestion schools", res.statusCode));
 //     }
 // });
+
+
 
 export default router;
