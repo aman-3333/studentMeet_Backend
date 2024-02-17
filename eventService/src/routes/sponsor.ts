@@ -27,9 +27,9 @@ console.log(body,"body");
 
 
 
-router.patch("/edit/:id", async (req, res) => {
+router.post("/edit", async (req, res) => {
     try {
-        const sponsorshipId = req.params.id;
+        const sponsorshipId = req.body.id;
 
         const body = req.body as ISponsorship;
         const controller = new SponsorshipController();
@@ -126,7 +126,7 @@ router.get("/byid", async (req, res) => {
         const response: any = await controller.getsponsorshipInfo(sponsorshipId,status);
         res.status(200).json(successResponse("get Sponsorship by Id ", response, res.statusCode));
     } catch (error) {
-   
+   console.log(error,"error")
         res.status(500).json(errorResponse("error in get Sponsorship by Id", res.statusCode));
     }
 });

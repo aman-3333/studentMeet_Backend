@@ -8,8 +8,8 @@ const sponsorshipSchema = new Schema(
     sponsorshipProfileImage: { type: String },
     sponsorshipDesription: { type: String },
     sponsorshipTermsAndCondition: { type: String },
-    academyTypeId: { type: Schema.Types.ObjectId, ref: "academyType" },
-    academySubTypeId: { type: Schema.Types.ObjectId, ref: "academySubType" },
+    academyTypeId: { type: Schema.Types.ObjectId, ref: "academytypes" },
+    academySubTypeId: { type: Schema.Types.ObjectId, ref: "academysubtypes" },
     sponsorshipPartnerId: {
       type: Schema.Types.ObjectId,
       ref: "sponsorPartner",

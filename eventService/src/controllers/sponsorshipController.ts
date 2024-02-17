@@ -51,10 +51,7 @@ export default class SponsorshipController {
         body,
         { new: true }
       ).lean();
-    await SponsorshipModel.findOneAndUpdate(
-      { _id: sponsorshipId },
-      { $set: { sponsorshipName: sponsorshipInfo.sponsorshipName } }
-    );
+  
     return sponsorshipInfo;
   }
 
@@ -235,11 +232,44 @@ export default class SponsorshipController {
   }
 
   public async getsponsorshipInfo(sponsorshipId: any, status: any) {
-    let sponsorshipInfo: any;
-    sponsorshipInfo = await SponsorshipModel.find({
-      _id: sponsorshipId,
-      isDeleted: false,
-    });
+    let sponsorshipInfo = await SponsorshipModel.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(
+            sponsorshipId
+          ),
+          isDeleted: false,
+        },
+      },
+      {
+        $lookup: {
+          localField: "academyTypeId",
+          from: "academytypes",
+          foreignField: "_id",
+          as: "academyType",
+        },
+      },
+      { $unwind: { path: "$academyType", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          localField: "stageId",
+          from: "stages",
+          foreignField: "_id",
+          as: "stage",
+        },
+      },
+
+      {
+        $lookup: {
+          localField: "academySubTypeId",
+          from: "academysubtypes",
+          foreignField: "_id",
+          as: "academySubType",
+        },
+      },
+      { $unwind: { path: "$academySubType", preserveNullAndEmptyArrays: true } },
+    ]);
+
     return sponsorshipInfo;
   }
 
