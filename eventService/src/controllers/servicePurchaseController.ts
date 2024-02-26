@@ -45,14 +45,7 @@ export default class servicePurchaseController {
               on_hold_until: 1771222870
             }
           ]
-        })
-
-
-
-
-
-
-
+        });
         return orderDetail;
     
     }

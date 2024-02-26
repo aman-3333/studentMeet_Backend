@@ -4,6 +4,7 @@ import userDetails from "../models/userDetails";
 import post from "../models/post";
 import userDevice from "../models/userDevice";
 import { sendNotification } from "../services/notification";
+import SponsorsPartner, { IPartner } from "../models/sponsorPartner";
 const mongoose = require("mongoose");
 let currentTime: any = new Date();
 export default class SponsorshipController {
@@ -458,11 +459,11 @@ export default class SponsorshipController {
   }
 
   public async searchSponsorship(search: any) {
-    let sponsorshipInfo: any = await SponsorshipModel.aggregate([
+    let sponsorshipInfo: any = await SponsorsPartner.aggregate([
       {
         $match: {
           isDeleted: false,
-          sponsorshipName: {
+          companyName: {
             $regex: search,
             $options: "i",
           },
@@ -602,6 +603,19 @@ export default class SponsorshipController {
     sponsorshipPartnerId:new mongoose.Types.ObjectId(sponsorshipPartnerId)
   }
         },
+
+        {
+          $lookup: {
+            localField: "sponsorshipPartnerId",
+            from: "sponsor_partners",
+            foreignField: "_id",
+            as: "sponsorshipObj",
+          },
+        },
+        {
+          $unwind: { path: "$sponsorshipObj", preserveNullAndEmptyArrays: true },
+        },
+
         {
           $addFields: {
             // Adding 330 minutes to the createdAt field
@@ -670,7 +684,7 @@ export default class SponsorshipController {
       {
         $lookup: {
           localField: "sponsorId",
-          from: "sponsorshipdetails",
+          from: "sponsor_partners",
           foreignField: "_id",
           as: "sponsorshipObj",
         },
