@@ -229,7 +229,14 @@ export default class SponsorshipController {
         val.isLikes = true;
       }
     });
-    return sponsorshipLike;
+    const iData ={
+      count:index*50,
+      pages:index,
+      next:`http://43.204.211.38/api/sponsorship/list?index=${parseInt(index)+1}`,
+      prev :index
+    }
+    return {sponsorshipLike,iData};
+   
   }
 
   public async getsponsorshipInfo(sponsorshipId: any, status: any) {

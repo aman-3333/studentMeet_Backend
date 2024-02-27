@@ -118,8 +118,15 @@ export default class SchoolController {
     
      })
 
+     
+    const iData ={
+      count:index*50,
+      pages:index,
+      next:`http://43.204.211.38/api/school/list?index=${parseInt(index)+1}`,
+      prev :index
+    }
+    return {schoolListlike,iData};
 
-    return schoolListlike;
   }
 
 

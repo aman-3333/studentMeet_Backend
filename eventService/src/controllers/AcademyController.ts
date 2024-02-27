@@ -207,7 +207,14 @@ export default class academyController {
      
     });
 
-    return academyLike;
+    const iData ={
+      count:index*50,
+      pages:index,
+      next:`http://43.204.211.38/api/academy/list?index=${parseInt(index)+1}`,
+      prev :index
+    }
+    return {academyLike,iData};
+
   }
   
   public async deleteAcademy(academyId: String) {

@@ -52,8 +52,8 @@ const indexData = parseInt(index) -1;
           createdAt: -1
         }
       },
-      { $skip:  5 * indexData },
-      { $limit: 5},
+      { $skip:  50 * indexData },
+      { $limit: 50},
       { $match: { isDeleted: false  } },
       {
         $lookup: {
@@ -213,10 +213,10 @@ let userData:any = await userActivity.findOne({userId:user._id})
 
     });
     const iData ={
-      count:index*5,
+      count:index*50,
       pages:index,
       next:`http://43.204.211.38/api/post/list?index=${parseInt(index)+1}`,
-      prev :"null"
+      prev :index
     }
     return {PostLike,iData};
   }

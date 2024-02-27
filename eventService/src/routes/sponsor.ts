@@ -86,7 +86,7 @@ router.get('/list', checkAuth, async (req, res) => {
         const index = req.query.index;
         console.log(user, 'user');
 
-        const response: ISponsorship[] = await controller.getsponsorshipList(user, index);
+        const response = await controller.getsponsorshipList(user, index);
         res.status(200).json(successResponse('getParticipantsList', response, res.statusCode));
     } catch (error) {
         res.status(500).json(errorResponse('getParticipantsList', res.statusCode));
