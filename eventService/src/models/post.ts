@@ -13,6 +13,8 @@ const schema = new Schema({
     city: { type:Schema.Types.ObjectId, ref: "cities" },
     state: { type:Schema.Types.ObjectId, ref: "states" },
     country: { type:Schema.Types.ObjectId, ref: "countries" },
+    lat:{type:String},
+    long:{type:String},
     mediaType:{ type: String },
     Image: [{ type: String }],
     description:{ type: String },

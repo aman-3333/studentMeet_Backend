@@ -12,7 +12,7 @@ const sponsorshipSchema = new Schema(
     academySubTypeId: { type: Schema.Types.ObjectId, ref: "academysubtypes" },
     sponsorshipPartnerId: {
       type: Schema.Types.ObjectId,
-      ref: "sponsorPartner",
+      ref: "sponsor_partners",
     },
     stageId: [{ type: Schema.Types.ObjectId, ref: "stages" }],
     sponsorshipRepresentativeId: {

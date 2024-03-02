@@ -13,6 +13,8 @@ const AchivementSchema = new Schema(
     city: { type: Schema.Types.ObjectId, ref: "cities" },
     state: { type: Schema.Types.ObjectId, ref: "states" },
     country: { type: Schema.Types.ObjectId, ref: "countries" },
+    lat:{type:String},
+    long:{type:String},
     tournament: { type: String },
     tournament_match: { type: String },
     dateTime: { type: Date },

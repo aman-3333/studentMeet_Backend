@@ -6,8 +6,7 @@ const schema = new Schema({
     
     picture: [{ type: String }],
     result: { type: String },
-    participant1:{ type:Schema.Types.ObjectId, ref: "userdetails" },
-    participant2:{ type:Schema.Types.ObjectId, ref: "userdetails" },
+    participants:[{ type:Schema.Types.ObjectId, ref: "userdetails" }],
     tournamentId:{ type:Schema.Types.ObjectId, ref: "tournaments" },
     date:{type: Date},
     active: { type: Boolean, default: true },
@@ -22,7 +21,7 @@ export interface ITournamentMatch extends Document {
     location: String,
     picture: [String],
     result: Date,
-    participant1:ObjectId,
+    participants:[ObjectId],
     participant2:ObjectId,
     tournamentId:ObjectId,
     date:Date,

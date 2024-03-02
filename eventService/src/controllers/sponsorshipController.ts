@@ -625,6 +625,135 @@ export default class SponsorshipController {
 
         {
           $addFields: {
+            formattedCreatedAt: {
+              $let: {
+                vars: {
+                  timeDifferenceMillis: {
+                    $subtract: [new Date(), "$createdAt"],
+                  },
+                },
+                in: {
+                  $cond: {
+                    if: {
+                      $lt: ["$$timeDifferenceMillis", 60000], // Less than 1 minute
+                    },
+                    then: {
+                      $concat: [
+                        {
+                          $toString: {
+                            $trunc: { $divide: ["$$timeDifferenceMillis", 1000] },
+                          },
+                        },
+                        "s ",
+                      ],
+                    },
+                    else: {
+                      $cond: {
+                        if: { $lt: ["$$timeDifferenceMillis", 3600000] }, // Less than 1 hour
+                        then: {
+                          $concat: [
+                            {
+                              $toString: {
+                                $trunc: {
+                                  $divide: ["$$timeDifferenceMillis", 60000],
+                                },
+                              },
+                            },
+                            "m ",
+                          ],
+                        },
+                        else: {
+                          $cond: {
+                            if: { $lt: ["$$timeDifferenceMillis", 86400000] }, // Less than 1 day
+                            then: {
+                              $concat: [
+                                {
+                                  $toString: {
+                                    $trunc: {
+                                      $divide: [
+                                        "$$timeDifferenceMillis",
+                                        3600000,
+                                      ],
+                                    },
+                                  },
+                                },
+                                "h ",
+                              ],
+                            },
+                            else: {
+                              $cond: {
+                                if: {
+                                  $lt: ["$$timeDifferenceMillis", 2592000000],
+                                }, // Less than 30 days (approximating to 30 days as 1 month)
+                                then: {
+                                  $concat: [
+                                    {
+                                      $toString: {
+                                        $trunc: {
+                                          $divide: [
+                                            "$$timeDifferenceMillis",
+                                            86400000,
+                                          ],
+                                        },
+                                      },
+                                    },
+                                    "d ",
+                                  ],
+                                },
+                                else: {
+                                  $cond: {
+                                    if: {
+                                      $lt: [
+                                        "$$timeDifferenceMillis",
+                                        31536000000,
+                                      ],
+                                    }, // Less than 365 days (approximating to 365 days as 1 year)
+                                    then: {
+                                      $concat: [
+                                        {
+                                          $toString: {
+                                            $trunc: {
+                                              $divide: [
+                                                "$$timeDifferenceMillis",
+                                                2592000000,
+                                              ],
+                                            },
+                                          },
+                                        },
+                                        "mo ",
+                                      ],
+                                    },
+                                    else: {
+                                      $concat: [
+                                        {
+                                          $toString: {
+                                            $trunc: {
+                                              $divide: [
+                                                "$$timeDifferenceMillis",
+                                                31536000000,
+                                              ],
+                                            },
+                                          },
+                                        },
+                                        "y ",
+                                      ],
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          $addFields: {
             // Adding 330 minutes to the createdAt field
             adjustedTime: { $add: ["$createdAt", 330 * 60 * 1000] }
           }
@@ -639,7 +768,7 @@ export default class SponsorshipController {
   
         {
           $addFields: {
-            formattedCreatedAt: {
+            formattedCreated: {
               $dateToString: {
                 format: "%d/%m/%Y  %H:%M", // Customize the format as needed
                 date:"$adjustedTime"
@@ -650,7 +779,7 @@ export default class SponsorshipController {
   
         {
           $addFields: {
-            formattedUpdatedAt: {
+            formattedUpdated: {
               $dateToString: {
                 format: "%d/%m/%Y  %H:%M", // Customize the format as needed
                 date: "$adjustedOneTime"
@@ -1043,6 +1172,7 @@ export default class SponsorshipController {
     }
 
     if (query.stage) {
+
       const sponsorshipData = await SponsorshipModel.aggregate([
         {
           $match: {
@@ -1053,12 +1183,21 @@ export default class SponsorshipController {
             academyTypeId: new mongoose.Types.ObjectId(query.academyTypeId),
           },
         },
-      ]);
+        {
+          $lookup: {
+            localField: "sponsorshipPartnerId",
+            from: "sponsor_partners",
+            foreignField: "_id",
+            as: "sponsorshipPartnerId",
+          },
+        },
+        { $unwind: { path: "$sponsorshipPartnerId", preserveNullAndEmptyArrays: true } },
+      ],);
       return sponsorshipData;
     }
 
     if (!query.stage) {
-      const sponsorshipData = await SponsorshipModel.find(queryParam);
+      const sponsorshipData = await SponsorshipModel.find(queryParam).populate("sponsorshipPartnerId");
 
       return sponsorshipData;
     }
