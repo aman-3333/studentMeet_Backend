@@ -476,6 +476,14 @@ export default class SponsorshipController {
           },
         },
       },
+      {
+        $lookup: {
+          localField: "_id",
+          from: "sponsorshipdetails",
+          foreignField: "sponsorshipPartnerId",
+          as: "sponsorshipdetails",
+        },
+      }
     ]);
     return sponsorshipInfo;
   }
@@ -1381,16 +1389,35 @@ export default class SponsorshipController {
 
 
   public async removedAppliedUser(userId: any, sponsorshipId: any) {
-   const sponsorshipInfo = await SponsorshipModel.updateOne(
+    const sponsrData: any = await SponsorshipModel.findOne({
+      _id: sponsorshipId,
+    });
+   await SponsorshipModel.updateOne(
       { _id: sponsorshipId },
       {
         $pull: { applyInfo: { userId:userId } },
           $inc: { applyCount: -1 },
       }
     );
+  
+
+    let userFcmToken = await userDevice.findOne({ userId: userId });
+    let userData = await userDetails.findOne({ _id: userId });
+    if (userFcmToken) {
+      const body = `Hii, ${userData.fullName} you got rejected for ${sponsrData.sponsorshipName} scloarship `;
+      sendNotification(
+        userFcmToken.fcmtoken,
+        body,
+        "abc",
+        "sponsorship_home",
+        userId,
+        sponsorshipId,
+        userId
+      );
+    }
    
 
-    return sponsorshipInfo;
+    return sponsrData;
   }
   
 }
