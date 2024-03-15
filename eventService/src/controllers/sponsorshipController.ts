@@ -510,7 +510,8 @@ data.forEach((item:any) => {
           ...sponsorship,
           sponsorshipPartner:{
             companyName: item.companyName,
-            companyLogo: item.companyLogo
+            companyLogo: item.companyLogo,
+            formattedCreatedAt:"1"
           }
            
         };
