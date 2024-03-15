@@ -258,6 +258,16 @@ export default class SponsorshipController {
         },
       },
       { $unwind: { path: "$academyType", preserveNullAndEmptyArrays: true } },
+
+      {
+        $lookup: {
+          localField: "sponsorshipPartnerId",
+          from: "sponsor_partners",
+          foreignField: "_id",
+          as: "sponsorshipPartner",
+        },
+      },
+      { $unwind: { path: "$sponsorshipPartner", preserveNullAndEmptyArrays: true } },
       {
         $lookup: {
           localField: "stageId",
@@ -466,7 +476,9 @@ export default class SponsorshipController {
   }
 
   public async searchSponsorship(search: any) {
-    let sponsorshipInfo: any = await SponsorsPartner.aggregate([
+
+
+    let data: any = await SponsorsPartner.aggregate([
       {
         $match: {
           isDeleted: false,
@@ -485,7 +497,24 @@ export default class SponsorshipController {
         },
       }
     ]);
-    return sponsorshipInfo;
+
+  
+
+
+    let companyDetails:any = [];
+data.forEach((item:any) => {
+    item.sponsorshipdetails.forEach((sponsorship:any) => {
+        let company = {
+          ...sponsorship,
+            companyName: item.companyName,
+            companyLogo: item.companyLogo
+        };
+        companyDetails.push(company);
+    });
+});
+
+
+    return companyDetails;
   }
 
   public async SponsorshipModel(sponsorshipId: any, userId: any, status: any) {
@@ -1372,7 +1401,7 @@ export default class SponsorshipController {
     let userFcmToken = await userDevice.findOne({ userId: userId });
     let userData = await userDetails.findOne({ _id: userId });
     if (userFcmToken) {
-      const body = `Hii, ${userData.fullName} you got selected for ${sponsrData.sponsorshipName} scloarship `;
+      const body = `Hii, ${userData.fullName} you got selected for ${sponsrData.sponsorshipName} scloarship`;
       sendNotification(
         userFcmToken.fcmtoken,
         body,
